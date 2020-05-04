@@ -33,10 +33,19 @@ public protocol Operation {
 public struct GraphQLResponse<Data: Decodable>: Decodable {
     public var data: Data?
     public var errors: [GraphQLError]?
+
+    public init(data: Data? = nil, errors: [GraphQLError]? = nil) {
+        self.data = data
+        self.errors = errors
+    }
 }
 
 public struct GraphQLError: LocalizedError, Decodable {
     public var message: String
+
+    public init(message: String) {
+        self.message = message
+    }
 
     public var errorDescription: String? {
         return message

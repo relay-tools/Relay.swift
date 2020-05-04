@@ -1,7 +1,7 @@
 public class Store {
     private var recordSource: RecordSource
 
-    init(source: RecordSource) {
+    public init(source: RecordSource) {
         recordSource = source
 
         initializeRecordSource()

@@ -1,4 +1,4 @@
-public struct DataID: RawRepresentable, ExpressibleByStringLiteral {
+public struct DataID: RawRepresentable, ExpressibleByStringLiteral, Hashable {
     public var rawValue: String
 
     public init?(rawValue: String) {
@@ -20,4 +20,36 @@ public protocol RecordSource {
     var count: Int { get }
     // TODO toJSON
     mutating func clear()
+}
+
+public struct DefaultRecordSource: RecordSource {
+    var records = [DataID: Any]()
+
+    public init() {
+    }
+
+    public subscript(dataID: DataID) -> Any? {
+        get {
+            records[dataID]
+        }
+        set {
+            records[dataID] = newValue
+        }
+    }
+
+    public var recordIDs: [DataID] {
+        Array(records.keys)
+    }
+
+    public func has(dataID: DataID) -> Bool {
+        records[dataID] != nil
+    }
+
+    public var count: Int {
+        records.count
+    }
+
+    public mutating func clear() {
+        records.removeAll()
+    }
 }

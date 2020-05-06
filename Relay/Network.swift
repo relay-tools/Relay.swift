@@ -24,12 +24,6 @@ public struct AnyEncodable: Encodable {
     }
 }
 
-public protocol Operation {
-    var node: ConcreteRequest { get }
-    associatedtype Variables: Encodable
-    associatedtype Response: Decodable
-}
-
 public struct GraphQLResponse<Data: Decodable>: Decodable {
     public var data: Data?
     public var errors: [GraphQLError]?

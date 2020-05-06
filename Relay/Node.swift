@@ -11,6 +11,15 @@ public struct RequestParameters: Codable {
         self.text = text
         self.id = id
     }
+
+    func identifier<Vars: Encodable>(variables: Vars) -> RequestIdentifier {
+        guard let requestID = id ?? text else {
+            preconditionFailure("Expected request \(name) to have either text or id")
+        }
+
+        let encodedVars = try! JSONEncoder().encode(variables)
+        return "\(requestID)\(String(data: encodedVars, encoding: .utf8)!)"
+    }
 }
 
 public enum OperationKind: String, Codable {
@@ -23,7 +32,7 @@ public enum GeneratedNode {
     case request(ConcreteRequest)
 }
 
-public struct ConcreteRequest: Codable {
+public struct ConcreteRequest {
     var fragment: ReaderFragment
     var operation: NormalizationOperation
     var params: RequestParameters
@@ -35,7 +44,8 @@ public struct ConcreteRequest: Codable {
     }
 }
 
-public struct ReaderFragment: Codable {
-    public init() {}
+struct NormalizationSelector {
+    var dataID: DataID
+    var node: NormalizationNode
+    var variables: AnyEncodable
 }
-

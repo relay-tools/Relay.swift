@@ -6,7 +6,7 @@ struct RelayEnvironmentKey: EnvironmentKey {
 }
 
 public extension EnvironmentValues {
-    public var relayEnvironment: Relay.Environment? {
+    var relayEnvironment: Relay.Environment? {
         get { self[RelayEnvironmentKey.self] }
         set { self[RelayEnvironmentKey.self] = newValue }
     }

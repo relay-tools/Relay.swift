@@ -5,34 +5,49 @@ import Relay
 struct PokemonListQuery: Operation {
     var node: ConcreteRequest {
         ConcreteRequest(
-            fragment: ReaderFragment(),
+            fragment: ReaderFragment(
+                name: "PokemonListQuery",
+                selections: [
+                    .field(ReaderLinkedField(
+                        name: "pokemons",
+                        args: [LiteralArgument(name: "first", value: 50)],
+                        concreteType: "Pokemon",
+                        plural: true,
+                        selections: [
+                            .field(ReaderScalarField(name: "__typename")),
+                            .field(ReaderScalarField(name: "id")),
+                            .fragmentSpread(ReaderFragmentSpread(name: "PokemonListRow_pokemon"))]))]),
             operation: NormalizationOperation(
                 name: "PokemonListQuery",
                 argumentDefinitions: [],
                 selections: [
                     .field(NormalizationLinkedField(
                         name: "pokemons",
-                        args: [/* TODO */],
+                        args: [
+                            LiteralArgument(name: "first", value: 50)],
                         concreteType: "Pokemon",
                         plural: true,
                         selections: [
                             .field(NormalizationScalarField(name: "id")),
                             .field(NormalizationScalarField(name: "name")),
                             .field(NormalizationScalarField(name: "number")),
-                            .field(NormalizationScalarField(name: "classification")),
-                    ]))
-            ]),
+                            .field(NormalizationScalarField(name: "classification"))]))]),
             params: RequestParameters(
                 name: "PokemonListQuery",
                 operationKind: .query,
                 text: """
 query PokemonListQuery {
     pokemons(first: 50) {
+        __typename
         id
-        name
-        number
-        classification
+        ...PokemonListRow_pokemon
     }
+}
+
+fragment PokemonListRow_pokemon on Pokemon {
+    name
+    number
+    classification
 }
 """))
     }
@@ -42,12 +57,26 @@ query PokemonListQuery {
 
     struct Response: Decodable {
         var pokemons: [Pokemon]
+
+        struct Pokemon: Decodable {
+            var id: String
+            var name: String?
+            var number: String?
+            var classification: String?
+        }
     }
 
-    struct Pokemon: Decodable {
-        var id: String
-        var name: String?
-        var number: String?
-        var classification: String?
+    struct Data {
+        var dataID: DataID
+        var typename: String
+        var pokemons: [Pokemon]
+
+        struct Pokemon: PokemonListRow_pokemon_Key {
+            var dataID: DataID
+            var typename: String
+            var id: String
+
+            var fragment_PokemonListRow_pokemon: PokemonListRow_pokemon.Variables
+        }
     }
 }

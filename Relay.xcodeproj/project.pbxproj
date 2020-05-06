@@ -24,7 +24,7 @@
 		C9E18B94245F725800213352 /* Relay.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C9E18B62245F687100213352 /* Relay.framework */; };
 		C9E18B95245F725800213352 /* Relay.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = C9E18B62245F687100213352 /* Relay.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		C9E18B9A245F826100213352 /* PokemonListQuery.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9E18B99245F826100213352 /* PokemonListQuery.swift */; };
-		C9E18B9C245F88BF00213352 /* Normalization.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9E18B9B245F88BF00213352 /* Normalization.swift */; };
+		C9E18B9C245F88BF00213352 /* NormalizationNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9E18B9B245F88BF00213352 /* NormalizationNode.swift */; };
 		C9E18B9E245F9CA500213352 /* Executor.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9E18B9D245F9CA500213352 /* Executor.swift */; };
 		C9E18BA8245FA79800213352 /* RelaySwiftUI.h in Headers */ = {isa = PBXBuildFile; fileRef = C9E18BA6245FA79800213352 /* RelaySwiftUI.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		C9E18BAC245FA7A600213352 /* RelaySwiftUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C9E18BA4245FA79800213352 /* RelaySwiftUI.framework */; };
@@ -34,6 +34,14 @@
 		C9E18BB5245FA94C00213352 /* Environment.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9E18BB4245FA94C00213352 /* Environment.swift */; };
 		C9E18BB7245FAE5200213352 /* PokemonList.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9E18BB6245FAE5200213352 /* PokemonList.swift */; };
 		C9E18BB9245FAEDC00213352 /* ErrorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9E18BB8245FAEDC00213352 /* ErrorView.swift */; };
+		C9E18BBB245FB09700213352 /* PublishQueue.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9E18BBA245FB09700213352 /* PublishQueue.swift */; };
+		C9E18BBD245FB41800213352 /* PokemonListRow_pokemon.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9E18BBC245FB41800213352 /* PokemonListRow_pokemon.swift */; };
+		C9E18BBF245FBEC400213352 /* ReaderNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9E18BBE245FBEC400213352 /* ReaderNode.swift */; };
+		C9E18BC124610A9300213352 /* Operation.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9E18BC024610A9300213352 /* Operation.swift */; };
+		C9E18BC3246113CF00213352 /* ResponseNormalizer.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9E18BC2246113CF00213352 /* ResponseNormalizer.swift */; };
+		C9E18BC52461203300213352 /* Argument.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9E18BC42461203300213352 /* Argument.swift */; };
+		C9E18BCF246134BB00213352 /* Relay.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C9E18B62245F687100213352 /* Relay.framework */; };
+		C9E18BD62461350300213352 /* ResponseNormalizerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9E18BD52461350300213352 /* ResponseNormalizerTests.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -50,6 +58,13 @@
 			proxyType = 1;
 			remoteGlobalIDString = C9E18BA3245FA79800213352;
 			remoteInfo = RelaySwiftUI;
+		};
+		C9E18BD0246134BB00213352 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = C9E18B59245F687100213352 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = C9E18B61245F687100213352;
+			remoteInfo = Relay;
 		};
 /* End PBXContainerItemProxy section */
 
@@ -88,7 +103,7 @@
 		C9E18B8F245F70A700213352 /* Node.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Node.swift; sourceTree = "<group>"; };
 		C9E18B91245F724600213352 /* Environment.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Environment.swift; sourceTree = "<group>"; };
 		C9E18B99245F826100213352 /* PokemonListQuery.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PokemonListQuery.swift; sourceTree = "<group>"; };
-		C9E18B9B245F88BF00213352 /* Normalization.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Normalization.swift; sourceTree = "<group>"; };
+		C9E18B9B245F88BF00213352 /* NormalizationNode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NormalizationNode.swift; sourceTree = "<group>"; };
 		C9E18B9D245F9CA500213352 /* Executor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Executor.swift; sourceTree = "<group>"; };
 		C9E18BA4245FA79800213352 /* RelaySwiftUI.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = RelaySwiftUI.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		C9E18BA6245FA79800213352 /* RelaySwiftUI.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = RelaySwiftUI.h; sourceTree = "<group>"; };
@@ -98,6 +113,15 @@
 		C9E18BB4245FA94C00213352 /* Environment.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Environment.swift; sourceTree = "<group>"; };
 		C9E18BB6245FAE5200213352 /* PokemonList.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PokemonList.swift; sourceTree = "<group>"; };
 		C9E18BB8245FAEDC00213352 /* ErrorView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ErrorView.swift; sourceTree = "<group>"; };
+		C9E18BBA245FB09700213352 /* PublishQueue.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PublishQueue.swift; sourceTree = "<group>"; };
+		C9E18BBC245FB41800213352 /* PokemonListRow_pokemon.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PokemonListRow_pokemon.swift; sourceTree = "<group>"; };
+		C9E18BBE245FBEC400213352 /* ReaderNode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReaderNode.swift; sourceTree = "<group>"; };
+		C9E18BC024610A9300213352 /* Operation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Operation.swift; sourceTree = "<group>"; };
+		C9E18BC2246113CF00213352 /* ResponseNormalizer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ResponseNormalizer.swift; sourceTree = "<group>"; };
+		C9E18BC42461203300213352 /* Argument.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Argument.swift; sourceTree = "<group>"; };
+		C9E18BCA246134BB00213352 /* RelayTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = RelayTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		C9E18BCE246134BB00213352 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		C9E18BD52461350300213352 /* ResponseNormalizerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ResponseNormalizerTests.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -124,6 +148,14 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		C9E18BC7246134BB00213352 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				C9E18BCF246134BB00213352 /* Relay.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
@@ -131,6 +163,7 @@
 			isa = PBXGroup;
 			children = (
 				C9E18B64245F687100213352 /* Relay */,
+				C9E18BCB246134BB00213352 /* RelayTests */,
 				C9E18BA5245FA79800213352 /* RelaySwiftUI */,
 				C9E18B72245F68A100213352 /* RelayTestApp */,
 				C9E18B63245F687100213352 /* Products */,
@@ -144,6 +177,7 @@
 				C9E18B62245F687100213352 /* Relay.framework */,
 				C9E18B71245F68A100213352 /* RelayTestApp.app */,
 				C9E18BA4245FA79800213352 /* RelaySwiftUI.framework */,
+				C9E18BCA246134BB00213352 /* RelayTests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -159,8 +193,13 @@
 				C9E18B89245F6A5200213352 /* RecordSource.swift */,
 				C9E18B8B245F6DA200213352 /* Record.swift */,
 				C9E18B8D245F6E8200213352 /* Network.swift */,
+				C9E18BC024610A9300213352 /* Operation.swift */,
 				C9E18B8F245F70A700213352 /* Node.swift */,
-				C9E18B9B245F88BF00213352 /* Normalization.swift */,
+				C9E18BC42461203300213352 /* Argument.swift */,
+				C9E18BBE245FBEC400213352 /* ReaderNode.swift */,
+				C9E18B9B245F88BF00213352 /* NormalizationNode.swift */,
+				C9E18BC2246113CF00213352 /* ResponseNormalizer.swift */,
+				C9E18BBA245FB09700213352 /* PublishQueue.swift */,
 			);
 			path = Relay;
 			sourceTree = "<group>";
@@ -175,6 +214,7 @@
 				C9E18B91245F724600213352 /* Environment.swift */,
 				C9E18BB6245FAE5200213352 /* PokemonList.swift */,
 				C9E18B99245F826100213352 /* PokemonListQuery.swift */,
+				C9E18BBC245FB41800213352 /* PokemonListRow_pokemon.swift */,
 				C9E18B79245F68A200213352 /* Assets.xcassets */,
 				C9E18B7E245F68A200213352 /* LaunchScreen.storyboard */,
 				C9E18B81245F68A200213352 /* Info.plist */,
@@ -208,6 +248,15 @@
 				C9E18BB2245FA85600213352 /* QueryLoader.swift */,
 			);
 			path = RelaySwiftUI;
+			sourceTree = "<group>";
+		};
+		C9E18BCB246134BB00213352 /* RelayTests */ = {
+			isa = PBXGroup;
+			children = (
+				C9E18BCE246134BB00213352 /* Info.plist */,
+				C9E18BD52461350300213352 /* ResponseNormalizerTests.swift */,
+			);
+			path = RelayTests;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -288,6 +337,24 @@
 			productReference = C9E18BA4245FA79800213352 /* RelaySwiftUI.framework */;
 			productType = "com.apple.product-type.framework";
 		};
+		C9E18BC9246134BB00213352 /* RelayTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = C9E18BD4246134BB00213352 /* Build configuration list for PBXNativeTarget "RelayTests" */;
+			buildPhases = (
+				C9E18BC6246134BB00213352 /* Sources */,
+				C9E18BC7246134BB00213352 /* Frameworks */,
+				C9E18BC8246134BB00213352 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				C9E18BD1246134BB00213352 /* PBXTargetDependency */,
+			);
+			name = RelayTests;
+			productName = RelayTests;
+			productReference = C9E18BCA246134BB00213352 /* RelayTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
@@ -309,6 +376,10 @@
 						CreatedOnToolsVersion = 11.4.1;
 						LastSwiftMigration = 1140;
 					};
+					C9E18BC9246134BB00213352 = {
+						CreatedOnToolsVersion = 11.4.1;
+						LastSwiftMigration = 1140;
+					};
 				};
 			};
 			buildConfigurationList = C9E18B5C245F687100213352 /* Build configuration list for PBXProject "Relay" */;
@@ -327,6 +398,7 @@
 				C9E18B61245F687100213352 /* Relay */,
 				C9E18BA3245FA79800213352 /* RelaySwiftUI */,
 				C9E18B70245F68A100213352 /* RelayTestApp */,
+				C9E18BC9246134BB00213352 /* RelayTests */,
 			);
 		};
 /* End PBXProject section */
@@ -356,6 +428,13 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		C9E18BC8246134BB00213352 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
@@ -363,12 +442,17 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				C9E18BC52461203300213352 /* Argument.swift in Sources */,
+				C9E18BC124610A9300213352 /* Operation.swift in Sources */,
 				C9E18B9E245F9CA500213352 /* Executor.swift in Sources */,
+				C9E18BBB245FB09700213352 /* PublishQueue.swift in Sources */,
 				C9E18B8E245F6E8200213352 /* Network.swift in Sources */,
 				C9E18B86245F68BA00213352 /* Environment.swift in Sources */,
-				C9E18B9C245F88BF00213352 /* Normalization.swift in Sources */,
+				C9E18BBF245FBEC400213352 /* ReaderNode.swift in Sources */,
+				C9E18B9C245F88BF00213352 /* NormalizationNode.swift in Sources */,
 				C9E18B8A245F6A5200213352 /* RecordSource.swift in Sources */,
 				C9E18B90245F70A700213352 /* Node.swift in Sources */,
+				C9E18BC3246113CF00213352 /* ResponseNormalizer.swift in Sources */,
 				C9E18B8C245F6DA200213352 /* Record.swift in Sources */,
 				C9E18B88245F697B00213352 /* Store.swift in Sources */,
 			);
@@ -382,6 +466,7 @@
 				C9E18B9A245F826100213352 /* PokemonListQuery.swift in Sources */,
 				C9E18B92245F724600213352 /* Environment.swift in Sources */,
 				C9E18B76245F68A100213352 /* SceneDelegate.swift in Sources */,
+				C9E18BBD245FB41800213352 /* PokemonListRow_pokemon.swift in Sources */,
 				C9E18BB9245FAEDC00213352 /* ErrorView.swift in Sources */,
 				C9E18B78245F68A100213352 /* ContentView.swift in Sources */,
 				C9E18BB7245FAE5200213352 /* PokemonList.swift in Sources */,
@@ -398,6 +483,14 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		C9E18BC6246134BB00213352 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				C9E18BD62461350300213352 /* ResponseNormalizerTests.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
@@ -410,6 +503,11 @@
 			isa = PBXTargetDependency;
 			target = C9E18BA3245FA79800213352 /* RelaySwiftUI */;
 			targetProxy = C9E18BAE245FA7A600213352 /* PBXContainerItemProxy */;
+		};
+		C9E18BD1246134BB00213352 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = C9E18B61245F687100213352 /* Relay */;
+			targetProxy = C9E18BD0246134BB00213352 /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
 
@@ -691,6 +789,45 @@
 			};
 			name = Release;
 		};
+		C9E18BD2246134BB00213352 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_ENABLE_MODULES = YES;
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = PE8BN56Z28;
+				INFOPLIST_FILE = RelayTests/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.mattmoriarity.RelayTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		C9E18BD3246134BB00213352 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_ENABLE_MODULES = YES;
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = PE8BN56Z28;
+				INFOPLIST_FILE = RelayTests/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.mattmoriarity.RelayTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -726,6 +863,15 @@
 			buildConfigurations = (
 				C9E18BAA245FA79800213352 /* Debug */,
 				C9E18BAB245FA79800213352 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		C9E18BD4246134BB00213352 /* Build configuration list for PBXNativeTarget "RelayTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				C9E18BD2246134BB00213352 /* Debug */,
+				C9E18BD3246134BB00213352 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;

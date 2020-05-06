@@ -18,9 +18,9 @@ extension Operation {
 }
 
 public struct OperationDescriptor {
-    var fragment: SingularReaderSelector
-    var request: RequestDescriptor
-    var root: NormalizationSelector
+    public let fragment: SingularReaderSelector
+    public let request: RequestDescriptor
+    let root: NormalizationSelector
 
     init<Vars: Encodable>(request: ConcreteRequest, variables: Vars, requestDescriptor: RequestDescriptor, dataID: DataID) {
         self.fragment = SingularReaderSelector(dataID: dataID, node: request.fragment, owner: requestDescriptor, variables: AnyEncodable(variables))

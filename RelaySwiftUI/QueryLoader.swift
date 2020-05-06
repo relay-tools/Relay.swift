@@ -2,7 +2,7 @@ import Combine
 import Relay
 
 class QueryLoader<Op: Relay.Operation>: ObservableObject {
-    @Published var response: GraphQLResponse<Op.Response>?
+    @Published var result: Result<Snapshot<Op.Data?>, Error>?
 
     var op: Op
     var variables: Op.Variables
@@ -14,12 +14,22 @@ class QueryLoader<Op: Relay.Operation>: ObservableObject {
         self.variables = variables
     }
 
-    var error: Error? {
-        response?.errors?.first
+    var isLoading: Bool {
+        result == nil
     }
 
-    var data: Op.Response? {
-        response?.data
+    var error: Error? {
+        if case .failure(let error) = result {
+            return error
+        }
+        return nil
+    }
+
+    var data: Op.Data? {
+        if case .success(let snapshot) = result {
+            return snapshot.data
+        }
+        return nil
     }
 
     func load(environment: Environment?) {
@@ -29,13 +39,14 @@ class QueryLoader<Op: Relay.Operation>: ObservableObject {
 
         let operation = op.createDescriptor(variables: variables)
         cancellable = environment.execute(operation: operation, cacheConfig: "TODO")
+            .map { _ -> Snapshot<Op.Data?> in environment.lookup(selector: operation.fragment) }
             .receive(on: DispatchQueue.main)
             .sink(receiveCompletion: { [weak self] completion in
                 if case .failure(let error) = completion {
-                    self?.response = GraphQLResponse(errors: [GraphQLError(message: error.localizedDescription)])
+                    self?.result = .failure(error)
                 }
             }, receiveValue: { [weak self] response in
-                self?.response = response
+                self?.result = .success(response)
             })
     }
 

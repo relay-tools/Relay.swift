@@ -2,6 +2,7 @@ import Combine
 
 class Executor<Sink: Subject> where Sink.Output == GraphQLResponse, Sink.Failure == Error {
     let operation: OperationDescriptor
+    let publishQueue: PublishQueue
     let source: AnyPublisher<Data, Error>
     let sink: Sink
     let queue = DispatchQueue(label: "executor-response-queue")
@@ -9,9 +10,11 @@ class Executor<Sink: Subject> where Sink.Output == GraphQLResponse, Sink.Failure
     var cancellable: AnyCancellable?
 
     init(operation: OperationDescriptor,
+         publishQueue: PublishQueue,
          source: AnyPublisher<Data, Error>,
          sink: Sink) {
         self.operation = operation
+        self.publishQueue = publishQueue
         self.source = source
         self.sink = sink
     }
@@ -41,7 +44,7 @@ class Executor<Sink: Subject> where Sink.Output == GraphQLResponse, Sink.Failure
         // TODO optimistic responses
 
         _ = process(response: response)
-        // TODO run publish queue
+        let updatedOwners = publishQueue.run(sourceOperation: operation)
         // TODO update operation tracker
 
         return response
@@ -64,7 +67,8 @@ class Executor<Sink: Subject> where Sink.Output == GraphQLResponse, Sink.Failure
                                 selector: operation.root,
                                 typeName: Record.root.typename,
                                 request: operation.request)
-        // TODO publish to publish queue
+
+        publishQueue.commit(payload: payload, operation: operation)
         return payload
     }
 

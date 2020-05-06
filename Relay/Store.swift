@@ -26,6 +26,10 @@ public class Store {
         }
     }
 
+    public func lookup<T: Readable>(selector: SingularReaderSelector) -> Snapshot<T?> {
+        return Reader.read(T.self, source: source, selector: selector)
+    }
+
     public func publish(source: RecordSource, idsMarkedForInvalidation: Set<DataID>? = nil) {
         self.source.update(from: source,
                            currentWriteEpoch: currentWriteEpoch + 1,

@@ -1,5 +1,5 @@
-struct Snapshot<T> {
-    var data: T
+public struct Snapshot<T> {
+    public var data: T
     var isMissingData: Bool
     var seenRecords: [DataID: Record]
     var selector: SingularReaderSelector

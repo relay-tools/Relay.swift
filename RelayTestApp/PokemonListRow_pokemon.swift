@@ -14,22 +14,21 @@ struct PokemonListRow_pokemon {
     struct Variables: Encodable {
     }
 
-    struct Data {
-//        var id: String
-//        var name: String?
-//        var number: String?
-//        var classification: String?
-//
-//        init(record: Any /* RecordProxy */) {
-//            id = try record.get("id")
-//            name = try record.get("name")
-//            number = try record.get("number")
-//            classification = try record.get("classification")
-//        }
+    struct Data: Readable {
+        var id: String
+        var name: String?
+        var number: String?
+        var classification: String?
+
+        init(from data: SelectorData) {
+            id = data.get(String.self, "id")
+            name = data.get(String?.self, "name")
+            number = data.get(String?.self, "number")
+            classification = data.get(String?.self, "classification")
+        }
     }
 }
 
 protocol PokemonListRow_pokemon_Key {
-    var fragment_PokemonListRow_pokemon: PokemonListRow_pokemon.Variables { get }
-    // TODO owner
+    var fragment_PokemonListRow_pokemon: FragmentPointer { get }
 }

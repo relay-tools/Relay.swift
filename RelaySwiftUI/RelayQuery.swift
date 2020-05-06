@@ -15,13 +15,13 @@ public struct RelayQuery<Op: Relay.Operation, LoadingView: View, ErrorView: View
 
     private let loadingContent: LoadingView
     private let errorContent: (Error) -> ErrorView
-    private let dataContent: (Op.Response) -> DataView
+    private let dataContent: (Op.Data?) -> DataView
 
     public init(op: Op,
                 variables: Op.Variables,
                 loadingContent: LoadingView,
                 errorContent: @escaping (Error) -> ErrorView,
-                dataContent: @escaping (Op.Response) -> DataView) {
+                dataContent: @escaping (Op.Data?) -> DataView) {
         self.loader = QueryLoader(op: op, variables: variables)
         self.loadingContent = loadingContent
         self.errorContent = errorContent
@@ -30,14 +30,14 @@ public struct RelayQuery<Op: Relay.Operation, LoadingView: View, ErrorView: View
 
     public var body: some View {
         Group {
-            if loader.error != nil {
-                errorContent(loader.error!)
-            } else if loader.data != nil {
-                dataContent(loader.data!)
-            } else {
+            if loader.isLoading {
                 loadingContent
                     .onAppear { self.loader.load(environment: self.environment) }
                     .onDisappear { self.loader.cancel() }
+            } else if loader.error != nil {
+                errorContent(loader.error!)
+            } else {
+                dataContent(loader.data)
             }
         }
     }

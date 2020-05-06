@@ -46,6 +46,7 @@
 		C9E18BDA24633D5C00213352 /* ReaderTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9E18BD924633D5C00213352 /* ReaderTests.swift */; };
 		C9E18BDC2463747C00213352 /* PokemonListQuery.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9E18BDB2463747C00213352 /* PokemonListQuery.swift */; };
 		C9E18BDE246374AB00213352 /* PokemonListRow_pokemon.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9E18BDD246374AB00213352 /* PokemonListRow_pokemon.swift */; };
+		C9E18BDF24637E1600213352 /* Relay.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C9E18B62245F687100213352 /* Relay.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -64,6 +65,13 @@
 			remoteInfo = RelaySwiftUI;
 		};
 		C9E18BD0246134BB00213352 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = C9E18B59245F687100213352 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = C9E18B61245F687100213352;
+			remoteInfo = Relay;
+		};
+		C9E18BE124637E1600213352 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = C9E18B59245F687100213352 /* Project object */;
 			proxyType = 1;
@@ -153,6 +161,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				C9E18BDF24637E1600213352 /* Relay.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -343,6 +352,7 @@
 			buildRules = (
 			);
 			dependencies = (
+				C9E18BE224637E1600213352 /* PBXTargetDependency */,
 			);
 			name = RelaySwiftUI;
 			productName = RelaySwiftUI;
@@ -524,6 +534,11 @@
 			isa = PBXTargetDependency;
 			target = C9E18B61245F687100213352 /* Relay */;
 			targetProxy = C9E18BD0246134BB00213352 /* PBXContainerItemProxy */;
+		};
+		C9E18BE224637E1600213352 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = C9E18B61245F687100213352 /* Relay */;
+			targetProxy = C9E18BE124637E1600213352 /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
 

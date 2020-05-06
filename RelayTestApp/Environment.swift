@@ -11,7 +11,7 @@ let environment = Environment(
 )
 
 class MyNetwork: Network {
-    func execute<Op>(operation: Op, request: RequestParameters, variables: Op.Variables, cacheConfig: CacheConfig) -> AnyPublisher<GraphQLResponse<Op.Response>, Error> where Op : Operation {
+    func execute(request: RequestParameters, variables: AnyEncodable, cacheConfig: CacheConfig) -> AnyPublisher<Data, Error> {
         var req = URLRequest(url: url)
         req.setValue("application/json", forHTTPHeaderField: "Content-Type")
         req.httpMethod = "POST"
@@ -26,7 +26,6 @@ class MyNetwork: Network {
         return URLSession.shared.dataTaskPublisher(for: req)
             .map { $0.data }
             .mapError { $0 as Error }
-            .decode(type: GraphQLResponse<Op.Response>.self, decoder: JSONDecoder())
             .eraseToAnyPublisher()
     }
 }

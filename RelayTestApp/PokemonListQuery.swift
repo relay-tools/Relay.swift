@@ -16,6 +16,7 @@ struct PokemonListQuery: Operation {
                         selections: [
                             .field(ReaderScalarField(name: "__typename")),
                             .field(ReaderScalarField(name: "id")),
+                            .field(ReaderScalarField(name: "name")),
                             .fragmentSpread(ReaderFragmentSpread(name: "PokemonListRow_pokemon"))]))]),
             operation: NormalizationOperation(
                 name: "PokemonListQuery",
@@ -29,6 +30,7 @@ struct PokemonListQuery: Operation {
                         plural: true,
                         selections: [
                             .field(NormalizationScalarField(name: "id")),
+                            .field(NormalizationScalarField(name: "__typename")),
                             .field(NormalizationScalarField(name: "name")),
                             .field(NormalizationScalarField(name: "number")),
                             .field(NormalizationScalarField(name: "classification"))]))]),
@@ -40,6 +42,7 @@ query PokemonListQuery {
     pokemons(first: 50) {
         __typename
         id
+        name
         ...PokemonListRow_pokemon
     }
 }
@@ -55,28 +58,25 @@ fragment PokemonListRow_pokemon on Pokemon {
     struct Variables: Encodable {
     }
 
-    struct Response: Decodable {
+    struct Data: Readable {
         var pokemons: [Pokemon]
 
-        struct Pokemon: Decodable {
-            var id: String
-            var name: String?
-            var number: String?
-            var classification: String?
+        init(from data: SelectorData) {
+            pokemons = data.get([Pokemon].self, "pokemons")
         }
-    }
 
-    struct Data {
-        var dataID: DataID
-        var typename: String
-        var pokemons: [Pokemon]
-
-        struct Pokemon: PokemonListRow_pokemon_Key {
-            var dataID: DataID
-            var typename: String
+        struct Pokemon: Readable, PokemonListRow_pokemon_Key {
             var id: String
+            var __typename: String
+            var name: String?
+            var fragment_PokemonListRow_pokemon: FragmentPointer
 
-            var fragment_PokemonListRow_pokemon: PokemonListRow_pokemon.Variables
+            init(from data: SelectorData) {
+                id = data.get(String.self, "id")
+                __typename = data.get(String.self, "__typename")
+                name = data.get(String?.self, "name")
+                fragment_PokemonListRow_pokemon = data.get(fragment: "PokemonListRow_pokemon")
+            }
         }
     }
 }

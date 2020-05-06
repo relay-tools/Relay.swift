@@ -105,7 +105,7 @@ public struct ReaderFragmentSpread {
     }
 }
 
-struct SingularReaderSelector {
+public struct SingularReaderSelector {
     var dataID: DataID
     var node: ReaderFragment
     var owner: RequestDescriptor

@@ -18,8 +18,8 @@ struct PokemonList: View {
         ErrorView(error: error)
     }
 
-    func dataView(_ data: PokemonListQuery.Response) -> some View {
-        List(data.pokemons, id: \.id) { pokemon in
+    func dataView(_ data: PokemonListQuery.Data?) -> some View {
+        List(data?.pokemons ?? [], id: \.id) { pokemon in
             Text(pokemon.name ?? "")
         }
     }

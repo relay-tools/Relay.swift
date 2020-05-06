@@ -21,7 +21,7 @@ public class Store {
     }
 
     private func initializeRecordSource() {
-        if !recordSource.has(dataID: .rootID) {
+        if !recordSource.has(.rootID) {
             recordSource[.rootID] = Record.root
         }
     }
@@ -71,7 +71,7 @@ func getStorageKey<Vars: Encodable>(field: Storable, variables: Vars) -> String 
     }
 }
 
-private func getArgumentValues<Vars>(_ args: [Argument], _ variables: Vars) -> [(String, Any)] {
+func getArgumentValues<Vars>(_ args: [Argument], _ variables: Vars) -> [(String, Any)] {
     return args.map { ($0.name, getArgumentValue($0, variables)) }
 }
 

@@ -1,4 +1,8 @@
-public struct ReaderFragment: Codable {
+public protocol ReaderNode {
+    var selections: [ReaderSelection] { get }
+}
+
+public struct ReaderFragment: Codable, ReaderNode {
     public var name: String
     public var concreteType: String?
     // TODO metadata
@@ -40,7 +44,13 @@ public protocol ReaderField: Storable {
     var args: [Argument]? { get }
 }
 
-public struct ReaderLinkedField: ReaderField {
+extension ReaderField {
+    var applicationName: String {
+        alias ?? name
+    }
+}
+
+public struct ReaderLinkedField: ReaderField, ReaderNode {
     public var alias: String?
     public var name: String
     public var storageKey: String?
@@ -100,4 +110,24 @@ struct SingularReaderSelector {
     var node: ReaderFragment
     var owner: RequestDescriptor
     var variables: AnyEncodable
+
+    init(dataID: DataID, node: ReaderFragment, owner: RequestDescriptor, variables: AnyEncodable) {
+        self.dataID = dataID
+        self.node = node
+        self.owner = owner
+        self.variables = variables
+    }
+
+    init(fragment: ReaderFragment, pointer: FragmentPointer) {
+        dataID = pointer.id
+        node = fragment
+        owner = pointer.owner
+        variables = AnyEncodable([:] as [String: String])
+    }
+}
+
+public protocol Fragment {
+    var node: ReaderFragment { get }
+    associatedtype Variables: Encodable
+    associatedtype Data: Readable
 }

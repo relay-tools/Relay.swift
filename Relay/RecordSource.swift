@@ -50,7 +50,7 @@ public protocol RecordSource {
     subscript(_ dataID: DataID) -> Record? { get set }
     var recordIDs: [DataID] { get }
     // TODO getStatus
-    func has(dataID: DataID) -> Bool
+    func has(_ dataID: DataID) -> Bool
     var count: Int { get }
     // TODO toJSON
     mutating func clear()
@@ -80,7 +80,7 @@ public struct DefaultRecordSource: RecordSource {
         Array(records.keys) + Array(deletedRecordIDs)
     }
 
-    public func has(dataID: DataID) -> Bool {
+    public func has(_ dataID: DataID) -> Bool {
         deletedRecordIDs.contains(dataID) || records[dataID] != nil
     }
 

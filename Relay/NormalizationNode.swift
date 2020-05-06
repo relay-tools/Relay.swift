@@ -1,3 +1,7 @@
+public protocol NormalizationNode {
+    var selections: [NormalizationSelection] { get }
+}
+
 public struct NormalizationOperation: NormalizationNode {
     public var name: String
     public var argumentDefinitions: [NormalizationLocalArgumentDefinition]
@@ -27,10 +31,6 @@ public enum NormalizationSelection {
     enum CodingKeys: CodingKey {
         case kind
     }
-}
-
-public protocol NormalizationNode {
-    var selections: [NormalizationSelection] { get }
 }
 
 public struct NormalizationCondition {

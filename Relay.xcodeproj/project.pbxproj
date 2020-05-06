@@ -42,6 +42,10 @@
 		C9E18BC52461203300213352 /* Argument.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9E18BC42461203300213352 /* Argument.swift */; };
 		C9E18BCF246134BB00213352 /* Relay.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C9E18B62245F687100213352 /* Relay.framework */; };
 		C9E18BD62461350300213352 /* ResponseNormalizerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9E18BD52461350300213352 /* ResponseNormalizerTests.swift */; };
+		C9E18BD82462834700213352 /* Reader.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9E18BD72462834700213352 /* Reader.swift */; };
+		C9E18BDA24633D5C00213352 /* ReaderTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9E18BD924633D5C00213352 /* ReaderTests.swift */; };
+		C9E18BDC2463747C00213352 /* PokemonListQuery.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9E18BDB2463747C00213352 /* PokemonListQuery.swift */; };
+		C9E18BDE246374AB00213352 /* PokemonListRow_pokemon.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9E18BDD246374AB00213352 /* PokemonListRow_pokemon.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -122,6 +126,10 @@
 		C9E18BCA246134BB00213352 /* RelayTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = RelayTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		C9E18BCE246134BB00213352 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		C9E18BD52461350300213352 /* ResponseNormalizerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ResponseNormalizerTests.swift; sourceTree = "<group>"; };
+		C9E18BD72462834700213352 /* Reader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Reader.swift; sourceTree = "<group>"; };
+		C9E18BD924633D5C00213352 /* ReaderTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReaderTests.swift; sourceTree = "<group>"; };
+		C9E18BDB2463747C00213352 /* PokemonListQuery.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PokemonListQuery.swift; sourceTree = "<group>"; };
+		C9E18BDD246374AB00213352 /* PokemonListRow_pokemon.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PokemonListRow_pokemon.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -199,6 +207,7 @@
 				C9E18BBE245FBEC400213352 /* ReaderNode.swift */,
 				C9E18B9B245F88BF00213352 /* NormalizationNode.swift */,
 				C9E18BC2246113CF00213352 /* ResponseNormalizer.swift */,
+				C9E18BD72462834700213352 /* Reader.swift */,
 				C9E18BBA245FB09700213352 /* PublishQueue.swift */,
 			);
 			path = Relay;
@@ -255,6 +264,9 @@
 			children = (
 				C9E18BCE246134BB00213352 /* Info.plist */,
 				C9E18BD52461350300213352 /* ResponseNormalizerTests.swift */,
+				C9E18BD924633D5C00213352 /* ReaderTests.swift */,
+				C9E18BDB2463747C00213352 /* PokemonListQuery.swift */,
+				C9E18BDD246374AB00213352 /* PokemonListRow_pokemon.swift */,
 			);
 			path = RelayTests;
 			sourceTree = "<group>";
@@ -442,6 +454,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				C9E18BD82462834700213352 /* Reader.swift in Sources */,
 				C9E18BC52461203300213352 /* Argument.swift in Sources */,
 				C9E18BC124610A9300213352 /* Operation.swift in Sources */,
 				C9E18B9E245F9CA500213352 /* Executor.swift in Sources */,
@@ -487,7 +500,10 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				C9E18BDE246374AB00213352 /* PokemonListRow_pokemon.swift in Sources */,
+				C9E18BDA24633D5C00213352 /* ReaderTests.swift in Sources */,
 				C9E18BD62461350300213352 /* ResponseNormalizerTests.swift in Sources */,
+				C9E18BDC2463747C00213352 /* PokemonListQuery.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

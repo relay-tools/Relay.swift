@@ -1,7 +1,7 @@
 public protocol Operation {
     var node: ConcreteRequest { get }
     associatedtype Variables: Encodable
-    associatedtype Response: Decodable
+    associatedtype Data: Readable
 }
 
 extension Operation {

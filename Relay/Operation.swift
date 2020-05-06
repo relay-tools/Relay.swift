@@ -5,7 +5,7 @@ public protocol Operation {
 }
 
 extension Operation {
-    func createDescriptor(variables: Variables, dataID: DataID = .rootID) -> OperationDescriptor {
+    public func createDescriptor(variables: Variables, dataID: DataID = .rootID) -> OperationDescriptor {
         // we don't do anything like Relay in JS does to set the default variables for the
         // operation. Instead, we can just include the default values in the struct definition,
         // so any Variables struct we get should already have its defaults set.
@@ -17,7 +17,7 @@ extension Operation {
     }
 }
 
-struct OperationDescriptor {
+public struct OperationDescriptor {
     var fragment: SingularReaderSelector
     var request: RequestDescriptor
     var root: NormalizationSelector
@@ -31,7 +31,7 @@ struct OperationDescriptor {
 
 typealias RequestIdentifier = String
 
-struct RequestDescriptor {
+public struct RequestDescriptor {
     var identifier: String
     var node: ConcreteRequest
     var variables: AnyEncodable

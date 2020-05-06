@@ -11,11 +11,15 @@ public class Environment {
         self.store = store
     }
 
-    public func execute<Op: Operation>(
-        op: Op,
-        variables: Op.Variables
-    ) -> AnyPublisher<GraphQLResponse<Op.Response>, Error> {
-        let source = network.execute(operation: op, request: op.node.params, variables: variables, cacheConfig: "TODO")
-        return Executor(operation: op, source: source).execute()
+    public func execute(
+        operation: OperationDescriptor,
+        cacheConfig: CacheConfig
+    ) -> AnyPublisher<GraphQLResponse, Error> {
+        let source = network.execute(request: operation.request.node.params,
+                                     variables: operation.request.variables,
+                                     cacheConfig: cacheConfig)
+        let sink = PassthroughSubject<GraphQLResponse, Error>()
+        Executor(operation: operation, source: source, sink: sink).execute()
+        return sink.eraseToAnyPublisher()
     }
 }

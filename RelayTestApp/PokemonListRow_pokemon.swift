@@ -15,21 +15,21 @@ struct PokemonListRow_pokemon {
     }
 
     struct Data {
-        var id: String
-        var name: String?
-        var number: String?
-        var classification: String?
-
-        init(record: RecordProxy) {
-            id = try record.get("id")
-            name = try record.get("name")
-            number = try record.get("number")
-            classification = try record.get("classification")
-        }
+//        var id: String
+//        var name: String?
+//        var number: String?
+//        var classification: String?
+//
+//        init(record: Any /* RecordProxy */) {
+//            id = try record.get("id")
+//            name = try record.get("name")
+//            number = try record.get("number")
+//            classification = try record.get("classification")
+//        }
     }
 }
 
-protocol PokemonListRow_pokemon_Key: Record {
+protocol PokemonListRow_pokemon_Key {
     var fragment_PokemonListRow_pokemon: PokemonListRow_pokemon.Variables { get }
     // TODO owner
 }

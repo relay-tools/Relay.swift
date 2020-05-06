@@ -1,13 +1,11 @@
 import Combine
 
 public protocol Network {
-    // TODO define parameter types better
-    func execute<Op: Operation>(
-        operation: Op,
+    func execute(
         request: RequestParameters,
-        variables: Op.Variables,
+        variables: AnyEncodable,
         cacheConfig: CacheConfig
-    ) -> AnyPublisher<GraphQLResponse<Op.Response>, Error>
+    ) -> AnyPublisher<Data, Error>
 }
 
 // TODO replace with a real type
@@ -21,16 +19,6 @@ public struct AnyEncodable: Encodable {
 
     public func encode(to encoder: Encoder) throws {
         try encode(encoder)
-    }
-}
-
-public struct GraphQLResponse<Data: Decodable>: Decodable {
-    public var data: Data?
-    public var errors: [GraphQLError]?
-
-    public init(data: Data? = nil, errors: [GraphQLError]? = nil) {
-        self.data = data
-        self.errors = errors
     }
 }
 

@@ -58,32 +58,66 @@ public protocol RecordSource {
 
 public struct DefaultRecordSource: RecordSource {
     var records = [DataID: Record]()
+    var deletedRecordIDs = Set<DataID>()
 
     public init() {
     }
 
-    public subscript(dataID: DataID) -> Record? {
+    public subscript(_ dataID: DataID) -> Record? {
         get {
             records[dataID]
         }
         set {
-            records[dataID] = newValue
+            if let value = newValue {
+                records[dataID] = value
+            } else {
+                deletedRecordIDs.insert(dataID)
+            }
         }
     }
 
     public var recordIDs: [DataID] {
-        Array(records.keys)
+        Array(records.keys) + Array(deletedRecordIDs)
     }
 
     public func has(dataID: DataID) -> Bool {
-        records[dataID] != nil
+        deletedRecordIDs.contains(dataID) || records[dataID] != nil
     }
 
     public var count: Int {
-        records.count
+        records.count + deletedRecordIDs.count
     }
 
     public mutating func clear() {
         records.removeAll()
+        deletedRecordIDs.removeAll()
+    }
+}
+
+extension RecordSource {
+    mutating func update(from source: RecordSource,
+                         currentWriteEpoch: Int,
+                         idsMarkedForInvalidation: Set<DataID>? = nil,
+                         updatedRecordIDs: inout Set<DataID>,
+                         invalidatedRecordIDs: inout Set<DataID>) {
+        // TODO ids marked for invalidation
+
+        for dataID in source.recordIDs {
+            let sourceRecord = source[dataID]
+            let targetRecord = self[dataID]
+
+            if let sourceRecord = sourceRecord, targetRecord != nil {
+                self[dataID]!.update(from: sourceRecord)
+                updatedRecordIDs.insert(dataID)
+            } else if sourceRecord == nil {
+                self[dataID] = nil
+                if targetRecord != nil {
+                    updatedRecordIDs.insert(dataID)
+                }
+            } else if sourceRecord != nil {
+                self[dataID] = sourceRecord
+                updatedRecordIDs.insert(dataID)
+            }
+        }
     }
 }

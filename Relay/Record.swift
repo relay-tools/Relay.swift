@@ -132,6 +132,18 @@ public struct Record: Equatable {
     public mutating func setLinkedRecordIDs(_ storageKey: String, _ ids: [DataID?]) {
         fields[storageKey] = .linkedRecords(ids)
     }
+
+    public mutating func update(from source: Record) {
+        guard source.dataID == dataID else {
+            preconditionFailure("Invalid record update, expected both versions of record to have the same ID, got \(source.dataID) and \(dataID)")
+        }
+
+        // TODO validate types are the same
+
+        for (k, v) in source.fields {
+            fields[k] = v
+        }
+    }
 }
 
 extension Record: CustomDebugStringConvertible {

@@ -1,6 +1,10 @@
 public class Store {
     private var recordSource: RecordSource
 
+    private var currentWriteEpoch = 0
+    private var updatedRecordIDs = Set<DataID>()
+    private var invalidatedRecordIDs = Set<DataID>()
+
     public init(source: RecordSource) {
         recordSource = source
 
@@ -20,6 +24,32 @@ public class Store {
         if !recordSource.has(dataID: .rootID) {
             recordSource[.rootID] = Record.root
         }
+    }
+
+    public func publish(source: RecordSource, idsMarkedForInvalidation: Set<DataID>? = nil) {
+        self.source.update(from: source,
+                           currentWriteEpoch: currentWriteEpoch + 1,
+                           updatedRecordIDs: &updatedRecordIDs,
+                           invalidatedRecordIDs: &invalidatedRecordIDs)
+    }
+
+    public func notify(sourceOperation: OperationDescriptor? = nil,
+                       invalidateStore: Bool = false) -> [RequestDescriptor] {
+        currentWriteEpoch += 1
+
+        // TODO invalidate store
+
+        var updatedOwners: [RequestDescriptor] = []
+        // TODO update subscriptions
+
+        updatedRecordIDs.removeAll()
+        invalidatedRecordIDs.removeAll()
+
+        if let sourceOperation = sourceOperation {
+            // track epoch at which operation was written to the store
+        }
+
+        return updatedOwners
     }
 }
 

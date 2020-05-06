@@ -27,7 +27,8 @@ class QueryLoader<Op: Relay.Operation>: ObservableObject {
             preconditionFailure("Trying to use a RelayQuery without setting up an Environment")
         }
 
-        cancellable = environment.execute(op: op, variables: variables)
+        let operation = op.createDescriptor(variables: variables)
+        cancellable = environment.execute(operation: operation, cacheConfig: "TODO")
             .receive(on: DispatchQueue.main)
             .sink(receiveCompletion: { [weak self] completion in
                 if case .failure(let error) = completion {

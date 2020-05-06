@@ -1,5 +1,5 @@
 struct ResponsePayload {
-    var errors: [Error]
+    var errors: [GraphQLError]?
     var fieldPayloads: [Any]
     // TODO other payloads
     var source: RecordSource

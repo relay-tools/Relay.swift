@@ -1,6 +1,6 @@
 public protocol Operation {
     var node: ConcreteRequest { get }
-    associatedtype Variables: Encodable
+    associatedtype Variables: Relay.Variables
     associatedtype Data: Readable
 }
 
@@ -22,10 +22,10 @@ public struct OperationDescriptor {
     public let request: RequestDescriptor
     let root: NormalizationSelector
 
-    init<Vars: Encodable>(request: ConcreteRequest, variables: Vars, requestDescriptor: RequestDescriptor, dataID: DataID) {
-        self.fragment = SingularReaderSelector(dataID: dataID, node: request.fragment, owner: requestDescriptor, variables: AnyEncodable(variables))
+    init<Vars: Variables>(request: ConcreteRequest, variables: Vars, requestDescriptor: RequestDescriptor, dataID: DataID) {
+        self.fragment = SingularReaderSelector(dataID: dataID, node: request.fragment, owner: requestDescriptor, variables: AnyVariables(variables))
         self.request = requestDescriptor
-        self.root = NormalizationSelector(dataID: dataID, node: request.operation, variables: AnyEncodable(variables))
+        self.root = NormalizationSelector(dataID: dataID, node: request.operation, variables: AnyVariables(variables))
     }
 }
 
@@ -34,11 +34,11 @@ typealias RequestIdentifier = String
 public struct RequestDescriptor {
     var identifier: String
     var node: ConcreteRequest
-    var variables: AnyEncodable
+    var variables: AnyVariables
 
-    init<Vars: Encodable>(request: ConcreteRequest, variables: Vars) {
+    init<Vars: Variables>(request: ConcreteRequest, variables: Vars) {
         self.identifier = request.params.identifier(variables: variables)
         self.node = request
-        self.variables = AnyEncodable(variables)
+        self.variables = AnyVariables(variables)
     }
 }

@@ -109,25 +109,28 @@ public struct SingularReaderSelector {
     var dataID: DataID
     var node: ReaderFragment
     var owner: RequestDescriptor
-    var variables: AnyEncodable
+    var variables: AnyVariables
 
-    init(dataID: DataID, node: ReaderFragment, owner: RequestDescriptor, variables: AnyEncodable) {
+    init(dataID: DataID, node: ReaderFragment, owner: RequestDescriptor, variables: AnyVariables) {
         self.dataID = dataID
         self.node = node
         self.owner = owner
         self.variables = variables
     }
 
-    init(fragment: ReaderFragment, pointer: FragmentPointer) {
+    public init(fragment: ReaderFragment, pointer: FragmentPointer) {
         dataID = pointer.id
         node = fragment
         owner = pointer.owner
-        variables = AnyEncodable([:] as [String: String])
+        variables = AnyVariables(EmptyVariables())
     }
 }
 
 public protocol Fragment {
     var node: ReaderFragment { get }
-    associatedtype Variables: Encodable
+    func getFragmentPointer(_ key: Key) -> FragmentPointer
+    
+    associatedtype Key
+    associatedtype Variables: Relay.Variables
     associatedtype Data: Readable
 }

@@ -63,7 +63,7 @@ public protocol Storable {
     var args: [Argument]? { get }
 }
 
-func getStorageKey<Vars: Encodable>(field: Storable, variables: Vars) -> String {
+func getStorageKey<Vars: Variables>(field: Storable, variables: Vars) -> String {
     if let storageKey = field.storageKey {
         return storageKey
     }
@@ -75,15 +75,15 @@ func getStorageKey<Vars: Encodable>(field: Storable, variables: Vars) -> String 
     }
 }
 
-func getArgumentValues<Vars>(_ args: [Argument], _ variables: Vars) -> [(String, Any)] {
-    return args.map { ($0.name, getArgumentValue($0, variables)) }
+func getArgumentValues<Vars: Variables>(_ args: [Argument], _ variables: Vars) -> [String: Any] {
+    return Dictionary(uniqueKeysWithValues: args.map { ($0.name, getArgumentValue($0, variables)) })
 }
 
-private func getArgumentValue<Vars>(_ arg: Argument, _ variables: Vars) -> Any {
+private func getArgumentValue<Vars: Variables>(_ arg: Argument, _ variables: Vars) -> Any {
     if let arg = arg as? LiteralArgument {
         return arg.value
     } else if let arg = arg as? VariableArgument {
-        return Mirror(reflecting: variables).descendant(arg.variableName)!
+        return variables.asDictionary[arg.variableName]!
     } else if let arg = arg as? ObjectValueArgument {
         return Dictionary(uniqueKeysWithValues: arg.fields.map { ($0.name, getArgumentValue($0, variables)) })
     } else if let arg = arg as? ListValueArgument {
@@ -99,11 +99,11 @@ private func getArgumentValue<Vars>(_ arg: Argument, _ variables: Vars) -> Any {
     }
 }
 
-private func formatStorageKey(name: String, variables: [(String, Any)]) -> String {
+private func formatStorageKey(name: String, variables: [String: Any]) -> String {
     if variables.isEmpty {
         return name
     }
 
-    let varString = variables.map { (k, v) in "\(k):\(v)" }.joined(separator: ",")
+    let varString = variables.keys.sorted().map { k in "\(k):\(variables[k]!)" }.joined(separator: ",")
     return "\(name)(\(varString))"
 }

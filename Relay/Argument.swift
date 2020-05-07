@@ -18,6 +18,12 @@ public struct VariableArgument: Argument {
     public var name: String
     public var type: String?
     public var variableName: String
+
+    public init(name: String, type: String? = nil, variableName: String) {
+        self.name = name
+        self.type = type
+        self.variableName = variableName
+    }
 }
 
 public struct ListValueArgument: Argument {

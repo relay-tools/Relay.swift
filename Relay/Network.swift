@@ -3,7 +3,7 @@ import Combine
 public protocol Network {
     func execute(
         request: RequestParameters,
-        variables: AnyEncodable,
+        variables: AnyVariables,
         cacheConfig: CacheConfig
     ) -> AnyPublisher<Data, Error>
 }

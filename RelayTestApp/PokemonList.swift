@@ -1,17 +1,17 @@
-//
-//  PokemonList.swift
-//  RelayTestApp
-//
-//  Created by Matt Moriarity on 5/3/20.
-//  Copyright © 2020 Matt Moriarity. All rights reserved.
-//
-
 import SwiftUI
 import RelaySwiftUI
 
 struct PokemonList: View {
     var body: some View {
-        RelayQuery(op: PokemonListQuery(), variables: .init(), loadingContent: Text("Loading…"), errorContent: errorView, dataContent: dataView)
+        NavigationView {
+            RelayQuery(
+                op: PokemonListQuery(),
+                variables: .init(),
+                loadingContent: Text("Loading…"),
+                errorContent: errorView,
+                dataContent: dataView
+            ).navigationBarTitle("Pokédex")
+        }
     }
 
     func errorView(_ error: Error) -> some View {
@@ -20,7 +20,9 @@ struct PokemonList: View {
 
     func dataView(_ data: PokemonListQuery.Data?) -> some View {
         List(data?.pokemons ?? [], id: \.id) { pokemon in
-            Text(pokemon.name ?? "")
+            NavigationLink(destination: PokemonDetail(id: pokemon.id, name: pokemon.name ?? "")) {
+                PokemonListRow(pokemon: pokemon)
+            }
         }
     }
 }

@@ -55,7 +55,8 @@ fragment PokemonListRow_pokemon on Pokemon {
 """))
     }
 
-    struct Variables: Encodable {
+    struct Variables: Relay.Variables {
+        var asDictionary: [String : Any] { [:] }
     }
 
     struct Data: Readable {

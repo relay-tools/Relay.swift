@@ -10,7 +10,7 @@ public protocol Readable {
 }
 
 public struct FragmentPointer {
-    var variables: [(String, Any)]
+    var variables: [String: Any]
     var id: DataID
     var owner: RequestDescriptor
 }
@@ -143,7 +143,7 @@ public struct SelectorData {
         data[key] = .objects(objects)
     }
 
-    mutating func set(fragment: String, variables: [(String, Any)], dataID: DataID, owner: RequestDescriptor) {
+    mutating func set(fragment: String, variables: [String: Any], dataID: DataID, owner: RequestDescriptor) {
         fragments[fragment] = FragmentPointer(variables: variables, id: dataID, owner: owner)
     }
 }
@@ -152,7 +152,7 @@ class Reader {
     let recordSource: RecordSource
     let selector: SingularReaderSelector
     let owner: RequestDescriptor
-    let variables: AnyEncodable
+    let variables: AnyVariables
 
     private var isMissingData = false
     private var seenRecords: [DataID: Record] = [:]

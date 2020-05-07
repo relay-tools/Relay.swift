@@ -8,12 +8,12 @@ struct ResponsePayload {
 
 class ResponseNormalizer {
     private var recordSource: RecordSource
-    private let variables: AnyEncodable
+    private let variables: AnyVariables
     private let request: RequestDescriptor
 
     private var path: [String] = []
 
-    init(source: RecordSource, variables: AnyEncodable, request: RequestDescriptor) {
+    init(source: RecordSource, variables: AnyVariables, request: RequestDescriptor) {
         self.recordSource = source
         self.variables = variables
         self.request = request

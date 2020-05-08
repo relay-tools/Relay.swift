@@ -109,3 +109,37 @@ private func makeReaderSelectionExpr(selection: [String: Any], indent: Int) -> E
         builder.useRightParen(SyntaxFactory.makeRightParenToken())
     })
 }
+
+func makeFragmentProtocolDecl(name: String) -> DeclSyntax {
+    DeclSyntax(ProtocolDeclSyntax { builder in
+        builder.useProtocolKeyword(SyntaxFactory.makeProtocolKeyword(trailingTrivia: .spaces(1)))
+        builder.useIdentifier(SyntaxFactory.makeIdentifier("\(name)_Key", trailingTrivia: .spaces(1)))
+        builder.useMembers(MemberDeclBlockSyntax { builder in
+            builder.useLeftBrace(SyntaxFactory.makeLeftBraceToken(trailingTrivia: .newlines(1)))
+
+            builder.addMember(MemberDeclListItemSyntax { builder in
+                builder.useDecl(DeclSyntax(VariableDeclSyntax { builder in
+                    builder.useLetOrVarKeyword(SyntaxFactory.makeVarKeyword(leadingTrivia: .spaces(4), trailingTrivia: .spaces(1)))
+                    builder.addBinding(PatternBindingSyntax { builder in
+                        builder.usePattern(PatternSyntax(IdentifierPatternSyntax { builder in
+                            builder.useIdentifier(SyntaxFactory.makeIdentifier("fragment_\(name)"))
+                        }))
+                        builder.useTypeAnnotation(TypeAnnotationSyntax { builder in
+                            builder.useColon(SyntaxFactory.makeColonToken(trailingTrivia: .spaces(1)))
+                            builder.useType(SyntaxFactory.makeTypeIdentifier("FragmentPointer"))
+                        })
+                        builder.useAccessor(Syntax(AccessorBlockSyntax { builder in
+                            builder.useLeftBrace(SyntaxFactory.makeLeftBraceToken(leadingTrivia: .spaces(1)))
+                            builder.addAccessor(AccessorDeclSyntax { builder in
+                                builder.useAccessorKind(SyntaxFactory.makeContextualKeyword("get", leadingTrivia: .spaces(1), trailingTrivia: .spaces(1)))
+                            })
+                            builder.useRightBrace(SyntaxFactory.makeRightBraceToken())
+                        }))
+                    }.withTrailingTrivia(.newlines(1)))
+                }))
+            })
+
+            builder.useRightBrace(SyntaxFactory.makeRightBraceToken(trailingTrivia: .newlines(1)))
+        })
+    })
+}

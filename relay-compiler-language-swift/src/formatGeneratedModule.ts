@@ -35,5 +35,5 @@ export const formatGeneratedModule: FormatModule = ({ node, schema }: any) => {
 
   const payload = JSON.stringify({ ...node, schemaTypes });
 
-  return execFileSync(toolPath, { input: payload }).toString('utf8');
+  return execFileSync(toolPath, ['-'], { input: payload }).toString('utf8');
 };

@@ -2,8 +2,16 @@ import Foundation
 import SwiftSyntax
 import SwiftSyntaxBuilder
 
-let data = FileHandle.standardInput.readDataToEndOfFile()
-//let data = FileHandle(forReadingAtPath: "\(FileManager.default.currentDirectoryPath)/examples/PokemonListRow_pokemon.graphql.swift")!.readDataToEndOfFile()
+let handle: FileHandle
+let filePath = ProcessInfo.processInfo.arguments[1]
+
+if filePath == "-" {
+    handle = .standardInput
+} else {
+    handle = FileHandle(forReadingAtPath: filePath)!
+}
+
+let data = handle.readDataToEndOfFile()
 let parsedData = try JSONSerialization.jsonObject(with: data, options: []) as! [String: Any]
 
 SchemaType.loadAll(parsedData["schemaTypes"] as! [String: Any])
@@ -79,3 +87,8 @@ print(StructDeclSyntax { builder in
         builder.useRightBrace(SyntaxFactory.makeRightBraceToken(leadingTrivia: .newlines(1)))
     })
 })
+
+if kind == "Fragment" {
+    print("")
+    print(makeFragmentProtocolDecl(name: name))
+}

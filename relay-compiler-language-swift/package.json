@@ -33,6 +33,7 @@
   "author": "Matt Moriarity",
   "module": "dist/relay-compiler-language-swift.esm.js",
   "devDependencies": {
+    "@types/relay-compiler": "^8.0.0",
     "graphql": "^15.0.0",
     "husky": "^4.2.5",
     "relay-compiler": "^9.1.0",

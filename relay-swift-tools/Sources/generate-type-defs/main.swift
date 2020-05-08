@@ -115,13 +115,252 @@ let str = """
         "name": "PokemonDetailQuery",
         "operationKind": "query",
         "text": "query PokemonDetailQuery(\\n  $id: String\\n) {\\n  pokemon(id: $id) {\\n    id\\n    ...PokemonDetailInfoSection_pokemon\\n  }\\n}\\n\\nfragment PokemonDetailInfoSection_pokemon on Pokemon {\\n  name\\n  number\\n  classification\\n}\\n"
+    },
+"schemaTypes": {
+"ID": {
+    "fields": {}
+},
+"String": {
+    "fields": {}
+},
+"Boolean": {
+    "fields": {}
+},
+"Float": {
+    "fields": {}
+},
+"Int": {
+    "fields": {}
+},
+"Attack": {
+    "fields": {
+        "name": {
+            "type": "String",
+            "rawType": "String",
+            "isNonNull": false,
+            "isPlural": false,
+            "isNonNullItems": false
+        },
+        "type": {
+            "type": "String",
+            "rawType": "String",
+            "isNonNull": false,
+            "isPlural": false,
+            "isNonNullItems": false
+        },
+        "damage": {
+            "type": "Int",
+            "rawType": "Int",
+            "isNonNull": false,
+            "isPlural": false,
+            "isNonNullItems": false
+        }
     }
+},
+"Pokemon": {
+    "fields": {
+        "id": {
+            "type": "ID!",
+            "rawType": "ID",
+            "isNonNull": true,
+            "isPlural": false,
+            "isNonNullItems": false
+        },
+        "number": {
+            "type": "String",
+            "rawType": "String",
+            "isNonNull": false,
+            "isPlural": false,
+            "isNonNullItems": false
+        },
+        "name": {
+            "type": "String",
+            "rawType": "String",
+            "isNonNull": false,
+            "isPlural": false,
+            "isNonNullItems": false
+        },
+        "weight": {
+            "type": "PokemonDimension",
+            "rawType": "PokemonDimension",
+            "isNonNull": false,
+            "isPlural": false,
+            "isNonNullItems": false
+        },
+        "height": {
+            "type": "PokemonDimension",
+            "rawType": "PokemonDimension",
+            "isNonNull": false,
+            "isPlural": false,
+            "isNonNullItems": false
+        },
+        "classification": {
+            "type": "String",
+            "rawType": "String",
+            "isNonNull": false,
+            "isPlural": false,
+            "isNonNullItems": false
+        },
+        "types": {
+            "type": "[String]",
+            "rawType": "String",
+            "isNonNull": false,
+            "isPlural": true,
+            "isNonNullItems": false
+        },
+        "resistant": {
+            "type": "[String]",
+            "rawType": "String",
+            "isNonNull": false,
+            "isPlural": true,
+            "isNonNullItems": false
+        },
+        "attacks": {
+            "type": "PokemonAttack",
+            "rawType": "PokemonAttack",
+            "isNonNull": false,
+            "isPlural": false,
+            "isNonNullItems": false
+        },
+        "weaknesses": {
+            "type": "[String]",
+            "rawType": "String",
+            "isNonNull": false,
+            "isPlural": true,
+            "isNonNullItems": false
+        },
+        "fleeRate": {
+            "type": "Float",
+            "rawType": "Float",
+            "isNonNull": false,
+            "isPlural": false,
+            "isNonNullItems": false
+        },
+        "maxCP": {
+            "type": "Int",
+            "rawType": "Int",
+            "isNonNull": false,
+            "isPlural": false,
+            "isNonNullItems": false
+        },
+        "evolutions": {
+            "type": "[Pokemon]",
+            "rawType": "Pokemon",
+            "isNonNull": false,
+            "isPlural": true,
+            "isNonNullItems": false
+        },
+        "evolutionRequirements": {
+            "type": "PokemonEvolutionRequirement",
+            "rawType": "PokemonEvolutionRequirement",
+            "isNonNull": false,
+            "isPlural": false,
+            "isNonNullItems": false
+        },
+        "maxHP": {
+            "type": "Int",
+            "rawType": "Int",
+            "isNonNull": false,
+            "isPlural": false,
+            "isNonNullItems": false
+        },
+        "image": {
+            "type": "String",
+            "rawType": "String",
+            "isNonNull": false,
+            "isPlural": false,
+            "isNonNullItems": false
+        }
+    }
+},
+"PokemonAttack": {
+    "fields": {
+        "fast": {
+            "type": "[Attack]",
+            "rawType": "Attack",
+            "isNonNull": false,
+            "isPlural": true,
+            "isNonNullItems": false
+        },
+        "special": {
+            "type": "[Attack]",
+            "rawType": "Attack",
+            "isNonNull": false,
+            "isPlural": true,
+            "isNonNullItems": false
+        }
+    }
+},
+"PokemonDimension": {
+    "fields": {
+        "minimum": {
+            "type": "String",
+            "rawType": "String",
+            "isNonNull": false,
+            "isPlural": false,
+            "isNonNullItems": false
+        },
+        "maximum": {
+            "type": "String",
+            "rawType": "String",
+            "isNonNull": false,
+            "isPlural": false,
+            "isNonNullItems": false
+        }
+    }
+},
+"PokemonEvolutionRequirement": {
+    "fields": {
+        "amount": {
+            "type": "Int",
+            "rawType": "Int",
+            "isNonNull": false,
+            "isPlural": false,
+            "isNonNullItems": false
+        },
+        "name": {
+            "type": "String",
+            "rawType": "String",
+            "isNonNull": false,
+            "isPlural": false,
+            "isNonNullItems": false
+        }
+    }
+},
+"Query": {
+    "fields": {
+        "query": {
+            "type": "Query",
+            "rawType": "Query",
+            "isNonNull": false,
+            "isPlural": false,
+            "isNonNullItems": false
+        },
+        "pokemons": {
+            "type": "[Pokemon]",
+            "rawType": "Pokemon",
+            "isNonNull": false,
+            "isPlural": true,
+            "isNonNullItems": false
+        },
+        "pokemon": {
+            "type": "Pokemon",
+            "rawType": "Pokemon",
+            "isNonNull": false,
+            "isPlural": false,
+            "isNonNullItems": false
+        }
+    }
+}
+}
 }
 """
 let data = str.data(using: .utf8)!
 
 //let data = FileHandle.standardInput.readDataToEndOfFile()
 let parsedData = try JSONSerialization.jsonObject(with: data, options: []) as! [String: Any]
+
+SchemaType.loadAll(parsedData["schemaTypes"] as! [String: Any])
 
 let kind = parsedData["kind"] as! String
 var fragment = parsedData
@@ -178,9 +417,13 @@ print(StructDeclSyntax { builder in
                         builder.useRightBrace(SyntaxFactory.makeRightBraceToken(leadingTrivia: .newlines(1) + .spaces(4)))
                     }))
                 })
-            }.withTrailingTrivia(.newlines(1))))
+            }.withTrailingTrivia(.newlines(2))))
         })
 
-        builder.useRightBrace(SyntaxFactory.makeRightBraceToken())
+        builder.addMember(MemberDeclListItemSyntax { builder in
+            builder.useDecl(makeReadableStruct(node: fragment, name: "Data", indent: 4))
+        })
+
+        builder.useRightBrace(SyntaxFactory.makeRightBraceToken(leadingTrivia: .newlines(1)))
     })
 })

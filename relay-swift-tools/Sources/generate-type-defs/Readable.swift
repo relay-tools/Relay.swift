@@ -47,7 +47,7 @@ func makeReadableStruct(node: [String: Any], name: String, indent: Int) -> DeclS
 
             for field in linkedFields {
                 builder.addMember(MemberDeclListItemSyntax { builder in
-                    builder.useDecl(makeReadableStruct(node: field.node, name: field.schemaField!.type, indent: indent + 4)
+                    builder.useDecl(makeReadableStruct(node: field.node, name: field.schemaField!.rawType, indent: indent + 4)
                         .withLeadingTrivia(.newlines(1) + .spaces(indent + 4)))
                 })
             }
@@ -88,8 +88,12 @@ private func makeFields(node: [String: Any], selections: [[String: Any]]) -> [Se
         var schemaField: SchemaField?
         var typeSyntax: TypeSyntax
         if kind == "ScalarField" || kind == "LinkedField" {
-            schemaField = parentType.fields[name]
-            typeSyntax = schemaField!.asTypeSyntax
+            if name == "__typename" {
+                typeSyntax = SyntaxFactory.makeTypeIdentifier("String")
+            } else {
+                schemaField = parentType.fields[name]
+                typeSyntax = schemaField!.asTypeSyntax
+            }
         } else if kind == "FragmentSpread" {
             propertyName = "fragment_\(name)"
             typeSyntax = SyntaxFactory.makeTypeIdentifier("FragmentPointer")
@@ -147,7 +151,7 @@ private func makeInitFromSelectorDataDecl(selectionFields: [SelectionField], ind
                                     builder.useIdentifier(SyntaxFactory.makeIdentifier("data"))
                                 }))
                                 builder.useDot(SyntaxFactory.makePeriodToken())
-                                builder.useName(SyntaxFactory.makeIdentifier(field.isFragment ? "getFragment" : "get"))
+                                builder.useName(SyntaxFactory.makeIdentifier("get"))
                             }))
                             builder.useLeftParen(SyntaxFactory.makeLeftParenToken())
 

@@ -10,7 +10,7 @@ func stringLiteral(_ text: String) -> ExprSyntax {
 
 func multiLineStringLiteral(_ text: String) -> ExprSyntax {
     ExprSyntax(StringLiteralExprSyntax { builder in
-        builder.useOpenQuote(SyntaxFactory.makeMultilineStringQuoteToken())
+        builder.useOpenQuote(SyntaxFactory.makeMultilineStringQuoteToken(trailingTrivia: .newlines(1)))
         builder.addSegment(Syntax(SyntaxFactory.makeStringSegment(text)))
         builder.useCloseQuote(SyntaxFactory.makeMultilineStringQuoteToken())
     })

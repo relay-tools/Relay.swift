@@ -109,7 +109,9 @@ private func makeNormalizationSelectionExpr(selection: [String: Any], indent: In
 
                 addArgument("name", stringLiteral(selection["name"] as! String))
 
-                // TODO args
+                if let args = selection["args"] as? [[String: Any]] {
+                    addArgument("args", makeArgumentsExpr(args: args, indent: indent + 4))
+                }
 
                 if let concreteType = selection["concreteType"] as? String {
                     addArgument("concreteType", stringLiteral(concreteType))

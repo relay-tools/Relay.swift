@@ -410,7 +410,7 @@ print(StructDeclSyntax { builder in
                         builder.addStatement(CodeBlockItemSyntax { builder in
                             builder.useItem(Syntax(ReturnStmtSyntax { builder in
                                 builder.useReturnKeyword(SyntaxFactory.makeReturnKeyword(leadingTrivia: .spaces(8), trailingTrivia: .spaces(1)))
-                                builder.useExpression(kind == "Request" ? makeConcreteRequestExpr(input: parsedData) : makeReaderFragmentExpr(node: parsedData))
+                                builder.useExpression(kind == "Request" ? makeConcreteRequestExpr(input: parsedData) : makeReaderFragmentExpr(node: parsedData, indent: 12))
                             }))
                         })
 

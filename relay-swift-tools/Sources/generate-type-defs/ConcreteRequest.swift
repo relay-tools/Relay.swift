@@ -10,11 +10,15 @@ func makeConcreteRequestExpr(input: [String: Any]) -> ExprSyntax {
         var args = [(String, ExprSyntax)]()
 
         if let fragment = input["fragment"] as? [String: Any] {
-            args.append(("fragment", makeOperationReaderFragmentExpr(node: fragment, indent: 16)))
+            args.append(("fragment", makeReaderFragmentExpr(node: fragment, indent: 12)))
+        }
+
+        if let operation = input["operation"] as? [String: Any] {
+            args.append(("operation", makeNormalizationNodeExpr(node: operation, indent: 12)))
         }
 
         if let params = input["params"] as? [String: Any] {
-            args.append(("params", makeRequestParamsExpr(node: params, indent: 16)))
+            args.append(("params", makeRequestParamsExpr(node: params, indent: 12)))
         }
 
         for (i, (name, expr)) in args.enumerated() {
@@ -32,10 +36,10 @@ func makeConcreteRequestExpr(input: [String: Any]) -> ExprSyntax {
     })
 }
 
-private func makeOperationReaderFragmentExpr(node: [String: Any], indent: Int) -> ExprSyntax {
+private func makeNormalizationNodeExpr(node: [String: Any], indent: Int) -> ExprSyntax {
     ExprSyntax(FunctionCallExprSyntax { builder in
         builder.useCalledExpression(ExprSyntax(IdentifierExprSyntax { builder in
-            builder.useIdentifier(SyntaxFactory.makeIdentifier("ReaderFragment"))
+            builder.useIdentifier(SyntaxFactory.makeIdentifier("NormalizationOperation"))
         }))
         builder.useLeftParen(SyntaxFactory.makeLeftParenToken(trailingTrivia: .newlines(1)))
 
@@ -46,12 +50,12 @@ private func makeOperationReaderFragmentExpr(node: [String: Any], indent: Int) -
         }
 
         if let selections = node["selections"] as? [[String: Any]] {
-            args.append(("selections", makeReaderSelectionsExpr(selections: selections, indent: indent)))
+            args.append(("selections", makeNormalizationSelectionsExpr(selections: selections, indent: indent + 4)))
         }
 
         for (i, (name, expr)) in args.enumerated() {
             builder.addArgument(TupleExprElementSyntax { builder in
-                builder.useLabel(SyntaxFactory.makeIdentifier(name, leadingTrivia: .spaces(indent)))
+                builder.useLabel(SyntaxFactory.makeIdentifier(name, leadingTrivia: .spaces(indent + 4)))
                 builder.useColon(SyntaxFactory.makeColonToken(trailingTrivia: .spaces(1)))
                 builder.useExpression(expr)
                 if i < args.count - 1 {
@@ -60,17 +64,17 @@ private func makeOperationReaderFragmentExpr(node: [String: Any], indent: Int) -
             }.withTrailingTrivia(.newlines(1)))
         }
 
-        builder.useRightParen(SyntaxFactory.makeRightParenToken(leadingTrivia: .spaces(12)))
+        builder.useRightParen(SyntaxFactory.makeRightParenToken(leadingTrivia: .spaces(indent)))
     })
 }
 
-private func makeReaderSelectionsExpr(selections: [[String: Any]], indent: Int) -> ExprSyntax {
+private func makeNormalizationSelectionsExpr(selections: [[String: Any]], indent: Int) -> ExprSyntax {
     ExprSyntax(ArrayExprSyntax { builder in
         builder.useLeftSquare(SyntaxFactory.makeLeftSquareBracketToken(trailingTrivia: .newlines(1)))
 
         for selection in selections {
             builder.addElement(ArrayElementSyntax { builder in
-                builder.useExpression(makeReaderSelectionExpr(selection: selection, indent: indent + 4))
+                builder.useExpression(makeNormalizationSelectionExpr(selection: selection, indent: indent + 4))
                 builder.useTrailingComma(SyntaxFactory.makeCommaToken(trailingTrivia: .newlines(1)))
             })
         }
@@ -79,7 +83,7 @@ private func makeReaderSelectionsExpr(selections: [[String: Any]], indent: Int) 
     })
 }
 
-private func makeReaderSelectionExpr(selection: [String: Any], indent: Int) -> ExprSyntax {
+private func makeNormalizationSelectionExpr(selection: [String: Any], indent: Int) -> ExprSyntax {
     let kind = selection["kind"] as! String
 
     return ExprSyntax(FunctionCallExprSyntax { builder in
@@ -87,8 +91,6 @@ private func makeReaderSelectionExpr(selection: [String: Any], indent: Int) -> E
             builder.useDot(SyntaxFactory.makePeriodToken(leadingTrivia: .spaces(indent)))
             if kind == "LinkedField" || kind == "ScalarField" {
                 builder.useName(SyntaxFactory.makeIdentifier("field"))
-            } else if kind == "FragmentSpread" {
-                builder.useName(SyntaxFactory.makeIdentifier("fragmentSpread"))
             }
         }))
         builder.useLeftParen(SyntaxFactory.makeLeftParenToken())
@@ -96,7 +98,7 @@ private func makeReaderSelectionExpr(selection: [String: Any], indent: Int) -> E
         builder.addArgument(TupleExprElementSyntax { builder in
             builder.useExpression(ExprSyntax(FunctionCallExprSyntax { builder in
                 builder.useCalledExpression(ExprSyntax(IdentifierExprSyntax { builder in
-                    builder.useIdentifier(SyntaxFactory.makeIdentifier("Reader\(kind)"))
+                    builder.useIdentifier(SyntaxFactory.makeIdentifier("Normalization\(kind)"))
                 }))
                 builder.useLeftParen(SyntaxFactory.makeLeftParenToken(trailingTrivia: .newlines(1)))
 
@@ -118,7 +120,7 @@ private func makeReaderSelectionExpr(selection: [String: Any], indent: Int) -> E
                 }
 
                 if let selections = selection["selections"] as? [[String: Any]] {
-                    addArgument("selections", makeReaderSelectionsExpr(selections: selections, indent: indent + 4))
+                    addArgument("selections", makeNormalizationSelectionsExpr(selections: selections, indent: indent + 4))
                 }
 
                 for (i, (name, expr)) in args.enumerated() {
@@ -139,6 +141,7 @@ private func makeReaderSelectionExpr(selection: [String: Any], indent: Int) -> E
         builder.useRightParen(SyntaxFactory.makeRightParenToken())
     })
 }
+
 
 private func makeRequestParamsExpr(node: [String: Any], indent: Int) -> ExprSyntax {
     ExprSyntax(FunctionCallExprSyntax { builder in
@@ -166,7 +169,7 @@ private func makeRequestParamsExpr(node: [String: Any], indent: Int) -> ExprSynt
 
         for (i, (name, expr)) in args.enumerated() {
             builder.addArgument(TupleExprElementSyntax { builder in
-                builder.useLabel(SyntaxFactory.makeIdentifier(name, leadingTrivia: .spaces(indent)))
+                builder.useLabel(SyntaxFactory.makeIdentifier(name, leadingTrivia: .spaces(indent + 4)))
                 builder.useColon(SyntaxFactory.makeColonToken(trailingTrivia: .spaces(1)))
                 builder.useExpression(expr)
                 if i < args.count - 1 {
@@ -175,6 +178,6 @@ private func makeRequestParamsExpr(node: [String: Any], indent: Int) -> ExprSynt
             }.withTrailingTrivia(.newlines(1)))
         }
 
-        builder.useRightParen(SyntaxFactory.makeRightParenToken(leadingTrivia: .spaces(12)))
+        builder.useRightParen(SyntaxFactory.makeRightParenToken(leadingTrivia: .spaces(indent)))
     })
 }

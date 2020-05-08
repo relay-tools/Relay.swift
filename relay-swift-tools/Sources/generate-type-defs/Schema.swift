@@ -1,6 +1,7 @@
 import SwiftSyntax
 
 struct SchemaType {
+    var name: String = ""
     var fields: [String: SchemaField] = [:]
 
     static var byName: [String: SchemaType] = [:]
@@ -23,21 +24,28 @@ struct SchemaType {
 
             return type
         }
+        for (name, _) in byName {
+            byName[name]?.name = name
+        }
     }
-}
 
-struct SchemaField {
-    var type: String
-    var rawType: String
-    var isNonNull: Bool
-    var isPlural: Bool
-    var isNonNullItems: Bool
+    func syntax(plural: Bool = false, nullable: Bool = false, nullableItems: Bool = false) -> TypeSyntax {
+        let typeName: String
+        switch name {
+        case "ID":
+            typeName = "String"
+        case "Float":
+            typeName = "Double"
+        case "Boolean":
+            typeName = "Bool"
+        default:
+            typeName = name
+        }
 
-    var asTypeSyntax: TypeSyntax {
-        var typeIdentifier = SyntaxFactory.makeTypeIdentifier(rawType)
+        var typeIdentifier = SyntaxFactory.makeTypeIdentifier(typeName)
 
-        if isPlural {
-            if !isNonNullItems {
+        if plural {
+            if nullableItems {
                 typeIdentifier = TypeSyntax(SyntaxFactory.makeOptionalType(
                     wrappedType: typeIdentifier,
                     questionMark: SyntaxFactory.makePostfixQuestionMarkToken()
@@ -51,7 +59,7 @@ struct SchemaField {
             ))
         }
 
-        if !isNonNull {
+        if nullable {
             typeIdentifier = TypeSyntax(SyntaxFactory.makeOptionalType(
                 wrappedType: typeIdentifier,
                 questionMark: SyntaxFactory.makePostfixQuestionMarkToken()
@@ -59,6 +67,19 @@ struct SchemaField {
         }
 
         return typeIdentifier
+    }
+}
+
+struct SchemaField {
+    var type: String
+    var rawType: String
+    var isNonNull: Bool
+    var isPlural: Bool
+    var isNonNullItems: Bool
+
+    var asTypeSyntax: TypeSyntax {
+        SchemaType.byName[rawType]!
+            .syntax(plural: isPlural, nullable: !isNonNull, nullableItems: !isNonNullItems)
     }
 }
 

@@ -383,7 +383,7 @@ print(StructDeclSyntax { builder in
     builder.useInheritanceClause(TypeInheritanceClauseSyntax { builder in
         builder.useColon(SyntaxFactory.makeColonToken(trailingTrivia: .spaces(1)))
         builder.addInheritedType(InheritedTypeSyntax { builder in
-            if kind == "Root" {
+            if kind == "Request" {
                 builder.useTypeName(SyntaxFactory.makeTypeIdentifier("Operation"))
             } else {
                 builder.useTypeName(SyntaxFactory.makeTypeIdentifier("Fragment"))
@@ -419,6 +419,12 @@ print(StructDeclSyntax { builder in
                 })
             }.withTrailingTrivia(.newlines(2))))
         })
+
+        if let operation = parsedData["operation"] as? [String: Any] {
+            builder.addMember(MemberDeclListItemSyntax { builder in
+                builder.useDecl(makeVariablesStruct(node: operation))
+            }.withTrailingTrivia(.newlines(2)))
+        }
 
         builder.addMember(MemberDeclListItemSyntax { builder in
             builder.useDecl(makeReadableStruct(node: fragment, name: "Data", indent: 4))

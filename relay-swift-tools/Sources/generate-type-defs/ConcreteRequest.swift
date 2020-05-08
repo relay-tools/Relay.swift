@@ -96,13 +96,7 @@ private func makeReaderSelectionExpr(selection: [String: Any], indent: Int) -> E
         builder.addArgument(TupleExprElementSyntax { builder in
             builder.useExpression(ExprSyntax(FunctionCallExprSyntax { builder in
                 builder.useCalledExpression(ExprSyntax(IdentifierExprSyntax { builder in
-                    if kind == "LinkedField" {
-                        builder.useIdentifier(SyntaxFactory.makeIdentifier("ReaderLinkedField"))
-                    } else if kind == "ScalarField" {
-                        builder.useIdentifier(SyntaxFactory.makeIdentifier("ReaderScalarField"))
-                    } else if kind == "FragmentSpread" {
-                        builder.useIdentifier(SyntaxFactory.makeIdentifier("ReaderFragmentSpread"))
-                    }
+                    builder.useIdentifier(SyntaxFactory.makeIdentifier("Reader\(kind)"))
                 }))
                 builder.useLeftParen(SyntaxFactory.makeLeftParenToken(trailingTrivia: .newlines(1)))
 

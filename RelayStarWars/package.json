@@ -1,0 +1,16 @@
+{
+  "name": "relaystarwars",
+  "version": "1.0.0",
+  "description": "",
+  "main": "relay.config.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Matt Moriarity",
+  "license": "ISC",
+  "devDependencies": {
+    "graphql": "^15.0.0",
+    "relay-compiler": "^9.1.0",
+    "relay-config": "^9.1.0"
+  }
+}

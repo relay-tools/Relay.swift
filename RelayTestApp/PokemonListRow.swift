@@ -6,6 +6,13 @@ fragment PokemonListRow_pokemon on Pokemon {
     name
     number
     classification
+    weight {
+        minimum
+        maximum
+    }
+    height {
+        minimum
+    }
 }
 """)
 

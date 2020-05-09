@@ -56,6 +56,29 @@ struct PokemonListQuery: Operation {
                             .field(NormalizationScalarField(
                                 name: "classification"
                             )),
+                            .field(NormalizationLinkedField(
+                                name: "weight",
+                                concreteType: "PokemonDimension",
+                                plural: false,
+                                selections: [
+                                    .field(NormalizationScalarField(
+                                        name: "minimum"
+                                    )),
+                                    .field(NormalizationScalarField(
+                                        name: "maximum"
+                                    )),
+                                ]
+                            )),
+                            .field(NormalizationLinkedField(
+                                name: "height",
+                                concreteType: "PokemonDimension",
+                                plural: false,
+                                selections: [
+                                    .field(NormalizationScalarField(
+                                        name: "minimum"
+                                    )),
+                                ]
+                            )),
                         ]
                     )),
                 ]
@@ -77,6 +100,13 @@ fragment PokemonListRow_pokemon on Pokemon {
   name
   number
   classification
+  weight {
+    minimum
+    maximum
+  }
+  height {
+    minimum
+  }
 }
 """
             )
@@ -90,13 +120,13 @@ fragment PokemonListRow_pokemon on Pokemon {
     }
 
     struct Data: Readable {
-        var pokemons: [Pokemon?]?
+        var pokemons: [Pokemon_pokemons?]?
 
         init(from data: SelectorData) {
-            pokemons = data.get([Pokemon?]?.self, "pokemons")
+            pokemons = data.get([Pokemon_pokemons?]?.self, "pokemons")
         }
 
-        struct Pokemon: Readable, PokemonListRow_pokemon_Key {
+        struct Pokemon_pokemons: Readable, PokemonListRow_pokemon_Key {
             var __typename: String
             var id: String
             var name: String?

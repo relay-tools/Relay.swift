@@ -47,7 +47,7 @@ func makeReadableStruct(node: [String: Any], name: String, indent: Int) -> DeclS
 
             for field in linkedFields {
                 builder.addMember(MemberDeclListItemSyntax { builder in
-                    builder.useDecl(makeReadableStruct(node: field.node, name: field.schemaField!.rawType, indent: indent + 4)
+                    builder.useDecl(makeReadableStruct(node: field.node, name: "\(field.schemaField!.rawType)_\(field.name)", indent: indent + 4)
                         .withLeadingTrivia(.newlines(1) + .spaces(indent + 4)))
                 })
             }

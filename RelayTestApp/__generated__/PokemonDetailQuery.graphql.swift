@@ -85,13 +85,13 @@ fragment PokemonDetailInfoSection_pokemon on Pokemon {
     }
 
     struct Data: Readable {
-        var pokemon: Pokemon?
+        var pokemon: Pokemon_pokemon?
 
         init(from data: SelectorData) {
-            pokemon = data.get(Pokemon?.self, "pokemon")
+            pokemon = data.get(Pokemon_pokemon?.self, "pokemon")
         }
 
-        struct Pokemon: Readable, PokemonDetailInfoSection_pokemon_Key {
+        struct Pokemon_pokemon: Readable, PokemonDetailInfoSection_pokemon_Key {
             var id: String
             var fragment_PokemonDetailInfoSection_pokemon: FragmentPointer
 

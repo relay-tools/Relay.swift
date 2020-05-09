@@ -17,6 +17,7 @@ export const formatGeneratedModule: FormatModule = ({ node, schema }: any) => {
           theSchema.getNullableType(field.type)
         );
         fieldsByName[field.name] = {
+          name: field.name,
           type: field.type.toString(),
           rawType: theSchema.getRawType(field.type),
           isNonNull: theSchema.isNonNull(field.type),
@@ -29,11 +30,13 @@ export const formatGeneratedModule: FormatModule = ({ node, schema }: any) => {
     }
 
     schemaTypes[typeID.name] = {
+      name: typeID.name,
       fields: fieldsByName,
+      isScalar: theSchema.isScalar(typeID),
+      isObject: theSchema.isObject(typeID),
     };
   }
 
   const payload = JSON.stringify({ ...node, schemaTypes });
-
   return execFileSync(toolPath, ['-'], { input: payload }).toString('utf8');
 };

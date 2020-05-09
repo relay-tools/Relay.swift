@@ -1,18 +1,25 @@
 import SwiftSyntax
 
 struct SchemaType {
-    var name: String = ""
+    var name: String
+    var isObject: Bool
+    var isScalar: Bool
     var fields: [String: SchemaField] = [:]
 
     static var byName: [String: SchemaType] = [:]
 
     static func loadAll(_ types: [String: Any]) {
         byName = (types as! [String: [String: Any]]).mapValues { typeData in
-            var type = SchemaType()
+            var type = SchemaType(
+                name: typeData["name"] as! String,
+                isObject: typeData["isObject"] as! Bool,
+                isScalar: typeData["isObject"] as! Bool
+            )
 
             if let fields = typeData["fields"] as? [String: [String: Any]] {
                 type.fields = fields.mapValues { fieldData in
                     SchemaField(
+                        name: fieldData["name"] as! String,
                         type: fieldData["type"] as! String,
                         rawType: fieldData["rawType"] as! String,
                         isNonNull: fieldData["isNonNull"] as! Bool,
@@ -29,8 +36,8 @@ struct SchemaType {
         }
     }
 
-    func syntax(plural: Bool = false, nullable: Bool = false, nullableItems: Bool = false) -> TypeSyntax {
-        let typeName: String
+    func syntax(fieldName: String = "", plural: Bool = false, nullable: Bool = false, nullableItems: Bool = false) -> TypeSyntax {
+        var typeName: String
         switch name {
         case "ID":
             typeName = "String"
@@ -40,6 +47,10 @@ struct SchemaType {
             typeName = "Bool"
         default:
             typeName = name
+        }
+
+        if isObject {
+            typeName = "\(typeName)_\(fieldName)"
         }
 
         var typeIdentifier = SyntaxFactory.makeTypeIdentifier(typeName)
@@ -71,6 +82,7 @@ struct SchemaType {
 }
 
 struct SchemaField {
+    var name: String
     var type: String
     var rawType: String
     var isNonNull: Bool
@@ -79,7 +91,10 @@ struct SchemaField {
 
     var asTypeSyntax: TypeSyntax {
         SchemaType.byName[rawType]!
-            .syntax(plural: isPlural, nullable: !isNonNull, nullableItems: !isNonNullItems)
+            .syntax(fieldName: name,
+                    plural: isPlural,
+                    nullable: !isNonNull,
+                    nullableItems: !isNonNullItems)
     }
 }
 

@@ -41,7 +41,9 @@ public class Store {
                        invalidateStore: Bool = false) -> [RequestDescriptor] {
         currentWriteEpoch += 1
 
-        // TODO invalidate store
+        if invalidateStore {
+            // TODO update invalidation epoch
+        }
 
         var updatedOwners: [RequestDescriptor] = []
         // TODO update subscriptions
@@ -99,11 +101,26 @@ private func getArgumentValue<Vars: Variables>(_ arg: Argument, _ variables: Var
     }
 }
 
-private func formatStorageKey(name: String, variables: [String: Any]) -> String {
+func formatStorageKey(name: String, variables: [String: Any]) -> String {
     if variables.isEmpty {
         return name
     }
 
     let varString = variables.keys.sorted().map { k in "\(k):\(variables[k]!)" }.joined(separator: ",")
     return "\(name)(\(varString))"
+}
+
+func getRelayHandleKey(
+    handleName: String,
+    key: String? = nil,
+    fieldName: String? = nil
+) -> String {
+    if let key = key, !key.isEmpty {
+        return "__\(key)_\(handleName)"
+    }
+
+    guard let fieldName = fieldName else {
+        preconditionFailure("Expected handle to have either a key or a field name")
+    }
+    return "__\(fieldName)_\(handleName)"
 }

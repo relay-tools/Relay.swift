@@ -1,10 +1,12 @@
 public class PublishQueue {
     private let store: Store
+    private let handlerProvider: HandlerProvider
 
     private var pendingData: [PendingCommit] = []
 
-    init(store: Store) {
+    init(store: Store, handlerProvider: HandlerProvider) {
         self.store = store
+        self.handlerProvider = handlerProvider
     }
 
     enum PendingCommit {
@@ -36,7 +38,7 @@ public class PublishQueue {
         for data in pendingData {
             switch data {
             case .payload(let operation, let payload, let updater):
-                invalidatedStore = invalidatedStore || publishStore(from: payload, operation: operation, updater: updater)
+                invalidatedStore = invalidatedStore || publishSource(from: payload, operation: operation, updater: updater)
             case .recordSource(let source):
                 store.publish(source: source)
             // TODO updater
@@ -46,9 +48,20 @@ public class PublishQueue {
         return invalidatedStore
     }
 
-    private func publishStore(from payload: ResponsePayload, operation: OperationDescriptor, updater: Any?) -> Bool {
-        // TODO stuff with field payloads and the updater
-        store.publish(source: payload.source)
-        return false
+    private func publishSource(from payload: ResponsePayload, operation: OperationDescriptor, updater: Any?) -> Bool {
+        let mutator = RecordSourceMutator(base: store.source, sink: payload.source)
+        var recordSourceProxy: RecordSourceProxy = DefaultRecordSourceProxy(mutator: mutator)
+
+        for fieldPayload in payload.fieldPayloads {
+            guard let handler = handlerProvider.handler(for: fieldPayload.handle) else {
+                preconditionFailure("Expected a handler to be provided for handle '\(fieldPayload.handle)'")
+            }
+
+            handler.update(store: &recordSourceProxy, fieldPayload: fieldPayload)
+        }
+
+        // TODO stuff with the updater
+        store.publish(source: mutator.sink)
+        return (recordSourceProxy as! DefaultRecordSourceProxy).invalidatedStore
     }
 }

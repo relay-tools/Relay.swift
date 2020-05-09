@@ -23,7 +23,7 @@ public enum NormalizationSelection {
     case clientExtension
     case `defer`
     case field(NormalizationField)
-    case handle
+    case handle(NormalizationHandle)
     case inlineFragment(NormalizationInlineFragment)
     case moduleImport
     case stream
@@ -105,5 +105,54 @@ public struct NormalizationInlineFragment: NormalizationNode {
     public init(type: String, selections: [NormalizationSelection] = []) {
         self.type = type
         self.selections = selections
+    }
+}
+
+public struct NormalizationHandle: Storable {
+    public enum Kind {
+        case scalar
+        case linked
+    }
+
+    public var kind: Kind
+    public var name: String
+    public var alias: String?
+    public var args: [Argument]?
+    public var handle: String
+    public var key: String
+    // TODO dynamicKey? Not sure what this does
+    public var filters: [String]?
+
+    public init(
+        kind: Kind,
+        name: String,
+        alias: String? = nil,
+        args: [Argument]? = nil,
+        handle: String,
+        key: String,
+        filters: [String]? = nil) {
+        self.kind = kind
+        self.name = name
+        self.alias = alias
+        self.args = args
+        self.handle = handle
+        self.key = key
+        self.filters = filters
+    }
+
+    public var storageKey: String? { nil }
+
+    func handleKey<Vars: Variables>(from variables: Vars) -> String {
+        let handleName = getRelayHandleKey(handleName: handle, key: key, fieldName: name)
+        var filterArgs: [Argument]?
+        if let args = args, let filters = filters, !args.isEmpty, !filters.isEmpty {
+            filterArgs = args.filter { filters.contains($0.name) }
+        }
+        // TODO dynamicKey
+        if let filterArgs = filterArgs {
+            return formatStorageKey(name: handleName, variables: getArgumentValues(filterArgs, variables))
+        } else {
+            return handleName
+        }
     }
 }

@@ -91,6 +91,8 @@ private func makeNormalizationSelectionExpr(selection: [String: Any], indent: In
             builder.useDot(SyntaxFactory.makePeriodToken(leadingTrivia: .spaces(indent)))
             if kind == "LinkedField" || kind == "ScalarField" {
                 builder.useName(SyntaxFactory.makeIdentifier("field"))
+            } else if kind == "LinkedHandle" || kind == "ScalarHandle" {
+                builder.useName(SyntaxFactory.makeIdentifier("handle"))
             }
         }))
         builder.useLeftParen(SyntaxFactory.makeLeftParenToken())
@@ -98,7 +100,11 @@ private func makeNormalizationSelectionExpr(selection: [String: Any], indent: In
         builder.addArgument(TupleExprElementSyntax { builder in
             builder.useExpression(ExprSyntax(FunctionCallExprSyntax { builder in
                 builder.useCalledExpression(ExprSyntax(IdentifierExprSyntax { builder in
-                    builder.useIdentifier(SyntaxFactory.makeIdentifier("Normalization\(kind)"))
+                    if kind.hasSuffix("Handle") {
+                        builder.useIdentifier(SyntaxFactory.makeIdentifier("NormalizationHandle"))
+                    } else {
+                        builder.useIdentifier(SyntaxFactory.makeIdentifier("Normalization\(kind)"))
+                    }
                 }))
                 builder.useLeftParen(SyntaxFactory.makeLeftParenToken(trailingTrivia: .newlines(1)))
 
@@ -107,10 +113,35 @@ private func makeNormalizationSelectionExpr(selection: [String: Any], indent: In
                     args.append((name, expression))
                 }
 
+                if kind.hasSuffix("Handle") {
+                    addArgument("kind", ExprSyntax(MemberAccessExprSyntax { builder in
+                        builder.useDot(SyntaxFactory.makePeriodToken())
+                        builder.useName(SyntaxFactory.makeIdentifier(kind == "LinkedHandle" ? "linked" : "scalar"))
+                    }))
+                }
+
                 addArgument("name", stringLiteral(selection["name"] as! String))
+
+                if let alias = selection["alias"] as? String {
+                    addArgument("alias", stringLiteral(alias))
+                }
 
                 if let args = selection["args"] as? [[String: Any]] {
                     addArgument("args", makeArgumentsExpr(args: args, indent: indent + 4))
+                }
+
+                if let handle = selection["handle"] as? String {
+                    addArgument("handle", stringLiteral(handle))
+                }
+
+                if let key = selection["key"] as? String {
+                    addArgument("key", stringLiteral(key))
+                }
+
+                // TODO filters
+
+                if let storageKey = selection["storageKey"] as? String {
+                    addArgument("storageKey", stringLiteral(storageKey))
                 }
 
                 if let concreteType = selection["concreteType"] as? String {

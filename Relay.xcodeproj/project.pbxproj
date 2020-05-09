@@ -76,6 +76,12 @@
 		C9E18C8C24664DA600213352 /* MoviesListRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9E18C8B24664DA600213352 /* MoviesListRow.swift */; };
 		C9E18C8E24664DF600213352 /* MoviesListRow_film.graphql.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9E18C8D24664DF600213352 /* MoviesListRow_film.graphql.swift */; };
 		C9E18C902466518B00213352 /* LoadingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9E18C8F2466518B00213352 /* LoadingView.swift */; };
+		C9E18C92246653A300213352 /* MoviesTab.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9E18C91246653A300213352 /* MoviesTab.swift */; };
+		C9E18C9524665DA100213352 /* MoviesListPaginationQuery.graphql.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9E18C9324665DA100213352 /* MoviesListPaginationQuery.graphql.swift */; };
+		C9E18C9624665DA100213352 /* MoviesTabQuery.graphql.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9E18C9424665DA100213352 /* MoviesTabQuery.graphql.swift */; };
+		C9E18C982466741000213352 /* RecordSourceMutator.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9E18C972466741000213352 /* RecordSourceMutator.swift */; };
+		C9E18C9A246720BD00213352 /* Handler.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9E18C99246720BD00213352 /* Handler.swift */; };
+		C9E18C9C2467212D00213352 /* ConnectionHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9E18C9B2467212D00213352 /* ConnectionHandler.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -224,6 +230,12 @@
 		C9E18C8B24664DA600213352 /* MoviesListRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MoviesListRow.swift; sourceTree = "<group>"; };
 		C9E18C8D24664DF600213352 /* MoviesListRow_film.graphql.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MoviesListRow_film.graphql.swift; sourceTree = "<group>"; };
 		C9E18C8F2466518B00213352 /* LoadingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoadingView.swift; sourceTree = "<group>"; };
+		C9E18C91246653A300213352 /* MoviesTab.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MoviesTab.swift; sourceTree = "<group>"; };
+		C9E18C9324665DA100213352 /* MoviesListPaginationQuery.graphql.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MoviesListPaginationQuery.graphql.swift; sourceTree = "<group>"; };
+		C9E18C9424665DA100213352 /* MoviesTabQuery.graphql.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MoviesTabQuery.graphql.swift; sourceTree = "<group>"; };
+		C9E18C972466741000213352 /* RecordSourceMutator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecordSourceMutator.swift; sourceTree = "<group>"; };
+		C9E18C99246720BD00213352 /* Handler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Handler.swift; sourceTree = "<group>"; };
+		C9E18C9B2467212D00213352 /* ConnectionHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConnectionHandler.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -306,6 +318,9 @@
 				C9E18B87245F697B00213352 /* Store.swift */,
 				C9E18B89245F6A5200213352 /* RecordSource.swift */,
 				C9E18B8B245F6DA200213352 /* Record.swift */,
+				C9E18C972466741000213352 /* RecordSourceMutator.swift */,
+				C9E18C99246720BD00213352 /* Handler.swift */,
+				C9E18C9B2467212D00213352 /* ConnectionHandler.swift */,
 				C9E18B8D245F6E8200213352 /* Network.swift */,
 				C9E18BC024610A9300213352 /* Operation.swift */,
 				C9E18BEE246392A900213352 /* Variables.swift */,
@@ -409,6 +424,7 @@
 				C9E18C682466474D00213352 /* ContentView.swift */,
 				C9E18C8F2466518B00213352 /* LoadingView.swift */,
 				C9E18C8924664A1900213352 /* ErrorView.swift */,
+				C9E18C91246653A300213352 /* MoviesTab.swift */,
 				C9E18C842466497E00213352 /* MoviesList.swift */,
 				C9E18C8B24664DA600213352 /* MoviesListRow.swift */,
 				C9E18C6A2466474F00213352 /* Assets.xcassets */,
@@ -432,8 +448,10 @@
 		C9E18C86246649EB00213352 /* __generated__ */ = {
 			isa = PBXGroup;
 			children = (
-				C9E18C8D24664DF600213352 /* MoviesListRow_film.graphql.swift */,
+				C9E18C9324665DA100213352 /* MoviesListPaginationQuery.graphql.swift */,
 				C9E18C87246649EB00213352 /* MoviesListQuery.graphql.swift */,
+				C9E18C8D24664DF600213352 /* MoviesListRow_film.graphql.swift */,
+				C9E18C9424665DA100213352 /* MoviesTabQuery.graphql.swift */,
 			);
 			path = __generated__;
 			sourceTree = "<group>";
@@ -664,12 +682,15 @@
 				C9E18B9E245F9CA500213352 /* Executor.swift in Sources */,
 				C9E18BBB245FB09700213352 /* PublishQueue.swift in Sources */,
 				C9E18B8E245F6E8200213352 /* Network.swift in Sources */,
+				C9E18C9A246720BD00213352 /* Handler.swift in Sources */,
 				C9E18B86245F68BA00213352 /* Environment.swift in Sources */,
+				C9E18C9C2467212D00213352 /* ConnectionHandler.swift in Sources */,
 				C9E18BF524639F6900213352 /* GraphQL.swift in Sources */,
 				C9E18BBF245FBEC400213352 /* ReaderNode.swift in Sources */,
 				C9E18B9C245F88BF00213352 /* NormalizationNode.swift in Sources */,
 				C9E18BEF246392A900213352 /* Variables.swift in Sources */,
 				C9E18B8A245F6A5200213352 /* RecordSource.swift in Sources */,
+				C9E18C982466741000213352 /* RecordSourceMutator.swift in Sources */,
 				C9E18B90245F70A700213352 /* Node.swift in Sources */,
 				C9E18BC3246113CF00213352 /* ResponseNormalizer.swift in Sources */,
 				C9E18B8C245F6DA200213352 /* Record.swift in Sources */,
@@ -731,11 +752,14 @@
 				C9E18C652466474D00213352 /* AppDelegate.swift in Sources */,
 				C9E18C7A2466491300213352 /* Environment.swift in Sources */,
 				C9E18C902466518B00213352 /* LoadingView.swift in Sources */,
+				C9E18C92246653A300213352 /* MoviesTab.swift in Sources */,
 				C9E18C672466474D00213352 /* SceneDelegate.swift in Sources */,
 				C9E18C8E24664DF600213352 /* MoviesListRow_film.graphql.swift in Sources */,
 				C9E18C8A24664A1900213352 /* ErrorView.swift in Sources */,
 				C9E18C8C24664DA600213352 /* MoviesListRow.swift in Sources */,
 				C9E18C852466497E00213352 /* MoviesList.swift in Sources */,
+				C9E18C9524665DA100213352 /* MoviesListPaginationQuery.graphql.swift in Sources */,
+				C9E18C9624665DA100213352 /* MoviesTabQuery.graphql.swift in Sources */,
 				C9E18C692466474D00213352 /* ContentView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

@@ -4,15 +4,18 @@ public class Environment {
     public private(set) var network: Network
     public private(set) var store: Store
 
+    let handlerProvider: HandlerProvider
     let publishQueue: PublishQueue
 
     public init(
         network: Network,
-        store: Store) {
+        store: Store,
+        handlerProvider: HandlerProvider = DefaultHandlerProvider()) {
         self.network = network
         self.store = store
+        self.handlerProvider = handlerProvider
 
-        publishQueue = PublishQueue(store: store)
+        publishQueue = PublishQueue(store: store, handlerProvider: handlerProvider)
     }
 
     public func execute(

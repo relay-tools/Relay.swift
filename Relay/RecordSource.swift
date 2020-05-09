@@ -46,10 +46,16 @@ public struct DataID: RawRepresentable, ExpressibleByStringLiteral, Hashable {
     }
 }
 
+public enum RecordState {
+    case existent
+    case nonexistent
+    case unknown
+}
+
 public protocol RecordSource {
     subscript(_ dataID: DataID) -> Record? { get set }
     var recordIDs: [DataID] { get }
-    // TODO getStatus
+    func getStatus(_ dataID: DataID) -> RecordState
     func has(_ dataID: DataID) -> Bool
     var count: Int { get }
     // TODO toJSON
@@ -60,8 +66,7 @@ public struct DefaultRecordSource: RecordSource {
     var records = [DataID: Record]()
     var deletedRecordIDs = Set<DataID>()
 
-    public init() {
-    }
+    public init() {}
 
     public subscript(_ dataID: DataID) -> Record? {
         get {
@@ -70,7 +75,9 @@ public struct DefaultRecordSource: RecordSource {
         set {
             if let value = newValue {
                 records[dataID] = value
+                deletedRecordIDs.remove(dataID)
             } else {
+                records.removeValue(forKey: dataID)
                 deletedRecordIDs.insert(dataID)
             }
         }
@@ -78,6 +85,18 @@ public struct DefaultRecordSource: RecordSource {
 
     public var recordIDs: [DataID] {
         Array(records.keys) + Array(deletedRecordIDs)
+    }
+
+    public func getStatus(_ dataID: DataID) -> RecordState {
+        if deletedRecordIDs.contains(dataID) {
+            return .nonexistent
+        }
+
+        if records[dataID] != nil {
+            return .existent
+        }
+
+        return .unknown
     }
 
     public func has(_ dataID: DataID) -> Bool {
@@ -119,5 +138,75 @@ extension RecordSource {
                 updatedRecordIDs.insert(dataID)
             }
         }
+    }
+}
+
+public protocol RecordSourceProxy {
+    mutating func create(dataID: DataID, typeName: String) -> RecordProxy
+    mutating func delete(dataID: DataID)
+    subscript(_ dataID: DataID) -> RecordProxy? { get }
+    var root: RecordProxy { get }
+    mutating func invalidateStore()
+}
+
+public protocol RecordSourceSelectorProxy: RecordSourceProxy {
+    func getRootField(_ fieldName: String) -> RecordProxy?
+    func getPluralRootField(_ fieldName: String) -> [RecordProxy?]?
+}
+
+public class DefaultRecordSourceProxy: RecordSourceProxy {
+    private let mutator: RecordSourceMutator
+    private var proxies: [DataID: RecordProxy?] = [:]
+    private(set) var invalidatedStore = false
+    private(set) var idsMarkedForInvalidation = Set<DataID>()
+
+    init(mutator: RecordSourceMutator) {
+        self.mutator = mutator
+    }
+
+    public func create(dataID: DataID, typeName: String) -> RecordProxy {
+        mutator.create(dataID: dataID, typeName: typeName)
+        proxies[dataID] = nil
+        return self[dataID]!
+    }
+
+    public func delete(dataID: DataID) {
+        proxies[dataID] = nil
+        mutator.delete(dataID: dataID)
+    }
+
+    public subscript(dataID: DataID) -> RecordProxy? {
+        if proxies[dataID] == nil {
+            switch mutator.getStatus(dataID) {
+            case .existent:
+                proxies[dataID] = DefaultRecordProxy(source: self, mutator: mutator, dataID: dataID)
+            case .nonexistent:
+                proxies[dataID] = .some(nil)
+            case .unknown:
+                proxies[dataID] = nil
+            }
+        }
+        return proxies[dataID].flatMap { $0 }
+    }
+
+    public var root: RecordProxy {
+        var root = self[.rootID]
+        if root == nil {
+            root = create(dataID: .rootID, typeName: Record.root.typename)
+        }
+
+        guard let theRoot = root, theRoot.typeName == Record.root.typename else {
+            preconditionFailure("Expected the source to contain a valid root record")
+        }
+
+        return theRoot
+    }
+
+    public func invalidateStore() {
+        invalidatedStore = true
+    }
+
+    func markIDForInvalidation(_ dataID: DataID) {
+        idsMarkedForInvalidation.insert(dataID)
     }
 }

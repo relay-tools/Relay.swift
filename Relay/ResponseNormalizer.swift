@@ -1,9 +1,17 @@
 struct ResponsePayload {
     var errors: [GraphQLError]?
-    var fieldPayloads: [Any]
+    var fieldPayloads: [HandleFieldPayload]
     // TODO other payloads
     var source: RecordSource
     var isFinal: Bool
+}
+
+public struct HandleFieldPayload {
+    var args: [String: Any]
+    var dataID: DataID
+    var fieldKey: String
+    var handle: String
+    var handleKey: String
 }
 
 class ResponseNormalizer {
@@ -12,6 +20,7 @@ class ResponseNormalizer {
     private let request: RequestDescriptor
 
     private var path: [String] = []
+    private var handleFieldPayloads: [HandleFieldPayload] = []
 
     init(source: RecordSource, variables: AnyVariables, request: RequestDescriptor) {
         self.recordSource = source
@@ -39,7 +48,7 @@ class ResponseNormalizer {
         traverseSelections(node: selector.node, record: &record, data: data)
         recordSource[selector.dataID] = record
 
-        return ResponsePayload(errors: [], fieldPayloads: [], source: recordSource, isFinal: false)
+        return ResponsePayload(errors: [], fieldPayloads: handleFieldPayloads, source: recordSource, isFinal: false)
     }
 
     private func traverseSelections(node: NormalizationNode, record: inout Record, data: [String: Any]) {
@@ -51,6 +60,14 @@ class ResponseNormalizer {
                 if fragment.type == record.typename {
                     traverseSelections(node: fragment, record: &record, data: data)
                 }
+            case .handle(let handle):
+                handleFieldPayloads.append(HandleFieldPayload(
+                    args: handle.args.map { getArgumentValues($0, variables) } ?? [:],
+                    dataID: record.dataID,
+                    fieldKey: getStorageKey(field: handle, variables: variables),
+                    handle: handle.handle,
+                    handleKey: handle.handleKey(from: variables)
+                ))
             default:
                 preconditionFailure("not implemented")
             }

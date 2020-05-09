@@ -20,6 +20,9 @@ struct PokemonDetailQuery: Operation {
                             .fragmentSpread(ReaderFragmentSpread(
                                 name: "PokemonDetailInfoSection_pokemon"
                             )),
+                            .fragmentSpread(ReaderFragmentSpread(
+                                name: "PokemonDetailTypesSection_pokemon"
+                            )),
                         ]
                     )),
                 ]
@@ -47,6 +50,41 @@ struct PokemonDetailQuery: Operation {
                             .field(NormalizationScalarField(
                                 name: "classification"
                             )),
+                            .field(NormalizationLinkedField(
+                                name: "weight",
+                                concreteType: "PokemonDimension",
+                                plural: false,
+                                selections: [
+                                    .field(NormalizationScalarField(
+                                        name: "minimum"
+                                    )),
+                                    .field(NormalizationScalarField(
+                                        name: "maximum"
+                                    )),
+                                ]
+                            )),
+                            .field(NormalizationLinkedField(
+                                name: "height",
+                                concreteType: "PokemonDimension",
+                                plural: false,
+                                selections: [
+                                    .field(NormalizationScalarField(
+                                        name: "minimum"
+                                    )),
+                                    .field(NormalizationScalarField(
+                                        name: "maximum"
+                                    )),
+                                ]
+                            )),
+                            .field(NormalizationScalarField(
+                                name: "types"
+                            )),
+                            .field(NormalizationScalarField(
+                                name: "resistant"
+                            )),
+                            .field(NormalizationScalarField(
+                                name: "weaknesses"
+                            )),
                         ]
                     )),
                 ]
@@ -61,6 +99,7 @@ query PokemonDetailQuery(
   pokemon(id: $id) {
     id
     ...PokemonDetailInfoSection_pokemon
+    ...PokemonDetailTypesSection_pokemon
   }
 }
 
@@ -68,6 +107,20 @@ fragment PokemonDetailInfoSection_pokemon on Pokemon {
   name
   number
   classification
+  weight {
+    minimum
+    maximum
+  }
+  height {
+    minimum
+    maximum
+  }
+}
+
+fragment PokemonDetailTypesSection_pokemon on Pokemon {
+  types
+  resistant
+  weaknesses
 }
 """
             )
@@ -91,13 +144,15 @@ fragment PokemonDetailInfoSection_pokemon on Pokemon {
             pokemon = data.get(Pokemon_pokemon?.self, "pokemon")
         }
 
-        struct Pokemon_pokemon: Readable, PokemonDetailInfoSection_pokemon_Key {
+        struct Pokemon_pokemon: Readable, PokemonDetailInfoSection_pokemon_Key, PokemonDetailTypesSection_pokemon_Key {
             var id: String
             var fragment_PokemonDetailInfoSection_pokemon: FragmentPointer
+            var fragment_PokemonDetailTypesSection_pokemon: FragmentPointer
 
             init(from data: SelectorData) {
                 id = data.get(String.self, "id")
                 fragment_PokemonDetailInfoSection_pokemon = data.get(fragment: "PokemonDetailInfoSection_pokemon")
+                fragment_PokemonDetailTypesSection_pokemon = data.get(fragment: "PokemonDetailTypesSection_pokemon")
             }
 
         }

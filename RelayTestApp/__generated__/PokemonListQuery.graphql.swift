@@ -53,32 +53,6 @@ struct PokemonListQuery: Operation {
                             .field(NormalizationScalarField(
                                 name: "number"
                             )),
-                            .field(NormalizationScalarField(
-                                name: "classification"
-                            )),
-                            .field(NormalizationLinkedField(
-                                name: "weight",
-                                concreteType: "PokemonDimension",
-                                plural: false,
-                                selections: [
-                                    .field(NormalizationScalarField(
-                                        name: "minimum"
-                                    )),
-                                    .field(NormalizationScalarField(
-                                        name: "maximum"
-                                    )),
-                                ]
-                            )),
-                            .field(NormalizationLinkedField(
-                                name: "height",
-                                concreteType: "PokemonDimension",
-                                plural: false,
-                                selections: [
-                                    .field(NormalizationScalarField(
-                                        name: "minimum"
-                                    )),
-                                ]
-                            )),
                         ]
                     )),
                 ]
@@ -99,14 +73,6 @@ query PokemonListQuery {
 fragment PokemonListRow_pokemon on Pokemon {
   name
   number
-  classification
-  weight {
-    minimum
-    maximum
-  }
-  height {
-    minimum
-  }
 }
 """
             )

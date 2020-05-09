@@ -57,6 +57,8 @@
 		C9E18C182463B9F100213352 /* PokemonListQuery.graphql.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9E18C162463B9F100213352 /* PokemonListQuery.graphql.swift */; };
 		C9E18C1B2463BA9F00213352 /* PokemonDetailInfoSection_pokemon.graphql.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9E18C192463BA9F00213352 /* PokemonDetailInfoSection_pokemon.graphql.swift */; };
 		C9E18C1C2463BA9F00213352 /* PokemonDetailQuery.graphql.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9E18C1A2463BA9F00213352 /* PokemonDetailQuery.graphql.swift */; };
+		C9E18C5B24663A0E00213352 /* PokemonDetailTypesSection.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9E18C5A24663A0E00213352 /* PokemonDetailTypesSection.swift */; };
+		C9E18C5D24663A6900213352 /* PokemonDetailTypesSection_pokemon.graphql.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9E18C5C24663A6900213352 /* PokemonDetailTypesSection_pokemon.graphql.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -160,6 +162,8 @@
 		C9E18C1A2463BA9F00213352 /* PokemonDetailQuery.graphql.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PokemonDetailQuery.graphql.swift; sourceTree = "<group>"; };
 		C9E18C5824662F0100213352 /* relay.config.js */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.javascript; path = relay.config.js; sourceTree = "<group>"; };
 		C9E18C5924662F0100213352 /* schema.graphql */ = {isa = PBXFileReference; lastKnownFileType = text; path = schema.graphql; sourceTree = "<group>"; };
+		C9E18C5A24663A0E00213352 /* PokemonDetailTypesSection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PokemonDetailTypesSection.swift; sourceTree = "<group>"; };
+		C9E18C5C24663A6900213352 /* PokemonDetailTypesSection_pokemon.graphql.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PokemonDetailTypesSection_pokemon.graphql.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -259,6 +263,7 @@
 				C9E18BE8246389B000213352 /* PokemonListRow.swift */,
 				C9E18BEA24638D8700213352 /* PokemonDetail.swift */,
 				C9E18BF02463970800213352 /* PokemonDetailInfoSection.swift */,
+				C9E18C5A24663A0E00213352 /* PokemonDetailTypesSection.swift */,
 				C9E18B79245F68A200213352 /* Assets.xcassets */,
 				C9E18B7E245F68A200213352 /* LaunchScreen.storyboard */,
 				C9E18B81245F68A200213352 /* Info.plist */,
@@ -314,6 +319,7 @@
 		C9E18C142463B9F100213352 /* __generated__ */ = {
 			isa = PBXGroup;
 			children = (
+				C9E18C5C24663A6900213352 /* PokemonDetailTypesSection_pokemon.graphql.swift */,
 				C9E18C192463BA9F00213352 /* PokemonDetailInfoSection_pokemon.graphql.swift */,
 				C9E18C1A2463BA9F00213352 /* PokemonDetailQuery.graphql.swift */,
 				C9E18C152463B9F100213352 /* PokemonListRow_pokemon.graphql.swift */,
@@ -531,6 +537,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				C9E18C5D24663A6900213352 /* PokemonDetailTypesSection_pokemon.graphql.swift in Sources */,
 				C9E18B74245F68A100213352 /* AppDelegate.swift in Sources */,
 				C9E18BF12463970800213352 /* PokemonDetailInfoSection.swift in Sources */,
 				C9E18C182463B9F100213352 /* PokemonListQuery.graphql.swift in Sources */,
@@ -541,6 +548,7 @@
 				C9E18BB9245FAEDC00213352 /* ErrorView.swift in Sources */,
 				C9E18C1B2463BA9F00213352 /* PokemonDetailInfoSection_pokemon.graphql.swift in Sources */,
 				C9E18B78245F68A100213352 /* ContentView.swift in Sources */,
+				C9E18C5B24663A0E00213352 /* PokemonDetailTypesSection.swift in Sources */,
 				C9E18C172463B9F100213352 /* PokemonListRow_pokemon.graphql.swift in Sources */,
 				C9E18C1C2463BA9F00213352 /* PokemonDetailQuery.graphql.swift in Sources */,
 				C9E18BB7245FAE5200213352 /* PokemonList.swift in Sources */,

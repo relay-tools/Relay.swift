@@ -31,6 +31,7 @@ public struct Record: Equatable {
         case float(Double)
         case string(String)
         case bool(Bool)
+        case array([Value?])
         case linkedRecord(DataID)
         case linkedRecords([DataID?])
 
@@ -43,6 +44,9 @@ public struct Record: Equatable {
                 self = .string(v)
             } else if let v = scalar as? Bool {
                 self = .bool(v)
+            } else if let v = scalar as? [Any?] {
+                let values = v.map { $0.flatMap { Value(scalar: $0) } }
+                self = .array(values)
             } else {
                 return nil
             }
@@ -58,6 +62,8 @@ public struct Record: Equatable {
                 return v
             case .bool(let v):
                 return v
+            case .array(let values):
+                return values.map { $0?.scalar }
             case .linkedRecord, .linkedRecords:
                 return nil
             }

@@ -9,6 +9,30 @@ public protocol Readable {
     init(from data: SelectorData)
 }
 
+public protocol ReadableScalar {
+    init(from value: SelectorData.Value)
+}
+
+extension Int: ReadableScalar {
+    public init(from value: SelectorData.Value) {
+        guard case .int(let v) = value else {
+            preconditionFailure("Tried to decode an Int from a non-integer value: \(value)")
+        }
+
+        self = v
+    }
+}
+
+extension String: ReadableScalar {
+    public init(from value: SelectorData.Value) {
+        guard case .string(let v) = value else {
+            preconditionFailure("Tried to decode an String from a non-string value: \(value)")
+        }
+
+        self = v
+    }
+}
+
 public struct FragmentPointer {
     var variables: [String: Any]
     var id: DataID
@@ -24,6 +48,7 @@ public struct SelectorData {
         case float(Double)
         case string(String)
         case bool(Bool)
+        case array([Value?])
         case object(SelectorData?)
         case objects([SelectorData?]?)
 
@@ -36,6 +61,9 @@ public struct SelectorData {
                 self = .string(v)
             } else if let v = scalar as? Bool {
                 self = .bool(v)
+            } else if let v = scalar as? [Any?] {
+                let values = v.map { $0.flatMap { Value(scalar: $0) } }
+                self = .array(values)
             } else {
                 return nil
             }
@@ -51,6 +79,8 @@ public struct SelectorData {
                 return v
             case .bool(let v):
                 return v
+            case .array(let v):
+                return v.map { $0?.scalar }
             case .object, .objects:
                 return nil
             }
@@ -69,12 +99,47 @@ public struct SelectorData {
         }
     }
 
-    public func get(_ type: String.Type, _ key: String) -> String {
-        if case .string(let v) = data[key] {
-            return v
-        } else {
-            preconditionFailure("Expected key \(key) to be a non-nil String")
+    public func get<T: ReadableScalar>(_ type: T.Type, _ key: String) -> T {
+        return T(from: data[key]!!)
+    }
+
+    public func get<T: ReadableScalar>(_ type: T?.Type, _ key: String) -> T? {
+        guard let val = data[key], let val2 = val else { return nil }
+        return T(from: val2)
+    }
+
+    public func get<T: ReadableScalar>(_ type: [T].Type, _ key: String) -> [T] {
+        guard case .array(let values) = data[key] else {
+            preconditionFailure("Expected key \(key) to be an array of values")
         }
+
+        return values.map { T(from: $0!) }
+    }
+
+    public func get<T: ReadableScalar>(_ type: [T]?.Type, _ key: String) -> [T]? {
+        guard let val = data[key] else { return nil }
+        guard case .array(let values) = val else {
+            preconditionFailure("Expected key \(key) to be an array of values")
+        }
+
+        return values.map { T(from: $0!) }
+    }
+
+    public func get<T: ReadableScalar>(_ type: [T?].Type, _ key: String) -> [T?] {
+        guard case .array(let values) = data[key] else {
+            preconditionFailure("Expected key \(key) to be an array of values")
+        }
+
+        return values.map { $0.map { T(from: $0) } }
+    }
+
+    public func get<T: ReadableScalar>(_ type: [T?]?.Type, _ key: String) -> [T?]? {
+        guard let val = data[key] else { return nil }
+        guard case .array(let values) = val else {
+            preconditionFailure("Expected key \(key) to be an array of values")
+        }
+
+        return values.map { $0.map { T(from: $0) } }
     }
 
     public func get(_ type: String?.Type, _ key: String) -> String? {

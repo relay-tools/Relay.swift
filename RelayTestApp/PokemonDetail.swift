@@ -6,6 +6,7 @@ query PokemonDetailQuery($id: String) {
     pokemon(id: $id) {
         id
         ...PokemonDetailInfoSection_pokemon
+        ...PokemonDetailTypesSection_pokemon
     }
 }
 """)
@@ -36,6 +37,7 @@ struct PokemonDetail: View {
             } else {
                 List {
                     PokemonDetailInfoSection(pokemon: data!.pokemon!)
+                    PokemonDetailTypesSection(pokemon: data!.pokemon!)
                 }.listStyle(GroupedListStyle())
             }
         }

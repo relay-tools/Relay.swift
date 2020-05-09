@@ -6,6 +6,14 @@ fragment PokemonDetailInfoSection_pokemon on Pokemon {
     name
     number
     classification
+    weight {
+        minimum
+        maximum
+    }
+    height {
+        minimum
+        maximum
+    }
 }
 """)
 
@@ -35,6 +43,16 @@ struct PokemonDetailInfoSection: View {
                 Text("Classification")
                 Spacer()
                 Text(data.classification ?? "(unknown)")
+            }
+            HStack {
+                Text("Height")
+                Spacer()
+                Text("\(data.height?.minimum ?? "(unknown)") - \(data.height?.maximum ?? "(unknown)")")
+            }
+            HStack {
+                Text("Weight")
+                Spacer()
+                Text("\(data.weight?.minimum ?? "(unknown)") - \(data.weight?.maximum ?? "(unknown)")")
             }
         }
     }

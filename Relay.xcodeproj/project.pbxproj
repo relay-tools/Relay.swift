@@ -111,7 +111,7 @@
 		C9E18B62245F687100213352 /* Relay.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Relay.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		C9E18B65245F687100213352 /* Relay.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Relay.h; sourceTree = "<group>"; };
 		C9E18B66245F687100213352 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		C9E18B71245F68A100213352 /* RelayTestApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = RelayTestApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		C9E18B71245F68A100213352 /* RelayPokedex.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = RelayPokedex.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		C9E18B73245F68A100213352 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		C9E18B75245F68A100213352 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
 		C9E18B77245F68A100213352 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
@@ -208,7 +208,7 @@
 				C9E18B64245F687100213352 /* Relay */,
 				C9E18BCB246134BB00213352 /* RelayTests */,
 				C9E18BA5245FA79800213352 /* RelaySwiftUI */,
-				C9E18B72245F68A100213352 /* RelayTestApp */,
+				C9E18B72245F68A100213352 /* RelayPokedex */,
 				C9E18B63245F687100213352 /* Products */,
 				C9E18B93245F725800213352 /* Frameworks */,
 			);
@@ -218,7 +218,7 @@
 			isa = PBXGroup;
 			children = (
 				C9E18B62245F687100213352 /* Relay.framework */,
-				C9E18B71245F68A100213352 /* RelayTestApp.app */,
+				C9E18B71245F68A100213352 /* RelayPokedex.app */,
 				C9E18BA4245FA79800213352 /* RelaySwiftUI.framework */,
 				C9E18BCA246134BB00213352 /* RelayTests.xctest */,
 			);
@@ -250,7 +250,7 @@
 			path = Relay;
 			sourceTree = "<group>";
 		};
-		C9E18B72245F68A100213352 /* RelayTestApp */ = {
+		C9E18B72245F68A100213352 /* RelayPokedex */ = {
 			isa = PBXGroup;
 			children = (
 				C9E18C142463B9F100213352 /* __generated__ */,
@@ -271,7 +271,7 @@
 				C9E18C5924662F0100213352 /* schema.graphql */,
 				C9E18B7B245F68A200213352 /* Preview Content */,
 			);
-			path = RelayTestApp;
+			path = RelayPokedex;
 			sourceTree = "<group>";
 		};
 		C9E18B7B245F68A200213352 /* Preview Content */ = {
@@ -368,9 +368,9 @@
 			productReference = C9E18B62245F687100213352 /* Relay.framework */;
 			productType = "com.apple.product-type.framework";
 		};
-		C9E18B70245F68A100213352 /* RelayTestApp */ = {
+		C9E18B70245F68A100213352 /* RelayPokedex */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = C9E18B82245F68A200213352 /* Build configuration list for PBXNativeTarget "RelayTestApp" */;
+			buildConfigurationList = C9E18B82245F68A200213352 /* Build configuration list for PBXNativeTarget "RelayPokedex" */;
 			buildPhases = (
 				C9E18B6D245F68A100213352 /* Sources */,
 				C9E18B6E245F68A100213352 /* Frameworks */,
@@ -383,9 +383,9 @@
 				C9E18B97245F725800213352 /* PBXTargetDependency */,
 				C9E18BAF245FA7A600213352 /* PBXTargetDependency */,
 			);
-			name = RelayTestApp;
+			name = RelayPokedex;
 			productName = RelayTestApp;
-			productReference = C9E18B71245F68A100213352 /* RelayTestApp.app */;
+			productReference = C9E18B71245F68A100213352 /* RelayPokedex.app */;
 			productType = "com.apple.product-type.application";
 		};
 		C9E18BA3245FA79800213352 /* RelaySwiftUI */ = {
@@ -469,7 +469,7 @@
 			targets = (
 				C9E18B61245F687100213352 /* Relay */,
 				C9E18BA3245FA79800213352 /* RelaySwiftUI */,
-				C9E18B70245F68A100213352 /* RelayTestApp */,
+				C9E18B70245F68A100213352 /* RelayPokedex */,
 				C9E18BC9246134BB00213352 /* RelayTests */,
 			);
 		};
@@ -795,15 +795,15 @@
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;
-				DEVELOPMENT_ASSET_PATHS = "\"RelayTestApp/Preview Content\"";
+				DEVELOPMENT_ASSET_PATHS = "RelayPokedex/Preview\\ Content/Preview\\ Assets.xcassets";
 				DEVELOPMENT_TEAM = PE8BN56Z28;
 				ENABLE_PREVIEWS = YES;
-				INFOPLIST_FILE = RelayTestApp/Info.plist;
+				INFOPLIST_FILE = RelayPokedex/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.mattmoriarity.RelayTestApp;
+				PRODUCT_BUNDLE_IDENTIFIER = com.mattmoriarity.RelayPokedex;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -816,15 +816,15 @@
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;
-				DEVELOPMENT_ASSET_PATHS = "\"RelayTestApp/Preview Content\"";
+				DEVELOPMENT_ASSET_PATHS = "RelayPokedex/Preview\\ Content/Preview\\ Assets.xcassets";
 				DEVELOPMENT_TEAM = PE8BN56Z28;
 				ENABLE_PREVIEWS = YES;
-				INFOPLIST_FILE = RelayTestApp/Info.plist;
+				INFOPLIST_FILE = RelayPokedex/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.mattmoriarity.RelayTestApp;
+				PRODUCT_BUNDLE_IDENTIFIER = com.mattmoriarity.RelayPokedex;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -942,7 +942,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		C9E18B82245F68A200213352 /* Build configuration list for PBXNativeTarget "RelayTestApp" */ = {
+		C9E18B82245F68A200213352 /* Build configuration list for PBXNativeTarget "RelayPokedex" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				C9E18B83245F68A200213352 /* Debug */,

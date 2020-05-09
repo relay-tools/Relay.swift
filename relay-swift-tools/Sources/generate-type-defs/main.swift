@@ -74,6 +74,12 @@ print(StructDeclSyntax { builder in
             }.withTrailingTrivia(.newlines(2))))
         })
 
+        if kind == "Fragment" {
+            builder.addMember(MemberDeclListItemSyntax { builder in
+                builder.useDecl(makeGetFragmentPointerFuncDecl(name: name))
+            }.withTrailingTrivia(.newlines(2)))
+        }
+
         if let operation = parsedData["operation"] as? [String: Any] {
             builder.addMember(MemberDeclListItemSyntax { builder in
                 builder.useDecl(makeVariablesStruct(node: operation))

@@ -1,3 +1,4 @@
+import Foundation
 import SwiftSyntax
 
 func makeArgumentsExpr(args: [[String: Any]], indent: Int) -> ExprSyntax {
@@ -36,6 +37,10 @@ func makeArgumentExpr(arg: [String: Any]) -> ExprSyntax {
             args.append(("variableName", stringLiteral(variableName)))
         }
 
+        if let value = arg["value"] {
+            args.append(("value", argumentValueLiteral(value)))
+        }
+
         for (i, (name, expr)) in args.enumerated() {
             builder.addArgument(TupleExprElementSyntax { builder in
                 builder.useLabel(SyntaxFactory.makeIdentifier(name))
@@ -49,4 +54,22 @@ func makeArgumentExpr(arg: [String: Any]) -> ExprSyntax {
 
         builder.useRightParen(SyntaxFactory.makeRightParenToken())
     })
+}
+
+private func argumentValueLiteral(_ value: Any) -> ExprSyntax {
+    if let value = value as? Int {
+        return ExprSyntax(IntegerLiteralExprSyntax { builder in
+            builder.useDigits(SyntaxFactory.makeIntegerLiteral("\(value)"))
+        })
+    } else if let value = value as? String {
+        return stringLiteral(value)
+    } else if let value = value as? Bool {
+        return boolLiteral(value)
+    } else if value is NSNull {
+        return ExprSyntax(NilLiteralExprSyntax { builder in
+            builder.useNilKeyword(SyntaxFactory.makeNilKeyword())
+        })
+    } else {
+        preconditionFailure("Not sure how to write a literal for value of type \(type(of: value))")
+    }
 }

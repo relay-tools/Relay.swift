@@ -94,26 +94,32 @@ private func makeAsDictionaryDecl(variables: [Variable], indent: Int) -> DeclSyn
 
                 builder.addStatement(CodeBlockItemSyntax { builder in
                     builder.useItem(Syntax(DictionaryExprSyntax { builder in
-                        builder.useLeftSquare(SyntaxFactory.makeLeftSquareBracketToken(leadingTrivia: .spaces(indent + 4), trailingTrivia: .newlines(1)))
+                        if variables.isEmpty {
+                            builder.useLeftSquare(SyntaxFactory.makeLeftSquareBracketToken(leadingTrivia: .spaces(indent + 4)))
+                            builder.useContent(Syntax(SyntaxFactory.makeColonToken()))
+                            builder.useRightSquare(SyntaxFactory.makeRightSquareBracketToken())
+                        } else {
+                            builder.useLeftSquare(SyntaxFactory.makeLeftSquareBracketToken(leadingTrivia: .spaces(indent + 4), trailingTrivia: .newlines(1)))
 
-                        builder.useContent(Syntax(SyntaxFactory.makeDictionaryElementList(variables.map { variable in
-                            DictionaryElementSyntax { builder in
-                                builder.useKeyExpression(stringLiteral(variable.name).withLeadingTrivia(.spaces(indent + 8)))
-                                builder.useColon(SyntaxFactory.makeColonToken(trailingTrivia: .spaces(1)))
-                                builder.useValueExpression(ExprSyntax(SequenceExprSyntax { builder in
-                                    builder.addElement(ExprSyntax(IdentifierExprSyntax { builder in
-                                        builder.useIdentifier(SyntaxFactory.makeIdentifier(variable.name, trailingTrivia: .spaces(1)))
+                            builder.useContent(Syntax(SyntaxFactory.makeDictionaryElementList(variables.map { variable in
+                                DictionaryElementSyntax { builder in
+                                    builder.useKeyExpression(stringLiteral(variable.name).withLeadingTrivia(.spaces(indent + 8)))
+                                    builder.useColon(SyntaxFactory.makeColonToken(trailingTrivia: .spaces(1)))
+                                    builder.useValueExpression(ExprSyntax(SequenceExprSyntax { builder in
+                                        builder.addElement(ExprSyntax(IdentifierExprSyntax { builder in
+                                            builder.useIdentifier(SyntaxFactory.makeIdentifier(variable.name, trailingTrivia: .spaces(1)))
+                                        }))
+                                        builder.addElement(ExprSyntax(AsExprSyntax { builder in
+                                            builder.useAsTok(SyntaxFactory.makeAsKeyword(trailingTrivia: .spaces(1)))
+                                            builder.useTypeName(SyntaxFactory.makeTypeIdentifier("Any"))
+                                        }))
                                     }))
-                                    builder.addElement(ExprSyntax(AsExprSyntax { builder in
-                                        builder.useAsTok(SyntaxFactory.makeAsKeyword(trailingTrivia: .spaces(1)))
-                                        builder.useTypeName(SyntaxFactory.makeTypeIdentifier("Any"))
-                                    }))
-                                }))
-                                builder.useTrailingComma(SyntaxFactory.makeCommaToken(trailingTrivia: .newlines(1)))
-                            }
-                        })))
+                                    builder.useTrailingComma(SyntaxFactory.makeCommaToken(trailingTrivia: .newlines(1)))
+                                }
+                            })))
 
-                        builder.useRightSquare(SyntaxFactory.makeRightSquareBracketToken(leadingTrivia: .spaces(indent + 4)))
+                            builder.useRightSquare(SyntaxFactory.makeRightSquareBracketToken(leadingTrivia: .spaces(indent + 4)))
+                        }
                     }))
                 })
 

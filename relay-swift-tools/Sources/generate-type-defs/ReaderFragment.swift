@@ -110,6 +110,47 @@ private func makeReaderSelectionExpr(selection: [String: Any], indent: Int) -> E
     })
 }
 
+func makeGetFragmentPointerFuncDecl(name: String) -> DeclSyntax {
+    DeclSyntax(FunctionDeclSyntax { builder in
+        builder.useFuncKeyword(SyntaxFactory.makeFuncKeyword(leadingTrivia: .spaces(4), trailingTrivia: .spaces(1)))
+        builder.useIdentifier(SyntaxFactory.makeIdentifier("getFragmentPointer"))
+        builder.useSignature(FunctionSignatureSyntax { builder in
+            builder.useInput(ParameterClauseSyntax { builder in
+                builder.useLeftParen(SyntaxFactory.makeLeftParenToken())
+                builder.addParameter(FunctionParameterSyntax { builder in
+                    builder.useFirstName(SyntaxFactory.makeIdentifier("_", trailingTrivia: .spaces(1)))
+                    builder.useSecondName(SyntaxFactory.makeIdentifier("key"))
+                    builder.useColon(SyntaxFactory.makeColonToken(trailingTrivia: .spaces(1)))
+                    builder.useType(SyntaxFactory.makeTypeIdentifier("\(name)_Key"))
+                })
+                builder.useRightParen(SyntaxFactory.makeRightParenToken(trailingTrivia: .spaces(1)))
+            })
+            builder.useOutput(ReturnClauseSyntax { builder in
+                builder.useArrow(SyntaxFactory.makeArrowToken(trailingTrivia: .spaces(1)))
+                builder.useReturnType(SyntaxFactory.makeTypeIdentifier("FragmentPointer"))
+            })
+        })
+        builder.useBody(CodeBlockSyntax { builder in
+            builder.useLeftBrace(SyntaxFactory.makeLeftBraceToken(leadingTrivia: .spaces(1), trailingTrivia: .newlines(1)))
+
+            builder.addStatement(CodeBlockItemSyntax { builder in
+                builder.useItem(Syntax(ReturnStmtSyntax { builder in
+                    builder.useReturnKeyword(SyntaxFactory.makeReturnKeyword(leadingTrivia: .spaces(8), trailingTrivia: .spaces(1)))
+                    builder.useExpression(ExprSyntax(MemberAccessExprSyntax { builder in
+                        builder.useBase(ExprSyntax(IdentifierExprSyntax { builder in
+                            builder.useIdentifier(SyntaxFactory.makeIdentifier("key"))
+                        }))
+                        builder.useDot(SyntaxFactory.makePeriodToken())
+                        builder.useName(SyntaxFactory.makeIdentifier("fragment_\(name)", trailingTrivia: .newlines(1)))
+                    }))
+                }))
+            })
+
+            builder.useRightBrace(SyntaxFactory.makeRightBraceToken(leadingTrivia: .spaces(4)))
+        })
+    })
+}
+
 func makeFragmentProtocolDecl(name: String) -> DeclSyntax {
     DeclSyntax(ProtocolDeclSyntax { builder in
         builder.useProtocolKeyword(SyntaxFactory.makeProtocolKeyword(trailingTrivia: .spaces(1)))

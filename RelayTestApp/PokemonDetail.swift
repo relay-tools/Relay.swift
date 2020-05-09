@@ -1,6 +1,15 @@
 import SwiftUI
 import RelaySwiftUI
 
+private let query = graphql("""
+query PokemonDetailQuery($id: String) {
+    pokemon(id: $id) {
+        id
+        ...PokemonDetailInfoSection_pokemon
+    }
+}
+""")
+
 struct PokemonDetail: View {
     let id: String
     let name: String

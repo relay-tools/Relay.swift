@@ -119,6 +119,10 @@ public struct SelectorData {
         return get([SelectorData?]?.self, key)!.map { T(from: $0!) }
     }
 
+    public func get<T: Readable>(_ type: [T?]?.Type, _ key: String) -> [T?]? {
+        return get([SelectorData?]?.self, key)?.map { $0.map(T.init(from:)) }
+    }
+
     public func get(fragment: String) -> FragmentPointer {
         return fragments[fragment]!
     }

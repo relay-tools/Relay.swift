@@ -1,0 +1,17 @@
+{
+  "name": "relaytestapp",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Matt Moriarity",
+  "license": "ISC",
+  "devDependencies": {
+    "graphql": "^15.0.0",
+    "relay-compiler": "^9.1.0",
+    "relay-compiler-language-swift": "file:../relay-compiler-language-swift",
+    "relay-config": "^9.1.0"
+  }
+}

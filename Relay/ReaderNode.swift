@@ -131,6 +131,6 @@ public protocol Fragment {
     func getFragmentPointer(_ key: Key) -> FragmentPointer
     
     associatedtype Key
-    associatedtype Variables: Relay.Variables
+//    associatedtype Variables: Relay.Variables
     associatedtype Data: Readable
 }

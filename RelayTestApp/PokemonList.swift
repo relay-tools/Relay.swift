@@ -1,6 +1,17 @@
 import SwiftUI
 import RelaySwiftUI
 
+private let query = graphql("""
+query PokemonListQuery {
+    pokemons(first: 50) {
+        __typename
+        id
+        name
+        ...PokemonListRow_pokemon
+    }
+}
+""")
+
 struct PokemonList: View {
     var body: some View {
         NavigationView {
@@ -19,7 +30,8 @@ struct PokemonList: View {
     }
 
     func dataView(_ data: PokemonListQuery.Data?) -> some View {
-        List(data?.pokemons ?? [], id: \.id) { pokemon in
+        let pokemons = (data?.pokemons ?? []).compactMap { $0 }
+        return List(pokemons, id: \.id) { pokemon in
             NavigationLink(destination: PokemonDetail(id: pokemon.id, name: pokemon.name ?? "")) {
                 PokemonListRow(pokemon: pokemon)
             }

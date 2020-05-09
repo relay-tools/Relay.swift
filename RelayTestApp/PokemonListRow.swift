@@ -1,6 +1,14 @@
 import SwiftUI
 import RelaySwiftUI
 
+private let pokemonFragment = graphql("""
+fragment PokemonListRow_pokemon on Pokemon {
+    name
+    number
+    classification
+}
+""")
+
 struct PokemonListRow: View {
     let pokemon: PokemonListRow_pokemon_Key
 

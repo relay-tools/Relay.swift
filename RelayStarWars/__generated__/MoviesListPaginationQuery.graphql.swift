@@ -41,7 +41,16 @@ struct MoviesListPaginationQuery: Operation {
                                                 name: "id"
                                             )),
                                             .field(NormalizationScalarField(
+                                                name: "episodeID"
+                                            )),
+                                            .field(NormalizationScalarField(
                                                 name: "title"
+                                            )),
+                                            .field(NormalizationScalarField(
+                                                name: "director"
+                                            )),
+                                            .field(NormalizationScalarField(
+                                                name: "releaseDate"
                                             )),
                                             .field(NormalizationScalarField(
                                                 name: "__typename"
@@ -93,7 +102,10 @@ query MoviesListPaginationQuery(
 
 fragment MoviesListRow_film on Film {
   id
+  episodeID
   title
+  director
+  releaseDate
 }
 
 fragment MoviesList_films_1G22uz on Root {

@@ -9,7 +9,16 @@ struct MoviesListRow_film: Fragment {
                     name: "id"
                 )),
                 .field(ReaderScalarField(
+                    name: "episodeID"
+                )),
+                .field(ReaderScalarField(
                     name: "title"
+                )),
+                .field(ReaderScalarField(
+                    name: "director"
+                )),
+                .field(ReaderScalarField(
+                    name: "releaseDate"
                 )),
             ]
         )
@@ -21,11 +30,17 @@ struct MoviesListRow_film: Fragment {
 
     struct Data: Readable {
         var id: String
+        var episodeID: Int?
         var title: String?
+        var director: String?
+        var releaseDate: String?
 
         init(from data: SelectorData) {
             id = data.get(String.self, "id")
+            episodeID = data.get(Int?.self, "episodeID")
             title = data.get(String?.self, "title")
+            director = data.get(String?.self, "director")
+            releaseDate = data.get(String?.self, "releaseDate")
         }
 
     }

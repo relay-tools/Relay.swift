@@ -15,6 +15,17 @@ extension Operation {
         let requestDescriptor = RequestDescriptor(request: node, variables: variables)
         return OperationDescriptor(request: node, variables: variables, requestDescriptor: requestDescriptor, dataID: dataID)
     }
+
+    public func createDescriptor(variables: AnyVariables, dataID: DataID = .rootID) -> OperationDescriptor {
+        // we don't do anything like Relay in JS does to set the default variables for the
+        // operation. Instead, we can just include the default values in the struct definition,
+        // so any Variables struct we get should already have its defaults set.
+
+        let node = self.node
+
+        let requestDescriptor = RequestDescriptor(request: node, variables: variables)
+        return OperationDescriptor(request: node, variables: variables, requestDescriptor: requestDescriptor, dataID: dataID)
+    }
 }
 
 public struct OperationDescriptor {
@@ -34,7 +45,7 @@ typealias RequestIdentifier = String
 public struct RequestDescriptor {
     var identifier: String
     var node: ConcreteRequest
-    var variables: AnyVariables
+    public var variables: AnyVariables
 
     init<Vars: Variables>(request: ConcreteRequest, variables: Vars) {
         self.identifier = request.params.identifier(variables: variables)

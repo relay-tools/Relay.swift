@@ -40,7 +40,9 @@ class RecordSourceMutator {
     func getLinkedRecordID(dataID: DataID, key: String) -> DataID? {
         for source in sources {
             if let record = source[dataID] {
-                return record.getLinkedRecordID(key)
+                if let linkedID = record.getLinkedRecordID(key) {
+                    return linkedID
+                }
             } else if source.getStatus(dataID) == .nonexistent {
                 return nil
             }
@@ -51,7 +53,9 @@ class RecordSourceMutator {
     func getLinkedRecordIDs(dataID: DataID, key: String) -> [DataID?]? {
         for source in sources {
             if let record = source[dataID] {
-                return record.getLinkedRecordIDs(key)
+                if let linkedIDs = record.getLinkedRecordIDs(key) {
+                    return linkedIDs
+                }
             } else if source.getStatus(dataID) == .nonexistent {
                 return nil
             }

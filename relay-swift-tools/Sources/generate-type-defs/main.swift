@@ -95,6 +95,13 @@ print(StructDeclSyntax { builder in
 })
 
 if kind == "Fragment" {
+    if let metadata = parsedData["metadata"] as? [String: Any],
+       metadata["connection"] != nil,
+       metadata["refetch"] != nil {
+        print("")
+        print(makePaginationFragmentExtensionDecl(node: parsedData))
+    }
+
     print("")
     print(makeFragmentProtocolDecl(name: name))
 }

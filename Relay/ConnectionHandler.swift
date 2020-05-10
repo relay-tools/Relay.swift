@@ -114,12 +114,12 @@ public class ConnectionHandler: Handler {
             if !hasAfter && !hasBefore {
                 clientPageInfo.copyFields(from: serverPageInfo)
             } else if hasBefore || (!hasAfter && args["last"] != nil) {
-                clientPageInfo[config.hasPreviousPage] = serverPageInfo[config.hasPreviousPage] as! Bool
+                clientPageInfo[config.hasPreviousPage] = (serverPageInfo[config.hasPreviousPage] as! NSNumber).boolValue
                 if let startCursor = serverPageInfo[config.startCursor] as? String {
                     clientPageInfo[config.startCursor] = startCursor
                 }
             } else if hasAfter || (!hasBefore && args["first"] != nil) {
-                clientPageInfo[config.hasNextPage] = serverPageInfo[config.hasNextPage] as! Bool
+                clientPageInfo[config.hasNextPage] = (serverPageInfo[config.hasNextPage] as! NSNumber).boolValue
                 if let endCursor = serverPageInfo[config.endCursor] as? String {
                     clientPageInfo[config.endCursor] = endCursor
                 }
@@ -160,19 +160,19 @@ public class ConnectionHandler: Handler {
     }
 }
 
-struct ConnectionConfig {
-    var clientMutationID: String
-    var cursor: String
-    var edges: String
-    var endCursor: String
-    var hasNextPage: String
-    var hasPreviousPage: String
-    var node: String
-    var pageInfoType: String
-    var pageInfo: String
-    var startCursor: String
+public struct ConnectionConfig {
+    public var clientMutationID: String
+    public var cursor: String
+    public var edges: String
+    public var endCursor: String
+    public var hasNextPage: String
+    public var hasPreviousPage: String
+    public var node: String
+    public var pageInfoType: String
+    public var pageInfo: String
+    public var startCursor: String
 
-    static let `default` = ConnectionConfig(
+    public static let `default` = ConnectionConfig(
         clientMutationID: "clientMutationID",
         cursor: "cursor",
         edges: "edges",

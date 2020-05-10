@@ -92,6 +92,9 @@ private func makeFields(node: [String: Any], selections: [[String: Any]]) -> [Se
                 typeSyntax = SyntaxFactory.makeTypeIdentifier("String")
             } else {
                 schemaField = parentType.fields[name]
+                if let alias = selection["alias"] as? String {
+                    schemaField = parentType.fields[alias]
+                }
                 typeSyntax = schemaField!.asTypeSyntax
             }
         } else if kind == "FragmentSpread" {

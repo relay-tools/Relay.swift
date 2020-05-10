@@ -9,12 +9,32 @@ query MoviesTabQuery {
 
 struct MoviesTab: View {
     var body: some View {
-        Text(/*@START_MENU_TOKEN@*/"Hello, World!"/*@END_MENU_TOKEN@*/)
+        RelayQuery(
+            op: MoviesTabQuery(),
+            variables: .init(),
+            loadingContent: LoadingView(),
+            errorContent: ErrorView.init,
+            dataContent: Data.init
+        )
+            .tabItem {
+                VStack {
+                    Image(systemName: "film.fill")
+                    Text("Movies")
+                }
+            }
     }
-}
 
-struct MoviesTab_Previews: PreviewProvider {
-    static var previews: some View {
-        MoviesTab()
+    struct Data: View {
+        let data: MoviesTabQuery.Data?
+
+        var body: some View {
+            Group {
+                if data == nil {
+                    EmptyView()
+                } else {
+                    MoviesList(films: data!)
+                }
+            }
+        }
     }
 }

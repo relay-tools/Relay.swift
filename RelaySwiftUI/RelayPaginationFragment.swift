@@ -1,16 +1,16 @@
 import SwiftUI
 import Relay
 
-public struct RelayFragment<Fragment: Relay.Fragment, ContentView: View>: View {
+public struct RelayPaginationFragment<Fragment: Relay.PaginationFragment, ContentView: View>: View {
     @SwiftUI.Environment(\.relayEnvironment) private var environment: Relay.Environment?
 
     let fragment: Fragment
     let key: Fragment.Key
-    let content: (Fragment.Data) -> ContentView
+    let content: (Fragment.Data, Paginating) -> ContentView
 
     public init(fragment: Fragment,
                 key: Fragment.Key,
-                content: @escaping (Fragment.Data) -> ContentView) {
+                content: @escaping (Fragment.Data, Paginating) -> ContentView) {
         self.fragment = fragment
         self.key = key
         self.content = content
@@ -20,27 +20,27 @@ public struct RelayFragment<Fragment: Relay.Fragment, ContentView: View>: View {
         Inner(environment: environment!, fragment: fragment, key: key, content: content)
     }
 
-    struct Inner<Fragment: Relay.Fragment, ContentView: View>: View {
-        @ObservedObject private var loader: FragmentLoader<Fragment>
+    struct Inner<Fragment: Relay.PaginationFragment, ContentView: View>: View {
+        @ObservedObject private var loader: PaginationFragmentLoader<Fragment>
         let fragment: Fragment
         let key: Fragment.Key
-        let content: (Fragment.Data) -> ContentView
+        let content: (Fragment.Data, Paginating) -> ContentView
 
         init(environment: Relay.Environment,
              fragment: Fragment,
              key: Fragment.Key,
-             content: @escaping (Fragment.Data) -> ContentView) {
+             content: @escaping (Fragment.Data, Paginating) -> ContentView) {
             self.fragment = fragment
             self.key = key
             self.content = content
-            self.loader = FragmentLoader(
+            self.loader = PaginationFragmentLoader(
                 environment: environment,
                 fragment: fragment,
                 pointer: fragment.getFragmentPointer(key))
         }
 
         var body: some View {
-            content(loader.data)
+            content(loader.data, loader)
         }
     }
 }

@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		33071A4EF0A28C0ED3B96F46 /* Refetch.swift in Sources */ = {isa = PBXBuildFile; fileRef = 33071222EDB25BA87463DE44 /* Refetch.swift */; };
+		33071A6B46AF96E8A219DF9E /* Pagination.swift in Sources */ = {isa = PBXBuildFile; fileRef = 33071766182C67FF4FE5D742 /* Pagination.swift */; };
 		C9E18B67245F687100213352 /* Relay.h in Headers */ = {isa = PBXBuildFile; fileRef = C9E18B65245F687100213352 /* Relay.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		C9E18B74245F68A100213352 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9E18B73245F68A100213352 /* AppDelegate.swift */; };
 		C9E18B76245F68A100213352 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9E18B75245F68A100213352 /* SceneDelegate.swift */; };
@@ -71,7 +73,6 @@
 		C9E18C7F2466495400213352 /* RelaySwiftUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C9E18BA4245FA79800213352 /* RelaySwiftUI.framework */; };
 		C9E18C802466495400213352 /* RelaySwiftUI.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = C9E18BA4245FA79800213352 /* RelaySwiftUI.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		C9E18C852466497E00213352 /* MoviesList.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9E18C842466497E00213352 /* MoviesList.swift */; };
-		C9E18C88246649EB00213352 /* MoviesListQuery.graphql.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9E18C87246649EB00213352 /* MoviesListQuery.graphql.swift */; };
 		C9E18C8A24664A1900213352 /* ErrorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9E18C8924664A1900213352 /* ErrorView.swift */; };
 		C9E18C8C24664DA600213352 /* MoviesListRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9E18C8B24664DA600213352 /* MoviesListRow.swift */; };
 		C9E18C8E24664DF600213352 /* MoviesListRow_film.graphql.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9E18C8D24664DF600213352 /* MoviesListRow_film.graphql.swift */; };
@@ -82,6 +83,9 @@
 		C9E18C982466741000213352 /* RecordSourceMutator.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9E18C972466741000213352 /* RecordSourceMutator.swift */; };
 		C9E18C9A246720BD00213352 /* Handler.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9E18C99246720BD00213352 /* Handler.swift */; };
 		C9E18C9C2467212D00213352 /* ConnectionHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9E18C9B2467212D00213352 /* ConnectionHandler.swift */; };
+		C9E18C9E2467341200213352 /* MoviesList_films.graphql.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9E18C9D2467341200213352 /* MoviesList_films.graphql.swift */; };
+		C9E18CA02467388C00213352 /* RelayPaginationFragment.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9E18C9F2467388C00213352 /* RelayPaginationFragment.swift */; };
+		C9E18CA22467396100213352 /* PaginationFragmentLoader.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9E18CA12467396100213352 /* PaginationFragmentLoader.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -157,6 +161,8 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		33071222EDB25BA87463DE44 /* Refetch.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Refetch.swift; sourceTree = "<group>"; };
+		33071766182C67FF4FE5D742 /* Pagination.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Pagination.swift; sourceTree = "<group>"; };
 		C9E18B62245F687100213352 /* Relay.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Relay.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		C9E18B65245F687100213352 /* Relay.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Relay.h; sourceTree = "<group>"; };
 		C9E18B66245F687100213352 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -225,7 +231,6 @@
 		C9E18C78246647CB00213352 /* schema.graphql */ = {isa = PBXFileReference; lastKnownFileType = text; path = schema.graphql; sourceTree = "<group>"; };
 		C9E18C792466491300213352 /* Environment.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Environment.swift; sourceTree = "<group>"; };
 		C9E18C842466497E00213352 /* MoviesList.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MoviesList.swift; sourceTree = "<group>"; };
-		C9E18C87246649EB00213352 /* MoviesListQuery.graphql.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MoviesListQuery.graphql.swift; sourceTree = "<group>"; };
 		C9E18C8924664A1900213352 /* ErrorView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ErrorView.swift; sourceTree = "<group>"; };
 		C9E18C8B24664DA600213352 /* MoviesListRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MoviesListRow.swift; sourceTree = "<group>"; };
 		C9E18C8D24664DF600213352 /* MoviesListRow_film.graphql.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MoviesListRow_film.graphql.swift; sourceTree = "<group>"; };
@@ -236,6 +241,9 @@
 		C9E18C972466741000213352 /* RecordSourceMutator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecordSourceMutator.swift; sourceTree = "<group>"; };
 		C9E18C99246720BD00213352 /* Handler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Handler.swift; sourceTree = "<group>"; };
 		C9E18C9B2467212D00213352 /* ConnectionHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConnectionHandler.swift; sourceTree = "<group>"; };
+		C9E18C9D2467341200213352 /* MoviesList_films.graphql.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MoviesList_films.graphql.swift; sourceTree = "<group>"; };
+		C9E18C9F2467388C00213352 /* RelayPaginationFragment.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RelayPaginationFragment.swift; sourceTree = "<group>"; };
+		C9E18CA12467396100213352 /* PaginationFragmentLoader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PaginationFragmentLoader.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -332,6 +340,8 @@
 				C9E18BD72462834700213352 /* Reader.swift */,
 				C9E18BBA245FB09700213352 /* PublishQueue.swift */,
 				C9E18BF424639F6900213352 /* GraphQL.swift */,
+				33071766182C67FF4FE5D742 /* Pagination.swift */,
+				33071222EDB25BA87463DE44 /* Refetch.swift */,
 			);
 			path = Relay;
 			sourceTree = "<group>";
@@ -385,6 +395,8 @@
 				C9E18BB2245FA85600213352 /* QueryLoader.swift */,
 				C9E18BE4246383CC00213352 /* RelayFragment.swift */,
 				C9E18BE62463864F00213352 /* FragmentLoader.swift */,
+				C9E18C9F2467388C00213352 /* RelayPaginationFragment.swift */,
+				C9E18CA12467396100213352 /* PaginationFragmentLoader.swift */,
 				C9E18BF624639FDB00213352 /* Relay.swift */,
 			);
 			path = RelaySwiftUI;
@@ -448,8 +460,8 @@
 		C9E18C86246649EB00213352 /* __generated__ */ = {
 			isa = PBXGroup;
 			children = (
+				C9E18C9D2467341200213352 /* MoviesList_films.graphql.swift */,
 				C9E18C9324665DA100213352 /* MoviesListPaginationQuery.graphql.swift */,
-				C9E18C87246649EB00213352 /* MoviesListQuery.graphql.swift */,
 				C9E18C8D24664DF600213352 /* MoviesListRow_film.graphql.swift */,
 				C9E18C9424665DA100213352 /* MoviesTabQuery.graphql.swift */,
 			);
@@ -695,6 +707,8 @@
 				C9E18BC3246113CF00213352 /* ResponseNormalizer.swift in Sources */,
 				C9E18B8C245F6DA200213352 /* Record.swift in Sources */,
 				C9E18B88245F697B00213352 /* Store.swift in Sources */,
+				33071A6B46AF96E8A219DF9E /* Pagination.swift in Sources */,
+				33071A4EF0A28C0ED3B96F46 /* Refetch.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -727,8 +741,10 @@
 				C9E18BB1245FA7C000213352 /* RelayQuery.swift in Sources */,
 				C9E18BF724639FDB00213352 /* Relay.swift in Sources */,
 				C9E18BB5245FA94C00213352 /* Environment.swift in Sources */,
+				C9E18CA02467388C00213352 /* RelayPaginationFragment.swift in Sources */,
 				C9E18BB3245FA85600213352 /* QueryLoader.swift in Sources */,
 				C9E18BE72463864F00213352 /* FragmentLoader.swift in Sources */,
+				C9E18CA22467396100213352 /* PaginationFragmentLoader.swift in Sources */,
 				C9E18BE5246383CC00213352 /* RelayFragment.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -748,7 +764,6 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				C9E18C88246649EB00213352 /* MoviesListQuery.graphql.swift in Sources */,
 				C9E18C652466474D00213352 /* AppDelegate.swift in Sources */,
 				C9E18C7A2466491300213352 /* Environment.swift in Sources */,
 				C9E18C902466518B00213352 /* LoadingView.swift in Sources */,
@@ -759,6 +774,7 @@
 				C9E18C8C24664DA600213352 /* MoviesListRow.swift in Sources */,
 				C9E18C852466497E00213352 /* MoviesList.swift in Sources */,
 				C9E18C9524665DA100213352 /* MoviesListPaginationQuery.graphql.swift in Sources */,
+				C9E18C9E2467341200213352 /* MoviesList_films.graphql.swift in Sources */,
 				C9E18C9624665DA100213352 /* MoviesTabQuery.graphql.swift in Sources */,
 				C9E18C692466474D00213352 /* ContentView.swift in Sources */,
 			);

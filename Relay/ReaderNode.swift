@@ -108,8 +108,8 @@ public struct ReaderFragmentSpread {
 public struct SingularReaderSelector {
     var dataID: DataID
     var node: ReaderFragment
-    var owner: RequestDescriptor
-    var variables: AnyVariables
+    public var owner: RequestDescriptor
+    public var variables: AnyVariables
 
     init(dataID: DataID, node: ReaderFragment, owner: RequestDescriptor, variables: AnyVariables) {
         self.dataID = dataID
@@ -131,6 +131,5 @@ public protocol Fragment {
     func getFragmentPointer(_ key: Key) -> FragmentPointer
     
     associatedtype Key
-//    associatedtype Variables: Relay.Variables
     associatedtype Data: Readable
 }

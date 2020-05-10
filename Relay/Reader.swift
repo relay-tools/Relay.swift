@@ -33,13 +33,28 @@ extension String: ReadableScalar {
     }
 }
 
+extension Bool: ReadableScalar {
+    public init(from value: SelectorData.Value) {
+        if case .int(let v) = value {
+            self = v != 0
+            return
+        }
+
+        guard case .bool(let v) = value else {
+            preconditionFailure("Tried to decode a Bool from a non-boolean value: \(value)")
+        }
+
+        self = v
+    }
+}
+
 public struct FragmentPointer {
     var variables: [String: Any]
     var id: DataID
     var owner: RequestDescriptor
 }
 
-public struct SelectorData {
+public struct SelectorData: Readable {
     private var data: [String: Value?] = [:]
     private var fragments: [String: FragmentPointer] = [:]
 
@@ -69,7 +84,7 @@ public struct SelectorData {
             }
         }
 
-        private var scalar: Any? {
+        var scalar: Any? {
             switch self {
             case .int(let v):
                 return v
@@ -97,6 +112,12 @@ public struct SelectorData {
                 preconditionFailure("Unexpected case of Value: \(self)")
             }
         }
+    }
+
+    init() {}
+
+    public init(from data: SelectorData) {
+        self = data
     }
 
     public func get<T: ReadableScalar>(_ type: T.Type, _ key: String) -> T {
@@ -190,6 +211,45 @@ public struct SelectorData {
 
     public func get(fragment: String) -> FragmentPointer {
         return fragments[fragment]!
+    }
+
+    public func get(path: [Any]) -> Any? {
+        var current: Value = .object(self)
+        var newPath = path
+
+        while !newPath.isEmpty {
+            let nextKey = newPath.removeFirst()
+
+            if let nextKey = nextKey as? String {
+                guard case .object(let obj) = current else {
+                    preconditionFailure("Expected an object when extracting value at path")
+                }
+                guard let value = obj?.data[nextKey], let value2 = value else {
+                    return nil
+                }
+
+                current = value2
+            } else if let nextIndex = nextKey as? Int {
+                guard case .objects(let objs) = current else {
+                    preconditionFailure("Expected an array when extracting value at path")
+                }
+                guard let objs2 = objs else {
+                    return nil
+                }
+
+                current = .object(objs2[nextIndex])
+            } else {
+                preconditionFailure("Unexpected type of key in path: \(nextKey)")
+            }
+        }
+
+        if case .object(let obj) = current {
+            return obj
+        } else if case .objects(let objs) = current {
+            return objs
+        } else {
+            return current.scalar
+        }
     }
 
     mutating func set(_ key: String, scalar: Any?) {

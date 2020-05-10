@@ -77,8 +77,8 @@ class PaginationFragmentLoader<Fragment: Relay.PaginationFragment>: ObservableOb
     private func loadMore(direction: PaginationDirection, count: Int) -> AnyPublisher<(), Error> {
         let (cursor, _) = getConnectionState(direction: direction)
 
-        var baseVariables = selector.owner.variables.asDictionary
-        baseVariables.merge(selector.variables.asDictionary, uniquingKeysWith: { $1 })
+        var baseVariables = selector.owner.variables
+        baseVariables.merge(selector.variables)
 
         let paginationVariables = getPaginationVariables(
             direction: direction,
@@ -124,8 +124,8 @@ class PaginationFragmentLoader<Fragment: Relay.PaginationFragment>: ObservableOb
         direction: PaginationDirection,
         count: Int,
         cursor: String?,
-        baseVariables: [String: Any]
-    ) -> AnyVariables {
+        baseVariables: VariableData
+    ) -> VariableData {
         switch direction {
         case .backward:
             guard let countName = metadata.connection?.backward?.count,
@@ -134,18 +134,17 @@ class PaginationFragmentLoader<Fragment: Relay.PaginationFragment>: ObservableOb
             }
 
             var variables = baseVariables
-            variables[countName] = count
-            variables[cursorName] = cursor
+            variables[dynamicMember: countName] = .int(count)
+            variables[dynamicMember: cursorName] = cursor.map { .string($0) }
 
             if let forwardCountName = metadata.connection?.forward?.count {
-                variables[forwardCountName] = nil
+                variables[dynamicMember: forwardCountName] = nil
             }
             if let forwardCursorName = metadata.connection?.forward?.cursor {
-                variables[forwardCursorName] = nil
+                variables[dynamicMember: forwardCursorName] = nil
             }
 
-            let data = try! JSONSerialization.data(withJSONObject: variables)
-            return AnyVariables(try! JSONDecoder().decode(Fragment.Operation.Variables.self, from: data))
+            return variables
         case .forward:
             guard let countName = metadata.connection?.forward?.count,
                   let cursorName = metadata.connection?.forward?.cursor else {
@@ -153,18 +152,17 @@ class PaginationFragmentLoader<Fragment: Relay.PaginationFragment>: ObservableOb
             }
 
             var variables = baseVariables
-            variables[countName] = count
-            variables[cursorName] = cursor
+            variables[dynamicMember: countName] = .int(count)
+            variables[dynamicMember: cursorName] = cursor.map { .string($0) }
 
             if let backwardCountName = metadata.connection?.backward?.count {
-                variables[backwardCountName] = nil
+                variables[dynamicMember: backwardCountName] = nil
             }
             if let backwardCursorName = metadata.connection?.backward?.cursor {
-                variables[backwardCursorName] = nil
+                variables[dynamicMember: backwardCursorName] = nil
             }
 
-            let data = try! JSONSerialization.data(withJSONObject: variables)
-            return AnyVariables(try! JSONDecoder().decode(Fragment.Operation.Variables.self, from: data))
+            return variables
         }
     }
 }

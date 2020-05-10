@@ -109,9 +109,9 @@ public struct SingularReaderSelector {
     var dataID: DataID
     var node: ReaderFragment
     public var owner: RequestDescriptor
-    public var variables: AnyVariables
+    public var variables: VariableData
 
-    init(dataID: DataID, node: ReaderFragment, owner: RequestDescriptor, variables: AnyVariables) {
+    init(dataID: DataID, node: ReaderFragment, owner: RequestDescriptor, variables: VariableData) {
         self.dataID = dataID
         self.node = node
         self.owner = owner
@@ -122,7 +122,7 @@ public struct SingularReaderSelector {
         dataID = pointer.id
         node = fragment
         owner = pointer.owner
-        variables = AnyVariables(dictionary: pointer.variables)
+        variables = pointer.variables
     }
 }
 

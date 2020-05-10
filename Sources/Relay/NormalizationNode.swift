@@ -142,7 +142,7 @@ public struct NormalizationHandle: Storable {
 
     public var storageKey: String? { nil }
 
-    func handleKey<Vars: Variables>(from variables: Vars) -> String {
+    func handleKey(from variables: VariableData) -> String {
         let handleName = getRelayHandleKey(handleName: handle, key: key, fieldName: name)
         var filterArgs: [Argument]?
         if let args = args, let filters = filters, !args.isEmpty, !filters.isEmpty {

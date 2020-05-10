@@ -49,7 +49,7 @@ extension Bool: ReadableScalar {
 }
 
 public struct FragmentPointer {
-    var variables: [String: Any]
+    var variables: VariableData
     var id: DataID
     var owner: RequestDescriptor
 }
@@ -272,7 +272,7 @@ public struct SelectorData: Readable {
         data[key] = .objects(objects)
     }
 
-    mutating func set(fragment: String, variables: [String: Any], dataID: DataID, owner: RequestDescriptor) {
+    mutating func set(fragment: String, variables: VariableData, dataID: DataID, owner: RequestDescriptor) {
         fragments[fragment] = FragmentPointer(variables: variables, id: dataID, owner: owner)
     }
 }
@@ -281,7 +281,7 @@ class Reader {
     let recordSource: RecordSource
     let selector: SingularReaderSelector
     let owner: RequestDescriptor
-    let variables: AnyVariables
+    let variables: VariableData
 
     private var isMissingData = false
     private var seenRecords: [DataID: Record] = [:]

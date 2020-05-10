@@ -20,7 +20,7 @@ func makeVariablesStruct(node: [String: Any]) -> DeclSyntax {
         builder.useInheritanceClause(TypeInheritanceClauseSyntax { builder in
             builder.useColon(SyntaxFactory.makeColonToken(trailingTrivia: .spaces(1)))
             builder.addInheritedType(InheritedTypeSyntax { builder in
-                builder.useTypeName(SyntaxFactory.makeTypeIdentifier("Relay.Variables"))
+                builder.useTypeName(SyntaxFactory.makeTypeIdentifier("VariableDataConvertible"))
             })
         }.withTrailingTrivia(.spaces(1)))
 
@@ -36,20 +36,6 @@ func makeVariablesStruct(node: [String: Any]) -> DeclSyntax {
             builder.addMember(MemberDeclListItemSyntax { builder in
                 builder.useDecl(makeAsDictionaryDecl(variables: variables, indent: 8))
             })
-
-//            builder.addMember(MemberDeclListItemSyntax { builder in
-//                builder.useDecl(makeInitFromSelectorDataDecl(selectionFields: selectionFields, indent: indent + 4)
-//                    .withLeadingTrivia(.newlines(1) + .spaces(indent + 4)))
-//            })
-//
-//            let linkedFields = selectionFields.filter { $0.isLinked }
-//
-//            for field in linkedFields {
-//                builder.addMember(MemberDeclListItemSyntax { builder in
-//                    builder.useDecl(makeReadableStruct(node: field.node, name: field.schemaField!.type, indent: indent + 4)
-//                        .withLeadingTrivia(.newlines(1) + .spaces(indent + 4)))
-//                })
-//            }
 
             builder.useRightBrace(SyntaxFactory.makeRightBraceToken(leadingTrivia: .newlines(1) + .spaces(4)))
         })
@@ -73,7 +59,7 @@ private func makeVariableDecl(variable: Variable, indent: Int) -> DeclSyntax {
                 builder.useColon(SyntaxFactory.makeColonToken(trailingTrivia: .spaces(1)))
                 builder.useType(variable.type)
             })
-        }.withTrailingTrivia(.newlines(2)))
+        }.withTrailingTrivia(.newlines(1)))
 
         // TODO default value
     })
@@ -81,14 +67,14 @@ private func makeVariableDecl(variable: Variable, indent: Int) -> DeclSyntax {
 
 private func makeAsDictionaryDecl(variables: [Variable], indent: Int) -> DeclSyntax {
     DeclSyntax(VariableDeclSyntax { builder in
-        builder.useLetOrVarKeyword(SyntaxFactory.makeVarKeyword(leadingTrivia: .spaces(indent), trailingTrivia: .spaces(1)))
+        builder.useLetOrVarKeyword(SyntaxFactory.makeVarKeyword(leadingTrivia: .newlines(1) + .spaces(indent), trailingTrivia: .spaces(1)))
         builder.addBinding(PatternBindingSyntax { builder in
             builder.usePattern(PatternSyntax(IdentifierPatternSyntax { builder in
-                builder.useIdentifier(SyntaxFactory.makeIdentifier("asDictionary"))
+                builder.useIdentifier(SyntaxFactory.makeIdentifier("variableData"))
             }))
             builder.useTypeAnnotation(TypeAnnotationSyntax { builder in
                 builder.useColon(SyntaxFactory.makeColonToken(trailingTrivia: .spaces(1)))
-                builder.useType(SyntaxFactory.makeTypeIdentifier("[String: Any]", trailingTrivia: .spaces(1)))
+                builder.useType(SyntaxFactory.makeTypeIdentifier("VariableData", trailingTrivia: .spaces(1)))
             })
             builder.useAccessor(Syntax(CodeBlockSyntax { builder in
                 builder.useLeftBrace(SyntaxFactory.makeLeftBraceToken(trailingTrivia: .newlines(1)))
@@ -106,14 +92,8 @@ private func makeAsDictionaryDecl(variables: [Variable], indent: Int) -> DeclSyn
                                 DictionaryElementSyntax { builder in
                                     builder.useKeyExpression(stringLiteral(variable.name).withLeadingTrivia(.spaces(indent + 8)))
                                     builder.useColon(SyntaxFactory.makeColonToken(trailingTrivia: .spaces(1)))
-                                    builder.useValueExpression(ExprSyntax(SequenceExprSyntax { builder in
-                                        builder.addElement(ExprSyntax(IdentifierExprSyntax { builder in
-                                            builder.useIdentifier(SyntaxFactory.makeIdentifier(variable.name, trailingTrivia: .spaces(1)))
-                                        }))
-                                        builder.addElement(ExprSyntax(AsExprSyntax { builder in
-                                            builder.useAsTok(SyntaxFactory.makeAsKeyword(trailingTrivia: .spaces(1)))
-                                            builder.useTypeName(SyntaxFactory.makeTypeIdentifier("Any"))
-                                        }))
+                                    builder.useValueExpression(ExprSyntax(IdentifierExprSyntax { builder in
+                                        builder.useIdentifier(SyntaxFactory.makeIdentifier(variable.name))
                                     }))
                                     builder.useTrailingComma(SyntaxFactory.makeCommaToken(trailingTrivia: .newlines(1)))
                                 }

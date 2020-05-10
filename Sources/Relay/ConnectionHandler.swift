@@ -69,8 +69,8 @@ public class ConnectionHandler: Handler {
 
         var updated = true
         if let prevEdges = prevEdges, let serverEdges = serverEdges {
-            if let after = args["after"] {
-                if let clientPageInfo = clientPageInfo, (after as! NSObject) == (clientPageInfo[config.endCursor] as? NSObject) {
+            if let after = args.after {
+                if let clientPageInfo = clientPageInfo, after == (clientPageInfo[config.endCursor] as? VariableValueConvertible)?.variableValue {
                     var nodeIDs = Set<DataID>()
                     var edges: [RecordProxy?] = []
                     mergeEdges(from: prevEdges, to: &edges, nodeIDs: &nodeIDs)
@@ -80,8 +80,8 @@ public class ConnectionHandler: Handler {
                     NSLog("Relay: Unexpected after cursor \(after), edges must be fetched from the end of the list (\(String(describing: clientPageInfo?[config.endCursor]))")
                     return
                 }
-            } else if let before = args["before"] {
-                if let clientPageInfo = clientPageInfo, (before as! NSObject) == (clientPageInfo[config.startCursor] as? NSObject) {
+            } else if let before = args.before {
+                if let clientPageInfo = clientPageInfo, before == (clientPageInfo[config.startCursor] as? VariableValueConvertible)?.variableValue {
                     var nodeIDs = Set<DataID>()
                     var edges: [RecordProxy?] = []
                     mergeEdges(from: serverEdges, to: &edges, nodeIDs: &nodeIDs)
@@ -106,19 +106,19 @@ public class ConnectionHandler: Handler {
         }
 
         if var clientPageInfo = clientPageInfo, let serverPageInfo = serverPageInfo {
-            let after = args["after"] as? NSObject
-            let hasAfter = after != nil && after != NSNull()
-            let before = args["before"] as? NSObject
-            let hasBefore = before != nil && before != NSNull()
+            let after = args.after
+            let hasAfter = after != nil && after != .null
+            let before = args.before
+            let hasBefore = before != nil && before != .null
 
             if !hasAfter && !hasBefore {
                 clientPageInfo.copyFields(from: serverPageInfo)
-            } else if hasBefore || (!hasAfter && args["last"] != nil) {
+            } else if hasBefore || (!hasAfter && args.last != nil) {
                 clientPageInfo[config.hasPreviousPage] = (serverPageInfo[config.hasPreviousPage] as! NSNumber).boolValue
                 if let startCursor = serverPageInfo[config.startCursor] as? String {
                     clientPageInfo[config.startCursor] = startCursor
                 }
-            } else if hasAfter || (!hasBefore && args["first"] != nil) {
+            } else if hasAfter || (!hasBefore && args.first != nil) {
                 clientPageInfo[config.hasNextPage] = (serverPageInfo[config.hasNextPage] as! NSNumber).boolValue
                 if let endCursor = serverPageInfo[config.endCursor] as? String {
                     clientPageInfo[config.endCursor] = endCursor

@@ -7,7 +7,7 @@ struct ResponsePayload {
 }
 
 public struct HandleFieldPayload {
-    var args: [String: Any]
+    var args: VariableData
     var dataID: DataID
     var fieldKey: String
     var handle: String
@@ -16,13 +16,13 @@ public struct HandleFieldPayload {
 
 class ResponseNormalizer {
     private var recordSource: RecordSource
-    private let variables: AnyVariables
+    private let variables: VariableData
     private let request: RequestDescriptor
 
     private var path: [String] = []
     private var handleFieldPayloads: [HandleFieldPayload] = []
 
-    init(source: RecordSource, variables: AnyVariables, request: RequestDescriptor) {
+    init(source: RecordSource, variables: VariableData, request: RequestDescriptor) {
         self.recordSource = source
         self.variables = variables
         self.request = request
@@ -62,7 +62,7 @@ class ResponseNormalizer {
                 }
             case .handle(let handle):
                 handleFieldPayloads.append(HandleFieldPayload(
-                    args: handle.args.map { getArgumentValues($0, variables) } ?? [:],
+                    args: handle.args.map { getArgumentValues($0, variables) } ?? VariableData(),
                     dataID: record.dataID,
                     fieldKey: getStorageKey(field: handle, variables: variables),
                     handle: handle.handle,

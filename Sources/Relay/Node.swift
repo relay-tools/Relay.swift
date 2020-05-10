@@ -49,5 +49,5 @@ public struct ConcreteRequest {
 struct NormalizationSelector {
     var dataID: DataID
     var node: NormalizationNode
-    var variables: AnyVariables
+    var variables: VariableData
 }

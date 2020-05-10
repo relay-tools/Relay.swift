@@ -87,7 +87,7 @@ public protocol Storable {
     var args: [Argument]? { get }
 }
 
-func getStorageKey<Vars: Variables>(field: Storable, variables: Vars) -> String {
+func getStorageKey(field: Storable, variables: VariableData) -> String {
     if let storageKey = field.storageKey {
         return storageKey
     }
@@ -99,37 +99,32 @@ func getStorageKey<Vars: Variables>(field: Storable, variables: Vars) -> String 
     }
 }
 
-func getArgumentValues<Vars: Variables>(_ args: [Argument], _ variables: Vars) -> [String: Any] {
-    return Dictionary(uniqueKeysWithValues: args.map { ($0.name, getArgumentValue($0, variables)) })
+func getArgumentValues(_ args: [Argument], _ variables: VariableData) -> VariableData {
+    return Dictionary(uniqueKeysWithValues: args.map { ($0.name, getArgumentValue($0, variables)) }).variableData
 }
 
-private func getArgumentValue<Vars: Variables>(_ arg: Argument, _ variables: Vars) -> Any {
+private func getArgumentValue(_ arg: Argument, _ variables: VariableData) -> VariableValue {
     if let arg = arg as? LiteralArgument {
-        return arg.value
+        return arg.value.variableValue
     } else if let arg = arg as? VariableArgument {
-        return variables.asDictionary[arg.variableName]!
+        return variables[dynamicMember: arg.variableName]!
     } else if let arg = arg as? ObjectValueArgument {
-        return Dictionary(uniqueKeysWithValues: arg.fields.map { ($0.name, getArgumentValue($0, variables)) })
+        return Dictionary(uniqueKeysWithValues: arg.fields.map { ($0.name, getArgumentValue($0, variables)) }).variableValue
     } else if let arg = arg as? ListValueArgument {
-        return arg.items.map { item -> Any? in
+        return arg.items.map { item -> VariableValue in
             if let item = item {
                 return getArgumentValue(item, variables)
             } else {
-                return nil
+                return .null
             }
-        }
+        }.variableValue
     } else {
         preconditionFailure("Unexpected type of Argument: \(arg)")
     }
 }
 
-func formatStorageKey(name: String, variables: [String: Any]) -> String {
-    if variables.isEmpty {
-        return name
-    }
-
-    let varString = variables.keys.sorted().map { k in "\(k):\(variables[k]!)" }.joined(separator: ",")
-    return "\(name)(\(varString))"
+func formatStorageKey(name: String, variables: VariableDataConvertible?) -> String {
+    return "\(name)\((variables ?? VariableData()).variableData)"
 }
 
 func getRelayHandleKey(

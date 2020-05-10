@@ -5,9 +5,9 @@ public protocol Argument {
 public struct LiteralArgument: Argument {
     public var name: String
     public var type: String?
-    public var value: Any
+    public var value: VariableValueConvertible
 
-    public init(name: String, type: String? = nil, value: Any) {
+    public init(name: String, type: String? = nil, value: VariableValueConvertible) {
         self.name = name
         self.type = type
         self.value = value

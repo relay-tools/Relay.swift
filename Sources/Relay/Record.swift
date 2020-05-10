@@ -172,13 +172,13 @@ extension Record: CustomDebugStringConvertible {
 public protocol RecordProxy {
     var dataID: DataID { get }
     var typeName: String { get }
-    subscript(_ name: String, args args: [String: Any]?) -> Any? { get set }
-    func getLinkedRecord(_ name: String, args: [String: Any]?) -> RecordProxy?
-    func getLinkedRecords(_ name: String, args: [String: Any]?) -> [RecordProxy?]?
+    subscript(_ name: String, args args: VariableDataConvertible?) -> Any? { get set }
+    func getLinkedRecord(_ name: String, args: VariableDataConvertible?) -> RecordProxy?
+    func getLinkedRecords(_ name: String, args: VariableDataConvertible?) -> [RecordProxy?]?
 
-    mutating func getOrCreateLinkedRecord(_ name: String, typeName: String, args: [String: Any]?) -> RecordProxy
-    mutating func setLinkedRecord(_ name: String, args: [String: Any]?, record: RecordProxy)
-    mutating func setLinkedRecords(_ name: String, args: [String: Any]?, records: [RecordProxy?])
+    mutating func getOrCreateLinkedRecord(_ name: String, typeName: String, args: VariableDataConvertible?) -> RecordProxy
+    mutating func setLinkedRecord(_ name: String, args: VariableDataConvertible?, record: RecordProxy)
+    mutating func setLinkedRecords(_ name: String, args: VariableDataConvertible?, records: [RecordProxy?])
 
     mutating func copyFields(from record: RecordProxy)
     mutating func invalidateRecord()
@@ -227,19 +227,19 @@ class DefaultRecordProxy: RecordProxy {
         mutator.getType(dataID)!
     }
 
-    subscript(name: String, args args: [String : Any]?) -> Any? {
+    subscript(name: String, args args: VariableDataConvertible?) -> Any? {
         get {
-            let storageKey = formatStorageKey(name: name, variables: args ?? [:])
+            let storageKey = formatStorageKey(name: name, variables: args)
             return mutator.getValue(dataID: dataID, key: storageKey)
         }
         set {
-            let storageKey = formatStorageKey(name: name, variables: args ?? [:])
+            let storageKey = formatStorageKey(name: name, variables: args)
             mutator.setValue(dataID: dataID, key: storageKey, value: newValue)
         }
     }
 
-    func getLinkedRecord(_ name: String, args: [String : Any]?) -> RecordProxy? {
-        let storageKey = formatStorageKey(name: name, variables: args ?? [:])
+    func getLinkedRecord(_ name: String, args: VariableDataConvertible?) -> RecordProxy? {
+        let storageKey = formatStorageKey(name: name, variables: args)
 
         if let linkedID = mutator.getLinkedRecordID(dataID: dataID, key: storageKey) {
             return source[linkedID]
@@ -248,8 +248,8 @@ class DefaultRecordProxy: RecordProxy {
         }
     }
 
-    func getLinkedRecords(_ name: String, args: [String : Any]?) -> [RecordProxy?]? {
-        let storageKey = formatStorageKey(name: name, variables: args ?? [:])
+    func getLinkedRecords(_ name: String, args: VariableDataConvertible?) -> [RecordProxy?]? {
+        let storageKey = formatStorageKey(name: name, variables: args)
 
         if let linkedIDs = mutator.getLinkedRecordIDs(dataID: dataID, key: storageKey) {
             return linkedIDs.map { $0.flatMap { source[$0] } }
@@ -258,25 +258,25 @@ class DefaultRecordProxy: RecordProxy {
         }
     }
 
-    func getOrCreateLinkedRecord(_ name: String, typeName: String, args: [String: Any]?) -> RecordProxy {
+    func getOrCreateLinkedRecord(_ name: String, typeName: String, args: VariableDataConvertible?) -> RecordProxy {
         if let linkedRecord = getLinkedRecord(name, args: args) {
             return linkedRecord
         }
 
-        let storageKey = formatStorageKey(name: name, variables: args ?? [:])
+        let storageKey = formatStorageKey(name: name, variables: args)
         let clientID = dataID.clientID(storageKey: storageKey)
         let linkedRecord = source[clientID] ?? source.create(dataID: clientID, typeName: typeName)
         setLinkedRecord(name, args: args, record: linkedRecord)
         return linkedRecord
     }
 
-    func setLinkedRecord(_ name: String, args: [String: Any]?, record: RecordProxy) {
-        let storageKey = formatStorageKey(name: name, variables: args ?? [:])
+    func setLinkedRecord(_ name: String, args: VariableDataConvertible?, record: RecordProxy) {
+        let storageKey = formatStorageKey(name: name, variables: args)
         mutator.setLinkedRecordID(dataID: dataID, key: storageKey, linkedID: record.dataID)
     }
 
-    func setLinkedRecords(_ name: String, args: [String: Any]?, records: [RecordProxy?]) {
-        let storageKey = formatStorageKey(name: name, variables: args ?? [:])
+    func setLinkedRecords(_ name: String, args: VariableDataConvertible?, records: [RecordProxy?]) {
+        let storageKey = formatStorageKey(name: name, variables: args)
         let linkedIDs = records.map { $0?.dataID }
         mutator.setLinkedRecordIDs(dataID: dataID, key: storageKey, linkedIDs: linkedIDs)
     }

@@ -1,4 +1,5 @@
 import Combine
+import Foundation
 import Relay
 
 private let url = URL(string: "https://swapi-graphql.netlify.app/.netlify/functions/index")!

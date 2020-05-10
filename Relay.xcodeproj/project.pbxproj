@@ -3,59 +3,22 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 50;
+	objectVersion = 52;
 	objects = {
 
 /* Begin PBXBuildFile section */
-		3307172AEF2B8D6A41AAA803 /* SnapshotPublisher.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3307111BBB43AC9428183880 /* SnapshotPublisher.swift */; };
-		33071A4EF0A28C0ED3B96F46 /* Refetch.swift in Sources */ = {isa = PBXBuildFile; fileRef = 33071222EDB25BA87463DE44 /* Refetch.swift */; };
-		33071A6B46AF96E8A219DF9E /* Pagination.swift in Sources */ = {isa = PBXBuildFile; fileRef = 33071766182C67FF4FE5D742 /* Pagination.swift */; };
-		C9E18B67245F687100213352 /* Relay.h in Headers */ = {isa = PBXBuildFile; fileRef = C9E18B65245F687100213352 /* Relay.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		C9E18B74245F68A100213352 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9E18B73245F68A100213352 /* AppDelegate.swift */; };
 		C9E18B76245F68A100213352 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9E18B75245F68A100213352 /* SceneDelegate.swift */; };
 		C9E18B78245F68A100213352 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9E18B77245F68A100213352 /* ContentView.swift */; };
 		C9E18B7A245F68A200213352 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = C9E18B79245F68A200213352 /* Assets.xcassets */; };
 		C9E18B7D245F68A200213352 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = C9E18B7C245F68A200213352 /* Preview Assets.xcassets */; };
 		C9E18B80245F68A200213352 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = C9E18B7E245F68A200213352 /* LaunchScreen.storyboard */; };
-		C9E18B86245F68BA00213352 /* Environment.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9E18B85245F68BA00213352 /* Environment.swift */; };
-		C9E18B88245F697B00213352 /* Store.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9E18B87245F697B00213352 /* Store.swift */; };
-		C9E18B8A245F6A5200213352 /* RecordSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9E18B89245F6A5200213352 /* RecordSource.swift */; };
-		C9E18B8C245F6DA200213352 /* Record.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9E18B8B245F6DA200213352 /* Record.swift */; };
-		C9E18B8E245F6E8200213352 /* Network.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9E18B8D245F6E8200213352 /* Network.swift */; };
-		C9E18B90245F70A700213352 /* Node.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9E18B8F245F70A700213352 /* Node.swift */; };
 		C9E18B92245F724600213352 /* Environment.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9E18B91245F724600213352 /* Environment.swift */; };
-		C9E18B94245F725800213352 /* Relay.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C9E18B62245F687100213352 /* Relay.framework */; };
-		C9E18B95245F725800213352 /* Relay.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = C9E18B62245F687100213352 /* Relay.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
-		C9E18B9C245F88BF00213352 /* NormalizationNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9E18B9B245F88BF00213352 /* NormalizationNode.swift */; };
-		C9E18B9E245F9CA500213352 /* Executor.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9E18B9D245F9CA500213352 /* Executor.swift */; };
-		C9E18BA8245FA79800213352 /* RelaySwiftUI.h in Headers */ = {isa = PBXBuildFile; fileRef = C9E18BA6245FA79800213352 /* RelaySwiftUI.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		C9E18BAC245FA7A600213352 /* RelaySwiftUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C9E18BA4245FA79800213352 /* RelaySwiftUI.framework */; };
-		C9E18BAD245FA7A600213352 /* RelaySwiftUI.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = C9E18BA4245FA79800213352 /* RelaySwiftUI.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
-		C9E18BB1245FA7C000213352 /* RelayQuery.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9E18BB0245FA7C000213352 /* RelayQuery.swift */; };
-		C9E18BB3245FA85600213352 /* QueryLoader.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9E18BB2245FA85600213352 /* QueryLoader.swift */; };
-		C9E18BB5245FA94C00213352 /* Environment.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9E18BB4245FA94C00213352 /* Environment.swift */; };
 		C9E18BB7245FAE5200213352 /* PokemonList.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9E18BB6245FAE5200213352 /* PokemonList.swift */; };
 		C9E18BB9245FAEDC00213352 /* ErrorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9E18BB8245FAEDC00213352 /* ErrorView.swift */; };
-		C9E18BBB245FB09700213352 /* PublishQueue.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9E18BBA245FB09700213352 /* PublishQueue.swift */; };
-		C9E18BBF245FBEC400213352 /* ReaderNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9E18BBE245FBEC400213352 /* ReaderNode.swift */; };
-		C9E18BC124610A9300213352 /* Operation.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9E18BC024610A9300213352 /* Operation.swift */; };
-		C9E18BC3246113CF00213352 /* ResponseNormalizer.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9E18BC2246113CF00213352 /* ResponseNormalizer.swift */; };
-		C9E18BC52461203300213352 /* Argument.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9E18BC42461203300213352 /* Argument.swift */; };
-		C9E18BCF246134BB00213352 /* Relay.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C9E18B62245F687100213352 /* Relay.framework */; };
-		C9E18BD62461350300213352 /* ResponseNormalizerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9E18BD52461350300213352 /* ResponseNormalizerTests.swift */; };
-		C9E18BD82462834700213352 /* Reader.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9E18BD72462834700213352 /* Reader.swift */; };
-		C9E18BDA24633D5C00213352 /* ReaderTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9E18BD924633D5C00213352 /* ReaderTests.swift */; };
-		C9E18BDC2463747C00213352 /* PokemonListQuery.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9E18BDB2463747C00213352 /* PokemonListQuery.swift */; };
-		C9E18BDE246374AB00213352 /* PokemonListRow_pokemon.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9E18BDD246374AB00213352 /* PokemonListRow_pokemon.swift */; };
-		C9E18BDF24637E1600213352 /* Relay.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C9E18B62245F687100213352 /* Relay.framework */; };
-		C9E18BE5246383CC00213352 /* RelayFragment.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9E18BE4246383CC00213352 /* RelayFragment.swift */; };
-		C9E18BE72463864F00213352 /* FragmentLoader.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9E18BE62463864F00213352 /* FragmentLoader.swift */; };
 		C9E18BE9246389B000213352 /* PokemonListRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9E18BE8246389B000213352 /* PokemonListRow.swift */; };
 		C9E18BEB24638D8700213352 /* PokemonDetail.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9E18BEA24638D8700213352 /* PokemonDetail.swift */; };
-		C9E18BEF246392A900213352 /* Variables.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9E18BEE246392A900213352 /* Variables.swift */; };
 		C9E18BF12463970800213352 /* PokemonDetailInfoSection.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9E18BF02463970800213352 /* PokemonDetailInfoSection.swift */; };
-		C9E18BF524639F6900213352 /* GraphQL.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9E18BF424639F6900213352 /* GraphQL.swift */; };
-		C9E18BF724639FDB00213352 /* Relay.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9E18BF624639FDB00213352 /* Relay.swift */; };
 		C9E18C172463B9F100213352 /* PokemonListRow_pokemon.graphql.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9E18C152463B9F100213352 /* PokemonListRow_pokemon.graphql.swift */; };
 		C9E18C182463B9F100213352 /* PokemonListQuery.graphql.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9E18C162463B9F100213352 /* PokemonListQuery.graphql.swift */; };
 		C9E18C1B2463BA9F00213352 /* PokemonDetailInfoSection_pokemon.graphql.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9E18C192463BA9F00213352 /* PokemonDetailInfoSection_pokemon.graphql.swift */; };
@@ -69,10 +32,6 @@
 		C9E18C6E2466474F00213352 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = C9E18C6D2466474F00213352 /* Preview Assets.xcassets */; };
 		C9E18C712466474F00213352 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = C9E18C6F2466474F00213352 /* LaunchScreen.storyboard */; };
 		C9E18C7A2466491300213352 /* Environment.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9E18C792466491300213352 /* Environment.swift */; };
-		C9E18C7B2466495400213352 /* Relay.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C9E18B62245F687100213352 /* Relay.framework */; };
-		C9E18C7C2466495400213352 /* Relay.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = C9E18B62245F687100213352 /* Relay.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
-		C9E18C7F2466495400213352 /* RelaySwiftUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C9E18BA4245FA79800213352 /* RelaySwiftUI.framework */; };
-		C9E18C802466495400213352 /* RelaySwiftUI.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = C9E18BA4245FA79800213352 /* RelaySwiftUI.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		C9E18C852466497E00213352 /* MoviesList.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9E18C842466497E00213352 /* MoviesList.swift */; };
 		C9E18C8A24664A1900213352 /* ErrorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9E18C8924664A1900213352 /* ErrorView.swift */; };
 		C9E18C8C24664DA600213352 /* MoviesListRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9E18C8B24664DA600213352 /* MoviesListRow.swift */; };
@@ -81,58 +40,12 @@
 		C9E18C92246653A300213352 /* MoviesTab.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9E18C91246653A300213352 /* MoviesTab.swift */; };
 		C9E18C9524665DA100213352 /* MoviesListPaginationQuery.graphql.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9E18C9324665DA100213352 /* MoviesListPaginationQuery.graphql.swift */; };
 		C9E18C9624665DA100213352 /* MoviesTabQuery.graphql.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9E18C9424665DA100213352 /* MoviesTabQuery.graphql.swift */; };
-		C9E18C982466741000213352 /* RecordSourceMutator.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9E18C972466741000213352 /* RecordSourceMutator.swift */; };
-		C9E18C9A246720BD00213352 /* Handler.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9E18C99246720BD00213352 /* Handler.swift */; };
-		C9E18C9C2467212D00213352 /* ConnectionHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9E18C9B2467212D00213352 /* ConnectionHandler.swift */; };
 		C9E18C9E2467341200213352 /* MoviesList_films.graphql.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9E18C9D2467341200213352 /* MoviesList_films.graphql.swift */; };
-		C9E18CA02467388C00213352 /* RelayPaginationFragment.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9E18C9F2467388C00213352 /* RelayPaginationFragment.swift */; };
-		C9E18CA22467396100213352 /* PaginationFragmentLoader.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9E18CA12467396100213352 /* PaginationFragmentLoader.swift */; };
+		C9E18CAE246877B100213352 /* Relay in Frameworks */ = {isa = PBXBuildFile; productRef = C9E18CAD246877B100213352 /* Relay */; };
+		C9E18CB0246877B100213352 /* RelaySwiftUI in Frameworks */ = {isa = PBXBuildFile; productRef = C9E18CAF246877B100213352 /* RelaySwiftUI */; };
+		C9E18CB2246877B800213352 /* Relay in Frameworks */ = {isa = PBXBuildFile; productRef = C9E18CB1246877B800213352 /* Relay */; };
+		C9E18CB4246877B800213352 /* RelaySwiftUI in Frameworks */ = {isa = PBXBuildFile; productRef = C9E18CB3246877B800213352 /* RelaySwiftUI */; };
 /* End PBXBuildFile section */
-
-/* Begin PBXContainerItemProxy section */
-		C9E18B96245F725800213352 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = C9E18B59245F687100213352 /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = C9E18B61245F687100213352;
-			remoteInfo = Relay;
-		};
-		C9E18BAE245FA7A600213352 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = C9E18B59245F687100213352 /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = C9E18BA3245FA79800213352;
-			remoteInfo = RelaySwiftUI;
-		};
-		C9E18BD0246134BB00213352 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = C9E18B59245F687100213352 /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = C9E18B61245F687100213352;
-			remoteInfo = Relay;
-		};
-		C9E18BE124637E1600213352 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = C9E18B59245F687100213352 /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = C9E18B61245F687100213352;
-			remoteInfo = Relay;
-		};
-		C9E18C7D2466495400213352 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = C9E18B59245F687100213352 /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = C9E18B61245F687100213352;
-			remoteInfo = Relay;
-		};
-		C9E18C812466495400213352 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = C9E18B59245F687100213352 /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = C9E18BA3245FA79800213352;
-			remoteInfo = RelaySwiftUI;
-		};
-/* End PBXContainerItemProxy section */
 
 /* Begin PBXCopyFilesBuildPhase section */
 		C9E18B98245F725800213352 /* Embed Frameworks */ = {
@@ -141,8 +54,6 @@
 			dstPath = "";
 			dstSubfolderSpec = 10;
 			files = (
-				C9E18BAD245FA7A600213352 /* RelaySwiftUI.framework in Embed Frameworks */,
-				C9E18B95245F725800213352 /* Relay.framework in Embed Frameworks */,
 			);
 			name = "Embed Frameworks";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -153,8 +64,6 @@
 			dstPath = "";
 			dstSubfolderSpec = 10;
 			files = (
-				C9E18C802466495400213352 /* RelaySwiftUI.framework in Embed Frameworks */,
-				C9E18C7C2466495400213352 /* Relay.framework in Embed Frameworks */,
 			);
 			name = "Embed Frameworks";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -162,12 +71,6 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
-		3307111BBB43AC9428183880 /* SnapshotPublisher.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SnapshotPublisher.swift; sourceTree = "<group>"; };
-		33071222EDB25BA87463DE44 /* Refetch.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Refetch.swift; sourceTree = "<group>"; };
-		33071766182C67FF4FE5D742 /* Pagination.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Pagination.swift; sourceTree = "<group>"; };
-		C9E18B62245F687100213352 /* Relay.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Relay.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		C9E18B65245F687100213352 /* Relay.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Relay.h; sourceTree = "<group>"; };
-		C9E18B66245F687100213352 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		C9E18B71245F68A100213352 /* RelayPokedex.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = RelayPokedex.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		C9E18B73245F68A100213352 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		C9E18B75245F68A100213352 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -176,43 +79,12 @@
 		C9E18B7C245F68A200213352 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
 		C9E18B7F245F68A200213352 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		C9E18B81245F68A200213352 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		C9E18B85245F68BA00213352 /* Environment.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Environment.swift; sourceTree = "<group>"; };
-		C9E18B87245F697B00213352 /* Store.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Store.swift; sourceTree = "<group>"; };
-		C9E18B89245F6A5200213352 /* RecordSource.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecordSource.swift; sourceTree = "<group>"; };
-		C9E18B8B245F6DA200213352 /* Record.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Record.swift; sourceTree = "<group>"; };
-		C9E18B8D245F6E8200213352 /* Network.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Network.swift; sourceTree = "<group>"; };
-		C9E18B8F245F70A700213352 /* Node.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Node.swift; sourceTree = "<group>"; };
 		C9E18B91245F724600213352 /* Environment.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Environment.swift; sourceTree = "<group>"; };
-		C9E18B9B245F88BF00213352 /* NormalizationNode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NormalizationNode.swift; sourceTree = "<group>"; };
-		C9E18B9D245F9CA500213352 /* Executor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Executor.swift; sourceTree = "<group>"; };
-		C9E18BA4245FA79800213352 /* RelaySwiftUI.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = RelaySwiftUI.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		C9E18BA6245FA79800213352 /* RelaySwiftUI.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = RelaySwiftUI.h; sourceTree = "<group>"; };
-		C9E18BA7245FA79800213352 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		C9E18BB0245FA7C000213352 /* RelayQuery.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RelayQuery.swift; sourceTree = "<group>"; };
-		C9E18BB2245FA85600213352 /* QueryLoader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QueryLoader.swift; sourceTree = "<group>"; };
-		C9E18BB4245FA94C00213352 /* Environment.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Environment.swift; sourceTree = "<group>"; };
 		C9E18BB6245FAE5200213352 /* PokemonList.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PokemonList.swift; sourceTree = "<group>"; };
 		C9E18BB8245FAEDC00213352 /* ErrorView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ErrorView.swift; sourceTree = "<group>"; };
-		C9E18BBA245FB09700213352 /* PublishQueue.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PublishQueue.swift; sourceTree = "<group>"; };
-		C9E18BBE245FBEC400213352 /* ReaderNode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReaderNode.swift; sourceTree = "<group>"; };
-		C9E18BC024610A9300213352 /* Operation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Operation.swift; sourceTree = "<group>"; };
-		C9E18BC2246113CF00213352 /* ResponseNormalizer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ResponseNormalizer.swift; sourceTree = "<group>"; };
-		C9E18BC42461203300213352 /* Argument.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Argument.swift; sourceTree = "<group>"; };
-		C9E18BCA246134BB00213352 /* RelayTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = RelayTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
-		C9E18BCE246134BB00213352 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		C9E18BD52461350300213352 /* ResponseNormalizerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ResponseNormalizerTests.swift; sourceTree = "<group>"; };
-		C9E18BD72462834700213352 /* Reader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Reader.swift; sourceTree = "<group>"; };
-		C9E18BD924633D5C00213352 /* ReaderTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReaderTests.swift; sourceTree = "<group>"; };
-		C9E18BDB2463747C00213352 /* PokemonListQuery.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PokemonListQuery.swift; sourceTree = "<group>"; };
-		C9E18BDD246374AB00213352 /* PokemonListRow_pokemon.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PokemonListRow_pokemon.swift; sourceTree = "<group>"; };
-		C9E18BE4246383CC00213352 /* RelayFragment.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RelayFragment.swift; sourceTree = "<group>"; };
-		C9E18BE62463864F00213352 /* FragmentLoader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FragmentLoader.swift; sourceTree = "<group>"; };
 		C9E18BE8246389B000213352 /* PokemonListRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PokemonListRow.swift; sourceTree = "<group>"; };
 		C9E18BEA24638D8700213352 /* PokemonDetail.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PokemonDetail.swift; sourceTree = "<group>"; };
-		C9E18BEE246392A900213352 /* Variables.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Variables.swift; sourceTree = "<group>"; };
 		C9E18BF02463970800213352 /* PokemonDetailInfoSection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PokemonDetailInfoSection.swift; sourceTree = "<group>"; };
-		C9E18BF424639F6900213352 /* GraphQL.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GraphQL.swift; sourceTree = "<group>"; };
-		C9E18BF624639FDB00213352 /* Relay.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Relay.swift; sourceTree = "<group>"; };
 		C9E18C152463B9F100213352 /* PokemonListRow_pokemon.graphql.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PokemonListRow_pokemon.graphql.swift; sourceTree = "<group>"; };
 		C9E18C162463B9F100213352 /* PokemonListQuery.graphql.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PokemonListQuery.graphql.swift; sourceTree = "<group>"; };
 		C9E18C192463BA9F00213352 /* PokemonDetailInfoSection_pokemon.graphql.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PokemonDetailInfoSection_pokemon.graphql.swift; sourceTree = "<group>"; };
@@ -240,44 +112,17 @@
 		C9E18C91246653A300213352 /* MoviesTab.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MoviesTab.swift; sourceTree = "<group>"; };
 		C9E18C9324665DA100213352 /* MoviesListPaginationQuery.graphql.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MoviesListPaginationQuery.graphql.swift; sourceTree = "<group>"; };
 		C9E18C9424665DA100213352 /* MoviesTabQuery.graphql.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MoviesTabQuery.graphql.swift; sourceTree = "<group>"; };
-		C9E18C972466741000213352 /* RecordSourceMutator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecordSourceMutator.swift; sourceTree = "<group>"; };
-		C9E18C99246720BD00213352 /* Handler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Handler.swift; sourceTree = "<group>"; };
-		C9E18C9B2467212D00213352 /* ConnectionHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConnectionHandler.swift; sourceTree = "<group>"; };
 		C9E18C9D2467341200213352 /* MoviesList_films.graphql.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MoviesList_films.graphql.swift; sourceTree = "<group>"; };
-		C9E18C9F2467388C00213352 /* RelayPaginationFragment.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RelayPaginationFragment.swift; sourceTree = "<group>"; };
-		C9E18CA12467396100213352 /* PaginationFragmentLoader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PaginationFragmentLoader.swift; sourceTree = "<group>"; };
+		C9E18CA7246876E900213352 /*  */ = {isa = PBXFileReference; lastKnownFileType = folder; name = ""; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
-		C9E18B5F245F687100213352 /* Frameworks */ = {
-			isa = PBXFrameworksBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 		C9E18B6E245F68A100213352 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				C9E18BAC245FA7A600213352 /* RelaySwiftUI.framework in Frameworks */,
-				C9E18B94245F725800213352 /* Relay.framework in Frameworks */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		C9E18BA1245FA79800213352 /* Frameworks */ = {
-			isa = PBXFrameworksBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				C9E18BDF24637E1600213352 /* Relay.framework in Frameworks */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		C9E18BC7246134BB00213352 /* Frameworks */ = {
-			isa = PBXFrameworksBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				C9E18BCF246134BB00213352 /* Relay.framework in Frameworks */,
+				C9E18CB0246877B100213352 /* RelaySwiftUI in Frameworks */,
+				C9E18CAE246877B100213352 /* Relay in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -285,8 +130,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				C9E18C7F2466495400213352 /* RelaySwiftUI.framework in Frameworks */,
-				C9E18C7B2466495400213352 /* Relay.framework in Frameworks */,
+				C9E18CB4246877B800213352 /* RelaySwiftUI in Frameworks */,
+				C9E18CB2246877B800213352 /* Relay in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -296,9 +141,7 @@
 		C9E18B58245F687100213352 = {
 			isa = PBXGroup;
 			children = (
-				C9E18B64245F687100213352 /* Relay */,
-				C9E18BCB246134BB00213352 /* RelayTests */,
-				C9E18BA5245FA79800213352 /* RelaySwiftUI */,
+				C9E18CA7246876E900213352 /*  */,
 				C9E18B72245F68A100213352 /* RelayPokedex */,
 				C9E18C632466474D00213352 /* RelayStarWars */,
 				C9E18B63245F687100213352 /* Products */,
@@ -309,44 +152,10 @@
 		C9E18B63245F687100213352 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				C9E18B62245F687100213352 /* Relay.framework */,
 				C9E18B71245F68A100213352 /* RelayPokedex.app */,
-				C9E18BA4245FA79800213352 /* RelaySwiftUI.framework */,
-				C9E18BCA246134BB00213352 /* RelayTests.xctest */,
 				C9E18C622466474D00213352 /* RelayStarWars.app */,
 			);
 			name = Products;
-			sourceTree = "<group>";
-		};
-		C9E18B64245F687100213352 /* Relay */ = {
-			isa = PBXGroup;
-			children = (
-				C9E18B65245F687100213352 /* Relay.h */,
-				C9E18B66245F687100213352 /* Info.plist */,
-				C9E18B85245F68BA00213352 /* Environment.swift */,
-				C9E18B9D245F9CA500213352 /* Executor.swift */,
-				C9E18B87245F697B00213352 /* Store.swift */,
-				C9E18B89245F6A5200213352 /* RecordSource.swift */,
-				C9E18B8B245F6DA200213352 /* Record.swift */,
-				C9E18C972466741000213352 /* RecordSourceMutator.swift */,
-				C9E18C99246720BD00213352 /* Handler.swift */,
-				C9E18C9B2467212D00213352 /* ConnectionHandler.swift */,
-				C9E18B8D245F6E8200213352 /* Network.swift */,
-				C9E18BC024610A9300213352 /* Operation.swift */,
-				C9E18BEE246392A900213352 /* Variables.swift */,
-				C9E18B8F245F70A700213352 /* Node.swift */,
-				C9E18BC42461203300213352 /* Argument.swift */,
-				C9E18BBE245FBEC400213352 /* ReaderNode.swift */,
-				C9E18B9B245F88BF00213352 /* NormalizationNode.swift */,
-				C9E18BC2246113CF00213352 /* ResponseNormalizer.swift */,
-				C9E18BD72462834700213352 /* Reader.swift */,
-				C9E18BBA245FB09700213352 /* PublishQueue.swift */,
-				C9E18BF424639F6900213352 /* GraphQL.swift */,
-				33071766182C67FF4FE5D742 /* Pagination.swift */,
-				33071222EDB25BA87463DE44 /* Refetch.swift */,
-				3307111BBB43AC9428183880 /* SnapshotPublisher.swift */,
-			);
-			path = Relay;
 			sourceTree = "<group>";
 		};
 		C9E18B72245F68A100213352 /* RelayPokedex */ = {
@@ -386,35 +195,6 @@
 			children = (
 			);
 			name = Frameworks;
-			sourceTree = "<group>";
-		};
-		C9E18BA5245FA79800213352 /* RelaySwiftUI */ = {
-			isa = PBXGroup;
-			children = (
-				C9E18BA6245FA79800213352 /* RelaySwiftUI.h */,
-				C9E18BA7245FA79800213352 /* Info.plist */,
-				C9E18BB4245FA94C00213352 /* Environment.swift */,
-				C9E18BB0245FA7C000213352 /* RelayQuery.swift */,
-				C9E18BB2245FA85600213352 /* QueryLoader.swift */,
-				C9E18BE4246383CC00213352 /* RelayFragment.swift */,
-				C9E18BE62463864F00213352 /* FragmentLoader.swift */,
-				C9E18C9F2467388C00213352 /* RelayPaginationFragment.swift */,
-				C9E18CA12467396100213352 /* PaginationFragmentLoader.swift */,
-				C9E18BF624639FDB00213352 /* Relay.swift */,
-			);
-			path = RelaySwiftUI;
-			sourceTree = "<group>";
-		};
-		C9E18BCB246134BB00213352 /* RelayTests */ = {
-			isa = PBXGroup;
-			children = (
-				C9E18BCE246134BB00213352 /* Info.plist */,
-				C9E18BD52461350300213352 /* ResponseNormalizerTests.swift */,
-				C9E18BD924633D5C00213352 /* ReaderTests.swift */,
-				C9E18BDB2463747C00213352 /* PokemonListQuery.swift */,
-				C9E18BDD246374AB00213352 /* PokemonListRow_pokemon.swift */,
-			);
-			path = RelayTests;
 			sourceTree = "<group>";
 		};
 		C9E18C142463B9F100213352 /* __generated__ */ = {
@@ -473,44 +253,7 @@
 		};
 /* End PBXGroup section */
 
-/* Begin PBXHeadersBuildPhase section */
-		C9E18B5D245F687100213352 /* Headers */ = {
-			isa = PBXHeadersBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				C9E18B67245F687100213352 /* Relay.h in Headers */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		C9E18B9F245FA79800213352 /* Headers */ = {
-			isa = PBXHeadersBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				C9E18BA8245FA79800213352 /* RelaySwiftUI.h in Headers */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-/* End PBXHeadersBuildPhase section */
-
 /* Begin PBXNativeTarget section */
-		C9E18B61245F687100213352 /* Relay */ = {
-			isa = PBXNativeTarget;
-			buildConfigurationList = C9E18B6A245F687100213352 /* Build configuration list for PBXNativeTarget "Relay" */;
-			buildPhases = (
-				C9E18B5D245F687100213352 /* Headers */,
-				C9E18B5E245F687100213352 /* Sources */,
-				C9E18B5F245F687100213352 /* Frameworks */,
-				C9E18B60245F687100213352 /* Resources */,
-			);
-			buildRules = (
-			);
-			dependencies = (
-			);
-			name = Relay;
-			productName = Relay;
-			productReference = C9E18B62245F687100213352 /* Relay.framework */;
-			productType = "com.apple.product-type.framework";
-		};
 		C9E18B70245F68A100213352 /* RelayPokedex */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = C9E18B82245F68A200213352 /* Build configuration list for PBXNativeTarget "RelayPokedex" */;
@@ -523,50 +266,15 @@
 			buildRules = (
 			);
 			dependencies = (
-				C9E18B97245F725800213352 /* PBXTargetDependency */,
-				C9E18BAF245FA7A600213352 /* PBXTargetDependency */,
 			);
 			name = RelayPokedex;
+			packageProductDependencies = (
+				C9E18CAD246877B100213352 /* Relay */,
+				C9E18CAF246877B100213352 /* RelaySwiftUI */,
+			);
 			productName = RelayTestApp;
 			productReference = C9E18B71245F68A100213352 /* RelayPokedex.app */;
 			productType = "com.apple.product-type.application";
-		};
-		C9E18BA3245FA79800213352 /* RelaySwiftUI */ = {
-			isa = PBXNativeTarget;
-			buildConfigurationList = C9E18BA9245FA79800213352 /* Build configuration list for PBXNativeTarget "RelaySwiftUI" */;
-			buildPhases = (
-				C9E18B9F245FA79800213352 /* Headers */,
-				C9E18BA0245FA79800213352 /* Sources */,
-				C9E18BA1245FA79800213352 /* Frameworks */,
-				C9E18BA2245FA79800213352 /* Resources */,
-			);
-			buildRules = (
-			);
-			dependencies = (
-				C9E18BE224637E1600213352 /* PBXTargetDependency */,
-			);
-			name = RelaySwiftUI;
-			productName = RelaySwiftUI;
-			productReference = C9E18BA4245FA79800213352 /* RelaySwiftUI.framework */;
-			productType = "com.apple.product-type.framework";
-		};
-		C9E18BC9246134BB00213352 /* RelayTests */ = {
-			isa = PBXNativeTarget;
-			buildConfigurationList = C9E18BD4246134BB00213352 /* Build configuration list for PBXNativeTarget "RelayTests" */;
-			buildPhases = (
-				C9E18BC6246134BB00213352 /* Sources */,
-				C9E18BC7246134BB00213352 /* Frameworks */,
-				C9E18BC8246134BB00213352 /* Resources */,
-			);
-			buildRules = (
-			);
-			dependencies = (
-				C9E18BD1246134BB00213352 /* PBXTargetDependency */,
-			);
-			name = RelayTests;
-			productName = RelayTests;
-			productReference = C9E18BCA246134BB00213352 /* RelayTests.xctest */;
-			productType = "com.apple.product-type.bundle.unit-test";
 		};
 		C9E18C612466474D00213352 /* RelayStarWars */ = {
 			isa = PBXNativeTarget;
@@ -580,10 +288,12 @@
 			buildRules = (
 			);
 			dependencies = (
-				C9E18C7E2466495400213352 /* PBXTargetDependency */,
-				C9E18C822466495400213352 /* PBXTargetDependency */,
 			);
 			name = RelayStarWars;
+			packageProductDependencies = (
+				C9E18CB1246877B800213352 /* Relay */,
+				C9E18CB3246877B800213352 /* RelaySwiftUI */,
+			);
 			productName = RelayStarWars;
 			productReference = C9E18C622466474D00213352 /* RelayStarWars.app */;
 			productType = "com.apple.product-type.application";
@@ -598,20 +308,8 @@
 				LastUpgradeCheck = 1140;
 				ORGANIZATIONNAME = "Matt Moriarity";
 				TargetAttributes = {
-					C9E18B61245F687100213352 = {
-						CreatedOnToolsVersion = 11.4.1;
-						LastSwiftMigration = 1140;
-					};
 					C9E18B70245F68A100213352 = {
 						CreatedOnToolsVersion = 11.4.1;
-					};
-					C9E18BA3245FA79800213352 = {
-						CreatedOnToolsVersion = 11.4.1;
-						LastSwiftMigration = 1140;
-					};
-					C9E18BC9246134BB00213352 = {
-						CreatedOnToolsVersion = 11.4.1;
-						LastSwiftMigration = 1140;
 					};
 					C9E18C612466474D00213352 = {
 						CreatedOnToolsVersion = 11.4.1;
@@ -633,9 +331,6 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				C9E18B61245F687100213352 /* Relay */,
-				C9E18BC9246134BB00213352 /* RelayTests */,
-				C9E18BA3245FA79800213352 /* RelaySwiftUI */,
 				C9E18B70245F68A100213352 /* RelayPokedex */,
 				C9E18C612466474D00213352 /* RelayStarWars */,
 			);
@@ -643,13 +338,6 @@
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
-		C9E18B60245F687100213352 /* Resources */ = {
-			isa = PBXResourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 		C9E18B6F245F68A100213352 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -657,20 +345,6 @@
 				C9E18B80245F68A200213352 /* LaunchScreen.storyboard in Resources */,
 				C9E18B7D245F68A200213352 /* Preview Assets.xcassets in Resources */,
 				C9E18B7A245F68A200213352 /* Assets.xcassets in Resources */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		C9E18BA2245FA79800213352 /* Resources */ = {
-			isa = PBXResourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		C9E18BC8246134BB00213352 /* Resources */ = {
-			isa = PBXResourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -687,35 +361,6 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
-		C9E18B5E245F687100213352 /* Sources */ = {
-			isa = PBXSourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				C9E18BD82462834700213352 /* Reader.swift in Sources */,
-				C9E18BC52461203300213352 /* Argument.swift in Sources */,
-				C9E18BC124610A9300213352 /* Operation.swift in Sources */,
-				C9E18B9E245F9CA500213352 /* Executor.swift in Sources */,
-				C9E18BBB245FB09700213352 /* PublishQueue.swift in Sources */,
-				C9E18B8E245F6E8200213352 /* Network.swift in Sources */,
-				C9E18C9A246720BD00213352 /* Handler.swift in Sources */,
-				C9E18B86245F68BA00213352 /* Environment.swift in Sources */,
-				C9E18C9C2467212D00213352 /* ConnectionHandler.swift in Sources */,
-				C9E18BF524639F6900213352 /* GraphQL.swift in Sources */,
-				C9E18BBF245FBEC400213352 /* ReaderNode.swift in Sources */,
-				C9E18B9C245F88BF00213352 /* NormalizationNode.swift in Sources */,
-				C9E18BEF246392A900213352 /* Variables.swift in Sources */,
-				C9E18B8A245F6A5200213352 /* RecordSource.swift in Sources */,
-				C9E18C982466741000213352 /* RecordSourceMutator.swift in Sources */,
-				C9E18B90245F70A700213352 /* Node.swift in Sources */,
-				C9E18BC3246113CF00213352 /* ResponseNormalizer.swift in Sources */,
-				C9E18B8C245F6DA200213352 /* Record.swift in Sources */,
-				C9E18B88245F697B00213352 /* Store.swift in Sources */,
-				33071A6B46AF96E8A219DF9E /* Pagination.swift in Sources */,
-				33071A4EF0A28C0ED3B96F46 /* Refetch.swift in Sources */,
-				3307172AEF2B8D6A41AAA803 /* SnapshotPublisher.swift in Sources */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 		C9E18B6D245F68A100213352 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -735,32 +380,6 @@
 				C9E18C172463B9F100213352 /* PokemonListRow_pokemon.graphql.swift in Sources */,
 				C9E18C1C2463BA9F00213352 /* PokemonDetailQuery.graphql.swift in Sources */,
 				C9E18BB7245FAE5200213352 /* PokemonList.swift in Sources */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		C9E18BA0245FA79800213352 /* Sources */ = {
-			isa = PBXSourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				C9E18BB1245FA7C000213352 /* RelayQuery.swift in Sources */,
-				C9E18BF724639FDB00213352 /* Relay.swift in Sources */,
-				C9E18BB5245FA94C00213352 /* Environment.swift in Sources */,
-				C9E18CA02467388C00213352 /* RelayPaginationFragment.swift in Sources */,
-				C9E18BB3245FA85600213352 /* QueryLoader.swift in Sources */,
-				C9E18BE72463864F00213352 /* FragmentLoader.swift in Sources */,
-				C9E18CA22467396100213352 /* PaginationFragmentLoader.swift in Sources */,
-				C9E18BE5246383CC00213352 /* RelayFragment.swift in Sources */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		C9E18BC6246134BB00213352 /* Sources */ = {
-			isa = PBXSourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				C9E18BDE246374AB00213352 /* PokemonListRow_pokemon.swift in Sources */,
-				C9E18BDA24633D5C00213352 /* ReaderTests.swift in Sources */,
-				C9E18BD62461350300213352 /* ResponseNormalizerTests.swift in Sources */,
-				C9E18BDC2463747C00213352 /* PokemonListQuery.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -785,39 +404,6 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXSourcesBuildPhase section */
-
-/* Begin PBXTargetDependency section */
-		C9E18B97245F725800213352 /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = C9E18B61245F687100213352 /* Relay */;
-			targetProxy = C9E18B96245F725800213352 /* PBXContainerItemProxy */;
-		};
-		C9E18BAF245FA7A600213352 /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = C9E18BA3245FA79800213352 /* RelaySwiftUI */;
-			targetProxy = C9E18BAE245FA7A600213352 /* PBXContainerItemProxy */;
-		};
-		C9E18BD1246134BB00213352 /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = C9E18B61245F687100213352 /* Relay */;
-			targetProxy = C9E18BD0246134BB00213352 /* PBXContainerItemProxy */;
-		};
-		C9E18BE224637E1600213352 /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = C9E18B61245F687100213352 /* Relay */;
-			targetProxy = C9E18BE124637E1600213352 /* PBXContainerItemProxy */;
-		};
-		C9E18C7E2466495400213352 /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = C9E18B61245F687100213352 /* Relay */;
-			targetProxy = C9E18C7D2466495400213352 /* PBXContainerItemProxy */;
-		};
-		C9E18C822466495400213352 /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = C9E18BA3245FA79800213352 /* RelaySwiftUI */;
-			targetProxy = C9E18C812466495400213352 /* PBXContainerItemProxy */;
-		};
-/* End PBXTargetDependency section */
 
 /* Begin PBXVariantGroup section */
 		C9E18B7E245F68A200213352 /* LaunchScreen.storyboard */ = {
@@ -959,59 +545,6 @@
 			};
 			name = Release;
 		};
-		C9E18B6B245F687100213352 /* Debug */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				CLANG_ENABLE_MODULES = YES;
-				CODE_SIGN_STYLE = Automatic;
-				DEFINES_MODULE = YES;
-				DEVELOPMENT_TEAM = PE8BN56Z28;
-				DYLIB_COMPATIBILITY_VERSION = 1;
-				DYLIB_CURRENT_VERSION = 1;
-				DYLIB_INSTALL_NAME_BASE = "@rpath";
-				INFOPLIST_FILE = Relay/Info.plist;
-				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
-				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
-				LD_RUNPATH_SEARCH_PATHS = (
-					"$(inherited)",
-					"@executable_path/Frameworks",
-					"@loader_path/Frameworks",
-				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.mattmoriarity.Relay;
-				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
-				SKIP_INSTALL = YES;
-				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
-				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
-			};
-			name = Debug;
-		};
-		C9E18B6C245F687100213352 /* Release */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				CLANG_ENABLE_MODULES = YES;
-				CODE_SIGN_STYLE = Automatic;
-				DEFINES_MODULE = YES;
-				DEVELOPMENT_TEAM = PE8BN56Z28;
-				DYLIB_COMPATIBILITY_VERSION = 1;
-				DYLIB_CURRENT_VERSION = 1;
-				DYLIB_INSTALL_NAME_BASE = "@rpath";
-				INFOPLIST_FILE = Relay/Info.plist;
-				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
-				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
-				LD_RUNPATH_SEARCH_PATHS = (
-					"$(inherited)",
-					"@executable_path/Frameworks",
-					"@loader_path/Frameworks",
-				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.mattmoriarity.Relay;
-				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
-				SKIP_INSTALL = YES;
-				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
-			};
-			name = Release;
-		};
 		C9E18B83245F68A200213352 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -1048,96 +581,6 @@
 					"@executable_path/Frameworks",
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.mattmoriarity.RelayPokedex;
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
-			};
-			name = Release;
-		};
-		C9E18BAA245FA79800213352 /* Debug */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				CLANG_ENABLE_MODULES = YES;
-				CODE_SIGN_STYLE = Automatic;
-				DEFINES_MODULE = YES;
-				DEVELOPMENT_TEAM = PE8BN56Z28;
-				DYLIB_COMPATIBILITY_VERSION = 1;
-				DYLIB_CURRENT_VERSION = 1;
-				DYLIB_INSTALL_NAME_BASE = "@rpath";
-				INFOPLIST_FILE = RelaySwiftUI/Info.plist;
-				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
-				LD_RUNPATH_SEARCH_PATHS = (
-					"$(inherited)",
-					"@executable_path/Frameworks",
-					"@loader_path/Frameworks",
-				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.mattmoriarity.RelaySwiftUI;
-				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
-				SKIP_INSTALL = YES;
-				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
-				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
-			};
-			name = Debug;
-		};
-		C9E18BAB245FA79800213352 /* Release */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				CLANG_ENABLE_MODULES = YES;
-				CODE_SIGN_STYLE = Automatic;
-				DEFINES_MODULE = YES;
-				DEVELOPMENT_TEAM = PE8BN56Z28;
-				DYLIB_COMPATIBILITY_VERSION = 1;
-				DYLIB_CURRENT_VERSION = 1;
-				DYLIB_INSTALL_NAME_BASE = "@rpath";
-				INFOPLIST_FILE = RelaySwiftUI/Info.plist;
-				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
-				LD_RUNPATH_SEARCH_PATHS = (
-					"$(inherited)",
-					"@executable_path/Frameworks",
-					"@loader_path/Frameworks",
-				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.mattmoriarity.RelaySwiftUI;
-				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
-				SKIP_INSTALL = YES;
-				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
-			};
-			name = Release;
-		};
-		C9E18BD2246134BB00213352 /* Debug */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				CLANG_ENABLE_MODULES = YES;
-				CODE_SIGN_STYLE = Automatic;
-				DEVELOPMENT_TEAM = PE8BN56Z28;
-				INFOPLIST_FILE = RelayTests/Info.plist;
-				LD_RUNPATH_SEARCH_PATHS = (
-					"$(inherited)",
-					"@executable_path/Frameworks",
-					"@loader_path/Frameworks",
-				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.mattmoriarity.RelayTests;
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
-				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
-			};
-			name = Debug;
-		};
-		C9E18BD3246134BB00213352 /* Release */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				CLANG_ENABLE_MODULES = YES;
-				CODE_SIGN_STYLE = Automatic;
-				DEVELOPMENT_TEAM = PE8BN56Z28;
-				INFOPLIST_FILE = RelayTests/Info.plist;
-				LD_RUNPATH_SEARCH_PATHS = (
-					"$(inherited)",
-					"@executable_path/Frameworks",
-					"@loader_path/Frameworks",
-				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.mattmoriarity.RelayTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -1196,38 +639,11 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		C9E18B6A245F687100213352 /* Build configuration list for PBXNativeTarget "Relay" */ = {
-			isa = XCConfigurationList;
-			buildConfigurations = (
-				C9E18B6B245F687100213352 /* Debug */,
-				C9E18B6C245F687100213352 /* Release */,
-			);
-			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
-		};
 		C9E18B82245F68A200213352 /* Build configuration list for PBXNativeTarget "RelayPokedex" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				C9E18B83245F68A200213352 /* Debug */,
 				C9E18B84245F68A200213352 /* Release */,
-			);
-			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
-		};
-		C9E18BA9245FA79800213352 /* Build configuration list for PBXNativeTarget "RelaySwiftUI" */ = {
-			isa = XCConfigurationList;
-			buildConfigurations = (
-				C9E18BAA245FA79800213352 /* Debug */,
-				C9E18BAB245FA79800213352 /* Release */,
-			);
-			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
-		};
-		C9E18BD4246134BB00213352 /* Build configuration list for PBXNativeTarget "RelayTests" */ = {
-			isa = XCConfigurationList;
-			buildConfigurations = (
-				C9E18BD2246134BB00213352 /* Debug */,
-				C9E18BD3246134BB00213352 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
@@ -1242,6 +658,25 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		C9E18CAD246877B100213352 /* Relay */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = Relay;
+		};
+		C9E18CAF246877B100213352 /* RelaySwiftUI */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = RelaySwiftUI;
+		};
+		C9E18CB1246877B800213352 /* Relay */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = Relay;
+		};
+		C9E18CB3246877B800213352 /* RelaySwiftUI */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = RelaySwiftUI;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = C9E18B59245F687100213352 /* Project object */;
 }

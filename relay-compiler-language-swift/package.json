@@ -16,8 +16,8 @@
     "test": "tsdx test",
     "lint": "tsdx lint",
     "prepare": "tsdx build && npm run prepare-swift-build && npm run prepare-swift-copy",
-    "prepare-swift-build": "cd ../relay-swift-tools && swift build -c release",
-    "prepare-swift-copy": "cp ../relay-swift-tools/.build/x86_64-apple-macosx/release/{find-graphql-tags,generate-type-defs} ./dist/"
+    "prepare-swift-build": "cd .. && swift build -c release",
+    "prepare-swift-copy": "cp ../.build/x86_64-apple-macosx/release/{find-graphql-tags,generate-type-defs} ./dist/"
   },
   "peerDependencies": {},
   "husky": {

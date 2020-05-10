@@ -47,7 +47,7 @@ class PaginationFragmentLoader<Fragment: Relay.PaginationFragment>: ObservableOb
 
     func loadNext(_ count: Int) {
         isLoadingNext = true
-        loadNextCancellable = loadMore(direction: .forward, count: count).print("load more").sink(receiveCompletion: { completion in
+        loadNextCancellable = loadMore(direction: .forward, count: count).sink(receiveCompletion: { completion in
             self.isLoadingNext = false
             self.loadNextCancellable = nil
         }, receiveValue: { _ in })

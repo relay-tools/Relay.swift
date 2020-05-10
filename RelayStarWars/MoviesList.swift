@@ -52,7 +52,6 @@ struct MoviesList: View {
                         .foregroundColor(.secondary)
                 } else if paging.hasNext == true {
                     Button("Load more…") {
-                        NSLog("loading more")
                         self.paging.loadNext(3)
                     }
                 }

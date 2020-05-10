@@ -11,6 +11,7 @@ class PaginationFragmentLoader<Fragment: Relay.PaginationFragment>: ObservableOb
 
     @Published var snapshot: Snapshot<Fragment.Data?>
 
+    var subscribeCancellable: AnyCancellable?
     var loadNextCancellable: AnyCancellable?
     var loadPreviousCancellable: AnyCancellable?
 
@@ -26,29 +27,38 @@ class PaginationFragmentLoader<Fragment: Relay.PaginationFragment>: ObservableOb
         snapshot = environment.lookup(selector: selector)
     }
 
+    func subscribe() {
+        subscribeCancellable = environment.subscribe(snapshot: snapshot)
+            .receive(on: DispatchQueue.main)
+            .assign(to: \.snapshot, on: self)
+    }
+
+    func cancel() {
+        subscribeCancellable = nil
+    }
+
     var data: Fragment.Data {
         snapshot.data!
     }
 
+    var paging: Paginating {
+        Pager(loader: self)
+    }
+
     func loadNext(_ count: Int) {
         isLoadingNext = true
-        loadNextCancellable = loadMore(direction: .forward, count: count).sink(receiveCompletion: { completion in
-            // TODO
-        }, receiveValue: { _ in
+        loadNextCancellable = loadMore(direction: .forward, count: count).print("load more").sink(receiveCompletion: { completion in
             self.isLoadingNext = false
             self.loadNextCancellable = nil
-        })
-
+        }, receiveValue: { _ in })
     }
 
     func loadPrevious(_ count: Int) {
         isLoadingPrevious = true
         loadPreviousCancellable = loadMore(direction: .backward, count: count).sink(receiveCompletion: { completion in
-            // TODO
-        }, receiveValue: { _ in
             self.isLoadingPrevious = false
             self.loadPreviousCancellable = nil
-        })
+        }, receiveValue: { _ in })
     }
 
     var hasNext: Bool {
@@ -64,8 +74,8 @@ class PaginationFragmentLoader<Fragment: Relay.PaginationFragment>: ObservableOb
     @Published var isLoadingNext = false
     @Published var isLoadingPrevious = false
 
-    private func loadMore(direction: PaginationDirection, count: Int) -> AnyPublisher<Snapshot<Fragment.Data?>, Error> {
-        let (cursor, hasMore) = getConnectionState(direction: direction)
+    private func loadMore(direction: PaginationDirection, count: Int) -> AnyPublisher<(), Error> {
+        let (cursor, _) = getConnectionState(direction: direction)
 
         var baseVariables = selector.owner.variables.asDictionary
         baseVariables.merge(selector.variables.asDictionary, uniquingKeysWith: { $1 })
@@ -79,11 +89,9 @@ class PaginationFragmentLoader<Fragment: Relay.PaginationFragment>: ObservableOb
 
         let paginationQuery = metadata.operation.createDescriptor(variables: paginationVariables)
 
-        // TODO use subscription to update things
         return environment.execute(operation: paginationQuery, cacheConfig: "TODO")
             .receive(on: DispatchQueue.main)
-            .map { _ -> Snapshot<Fragment.Data?> in self.environment.lookup(selector: self.selector) }
-            .handleEvents(receiveOutput: { self.snapshot = $0 })
+            .map { _ in () }
             .eraseToAnyPublisher()
     }
 
@@ -158,6 +166,30 @@ class PaginationFragmentLoader<Fragment: Relay.PaginationFragment>: ObservableOb
             let data = try! JSONSerialization.data(withJSONObject: variables)
             return AnyVariables(try! JSONDecoder().decode(Fragment.Operation.Variables.self, from: data))
         }
+    }
+}
+
+private struct Pager<Fragment: PaginationFragment>: Paginating {
+    let hasNext: Bool
+    let hasPrevious: Bool
+    let isLoadingNext: Bool
+    let isLoadingPrevious: Bool
+    let loader: PaginationFragmentLoader<Fragment>
+
+    init(loader: PaginationFragmentLoader<Fragment>) {
+        hasNext = loader.hasNext
+        hasPrevious = loader.hasPrevious
+        isLoadingNext = loader.isLoadingNext
+        isLoadingPrevious = loader.isLoadingPrevious
+        self.loader = loader
+    }
+
+    func loadNext(_ count: Int) {
+        loader.loadNext(count)
+    }
+
+    func loadPrevious(_ count: Int) {
+        loader.loadPrevious(count)
     }
 }
 

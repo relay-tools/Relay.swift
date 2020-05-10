@@ -294,7 +294,7 @@ class Reader {
     }
 
     static func read<T: Readable>(_ type: T.Type, source: RecordSource, selector: SingularReaderSelector) -> Snapshot<T?> {
-        return Reader(source: source, selector: selector).read(type)
+        Reader(source: source, selector: selector).read(type)
     }
 
     func read<T: Readable>(_ type: T.Type) -> Snapshot<T?> {
@@ -309,6 +309,7 @@ class Reader {
             }
             return nil
         }
+        seenRecords[dataID] = record
 
         var data = previousData ?? SelectorData()
         traverse(selections: node.selections, record: record, data: &data)

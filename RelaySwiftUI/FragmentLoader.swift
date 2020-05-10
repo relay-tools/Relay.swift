@@ -8,6 +8,8 @@ class FragmentLoader<Fragment: Relay.Fragment>: ObservableObject {
 
     @Published var snapshot: Snapshot<Fragment.Data?>
 
+    private var subscribeCancellable: AnyCancellable?
+
     init(environment: Environment,
          fragment: Fragment,
          pointer: FragmentPointer) {
@@ -21,5 +23,15 @@ class FragmentLoader<Fragment: Relay.Fragment>: ObservableObject {
 
     var data: Fragment.Data {
         snapshot.data!
+    }
+
+    func subscribe() {
+        subscribeCancellable = environment.subscribe(snapshot: snapshot)
+            .receive(on: DispatchQueue.main)
+            .assign(to: \.snapshot, on: self)
+    }
+
+    func cancel() {
+        subscribeCancellable = nil
     }
 }

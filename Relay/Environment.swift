@@ -33,6 +33,10 @@ public class Environment {
     public func lookup<T: Readable>(
         selector: SingularReaderSelector
     ) -> Snapshot<T?> {
-        return store.lookup(selector: selector)
+        store.lookup(selector: selector)
+    }
+
+    public func subscribe<T: Readable>(snapshot: Snapshot<T?>) -> SnapshotPublisher<T> {
+        store.subscribe(snapshot: snapshot)
     }
 }

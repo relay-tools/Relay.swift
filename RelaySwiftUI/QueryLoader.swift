@@ -44,17 +44,27 @@ class QueryLoader<Op: Relay.Operation>: ObservableObject {
             .sink(receiveCompletion: { [weak self] completion in
                 if case .failure(let error) = completion {
                     self?.result = .failure(error)
+                } else {
+                    self?.subscribe(environment: environment)
                 }
             }, receiveValue: { [weak self] response in
                 self?.result = .success(response)
             })
     }
 
-    func cancel() {
-        cancellable?.cancel()
+    func subscribe(environment: Environment) {
+        guard case .success(let snapshot) = result else {
+            return
+        }
+
+        cancellable = environment.subscribe(snapshot: snapshot)
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] newSnapshot in
+                self?.result = .success(newSnapshot)
+            }
     }
 
-    deinit {
-        cancel()
+    func cancel() {
+        cancellable = nil
     }
 }

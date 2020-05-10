@@ -40,7 +40,15 @@ public struct RelayFragment<Fragment: Relay.Fragment, ContentView: View>: View {
         }
 
         var body: some View {
-            content(loader.data)
+            Group {
+                content(loader.data)
+            }
+                .onAppear {
+                    self.loader.subscribe()
+                }
+                .onDisappear {
+                    self.loader.cancel()
+                }
         }
     }
 }

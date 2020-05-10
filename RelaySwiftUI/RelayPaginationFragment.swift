@@ -40,7 +40,15 @@ public struct RelayPaginationFragment<Fragment: Relay.PaginationFragment, Conten
         }
 
         var body: some View {
-            content(loader.data, loader)
+            Group {
+                content(loader.data, loader.paging)
+            }
+                .onAppear {
+                    self.loader.subscribe()
+                }
+                .onDisappear {
+                    self.loader.cancel()
+                }
         }
     }
 }

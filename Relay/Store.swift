@@ -4,6 +4,7 @@ public class Store {
     private var currentWriteEpoch = 0
     private var updatedRecordIDs = Set<DataID>()
     private var invalidatedRecordIDs = Set<DataID>()
+    private var subscriptions = [StoreSubscription]()
 
     public init(source: RecordSource) {
         recordSource = source
@@ -27,7 +28,7 @@ public class Store {
     }
 
     public func lookup<T: Readable>(selector: SingularReaderSelector) -> Snapshot<T?> {
-        return Reader.read(T.self, source: source, selector: selector)
+        Reader.read(T.self, source: source, selector: selector)
     }
 
     public func publish(source: RecordSource, idsMarkedForInvalidation: Set<DataID>? = nil) {
@@ -46,7 +47,12 @@ public class Store {
         }
 
         var updatedOwners: [RequestDescriptor] = []
-        // TODO update subscriptions
+        for subscription in subscriptions {
+            if let owner = subscription.storeUpdatedRecords(updatedRecordIDs) {
+                updatedOwners.append(owner)
+            }
+        }
+        // TODO invalidation subscriptions
 
         updatedRecordIDs.removeAll()
         invalidatedRecordIDs.removeAll()
@@ -57,6 +63,22 @@ public class Store {
 
         return updatedOwners
     }
+
+    public func subscribe<Data: Readable>(snapshot: Snapshot<Data?>) -> SnapshotPublisher<Data> {
+        SnapshotPublisher(store: self, initialSnapshot: snapshot)
+    }
+
+    func subscribe(subscription: StoreSubscription) {
+        subscriptions.append(subscription)
+    }
+    
+    func unsubscribe(subscription: StoreSubscription) {
+        subscriptions.removeAll(where: { $0 === subscription })
+    }
+}
+
+protocol StoreSubscription: class {
+    func storeUpdatedRecords(_ updatedIDs: Set<DataID>) -> RequestDescriptor?
 }
 
 public protocol Storable {

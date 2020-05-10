@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		3307172AEF2B8D6A41AAA803 /* SnapshotPublisher.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3307111BBB43AC9428183880 /* SnapshotPublisher.swift */; };
 		33071A4EF0A28C0ED3B96F46 /* Refetch.swift in Sources */ = {isa = PBXBuildFile; fileRef = 33071222EDB25BA87463DE44 /* Refetch.swift */; };
 		33071A6B46AF96E8A219DF9E /* Pagination.swift in Sources */ = {isa = PBXBuildFile; fileRef = 33071766182C67FF4FE5D742 /* Pagination.swift */; };
 		C9E18B67245F687100213352 /* Relay.h in Headers */ = {isa = PBXBuildFile; fileRef = C9E18B65245F687100213352 /* Relay.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -161,6 +162,7 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		3307111BBB43AC9428183880 /* SnapshotPublisher.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SnapshotPublisher.swift; sourceTree = "<group>"; };
 		33071222EDB25BA87463DE44 /* Refetch.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Refetch.swift; sourceTree = "<group>"; };
 		33071766182C67FF4FE5D742 /* Pagination.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Pagination.swift; sourceTree = "<group>"; };
 		C9E18B62245F687100213352 /* Relay.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Relay.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -342,6 +344,7 @@
 				C9E18BF424639F6900213352 /* GraphQL.swift */,
 				33071766182C67FF4FE5D742 /* Pagination.swift */,
 				33071222EDB25BA87463DE44 /* Refetch.swift */,
+				3307111BBB43AC9428183880 /* SnapshotPublisher.swift */,
 			);
 			path = Relay;
 			sourceTree = "<group>";
@@ -709,6 +712,7 @@
 				C9E18B88245F697B00213352 /* Store.swift in Sources */,
 				33071A6B46AF96E8A219DF9E /* Pagination.swift in Sources */,
 				33071A4EF0A28C0ED3B96F46 /* Refetch.swift in Sources */,
+				3307172AEF2B8D6A41AAA803 /* SnapshotPublisher.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

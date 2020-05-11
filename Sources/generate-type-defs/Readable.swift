@@ -1,6 +1,6 @@
 import SwiftSyntax
 
-func makeReadableStruct(node: [String: Any], name: String, indent: Int) -> DeclSyntax {
+func makeReadableStruct(node: [String: Any], name: String, neededTypes: inout Set<String>, indent: Int) -> DeclSyntax {
     guard let selections = node["selections"] as? [[String: Any]] else {
         preconditionFailure("Cannot create readable struct for a node without selections")
     }
@@ -9,7 +9,7 @@ func makeReadableStruct(node: [String: Any], name: String, indent: Int) -> DeclS
         .filter { ($0["kind"] as! String) == "FragmentSpread" }
         .compactMap { $0["name"] as? String }
 
-    let selectionFields = makeFields(node: node, selections: selections)
+    let selectionFields = makeFields(node: node, selections: selections, neededTypes: &neededTypes)
 
     return DeclSyntax(StructDeclSyntax { builder in
         builder.useStructKeyword(SyntaxFactory.makeStructKeyword(leadingTrivia: .spaces(indent), trailingTrivia: .spaces(1)))
@@ -47,7 +47,7 @@ func makeReadableStruct(node: [String: Any], name: String, indent: Int) -> DeclS
 
             for field in linkedFields {
                 builder.addMember(MemberDeclListItemSyntax { builder in
-                    builder.useDecl(makeReadableStruct(node: field.node, name: "\(field.schemaField!.rawType)_\(field.name)", indent: indent + 4)
+                    builder.useDecl(makeReadableStruct(node: field.node, name: "\(field.schemaField!.rawType)_\(field.name)", neededTypes: &neededTypes, indent: indent + 4)
                         .withLeadingTrivia(.newlines(1) + .spaces(indent + 4)))
                 })
             }
@@ -73,7 +73,7 @@ struct SelectionField {
     }
 }
 
-private func makeFields(node: [String: Any], selections: [[String: Any]]) -> [SelectionField] {
+private func makeFields(node: [String: Any], selections: [[String: Any]], neededTypes: inout Set<String>) -> [SelectionField] {
     let parentType = SchemaType.byName[(node["type"] ?? node["concreteType"]) as! String]!
 
     return selections.map { selection in
@@ -92,7 +92,7 @@ private func makeFields(node: [String: Any], selections: [[String: Any]]) -> [Se
                 typeSyntax = SyntaxFactory.makeTypeIdentifier("String")
             } else {
                 schemaField = parentType.fields[name]
-                if let alias = selection["alias"] as? String {
+                if schemaField == nil, let alias = selection["alias"] as? String {
                     schemaField = parentType.fields[alias]
                 }
                 typeSyntax = schemaField!.asTypeSyntax
@@ -102,6 +102,10 @@ private func makeFields(node: [String: Any], selections: [[String: Any]]) -> [Se
             typeSyntax = SyntaxFactory.makeTypeIdentifier("FragmentPointer")
         } else {
             fatalError()
+        }
+
+        if let field = schemaField, let type = SchemaType.byName[field.rawType], type.isEnum {
+            neededTypes.insert(type.name)
         }
 
         return SelectionField(node: selection, name: propertyName, type: typeSyntax, schemaField: schemaField, kind: kind)
@@ -188,6 +192,78 @@ private func makeInitFromSelectorDataDecl(selectionFields: [SelectionField], ind
             }
 
             builder.useRightBrace(SyntaxFactory.makeRightBraceToken(leadingTrivia: .spaces(indent), trailingTrivia: .newlines(1)))
+        })
+    })
+}
+
+func makeEnumTypeDecl(schemaType: SchemaType) -> DeclSyntax {
+    DeclSyntax(EnumDeclSyntax { builder in
+        builder.useEnumKeyword(SyntaxFactory.makeEnumKeyword(trailingTrivia: .spaces(1)))
+        builder.useIdentifier(SyntaxFactory.makeIdentifier(schemaType.name))
+        builder.useInheritanceClause(TypeInheritanceClauseSyntax { builder in
+            builder.useColon(SyntaxFactory.makeColonToken(trailingTrivia: .spaces(1)))
+            builder.addInheritedType(InheritedTypeSyntax { builder in
+                builder.useTypeName(SyntaxFactory.makeTypeIdentifier("String"))
+                builder.useTrailingComma(SyntaxFactory.makeCommaToken(trailingTrivia: .spaces(1)))
+            })
+            builder.addInheritedType(InheritedTypeSyntax { builder in
+                builder.useTypeName(SyntaxFactory.makeTypeIdentifier("Hashable"))
+                builder.useTrailingComma(SyntaxFactory.makeCommaToken(trailingTrivia: .spaces(1)))
+            })
+            builder.addInheritedType(InheritedTypeSyntax { builder in
+                builder.useTypeName(SyntaxFactory.makeTypeIdentifier("VariableValueConvertible"))
+                builder.useTrailingComma(SyntaxFactory.makeCommaToken(trailingTrivia: .spaces(1)))
+            })
+            builder.addInheritedType(InheritedTypeSyntax { builder in
+                builder.useTypeName(SyntaxFactory.makeTypeIdentifier("CustomStringConvertible"))
+            })
+        })
+
+        builder.useMembers(MemberDeclBlockSyntax { builder in
+            builder.useLeftBrace(SyntaxFactory.makeLeftBraceToken(leadingTrivia: .spaces(1), trailingTrivia: .newlines(1)))
+
+            for caseValue in schemaType.enumValues! {
+                builder.addMember(MemberDeclListItemSyntax { builder in
+                    builder.useDecl(DeclSyntax(EnumCaseDeclSyntax { builder in
+                        builder.useCaseKeyword(SyntaxFactory.makeCaseKeyword(leadingTrivia: .spaces(4), trailingTrivia: .spaces(1)))
+                        builder.addElement(EnumCaseElementSyntax { builder in
+                            builder.useIdentifier(SyntaxFactory.makeIdentifier(caseValue.lowercased()))
+                            builder.useRawValue(InitializerClauseSyntax { builder in
+                                builder.useEqual(SyntaxFactory.makeEqualToken(leadingTrivia: .spaces(1), trailingTrivia: .spaces(1)))
+                                builder.useValue(stringLiteral(caseValue))
+                            })
+                        })
+                    }))
+                }.withTrailingTrivia(.newlines(1)))
+            }
+
+            builder.addMember(MemberDeclListItemSyntax { builder in
+                builder.useDecl(DeclSyntax(VariableDeclSyntax { builder in
+                    builder.useLetOrVarKeyword(SyntaxFactory.makeVarKeyword(leadingTrivia: .newlines(1) + .spaces(4), trailingTrivia: .spaces(1)))
+                    builder.addBinding(PatternBindingSyntax { builder in
+                        builder.usePattern(PatternSyntax(IdentifierPatternSyntax { builder in
+                            builder.useIdentifier(SyntaxFactory.makeIdentifier("description"))
+                        }))
+                        builder.useTypeAnnotation(TypeAnnotationSyntax { builder in
+                            builder.useColon(SyntaxFactory.makeColonToken(trailingTrivia: .spaces(1)))
+                            builder.useType(SyntaxFactory.makeTypeIdentifier("String", trailingTrivia: .spaces(1)))
+                        })
+                        builder.useAccessor(Syntax(CodeBlockSyntax { builder in
+                            builder.useLeftBrace(SyntaxFactory.makeLeftBraceToken(trailingTrivia: .newlines(1)))
+
+                            builder.addStatement(CodeBlockItemSyntax { builder in
+                                builder.useItem(Syntax(IdentifierExprSyntax { builder in
+                                    builder.useIdentifier(SyntaxFactory.makeIdentifier("rawValue", leadingTrivia: .spaces(8)))
+                                }))
+                            })
+
+                            builder.useRightBrace(SyntaxFactory.makeRightBraceToken(leadingTrivia: .newlines(1) + .spaces(4)))
+                        }))
+                    })
+                }))
+            })
+
+            builder.useRightBrace(SyntaxFactory.makeRightBraceToken(leadingTrivia: .newlines(1)))
         })
     })
 }

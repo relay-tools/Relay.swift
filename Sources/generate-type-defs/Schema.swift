@@ -4,6 +4,8 @@ struct SchemaType {
     var name: String
     var isObject: Bool
     var isScalar: Bool
+    var isEnum: Bool
+    var enumValues: [String]?
     var fields: [String: SchemaField] = [:]
 
     static var byName: [String: SchemaType] = [:]
@@ -13,7 +15,9 @@ struct SchemaType {
             var type = SchemaType(
                 name: typeData["name"] as! String,
                 isObject: typeData["isObject"] as! Bool,
-                isScalar: typeData["isObject"] as! Bool
+                isScalar: typeData["isScalar"] as! Bool,
+                isEnum: typeData["isEnum"] as! Bool,
+                enumValues: typeData["enumValues"] as? [String]
             )
 
             if let fields = typeData["fields"] as? [String: [String: Any]] {

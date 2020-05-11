@@ -8,7 +8,7 @@ export default function plugin(): PluginInterface {
     inputExtensions: ['swift'],
     outputExtension: 'swift',
     findGraphQLTags: find,
-    formatModule: formatGeneratedModule,
+    formatModule: formatGeneratedModule(),
     typeGenerator: SwiftGenerator,
   };
 }

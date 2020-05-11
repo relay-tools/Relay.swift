@@ -23,6 +23,9 @@ if kind == "Request" {
 }
 let name = fragment["name"] as! String
 
+let existingTypes = Set(parsedData["existingTypes"] as! [String])
+var neededTypes = Set<String>()
+
 print(ImportDeclSyntax { builder in
     builder.useImportTok(SyntaxFactory.makeImportKeyword(trailingTrivia: .spaces(1)))
     builder.addPathComponent(AccessPathComponentSyntax { builder in
@@ -82,17 +85,26 @@ print(StructDeclSyntax { builder in
 
         if let operation = parsedData["operation"] as? [String: Any] {
             builder.addMember(MemberDeclListItemSyntax { builder in
-                builder.useDecl(makeVariablesStruct(node: operation))
+                builder.useDecl(makeVariablesStruct(node: operation, neededTypes: &neededTypes))
             }.withTrailingTrivia(.newlines(2)))
         }
 
         builder.addMember(MemberDeclListItemSyntax { builder in
-            builder.useDecl(makeReadableStruct(node: fragment, name: "Data", indent: 4))
+            builder.useDecl(makeReadableStruct(node: fragment, name: "Data", neededTypes: &neededTypes, indent: 4))
         })
 
         builder.useRightBrace(SyntaxFactory.makeRightBraceToken(leadingTrivia: .newlines(1)))
     })
 })
+
+for extraType in neededTypes.subtracting(existingTypes) {
+    let schemaType = SchemaType.byName[extraType]!
+
+    if schemaType.isEnum {
+        print("")
+        print(makeEnumTypeDecl(schemaType: schemaType))
+    }
+}
 
 if kind == "Fragment" {
     if let metadata = parsedData["metadata"] as? [String: Any],

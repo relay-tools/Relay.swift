@@ -1,12 +1,18 @@
 import SwiftSyntax
 
-func makeVariablesStruct(node: [String: Any]) -> DeclSyntax {
+func makeVariablesStruct(node: [String: Any], neededTypes: inout Set<String>) -> DeclSyntax {
     guard let args = node["argumentDefinitions"] as? [[String: Any]] else {
         preconditionFailure("Cannot create variables struct for a node without argument definitions")
     }
 
     let variables = args.map { arg -> Variable in
         let typeName = (arg["type"] as! String).replacingOccurrences(of: "!", with: "")
+        let schemaType = SchemaType.byName[typeName]
+
+        if schemaType!.isEnum {
+            neededTypes.insert(typeName)
+        }
+
         return Variable(
             name: arg["name"] as! String,
             type: SchemaType.byName[typeName]!.syntax(nullable: true),

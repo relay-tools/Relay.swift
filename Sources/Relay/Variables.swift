@@ -156,3 +156,7 @@ extension Dictionary: VariableValueConvertible where Key == String, Value: Varia
 extension Dictionary: VariableDataConvertible where Key == String, Value: VariableValueConvertible {
     public var variableData: VariableData { .init(self) }
 }
+
+extension RawRepresentable where RawValue == String {
+    public var variableValue: VariableValue { .string(rawValue) }
+}

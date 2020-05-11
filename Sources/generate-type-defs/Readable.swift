@@ -215,6 +215,10 @@ func makeEnumTypeDecl(schemaType: SchemaType) -> DeclSyntax {
                 builder.useTrailingComma(SyntaxFactory.makeCommaToken(trailingTrivia: .spaces(1)))
             })
             builder.addInheritedType(InheritedTypeSyntax { builder in
+                builder.useTypeName(SyntaxFactory.makeTypeIdentifier("ReadableScalar"))
+                builder.useTrailingComma(SyntaxFactory.makeCommaToken(trailingTrivia: .spaces(1)))
+            })
+            builder.addInheritedType(InheritedTypeSyntax { builder in
                 builder.useTypeName(SyntaxFactory.makeTypeIdentifier("CustomStringConvertible"))
             })
         })

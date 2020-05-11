@@ -48,6 +48,16 @@ extension Bool: ReadableScalar {
     }
 }
 
+public extension RawRepresentable where RawValue == String {
+    init(from value: SelectorData.Value) {
+        guard case .string(let v) = value else {
+            preconditionFailure("Tried to decode an String from a non-string value: \(value)")
+        }
+
+        self.init(rawValue: v)!
+    }
+}
+
 public struct FragmentPointer {
     var variables: VariableData
     var id: DataID

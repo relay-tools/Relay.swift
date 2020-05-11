@@ -1,3 +1,5 @@
+import Foundation
+
 let viewerType = "Viewer"
 
 public struct Record: Equatable {
@@ -95,7 +97,7 @@ public struct Record: Equatable {
             }
         }
         set {
-            if let val = newValue {
+            if let val = newValue, !(val is NSNull)  {
                 if let value = Value(scalar: val) {
                     fields[storageKey] = value
                 } else {

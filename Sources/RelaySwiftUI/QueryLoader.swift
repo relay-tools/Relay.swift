@@ -20,7 +20,17 @@ class QueryLoader<Op: Relay.Operation>: ObservableObject {
     }
 
     var isLoading: Bool {
-        result == nil
+        if result == nil {
+            return true
+        }
+
+        if case .success(let snapshot) = result,
+           snapshot.isMissingData,
+           environment.isActive(request: snapshot.selector.owner) {
+            return true
+        }
+
+        return false
     }
 
     var error: Error? {

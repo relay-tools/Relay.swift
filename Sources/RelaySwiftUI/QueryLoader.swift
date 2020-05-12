@@ -74,7 +74,7 @@ class QueryLoader<Op: Relay.Operation>: ObservableObject {
         guard fetchPolicy == .storeAndNetwork else { return }
 
         let snapshot: Snapshot<Op.Data?> = environment.lookup(selector: operation.fragment)
-        if snapshot.data != nil {
+        if !snapshot.isMissingData {
             result = .success(snapshot)
             subscribe()
         }

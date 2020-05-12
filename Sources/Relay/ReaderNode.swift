@@ -127,6 +127,7 @@ public struct SingularReaderSelector {
 }
 
 public protocol Fragment {
+    init()
     var node: ReaderFragment { get }
     func getFragmentPointer(_ key: Key) -> FragmentPointer
     

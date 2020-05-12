@@ -3,32 +3,46 @@ import Foundation
 import Relay
 
 class PaginationFragmentLoader<Fragment: Relay.PaginationFragment>: ObservableObject, Paginating {
-    let environment: Environment
     let fragment: Fragment
-    let pointer: FragmentPointer
     let metadata: Fragment.Metadata
-    let selector: SingularReaderSelector
 
-    @Published var snapshot: Snapshot<Fragment.Data?>
+    var environment: Environment!
+    var selector: SingularReaderSelector!
+
+    var snapshot: Snapshot<Fragment.Data?>? {
+        // not sure why this is needed instead of using Published.
+        // my best guess is it's because it's optional, and that adds indirection to the value.
+        willSet {
+            self.objectWillChange.send()
+        }
+    }
 
     var subscribeCancellable: AnyCancellable?
     var loadNextCancellable: AnyCancellable?
     var loadPreviousCancellable: AnyCancellable?
 
-    init(environment: Environment,
-         fragment: Fragment,
-         pointer: FragmentPointer) {
-        self.environment = environment
+    init(fragment: Fragment) {
         self.fragment = fragment
-        self.pointer = pointer
         self.metadata = fragment.metadata
-        self.selector = SingularReaderSelector(fragment: fragment.node, pointer: pointer)
+    }
 
+    private var isLoaded = false
+
+    func load(from environment: Environment, key: Fragment.Key) {
+        guard !isLoaded else { return }
+
+        self.environment = environment
+        let pointer = fragment.getFragmentPointer(key)
+        self.selector = SingularReaderSelector(fragment: fragment.node, pointer: pointer)
         snapshot = environment.lookup(selector: selector)
         subscribe()
+
+        isLoaded = true
     }
 
     func subscribe() {
+        guard let snapshot = snapshot else { return }
+
         subscribeCancellable = environment.subscribe(snapshot: snapshot)
             .receive(on: DispatchQueue.main)
             .sink { [weak self] snapshot in
@@ -37,6 +51,8 @@ class PaginationFragmentLoader<Fragment: Relay.PaginationFragment>: ObservableOb
     }
 
     var data: Fragment.Data? {
+        guard let snapshot = snapshot else { return nil }
+
         if snapshot.isMissingData && environment.isActive(request: snapshot.selector.owner) {
             // wait for the request to finish to try to get complete data.
             // this can happen if we are loading query data from the store and we change the
@@ -46,10 +62,6 @@ class PaginationFragmentLoader<Fragment: Relay.PaginationFragment>: ObservableOb
         }
 
         return snapshot.data
-    }
-
-    var isMissingData: Bool {
-        snapshot.isMissingData
     }
 
     var paging: Paginating {
@@ -182,7 +194,7 @@ class PaginationFragmentLoader<Fragment: Relay.PaginationFragment>: ObservableOb
     }
 }
 
-private struct Pager<Fragment: PaginationFragment>: Paginating {
+private struct Pager<Fragment: Relay.PaginationFragment>: Paginating {
     let hasNext: Bool
     let hasPrevious: Bool
     let isLoadingNext: Bool

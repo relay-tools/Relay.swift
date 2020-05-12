@@ -6,7 +6,7 @@ public struct Snapshot<T>: Equatable {
     private var dataBox: DataBox
     public var isMissingData: Bool
     var seenRecords: [DataID: Record]
-    var selector: SingularReaderSelector
+    public var selector: SingularReaderSelector
 
     init(data: SelectorData?,
          reify: @escaping (SelectorData?) -> T,

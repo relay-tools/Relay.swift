@@ -35,7 +35,7 @@ public struct OperationDescriptor {
 
 typealias RequestIdentifier = String
 
-public struct RequestDescriptor: Equatable {
+public struct RequestDescriptor: Hashable {
     var identifier: String
     var node: ConcreteRequest
     public var variables: VariableData
@@ -48,5 +48,10 @@ public struct RequestDescriptor: Equatable {
 
     public static func ==(lhs: Self, rhs: Self) -> Bool {
         return lhs.identifier == rhs.identifier && lhs.variables == rhs.variables
+    }
+
+    public func hash(into hasher: inout Hasher) {
+        hasher.combine(identifier)
+        hasher.combine(variables)
     }
 }

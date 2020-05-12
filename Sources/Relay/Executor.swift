@@ -3,23 +3,29 @@ import Foundation
 
 class Executor<Sink: Subject> where Sink.Output == GraphQLResponse, Sink.Failure == Error {
     let operation: OperationDescriptor
+    let operationTracker: OperationTracker
     let publishQueue: PublishQueue
     let source: AnyPublisher<Data, Error>
     let sink: Sink
 
+    var isComplete = false
     var cancellable: AnyCancellable?
 
     init(operation: OperationDescriptor,
+         operationTracker: OperationTracker,
          publishQueue: PublishQueue,
          source: AnyPublisher<Data, Error>,
          sink: Sink) {
         self.operation = operation
+        self.operationTracker = operationTracker
         self.publishQueue = publishQueue
         self.source = source
         self.sink = sink
     }
 
     func execute() {
+        operationTracker.start(request: operation.request)
+
         cancellable = source.tryMap { data -> GraphQLResponse in
             guard let obj = try JSONSerialization.jsonObject(with: data, options: []) as? [String: Any] else {
                 throw DecodingError.typeMismatch([String: Any].self, .init(codingPath: [], debugDescription: ""))
@@ -29,11 +35,20 @@ class Executor<Sink: Subject> where Sink.Output == GraphQLResponse, Sink.Failure
         }.receive(on: DispatchQueue.main).tryCompactMap { response in
             try self.handle(response: response)
         }.sink(receiveCompletion: { completion in
-            self.sink.send(completion: completion)
-            self.cancellable = nil
+            self.complete(completion)
         }) { response in
             self.sink.send(response)
         }
+    }
+
+    private func complete(_ completion: Subscribers.Completion<Error>) {
+        isComplete = true
+
+        operationTracker.complete(request: operation.request)
+        // TODO handle optimistic updates
+        // TODO complete in operation tracker
+
+        sink.send(completion: completion)
     }
 
     private func handle(response: GraphQLResponse) throws -> GraphQLResponse? {
@@ -110,5 +125,21 @@ public struct GraphQLResponse {
             }
             self.extensions = extensions
         }
+    }
+}
+
+class OperationTracker {
+    var inflightOperationIDs = Set<String>()
+
+    func start(request: RequestDescriptor) {
+        inflightOperationIDs.insert(request.identifier)
+    }
+
+    func complete(request: RequestDescriptor) {
+        inflightOperationIDs.remove(request.identifier)
+    }
+
+    func isActive(request: RequestDescriptor) -> Bool {
+        inflightOperationIDs.contains(request.identifier)
     }
 }

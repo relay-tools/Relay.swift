@@ -6,6 +6,7 @@ public class Environment {
 
     let handlerProvider: HandlerProvider
     let publishQueue: PublishQueue
+    let operationTracker = OperationTracker()
 
     public init(
         network: Network,
@@ -26,7 +27,13 @@ public class Environment {
                                      variables: operation.request.variables,
                                      cacheConfig: cacheConfig)
         let sink = PassthroughSubject<GraphQLResponse, Error>()
-        Executor(operation: operation, publishQueue: publishQueue, source: source, sink: sink).execute()
+        Executor(
+            operation: operation,
+            operationTracker: operationTracker,
+            publishQueue: publishQueue,
+            source: source,
+            sink: sink
+        ).execute()
         return sink.eraseToAnyPublisher()
     }
 
@@ -38,5 +45,9 @@ public class Environment {
 
     public func subscribe<T: Readable>(snapshot: Snapshot<T?>) -> SnapshotPublisher<T> {
         store.subscribe(snapshot: snapshot)
+    }
+
+    public func isActive(request: RequestDescriptor) -> Bool {
+        operationTracker.isActive(request: request)
     }
 }

@@ -37,7 +37,15 @@ class PaginationFragmentLoader<Fragment: Relay.PaginationFragment>: ObservableOb
     }
 
     var data: Fragment.Data? {
-        snapshot.isMissingData ? nil : snapshot.data
+        if snapshot.isMissingData && environment.isActive(request: snapshot.selector.owner) {
+            // wait for the request to finish to try to get complete data.
+            // this can happen if we are loading query data from the store and we change the
+            // query variables, such that some of the records in the tree still exist but not
+            // all.
+            return nil
+        }
+
+        return snapshot.data
     }
 
     var isMissingData: Bool {

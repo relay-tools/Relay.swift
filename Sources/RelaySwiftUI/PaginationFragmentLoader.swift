@@ -25,20 +25,23 @@ class PaginationFragmentLoader<Fragment: Relay.PaginationFragment>: ObservableOb
         self.selector = SingularReaderSelector(fragment: fragment.node, pointer: pointer)
 
         snapshot = environment.lookup(selector: selector)
+        subscribe()
     }
 
     func subscribe() {
         subscribeCancellable = environment.subscribe(snapshot: snapshot)
             .receive(on: DispatchQueue.main)
-            .assign(to: \.snapshot, on: self)
+            .sink { [weak self] snapshot in
+                self?.snapshot = snapshot
+            }
     }
 
-    func cancel() {
-        subscribeCancellable = nil
+    var data: Fragment.Data? {
+        snapshot.isMissingData ? nil : snapshot.data
     }
 
-    var data: Fragment.Data {
-        snapshot.data!
+    var isMissingData: Bool {
+        snapshot.isMissingData
     }
 
     var paging: Paginating {
@@ -46,6 +49,8 @@ class PaginationFragmentLoader<Fragment: Relay.PaginationFragment>: ObservableOb
     }
 
     func loadNext(_ count: Int) {
+        guard !isLoadingNext else { return }
+
         isLoadingNext = true
         loadNextCancellable = loadMore(direction: .forward, count: count).sink(receiveCompletion: { completion in
             self.isLoadingNext = false
@@ -54,6 +59,8 @@ class PaginationFragmentLoader<Fragment: Relay.PaginationFragment>: ObservableOb
     }
 
     func loadPrevious(_ count: Int) {
+        guard !isLoadingPrevious else { return }
+        
         isLoadingPrevious = true
         loadPreviousCancellable = loadMore(direction: .backward, count: count).sink(receiveCompletion: { completion in
             self.isLoadingPrevious = false
@@ -89,7 +96,7 @@ class PaginationFragmentLoader<Fragment: Relay.PaginationFragment>: ObservableOb
 
         let paginationQuery = metadata.operation.createDescriptor(variables: paginationVariables)
 
-        return environment.execute(operation: paginationQuery, cacheConfig: "TODO")
+        return environment.execute(operation: paginationQuery, cacheConfig: CacheConfig())
             .receive(on: DispatchQueue.main)
             .map { _ in () }
             .eraseToAnyPublisher()

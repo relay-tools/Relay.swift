@@ -102,7 +102,7 @@ class ResponseNormalizer {
         let typeName = field.concreteType ?? getRecordType(fieldValue)
 
         let nextID = DataID.get(fieldValue, typename: typeName)
-            ?? record.getLinkedRecordID(storageKey)
+            ?? (record.getLinkedRecordID(storageKey) ?? nil)
             ?? .generateClientID()
 
         record.setLinkedRecordID(storageKey, nextID)
@@ -118,7 +118,7 @@ class ResponseNormalizer {
             preconditionFailure("Expected data for field \(storageKey) to be an array of dictionaries")
         }
 
-        let prevIDs = record.getLinkedRecordIDs(storageKey)
+        let prevIDs = record.getLinkedRecordIDs(storageKey) ?? nil
         var nextIDs: [DataID?] = []
 
         for (i, item) in fieldValue.enumerated() {

@@ -20,19 +20,22 @@ class FragmentLoader<Fragment: Relay.Fragment>: ObservableObject {
 
         let selector = SingularReaderSelector(fragment: fragment.node, pointer: pointer)
         snapshot = environment.lookup(selector: selector)
+        subscribe()
     }
 
-    var data: Fragment.Data {
-        snapshot.data!
+    var data: Fragment.Data? {
+        snapshot.data
+    }
+
+    var isMissingData: Bool {
+        snapshot.isMissingData
     }
 
     func subscribe() {
         subscribeCancellable = environment.subscribe(snapshot: snapshot)
             .receive(on: DispatchQueue.main)
-            .assign(to: \.snapshot, on: self)
-    }
-
-    func cancel() {
-        subscribeCancellable = nil
+            .sink { [weak self] snapshot in
+                self?.snapshot = snapshot
+            }
     }
 }

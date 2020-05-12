@@ -7,12 +7,16 @@ class QueryLoader<Op: Relay.Operation>: ObservableObject {
 
     var op: Op
     var variables: Op.Variables
+    var fetchPolicy: QueryFetchPolicy
 
-    private var cancellable: AnyCancellable?
+    private var environment: Environment!
+    private var fetchCancellable: AnyCancellable?
+    private var subscribeCancellable: AnyCancellable?
 
-    init(op: Op, variables: Op.Variables) {
+    init(op: Op, variables: Op.Variables, fetchPolicy: QueryFetchPolicy) {
         self.op = op
         self.variables = variables
+        self.fetchPolicy = fetchPolicy
     }
 
     var isLoading: Bool {
@@ -38,34 +42,43 @@ class QueryLoader<Op: Relay.Operation>: ObservableObject {
             preconditionFailure("Trying to use a RelayQuery without setting up an Environment")
         }
 
+        self.environment = environment
+
         let operation = op.createDescriptor(variables: variables)
-        cancellable = environment.execute(operation: operation, cacheConfig: "TODO")
-            .map { _ -> Snapshot<Op.Data?> in environment.lookup(selector: operation.fragment) }
+        lookupIfPossible(operation: operation)
+
+        fetchCancellable = environment.execute(operation: operation, cacheConfig: CacheConfig())
             .receive(on: DispatchQueue.main)
+            .map { _ -> Snapshot<Op.Data?> in environment.lookup(selector: operation.fragment) }
             .sink(receiveCompletion: { [weak self] completion in
                 if case .failure(let error) = completion {
                     self?.result = .failure(error)
-                } else {
-                    self?.subscribe(environment: environment)
                 }
             }, receiveValue: { [weak self] response in
                 self?.result = .success(response)
+                self?.subscribe()
             })
     }
 
-    func subscribe(environment: Environment) {
+    func lookupIfPossible(operation: OperationDescriptor) {
+        guard fetchPolicy == .storeAndNetwork else { return }
+
+        let snapshot: Snapshot<Op.Data?> = environment.lookup(selector: operation.fragment)
+        if snapshot.data != nil {
+            result = .success(snapshot)
+            subscribe()
+        }
+    }
+
+    func subscribe() {
         guard case .success(let snapshot) = result else {
             return
         }
 
-        cancellable = environment.subscribe(snapshot: snapshot)
+        subscribeCancellable = environment.subscribe(snapshot: snapshot)
             .receive(on: DispatchQueue.main)
             .sink { [weak self] newSnapshot in
                 self?.result = .success(newSnapshot)
             }
-    }
-
-    func cancel() {
-        cancellable = nil
     }
 }

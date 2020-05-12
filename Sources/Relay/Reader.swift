@@ -1,11 +1,50 @@
-public struct Snapshot<T> {
-    public var data: T
-    var isMissingData: Bool
+import Foundation
+
+public struct Snapshot<T>: Equatable {
+    public var data: T { dataBox.get() }
+
+    private var dataBox: DataBox
+    public var isMissingData: Bool
     var seenRecords: [DataID: Record]
     var selector: SingularReaderSelector
+
+    init(data: SelectorData?,
+         reify: @escaping (SelectorData?) -> T,
+         isMissingData: Bool,
+         seenRecords: [DataID: Record],
+         selector: SingularReaderSelector) {
+        self.dataBox = DataBox(selectorData: data, reify: reify)
+        self.isMissingData = isMissingData
+        self.seenRecords = seenRecords
+        self.selector = selector
+    }
+
+    private final class DataBox {
+        let selectorData: SelectorData?
+        let reify: (SelectorData?) -> T
+        var data: T?
+
+        init(selectorData: SelectorData?, reify: @escaping (SelectorData?) -> T) {
+            self.selectorData = selectorData
+            self.reify = reify
+        }
+
+        func get() -> T {
+            if let data = data {
+                return data
+            }
+
+            data = reify(selectorData)
+            return data!
+        }
+    }
+
+    public static func ==(lhs: Self, rhs: Self) -> Bool {
+        lhs.dataBox.selectorData == rhs.dataBox.selectorData && lhs.selector.dataID == rhs.selector.dataID && lhs.selector.owner == rhs.selector.owner
+    }
 }
 
-public protocol Readable {
+public protocol Readable: Equatable {
     init(from data: SelectorData)
 }
 
@@ -58,17 +97,17 @@ public extension RawRepresentable where RawValue == String {
     }
 }
 
-public struct FragmentPointer {
+public struct FragmentPointer: Equatable {
     var variables: VariableData
     var id: DataID
     var owner: RequestDescriptor
 }
 
-public struct SelectorData: Readable {
+public struct SelectorData: Readable, Equatable {
     private var data: [String: Value?] = [:]
     private var fragments: [String: FragmentPointer] = [:]
 
-    public enum Value {
+    public enum Value: Equatable {
         case int(Int)
         case float(Double)
         case string(String)
@@ -309,7 +348,7 @@ class Reader {
 
     func read<T: Readable>(_ type: T.Type) -> Snapshot<T?> {
         let data = traverse(node: selector.node, dataID: selector.dataID)
-        return Snapshot(data: data.map { T(from: $0) }, isMissingData: isMissingData, seenRecords: seenRecords, selector: selector)
+        return Snapshot(data: data, reify: { $0.map { T(from: $0) } }, isMissingData: isMissingData, seenRecords: seenRecords, selector: selector)
     }
 
     private func traverse(node: ReaderNode, dataID: DataID, previousData: SelectorData? = nil) -> SelectorData? {
@@ -349,8 +388,13 @@ class Reader {
 
     private func readScalar(for field: ReaderScalarField, from record: Record, into data: inout SelectorData) {
         let storageKey = getStorageKey(field: field, variables: variables)
-        let value = record[storageKey]
-        // TODO missing data
+        var value = record[storageKey]
+        if value == nil {
+            isMissingData = true
+        } else if value is NSNull {
+            value = nil
+        }
+
         data.set(field.applicationName, scalar: value)
     }
 
@@ -358,29 +402,39 @@ class Reader {
         let storageKey = getStorageKey(field: field, variables: variables)
         guard let linkedID = record.getLinkedRecordID(storageKey) else {
             data.set(field.applicationName, object: nil)
-            // TODO missing data
+            isMissingData = true
+            return
+        }
+
+        guard let linkedID2 = linkedID else {
+            data.set(field.applicationName, object: nil)
             return
         }
 
         let prevData = data.get(SelectorData?.self, field.applicationName)
-        data.set(field.applicationName, object: traverse(node: field, dataID: linkedID, previousData: prevData))
+        data.set(field.applicationName, object: traverse(node: field, dataID: linkedID2, previousData: prevData))
     }
 
     private func readPluralLink(for field: ReaderLinkedField, from record: Record, into data: inout SelectorData) {
         let storageKey = getStorageKey(field: field, variables: variables)
         guard let linkedIDs = record.getLinkedRecordIDs(storageKey) else {
             data.set(field.applicationName, objects: nil)
-            // TODO missing data
+            isMissingData = true
+            return
+        }
+
+        guard let realLinkedIDs = linkedIDs else {
+            data.set(field.applicationName, objects: nil)
             return
         }
 
         let prevData = data.get([SelectorData?]?.self, field.applicationName)
 
-        var linkedArray: [SelectorData?] = Array(repeating: nil, count: linkedIDs.count)
+        var linkedArray: [SelectorData?] = Array(repeating: nil, count: realLinkedIDs.count)
         if let prevData = prevData {
             linkedArray[0..<prevData.count] = ArraySlice(prevData)
         }
-        for (i, linkedID) in linkedIDs.enumerated() {
+        for (i, linkedID) in realLinkedIDs.enumerated() {
             guard let linkedID = linkedID else {
                 // TODO missing data
                 linkedArray[i] = nil

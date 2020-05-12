@@ -50,7 +50,12 @@ public struct SnapshotPublisher<Data: Readable>: Publisher {
 
         private func fulfillDemand() {
             if demand > 0 && hasPendingUpdates {
-                snapshot = recordStore.lookup(selector: snapshot.selector)
+                let newSnapshot: Snapshot<Data?> = recordStore.lookup(selector: snapshot.selector)
+                if newSnapshot == snapshot {
+                    return
+                }
+
+                snapshot = newSnapshot
                 let newDemand = downstream.receive(snapshot)
                 hasPendingUpdates = false
 

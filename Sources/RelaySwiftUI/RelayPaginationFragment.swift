@@ -2,15 +2,17 @@ import SwiftUI
 import Relay
 
 public struct RelayPaginationFragment<Fragment: Relay.PaginationFragment, ContentView: View>: View {
+    public typealias Content = (Fragment.Data?, Paginating) -> ContentView
+
     @SwiftUI.Environment(\.relayEnvironment) private var environment: Relay.Environment?
 
     let fragment: Fragment
     let key: Fragment.Key
-    let content: (Fragment.Data, Paginating) -> ContentView
+    let content: Content
 
     public init(fragment: Fragment,
                 key: Fragment.Key,
-                content: @escaping (Fragment.Data, Paginating) -> ContentView) {
+                content: @escaping Content) {
         self.fragment = fragment
         self.key = key
         self.content = content
@@ -20,16 +22,16 @@ public struct RelayPaginationFragment<Fragment: Relay.PaginationFragment, Conten
         Inner(environment: environment!, fragment: fragment, key: key, content: content)
     }
 
-    struct Inner<Fragment: Relay.PaginationFragment, ContentView: View>: View {
+    struct Inner: View {
         @ObservedObject private var loader: PaginationFragmentLoader<Fragment>
         let fragment: Fragment
         let key: Fragment.Key
-        let content: (Fragment.Data, Paginating) -> ContentView
+        let content: Content
 
         init(environment: Relay.Environment,
              fragment: Fragment,
              key: Fragment.Key,
-             content: @escaping (Fragment.Data, Paginating) -> ContentView) {
+             content: @escaping Content) {
             self.fragment = fragment
             self.key = key
             self.content = content
@@ -40,15 +42,7 @@ public struct RelayPaginationFragment<Fragment: Relay.PaginationFragment, Conten
         }
 
         var body: some View {
-            Group {
-                content(loader.data, loader.paging)
-            }
-                .onAppear {
-                    self.loader.subscribe()
-                }
-                .onDisappear {
-                    self.loader.cancel()
-                }
+            content(loader.data, loader.paging)
         }
     }
 }

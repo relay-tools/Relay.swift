@@ -9,9 +9,6 @@ public protocol Network {
     ) -> AnyPublisher<Data, Error>
 }
 
-// TODO replace with a real type
-public typealias CacheConfig = Any
-
 public struct AnyEncodable: Encodable {
     private let encode: (Encoder) throws -> Void
     public init<T: Encodable>(_ wrapped: T) {

@@ -6,7 +6,6 @@ class Executor<Sink: Subject> where Sink.Output == GraphQLResponse, Sink.Failure
     let publishQueue: PublishQueue
     let source: AnyPublisher<Data, Error>
     let sink: Sink
-    let queue = DispatchQueue(label: "executor-response-queue")
 
     var cancellable: AnyCancellable?
 
@@ -27,7 +26,7 @@ class Executor<Sink: Subject> where Sink.Output == GraphQLResponse, Sink.Failure
             }
 
             return try GraphQLResponse(dictionary: obj)
-        }.receive(on: queue).tryCompactMap { response in
+        }.receive(on: DispatchQueue.main).tryCompactMap { response in
             try self.handle(response: response)
         }.sink(receiveCompletion: { completion in
             self.sink.send(completion: completion)

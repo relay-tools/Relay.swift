@@ -2,15 +2,17 @@ import SwiftUI
 import Relay
 
 public struct RelayFragment<Fragment: Relay.Fragment, ContentView: View>: View {
+    public typealias Content = (Fragment.Data?) -> ContentView
+
     @SwiftUI.Environment(\.relayEnvironment) private var environment: Relay.Environment?
 
     let fragment: Fragment
     let key: Fragment.Key
-    let content: (Fragment.Data) -> ContentView
+    let content: Content
 
     public init(fragment: Fragment,
                 key: Fragment.Key,
-                content: @escaping (Fragment.Data) -> ContentView) {
+                content: @escaping Content) {
         self.fragment = fragment
         self.key = key
         self.content = content
@@ -20,16 +22,16 @@ public struct RelayFragment<Fragment: Relay.Fragment, ContentView: View>: View {
         Inner(environment: environment!, fragment: fragment, key: key, content: content)
     }
 
-    struct Inner<Fragment: Relay.Fragment, ContentView: View>: View {
+    struct Inner: View {
         @ObservedObject private var loader: FragmentLoader<Fragment>
         let fragment: Fragment
         let key: Fragment.Key
-        let content: (Fragment.Data) -> ContentView
+        let content: Content
 
         init(environment: Relay.Environment,
              fragment: Fragment,
              key: Fragment.Key,
-             content: @escaping (Fragment.Data) -> ContentView) {
+             content: @escaping Content) {
             self.fragment = fragment
             self.key = key
             self.content = content
@@ -40,15 +42,7 @@ public struct RelayFragment<Fragment: Relay.Fragment, ContentView: View>: View {
         }
 
         var body: some View {
-            Group {
-                content(loader.data)
-            }
-                .onAppear {
-                    self.loader.subscribe()
-                }
-                .onDisappear {
-                    self.loader.cancel()
-                }
+            content(loader.data)
         }
     }
 }

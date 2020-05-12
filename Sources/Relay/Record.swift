@@ -29,6 +29,7 @@ public struct Record: Equatable {
     }
 
     private enum Value: Equatable, CustomDebugStringConvertible {
+        case null
         case int(Int)
         case float(Double)
         case string(String)
@@ -38,7 +39,9 @@ public struct Record: Equatable {
         case linkedRecords([DataID?])
 
         init?(scalar: Any) {
-            if let v = scalar as? Int {
+            if scalar is NSNull {
+                self = .null
+            } else if let v = scalar as? Int {
                 self = .int(v)
             } else if let v = scalar as? Double {
                 self = .float(v)
@@ -56,6 +59,8 @@ public struct Record: Equatable {
 
         var scalar: Any? {
             switch self {
+            case .null:
+                return NSNull()
             case .int(let v):
                 return v
             case .float(let v):
@@ -109,9 +114,11 @@ public struct Record: Equatable {
         }
     }
 
-    public func getLinkedRecordID(_ storageKey: String) -> DataID? {
+    public func getLinkedRecordID(_ storageKey: String) -> DataID?? {
         if let value = fields[storageKey] {
-            if case .linkedRecord(let dataID) = value {
+            if case .null = value {
+                return .some(nil)
+            } else if case .linkedRecord(let dataID) = value {
                 return dataID
             } else {
                 preconditionFailure("Expected a linked record for key \(storageKey)")
@@ -125,9 +132,11 @@ public struct Record: Equatable {
         fields[storageKey] = .linkedRecord(id)
     }
 
-    public func getLinkedRecordIDs(_ storageKey: String) -> [DataID?]? {
+    public func getLinkedRecordIDs(_ storageKey: String) -> [DataID?]?? {
         if let value = fields[storageKey] {
-            if case .linkedRecords(let dataIDs) = value {
+            if case .null = value {
+                return .some(nil)
+            } else if case .linkedRecords(let dataIDs) = value {
                 return dataIDs
             } else {
                 preconditionFailure("Expected an array of linked IDs for key \(storageKey)")

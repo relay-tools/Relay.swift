@@ -1,4 +1,5 @@
 public protocol Operation {
+    init()
     var node: ConcreteRequest { get }
     associatedtype Variables: VariableDataConvertible
     associatedtype Data: Readable

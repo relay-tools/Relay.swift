@@ -39,3 +39,19 @@ public struct RelayQuery<Op: Relay.Operation, LoadingView: View, ErrorView: View
         .onAppear { self.loader.load(environment: self.environment) }
     }
 }
+
+public extension RelayQuery where Op.Variables == EmptyVariables {
+    init(op: Op,
+         fetchPolicy: QueryFetchPolicy = .networkOnly,
+         loadingContent: LoadingView,
+         errorContent: @escaping (Error) -> ErrorView,
+         dataContent: @escaping (Op.Data?) -> DataView
+    ) {
+        self.init(op: op,
+                  variables: .init(),
+                  fetchPolicy: fetchPolicy,
+                  loadingContent: loadingContent,
+                  errorContent: errorContent,
+                  dataContent: dataContent)
+    }
+}

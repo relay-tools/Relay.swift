@@ -160,3 +160,9 @@ extension Dictionary: VariableDataConvertible where Key == String, Value: Variab
 extension RawRepresentable where RawValue == String {
     public var variableValue: VariableValue { .string(rawValue) }
 }
+
+public struct EmptyVariables: VariableDataConvertible {
+    public init() {}
+    
+    public var variableData: VariableData { [:] }
+}

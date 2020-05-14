@@ -5,6 +5,7 @@ import { execFileSync } from 'child_process';
 const toolPath = path.join(__dirname, 'find-graphql-tags');
 
 export const find: GraphQLTagFinder = (_text, filePath) => {
+  console.log('finding graphql tags');
   const output = execFileSync(toolPath, [filePath]);
   return JSON.parse(output);
 };

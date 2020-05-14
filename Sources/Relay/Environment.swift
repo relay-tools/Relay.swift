@@ -37,6 +37,27 @@ public class Environment {
         return sink.eraseToAnyPublisher()
     }
 
+    public func executeMutation(
+        operation: OperationDescriptor,
+        cacheConfig: CacheConfig,
+        optimisticResponse: [String: Any]? = nil,
+        optimisticUpdater: SelectorStoreUpdater? = nil,
+        updater: SelectorStoreUpdater? = nil
+    ) -> AnyPublisher<GraphQLResponse, Error> {
+        let source = network.execute(request: operation.request.node.params,
+                                     variables: operation.request.variables,
+                                     cacheConfig: cacheConfig)
+        let sink = PassthroughSubject<GraphQLResponse, Error>()
+        Executor(
+            operation: operation,
+            operationTracker: operationTracker,
+            publishQueue: publishQueue,
+            source: source,
+            sink: sink
+        ).execute()
+        return sink.eraseToAnyPublisher()
+    }
+
     public func lookup<T: Readable>(
         selector: SingularReaderSelector
     ) -> Snapshot<T?> {

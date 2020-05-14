@@ -8,7 +8,11 @@ class MutationTracker<O: Relay.Operation>: ObservableObject {
         self.operation = operation
     }
 
-    @Published var requestsInFlight = 0
+    var requestsInFlight = 0 {
+        willSet {
+            self.objectWillChange.send()
+        }
+    }
 
     var cancellables = Set<AnyCancellable>()
 

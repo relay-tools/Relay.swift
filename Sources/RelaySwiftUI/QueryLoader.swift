@@ -3,17 +3,25 @@ import Foundation
 import Relay
 
 class QueryLoader<Op: Relay.Operation>: ObservableObject {
-    @Published var result: Result<Snapshot<Op.Data?>, Error>?
+    var result: Result<Snapshot<Op.Data?>, Error>? {
+        willSet {
+            objectWillChange.send()
+        }
+    }
 
     var op: Op
-    var variables: Op.Variables
+    var variables: Op.Variables? {
+        didSet {
+            _ = reload()
+        }
+    }
     var fetchPolicy: QueryFetchPolicy
 
     private var environment: Environment!
     private var fetchCancellable: AnyCancellable?
     private var subscribeCancellable: AnyCancellable?
 
-    init(op: Op, variables: Op.Variables, fetchPolicy: QueryFetchPolicy) {
+    init(op: Op, variables: Op.Variables? = nil, fetchPolicy: QueryFetchPolicy) {
         self.op = op
         self.variables = variables
         self.fetchPolicy = fetchPolicy
@@ -47,12 +55,32 @@ class QueryLoader<Op: Relay.Operation>: ObservableObject {
         return nil
     }
 
-    func load(environment: Environment?) {
-        guard let environment = environment else {
-            preconditionFailure("Trying to use a RelayQuery without setting up an Environment")
+    private var isLoaded = false
+
+    func reload() {
+        isLoaded = false
+        result = nil
+
+        if self.environment != nil {
+            _ = loadIfNeeded(environment: self.environment)
+        }
+    }
+
+    func loadIfNeeded(environment: Environment?) -> Result<Snapshot<Op.Data?>, Error>? {
+        guard !isLoaded || environment !== self.environment else {
+            return result
         }
 
-        self.environment = environment
+        if let environment = environment {
+            self.environment = environment
+        }
+
+        guard let environment = self.environment else {
+            preconditionFailure("Trying to use a Relay Query without setting up an Environment")
+        }
+        guard let variables = self.variables else {
+            preconditionFailure("Trying to use a Relay Query without setting its variables")
+        }
 
         let operation = op.createDescriptor(variables: variables)
         lookupIfPossible(operation: operation)
@@ -68,6 +96,9 @@ class QueryLoader<Op: Relay.Operation>: ObservableObject {
                 self?.result = .success(response)
                 self?.subscribe()
             })
+
+        isLoaded = true
+        return result
     }
 
     func lookupIfPossible(operation: OperationDescriptor) {

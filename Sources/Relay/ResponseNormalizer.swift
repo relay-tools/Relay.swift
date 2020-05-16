@@ -1,3 +1,5 @@
+import Foundation
+
 struct ResponsePayload {
     var errors: [GraphQLError]?
     var fieldPayloads: [HandleFieldPayload]
@@ -78,6 +80,11 @@ class ResponseNormalizer {
         let storageKey = getStorageKey(field: field, variables: variables)
         guard let fieldValue = data[field.responseKey] else {
             record[storageKey] = nil
+            return
+        }
+
+        if fieldValue is NSNull {
+            record[storageKey] = fieldValue
             return
         }
 

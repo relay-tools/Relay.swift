@@ -63,6 +63,7 @@ public struct Query<O: Relay.Operation>: DynamicProperty {
 
     public init(_ type: O.Type, fetchPolicy: QueryFetchPolicy = .networkOnly) {
         loader = QueryLoader(op: O(), fetchPolicy: fetchPolicy)
+        loader.variables = EmptyVariables() as? O.Variables
     }
 
     public var projectedValue: O.Variables {

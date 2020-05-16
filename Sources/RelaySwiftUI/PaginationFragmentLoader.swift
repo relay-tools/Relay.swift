@@ -98,8 +98,16 @@ class PaginationFragmentLoader<Fragment: Relay.PaginationFragment>: ObservableOb
         return hasMore
     }
 
-    @Published var isLoadingNext = false
-    @Published var isLoadingPrevious = false
+    var isLoadingNext = false {
+        willSet {
+            objectWillChange.send()
+        }
+    }
+    var isLoadingPrevious = false {
+        willSet {
+            objectWillChange.send()
+        }
+    }
 
     private func loadMore(direction: PaginationDirection, count: Int) -> AnyPublisher<(), Error> {
         let (cursor, _) = getConnectionState(direction: direction)

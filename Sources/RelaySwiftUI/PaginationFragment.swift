@@ -14,12 +14,12 @@ public struct PaginationFragment<F: Relay.PaginationFragment>: DynamicProperty {
         loader = PaginationFragmentLoader(fragment: F())
     }
 
-    public var wrappedValue: F.Key {
+    public var projectedValue: F.Key {
         get { keyBox.key! }
         set { keyBox.key = newValue }
     }
 
-    public var projectedValue: Wrapper? {
+    public var wrappedValue: Wrapper? {
         guard let key = keyBox.key else {
             return nil
         }

@@ -7,7 +7,7 @@ public class Store {
     private var invalidatedRecordIDs = Set<DataID>()
     private var subscriptions = [StoreSubscription]()
 
-    public init(source: RecordSource) {
+    public init(source: RecordSource = DefaultRecordSource()) {
         recordSource = source
 
         initializeRecordSource()

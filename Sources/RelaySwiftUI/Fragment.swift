@@ -13,12 +13,12 @@ public struct Fragment<F: Relay.Fragment>: DynamicProperty {
         loader = FragmentLoader(fragment: fragment)
     }
 
-    public var wrappedValue: F.Key {
+    public var projectedValue: F.Key {
         get { keyBox.key! }
         nonmutating set { keyBox.key = newValue }
     }
 
-    public var projectedValue: F.Data? {
+    public var wrappedValue: F.Data? {
         guard let key = keyBox.key else {
             return nil
         }

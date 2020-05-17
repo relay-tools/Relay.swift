@@ -33,6 +33,9 @@
   },
   "name": "relay-compiler-language-swift",
   "author": "Matt Moriarity",
+  "repository": {
+    "url": "https://github.com/mjm/Relay.swift"
+  },
   "module": "dist/relay-compiler-language-swift.esm.js",
   "devDependencies": {
     "@types/relay-compiler": "^8.0.0",

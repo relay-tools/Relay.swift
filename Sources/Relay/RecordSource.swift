@@ -158,12 +158,15 @@ public protocol RecordSourceSelectorProxy: RecordSourceProxy {
 
 public class DefaultRecordSourceProxy: RecordSourceProxy {
     private let mutator: RecordSourceMutator
+    private let handlerProvider: HandlerProvider?
+
     private var proxies: [DataID: RecordProxy?] = [:]
     private(set) var invalidatedStore = false
     private(set) var idsMarkedForInvalidation = Set<DataID>()
 
-    init(mutator: RecordSourceMutator) {
+    init(mutator: RecordSourceMutator, handlerProvider: HandlerProvider? = nil) {
         self.mutator = mutator
+        self.handlerProvider = handlerProvider
     }
 
     public func create(dataID: DataID, typeName: String) -> RecordProxy {
@@ -210,5 +213,103 @@ public class DefaultRecordSourceProxy: RecordSourceProxy {
 
     func markIDForInvalidation(_ dataID: DataID) {
         idsMarkedForInvalidation.insert(dataID)
+    }
+
+    func publish(source: RecordSource, fieldPayloads: [HandleFieldPayload] = []) {
+        for dataID in source.recordIDs {
+            switch source.getStatus(dataID) {
+            case .existent:
+                if let sourceRecord = source[dataID] {
+                    if mutator.getStatus(dataID) != .existent {
+                        _ = create(dataID: dataID, typeName: sourceRecord.typename)
+                    }
+                    mutator.copyFields(from: sourceRecord, to: dataID)
+                }
+            case .nonexistent:
+                delete(dataID: dataID)
+            case .unknown:
+                break
+            }
+        }
+
+        for fieldPayload in fieldPayloads {
+            guard let handler = handlerProvider?.handler(for: fieldPayload.handle) else {
+                preconditionFailure("Expected a handler to be provided for handle `\(fieldPayload.handle)`")
+            }
+
+            var this: RecordSourceProxy = self
+            handler.update(store: &this, fieldPayload: fieldPayload)
+        }
+    }
+}
+
+class DefaultRecordSourceSelectorProxy: RecordSourceSelectorProxy {
+    private let mutator: RecordSourceMutator
+    private var recordSource: RecordSourceProxy
+    private let readSelector: SingularReaderSelector
+
+    init(mutator: RecordSourceMutator,
+         recordSource: RecordSourceProxy,
+         readSelector: SingularReaderSelector) {
+        self.mutator = mutator
+        self.recordSource = recordSource
+        self.readSelector = readSelector
+    }
+
+    func create(dataID: DataID, typeName: String) -> RecordProxy {
+        recordSource.create(dataID: dataID, typeName: typeName)
+    }
+
+    func delete(dataID: DataID) {
+        recordSource.delete(dataID: dataID)
+    }
+
+    subscript(dataID: DataID) -> RecordProxy? {
+        recordSource[dataID]
+    }
+
+    var root: RecordProxy {
+        recordSource.root
+    }
+
+    func invalidateStore() {
+        recordSource.invalidateStore()
+    }
+
+    private var operationRoot: RecordProxy {
+        var root = recordSource[readSelector.dataID]
+        if root == nil {
+            root = recordSource.create(dataID: readSelector.dataID, typeName: Record.root.typename)
+        }
+        return root!
+    }
+
+    private func getLinkedField(_ fieldName: String, plural: Bool) -> ReaderLinkedField {
+        for selection in readSelector.node.selections {
+            guard case .field(let field) = selection, field.name == fieldName else {
+                continue
+            }
+
+            guard let linkedField = field as? ReaderLinkedField else {
+                preconditionFailure("Root field `\(fieldName)` is not a linked field")
+            }
+
+            precondition(linkedField.plural == plural, "Expected root field `\(fieldName)` to be \(plural ? "plural" : "singular")")
+            return linkedField
+        }
+
+        preconditionFailure("Cannot find root field `\(fieldName)` on GraphQL document `\(readSelector.node.name)`")
+    }
+
+    func getRootField(_ fieldName: String) -> RecordProxy? {
+        let field = getLinkedField(fieldName, plural: false)
+        let storageKey = getStorageKey(field: field, variables: readSelector.variables)
+        return operationRoot.getLinkedRecord(storageKey)
+    }
+
+    func getPluralRootField(_ fieldName: String) -> [RecordProxy?]? {
+        let field = getLinkedField(fieldName, plural: true)
+        let storageKey = getStorageKey(field: field, variables: readSelector.variables)
+        return operationRoot.getLinkedRecords(storageKey)
     }
 }

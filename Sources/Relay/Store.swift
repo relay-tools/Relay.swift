@@ -1,5 +1,6 @@
 public class Store {
     private var recordSource: RecordSource
+    private var optimisticSource: RecordSource?
 
     private var currentWriteEpoch = 0
     private var updatedRecordIDs = Set<DataID>()
@@ -14,10 +15,17 @@ public class Store {
 
     public var source: RecordSource {
         get {
-            recordSource
+            if let source = optimisticSource {
+                return source
+            }
+            return recordSource
         }
         set {
-            recordSource = newValue
+            if optimisticSource != nil {
+                optimisticSource = newValue
+            } else {
+                recordSource = newValue
+            }
         }
     }
 
@@ -68,6 +76,26 @@ public class Store {
         SnapshotPublisher(store: self, initialSnapshot: snapshot)
     }
 
+    public func snapshot() {
+        precondition(optimisticSource == nil, "Unexpected call to snapshot() while a previous snapshot exists")
+
+        for subscription in subscriptions {
+            subscription.storeDidSnapshot(source: recordSource)
+        }
+        optimisticSource = OptimisticRecordSource(base: recordSource)
+    }
+
+    public func restore() {
+        precondition(optimisticSource != nil, "Unexpected call to restore() without a snapshot")
+
+        optimisticSource = nil
+        // TODO schedule GC
+
+        for subscription in subscriptions {
+            subscription.storeDidRestore()
+        }
+    }
+
     func subscribe(subscription: StoreSubscription) {
         subscriptions.append(subscription)
     }
@@ -78,6 +106,8 @@ public class Store {
 }
 
 protocol StoreSubscription: class {
+    func storeDidSnapshot(source: RecordSource)
+    func storeDidRestore()
     func storeUpdatedRecords(_ updatedIDs: Set<DataID>) -> RequestDescriptor?
 }
 

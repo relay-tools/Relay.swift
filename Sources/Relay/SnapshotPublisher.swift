@@ -22,6 +22,9 @@ public struct SnapshotPublisher<Data: Readable>: Publisher {
         private let recordStore: Relay.Store
 
         var snapshot: Output
+        var backup: Output?
+        var stale = false
+
         var hasPendingUpdates = false
         var demand: Subscribers.Demand = .none
 
@@ -31,6 +34,30 @@ public struct SnapshotPublisher<Data: Readable>: Publisher {
             self.snapshot = snapshot
 
             store.subscribe(subscription: self)
+        }
+
+        func storeDidSnapshot(source: RecordSource) {
+            if !stale {
+                backup = snapshot
+            } else {
+                backup = Reader.read(Data.self, source: source, selector: snapshot.selector)
+            }
+        }
+
+        func storeDidRestore() {
+            if let backup = backup {
+                if backup != snapshot {
+                    stale = true
+                }
+
+                snapshot.isMissingData = backup.isMissingData
+                snapshot.seenRecords = backup.seenRecords
+                snapshot.selector = backup.selector
+            } else {
+                stale = true
+            }
+
+            backup = nil
         }
 
         func storeUpdatedRecords(_ updatedIDs: Set<DataID>) -> RequestDescriptor? {
@@ -49,15 +76,20 @@ public struct SnapshotPublisher<Data: Readable>: Publisher {
         }
 
         private func fulfillDemand() {
-            if demand > 0 && hasPendingUpdates {
-                let newSnapshot: Snapshot<Data?> = recordStore.lookup(selector: snapshot.selector)
+            if demand > 0 && (hasPendingUpdates || stale) {
+                let newSnapshot: Snapshot<Data?> =
+                    hasPendingUpdates || backup == nil
+                        ? recordStore.lookup(selector: snapshot.selector)
+                        : backup!
+                hasPendingUpdates = false
+                stale = false
+
                 if newSnapshot == snapshot {
                     return
                 }
 
                 snapshot = newSnapshot
                 let newDemand = downstream.receive(snapshot)
-                hasPendingUpdates = false
 
                 demand += newDemand
                 demand -= 1

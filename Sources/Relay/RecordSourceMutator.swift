@@ -97,6 +97,12 @@ class RecordSourceMutator {
         }
     }
 
+    func copyFields(from sourceRecord: Record, to sinkID: DataID) {
+        updateSinkRecord(sinkID) { record in
+            record.copyFields(from: sourceRecord)
+        }
+    }
+
     func create(dataID: DataID, typeName: String) {
         precondition(base.getStatus(dataID) != .existent && sink.getStatus(dataID) != .existent,
             "Cannot create a record with data ID \(dataID) because it already exists")

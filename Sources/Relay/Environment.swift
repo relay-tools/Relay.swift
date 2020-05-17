@@ -51,6 +51,8 @@ public class Environment {
         Executor(
             operation: operation,
             operationTracker: operationTracker,
+            optimisticResponse: optimisticResponse,
+            optimisticUpdater: optimisticUpdater,
             publishQueue: publishQueue,
             source: source,
             sink: sink

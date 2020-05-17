@@ -9,10 +9,13 @@ class Executor<Sink: Subject> where Sink.Output == GraphQLResponse, Sink.Failure
     let sink: Sink
 
     var isComplete = false
+    var optimisticUpdates: [OptimisticUpdate] = []
     var cancellable: AnyCancellable?
 
     init(operation: OperationDescriptor,
          operationTracker: OperationTracker,
+         optimisticResponse: [String: Any]? = nil,
+         optimisticUpdater: SelectorStoreUpdater? = nil,
          publishQueue: PublishQueue,
          source: AnyPublisher<Data, Error>,
          sink: Sink) {
@@ -21,6 +24,11 @@ class Executor<Sink: Subject> where Sink.Output == GraphQLResponse, Sink.Failure
         self.publishQueue = publishQueue
         self.source = source
         self.sink = sink
+
+        DispatchQueue.main.async {
+            let wrappedOptimisticResponse = optimisticResponse.map { GraphQLResponse(data: $0) }
+            self.process(optimisticResponse: wrappedOptimisticResponse, updater: optimisticUpdater)
+        }
     }
 
     func execute() {
@@ -45,7 +53,14 @@ class Executor<Sink: Subject> where Sink.Output == GraphQLResponse, Sink.Failure
         isComplete = true
 
         operationTracker.complete(request: operation.request)
-        // TODO handle optimistic updates
+        if !optimisticUpdates.isEmpty {
+            for update in optimisticUpdates {
+                publishQueue.revert(update)
+            }
+            optimisticUpdates.removeAll()
+            _ = publishQueue.run()
+        }
+
         // TODO complete in operation tracker
 
         sink.send(completion: completion)
@@ -56,7 +71,7 @@ class Executor<Sink: Subject> where Sink.Output == GraphQLResponse, Sink.Failure
             return nil
         }
 
-        // TODO optimistic responses
+//         TODO optimistic responses from module imports
 
         _ = process(response: response)
         let updatedOwners = publishQueue.run(sourceOperation: operation)
@@ -87,6 +102,47 @@ class Executor<Sink: Subject> where Sink.Output == GraphQLResponse, Sink.Failure
         return payload
     }
 
+    private func process(optimisticResponse response: GraphQLResponse?, updater: SelectorStoreUpdater?) {
+        if isComplete {
+            return
+        }
+
+        precondition(optimisticUpdates.isEmpty, "Only one optimistic response allowed per execute")
+
+        if response == nil && updater == nil {
+            return
+        }
+
+        if let response = response {
+            let payload = normalize(response: response,
+                                    selector: operation.root,
+                                    typeName: Record.root.typename,
+                                    request: operation.request)
+            optimisticUpdates.append(OptimisticUpdate(
+                operation: operation,
+                payload: payload,
+                updater: updater
+            ))
+            // TODO followups from module imports
+        } else if let updater = updater {
+            optimisticUpdates.append(OptimisticUpdate(
+                operation: operation,
+                payload: ResponsePayload(
+                    errors: nil,
+                    fieldPayloads: [],
+                    source: DefaultRecordSource(),
+                    isFinal: false
+                ),
+                updater: updater
+            ))
+        }
+
+        for update in optimisticUpdates {
+            publishQueue.apply(update)
+        }
+        _ = publishQueue.run()
+    }
+
     private func normalize(response: GraphQLResponse,
                            selector: NormalizationSelector,
                            typeName: String,
@@ -106,6 +162,12 @@ public struct GraphQLResponse {
     public var data: [String: Any]?
     public var errors: [GraphQLError]?
     public var extensions: [String: Any]?
+
+    init(data: [String: Any]? = nil, errors: [GraphQLError]? = nil, extensions: [String: Any]? = nil) {
+        self.data = data
+        self.errors = errors
+        self.extensions = extensions
+    }
 
     init(dictionary: [String: Any]) throws {
         if let data = dictionary["data"] {
@@ -141,5 +203,28 @@ class OperationTracker {
 
     func isActive(request: RequestDescriptor) -> Bool {
         inflightOperationIDs.contains(request.identifier)
+    }
+}
+
+struct OptimisticUpdate: Hashable {
+    let id: UUID
+
+    var operation: OperationDescriptor
+    var payload: ResponsePayload
+    var updater: SelectorStoreUpdater?
+
+    init(operation: OperationDescriptor, payload: ResponsePayload, updater: SelectorStoreUpdater?) {
+        self.id = UUID()
+        self.operation = operation
+        self.payload = payload
+        self.updater = updater
+    }
+
+    static func ==(lhs: OptimisticUpdate, rhs: OptimisticUpdate) -> Bool {
+        return lhs.id == rhs.id
+    }
+
+    func hash(into hasher: inout Hasher) {
+        hasher.combine(id)
     }
 }

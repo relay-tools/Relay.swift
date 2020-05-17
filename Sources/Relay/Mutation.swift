@@ -1,6 +1,6 @@
 import Combine
 
-public typealias SelectorStoreUpdater = (RecordSourceSelectorProxy, SelectorData) -> Void
+public typealias SelectorStoreUpdater = (RecordSourceSelectorProxy, SelectorData?) -> Void
 
 public func commitMutation<Op: Operation>(
     _ environment: Environment,

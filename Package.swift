@@ -4,7 +4,7 @@
 import PackageDescription
 
 let package = Package(
-    name: "Relay",
+    name: "Relay.swift",
     platforms: [
         .macOS(.v10_15),
         .iOS(.v13),

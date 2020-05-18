@@ -2,27 +2,27 @@ import SwiftUI
 import Relay
 
 @propertyWrapper
-public struct Mutation<O: Relay.Operation>: DynamicProperty {
-    let operation: O
+public struct Mutation<Operation: Relay.Operation>: DynamicProperty {
+    let operation: Operation
     @SwiftUI.Environment(\.relayEnvironment) var environment: Relay.Environment?
-    @ObservedObject var tracker: MutationTracker<O>
+    @ObservedObject var tracker: MutationTracker<Operation>
 
-    public init(_ type: O.Type) {
-        let op = O()
+    public init(_ type: Operation.Type) {
+        let op = Operation()
         operation = op
         tracker = MutationTracker(operation: op)
     }
 
-    public var wrappedValue: Mutator<O> {
+    public var wrappedValue: Mutator<Operation> {
         get { Mutator(environment: environment!, tracker: tracker) }
     }
 
-    public struct Mutator<O: Relay.Operation> {
+    public struct Mutator<Operation: Relay.Operation> {
         let environment: Relay.Environment
-        let tracker: MutationTracker<O>
+        let tracker: MutationTracker<Operation>
 
         public func commit(
-            variables: O.Variables,
+            variables: Operation.Variables,
             optimisticResponse: [String: Any]? = nil,
             optimisticUpdater: SelectorStoreUpdater? = nil,
             updater: SelectorStoreUpdater? = nil
@@ -42,7 +42,7 @@ public struct Mutation<O: Relay.Operation>: DynamicProperty {
     }
 }
 
-extension Mutation.Mutator where O.Variables == EmptyVariables {
+extension Mutation.Mutator where Operation.Variables == EmptyVariables {
     public func commit(
         optimisticResponse: [String: Any]? = nil,
         optimisticUpdater: SelectorStoreUpdater? = nil,

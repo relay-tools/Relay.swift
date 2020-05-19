@@ -9,23 +9,22 @@ fragment PokemonListRow_pokemon on Pokemon {
 """)
 
 struct PokemonListRow: View {
-    let pokemon: PokemonListRow_pokemon_Key
+    @Fragment(PokemonListRow_pokemon.self) var pokemon
 
-    var body: some View {
-        RelayFragment(
-            fragment: PokemonListRow_pokemon(),
-            key: pokemon,
-            content: contentView)
+    init(pokemon: PokemonListRow_pokemon_Key) {
+        $pokemon = pokemon
     }
 
-    func contentView(_ data: PokemonListRow_pokemon.Data) -> some View {
+    var body: some View {
         HStack {
-            Text(data.name ?? "(unknown)")
-                .font(.body)
-            Spacer()
-            Text(data.number ?? "")
-                .font(.body)
-                .foregroundColor(.secondary)
+            if pokemon != nil {
+                Text(pokemon!.name ?? "(unknown)")
+                    .font(.body)
+                Spacer()
+                Text(pokemon!.number ?? "")
+                    .font(.body)
+                    .foregroundColor(.secondary)
+            }
         }
     }
 }

@@ -1,4 +1,5 @@
 import Combine
+import Foundation
 import Relay
 
 private let url = URL(string: "https://graphql-pokemon.now.sh/")!
@@ -11,7 +12,7 @@ let environment = Environment(
 )
 
 class MyNetwork: Network {
-    func execute(request: RequestParameters, variables: AnyVariables, cacheConfig: CacheConfig) -> AnyPublisher<Data, Error> {
+    func execute(request: RequestParameters, variables: VariableData, cacheConfig: CacheConfig) -> AnyPublisher<Data, Error> {
         var req = URLRequest(url: url)
         req.setValue("application/json", forHTTPHeaderField: "Content-Type")
         req.httpMethod = "POST"

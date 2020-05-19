@@ -10,7 +10,7 @@ import {
   NormalizationArgument,
   NormalizationSelection,
 } from 'relay-runtime';
-import { indent } from './util';
+import { indent, stringLiteral } from './util';
 
 export function formatGeneratedModule(_runState: RunState): FormatModule {
   return ({ schema, node, typeText }: any) => {
@@ -197,11 +197,11 @@ function generateReaderSelectionExpr(
   const args: [string, string][] = [];
 
   if ('name' in selection) {
-    args.push(['name', `"${selection.name}"`]);
+    args.push(['name', stringLiteral(selection.name)]);
   }
 
   if ('alias' in selection && selection.alias) {
-    args.push(['alias', `"${selection.alias}"`]);
+    args.push(['alias', stringLiteral(selection.alias)]);
   }
 
   if ('args' in selection && selection.args) {
@@ -209,7 +209,7 @@ function generateReaderSelectionExpr(
   }
 
   if ('concreteType' in selection && selection.concreteType) {
-    args.push(['concreteType', `"${selection.concreteType}"`]);
+    args.push(['concreteType', stringLiteral(selection.concreteType)]);
   }
 
   if ('plural' in selection) {
@@ -281,11 +281,11 @@ ${indent(level + 1)}kind: .${
   const args: [string, string][] = [];
 
   if ('name' in selection) {
-    args.push(['name', `"${selection.name}"`]);
+    args.push(['name', stringLiteral(selection.name)]);
   }
 
   if ('alias' in selection && selection.alias) {
-    args.push(['alias', `"${selection.alias}"`]);
+    args.push(['alias', stringLiteral(selection.alias)]);
   }
 
   if ('args' in selection && selection.args) {
@@ -293,26 +293,26 @@ ${indent(level + 1)}kind: .${
   }
 
   if ('handle' in selection && selection.handle) {
-    args.push(['handle', `"${selection.handle}"`]);
+    args.push(['handle', stringLiteral(selection.handle)]);
   }
 
   if ('key' in selection && selection.key) {
-    args.push(['key', `"${selection.key}"`]);
+    args.push(['key', stringLiteral(selection.key)]);
   }
 
   if ('filters' in selection && selection.filters) {
     args.push([
       'filters',
-      `[${selection.filters.map(filter => `"${filter}"`).join(', ')}]`,
+      `[${selection.filters.map(stringLiteral).join(', ')}]`,
     ]);
   }
 
   if ('storageKey' in selection && selection.storageKey) {
-    args.push(['storageKey', `"${selection.storageKey}"`]);
+    args.push(['storageKey', stringLiteral(selection.storageKey)]);
   }
 
   if ('concreteType' in selection && selection.concreteType) {
-    args.push(['concreteType', `"${selection.concreteType}"`]);
+    args.push(['concreteType', stringLiteral(selection.concreteType)]);
   }
 
   if ('plural' in selection) {

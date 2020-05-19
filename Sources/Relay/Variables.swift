@@ -88,7 +88,7 @@ public enum VariableValue: Encodable, Hashable, CustomStringConvertible {
         case .null:
             return "null"
         case .string(let v):
-            return v
+            return String(reflecting: v)
         case .int(let v):
             return "\(v)"
         case .bool(let v):

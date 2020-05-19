@@ -17,7 +17,7 @@
                BlueprintIdentifier = "C9E18B70245F68A100213352"
                BuildableName = "RelayPokedex.app"
                BlueprintName = "RelayPokedex"
-               ReferencedContainer = "container:Relay.xcodeproj">
+               ReferencedContainer = "container:RelayExamples.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
       </BuildActionEntries>
@@ -47,7 +47,7 @@
             BlueprintIdentifier = "C9E18B70245F68A100213352"
             BuildableName = "RelayPokedex.app"
             BlueprintName = "RelayPokedex"
-            ReferencedContainer = "container:Relay.xcodeproj">
+            ReferencedContainer = "container:RelayExamples.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
    </LaunchAction>
@@ -64,7 +64,7 @@
             BlueprintIdentifier = "C9E18B70245F68A100213352"
             BuildableName = "RelayPokedex.app"
             BlueprintName = "RelayPokedex"
-            ReferencedContainer = "container:Relay.xcodeproj">
+            ReferencedContainer = "container:RelayExamples.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
    </ProfileAction>

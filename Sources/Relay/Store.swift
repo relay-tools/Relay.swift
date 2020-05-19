@@ -154,7 +154,16 @@ private func getArgumentValue(_ arg: Argument, _ variables: VariableData) -> Var
 }
 
 func formatStorageKey(name: String, variables: VariableDataConvertible?) -> String {
-    return "\(name)\((variables ?? VariableData()).variableData)"
+    guard let variables = variables else {
+        return name
+    }
+
+    let variableData = variables.variableData
+    if variableData.isEmpty {
+        return name
+    }
+
+    return "\(name)(\(variableData.innerDescription))"
 }
 
 func getRelayHandleKey(

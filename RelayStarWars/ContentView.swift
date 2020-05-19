@@ -14,12 +14,6 @@ struct ContentView: View {
     var body: some View {
         TabView(selection: $selection){
             MoviesTab()
-                .tabItem {
-                    VStack {
-                        Image("first")
-                        Text("Movies")
-                    }
-                }
                 .tag(0)
             Text("Second View")
                 .font(.title)

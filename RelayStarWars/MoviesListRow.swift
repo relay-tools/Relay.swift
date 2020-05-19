@@ -13,35 +13,29 @@ fragment MoviesListRow_film on Film {
 """)
 
 struct MoviesListRow: View {
-    let film: MoviesListRow_film_Key
+    @Fragment(MoviesListRow_film.self) var film
 
-    var body: some View {
-        RelayFragment(
-            fragment: MoviesListRow_film(),
-            key: film,
-            content: Content.init
-        )
+    init(film: MoviesListRow_film_Key) {
+        $film = film
     }
 
-    private struct Content: View {
-        let film: MoviesListRow_film.Data
-
-        var body: some View {
-            HStack {
+    var body: some View {
+        HStack {
+            if film != nil {
                 VStack(alignment: .leading, spacing: 8) {
                     HStack {
-                        Text("Episode \(film.episodeID!):")
-                        Text(film.title!)
+                        Text("Episode \(film!.episodeID!):")
+                        Text(film!.title!)
                     }.font(.headline)
-                    Text("Directed by \(film.director!)")
+                    Text("Directed by \(film!.director!)")
                         .font(.footnote)
                 }
                 Spacer()
-                Text(film.releaseYear)
+                Text(film!.releaseYear)
                     .font(.callout)
                     .foregroundColor(.secondary)
-            }.padding(.vertical, 4)
-        }
+            }
+        }.padding(.vertical, 4)
     }
 }
 

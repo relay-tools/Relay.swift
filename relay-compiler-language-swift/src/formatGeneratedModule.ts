@@ -300,7 +300,7 @@ ${indent(level + 1)}kind: .${
     args.push(['key', `"${selection.key}"`]);
   }
 
-  if ('filters' in selection) {
+  if ('filters' in selection && selection.filters) {
     args.push([
       'filters',
       `[${selection.filters.map(filter => `"${filter}"`).join(', ')}]`,

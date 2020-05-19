@@ -21,41 +21,34 @@ fragment MoviesList_films on Root
 """)
 
 struct MoviesList: View {
-    let films: MoviesList_films_Key
+    @PaginationFragment(MoviesList_films.self) var films
+
+    init(films: MoviesList_films_Key) {
+        $films = films
+    }
+
+    private var filmNodes: [Film] {
+        films?.allFilms?.edges?.compactMap { $0?.node } ?? []
+    }
 
     var body: some View {
         NavigationView {
-            RelayPaginationFragment(
-                fragment: MoviesList_films(),
-                key: films,
-                content: Content.init
-            ).navigationBarTitle("Movies")
-        }
-    }
-
-    private struct Content: View {
-        let data: MoviesList_films.Data?
-        let paging: Paginating
-
-        var films: [Film] {
-            data?.allFilms?.edges?.compactMap { $0?.node } ?? []
-        }
-
-        var body: some View {
             List {
-                ForEach(films) { node in
-                    MoviesListRow(film: node)
-                }
+                if films != nil {
+                    ForEach(filmNodes) { node in
+                        MoviesListRow(film: node)
+                    }
 
-                if paging.isLoadingNext {
-                    Text("Loading more…")
-                        .foregroundColor(.secondary)
-                } else if paging.hasNext == true {
-                    Button("Load more…") {
-                        self.paging.loadNext(3)
+                    if films!.isLoadingNext {
+                        Text("Loading more…")
+                            .foregroundColor(.secondary)
+                    } else if films!.hasNext == true {
+                        Button("Load more…") {
+                            self.films!.loadNext(3)
+                        }
                     }
                 }
-            }
+            }.navigationBarTitle("Movies")
         }
     }
 }

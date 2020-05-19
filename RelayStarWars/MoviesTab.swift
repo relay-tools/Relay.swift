@@ -8,33 +8,23 @@ query MoviesTabQuery {
 """)
 
 struct MoviesTab: View {
+    @Query(MoviesTabQuery.self) var movies
+    
     var body: some View {
-        RelayQuery(
-            op: MoviesTabQuery(),
-            variables: .init(),
-            loadingContent: LoadingView(),
-            errorContent: ErrorView.init,
-            dataContent: Data.init
-        )
+        Group {
+            if movies.isLoading {
+                LoadingView()
+            } else if movies.error != nil {
+                ErrorView(error: movies.error!)
+            } else if movies.data != nil {
+                MoviesList(films: movies.data!)
+            }
+        }
             .tabItem {
                 VStack {
                     Image(systemName: "film.fill")
                     Text("Movies")
                 }
             }
-    }
-
-    struct Data: View {
-        let data: MoviesTabQuery.Data?
-
-        var body: some View {
-            Group {
-                if data == nil {
-                    EmptyView()
-                } else {
-                    MoviesList(films: data!)
-                }
-            }
-        }
     }
 }

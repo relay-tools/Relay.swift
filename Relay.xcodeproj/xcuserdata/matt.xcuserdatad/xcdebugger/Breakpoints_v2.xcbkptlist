@@ -36,5 +36,180 @@
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "6EF933D5-E7F3-46DE-B408-4D5AB057FA87"
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "RelayStarWars/MoviesList.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "38"
+            endingLineNumber = "38"
+            landmarkName = "body"
+            landmarkType = "24">
+            <Locations>
+               <Location
+                  uuid = "6EF933D5-E7F3-46DE-B408-4D5AB057FA87 - 8fea367823c6e75"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "closure #1 () -&gt; Swift.Optional&lt;SwiftUI.TupleView&lt;(SwiftUI.ForEach&lt;Swift.Array&lt;RelayStarWars.MoviesList_films.Data.FilmsConnection_allFilms.FilmsEdge_edges.Film_node&gt;, Swift.String, RelayStarWars.MoviesListRow&gt;, Swift.Optional&lt;SwiftUI._ConditionalContent&lt;SwiftUI.Text, SwiftUI.Button&lt;SwiftUI.Text&gt;&gt;&gt;)&gt;&gt; in closure #1 () -&gt; &lt;&lt;opaque return type of (extension in SwiftUI):SwiftUI.View.navigationBarTitle(SwiftUI.LocalizedStringKey) -&gt; some&gt;&gt;.0 in RelayStarWars.MoviesList.body.getter : some"
+                  moduleName = "RelayStarWars"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/matt/Projects/Relay.swift/RelayStarWars/MoviesList.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "38"
+                  endingLineNumber = "38"
+                  offsetFromSymbolStart = "574">
+               </Location>
+               <Location
+                  uuid = "6EF933D5-E7F3-46DE-B408-4D5AB057FA87 - 4facb224363a73bf"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "closure #1 (RelayStarWars.MoviesList_films.Data.FilmsConnection_allFilms.FilmsEdge_edges.Film_node) -&gt; RelayStarWars.MoviesListRow in closure #1 () -&gt; Swift.Optional&lt;SwiftUI.TupleView&lt;(SwiftUI.ForEach&lt;Swift.Array&lt;RelayStarWars.MoviesList_films.Data.FilmsConnection_allFilms.FilmsEdge_edges.Film_node&gt;, Swift.String, RelayStarWars.MoviesListRow&gt;, Swift.Optional&lt;SwiftUI._ConditionalContent&lt;SwiftUI.Text, SwiftUI.Button&lt;SwiftUI.Text&gt;&gt;&gt;)&gt;&gt; in closure #1 () -&gt; &lt;&lt;opaque return type of (extension in SwiftUI):SwiftUI.View.navigationBarTitle(SwiftUI.LocalizedStringKey) -&gt; some&gt;&gt;.0 in RelayStarWars.MoviesList.body.getter : some"
+                  moduleName = "RelayStarWars"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/matt/Projects/Relay.swift/RelayStarWars/MoviesList.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "39"
+                  endingLineNumber = "39"
+                  offsetFromSymbolStart = "31">
+               </Location>
+            </Locations>
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "EF40B1EF-FF23-4561-8238-AA4D641B1185"
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "RelayStarWars/MoviesTab.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "20"
+            endingLineNumber = "20"
+            landmarkName = "body"
+            landmarkType = "24">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "2502189A-2EDF-4835-A89A-AFE3CA27B299"
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "Sources/Relay/Executor.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "77"
+            endingLineNumber = "77"
+            landmarkName = "handle(response:)"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "F31907A2-0E35-4198-9BEA-6821D63F2409"
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "Sources/Relay/Reader.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "351"
+            endingLineNumber = "351"
+            landmarkName = "read(_:)"
+            landmarkType = "7">
+            <Locations>
+               <Location
+                  uuid = "F31907A2-0E35-4198-9BEA-6821D63F2409 - ec904d3548e61126"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "Relay.Reader.read&lt;A where A: Relay.Readable&gt;(A.Type) -&gt; Relay.Snapshot&lt;Swift.Optional&lt;A&gt;&gt;"
+                  moduleName = "RelayStarWars"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/matt/Projects/Relay.swift/Sources/Relay/Reader.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "351"
+                  endingLineNumber = "351"
+                  offsetFromSymbolStart = "583">
+               </Location>
+               <Location
+                  uuid = "F31907A2-0E35-4198-9BEA-6821D63F2409 - 52dfb12de0b7d489"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "closure #1 (Swift.Optional&lt;Relay.SelectorData&gt;) -&gt; Swift.Optional&lt;A&gt; in Relay.Reader.read&lt;A where A: Relay.Readable&gt;(A.Type) -&gt; Relay.Snapshot&lt;Swift.Optional&lt;A&gt;&gt;"
+                  moduleName = "RelayStarWars"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/matt/Projects/Relay.swift/Sources/Relay/Reader.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "351"
+                  endingLineNumber = "351"
+                  offsetFromSymbolStart = "40">
+               </Location>
+               <Location
+                  uuid = "F31907A2-0E35-4198-9BEA-6821D63F2409 - 3f25a11a6c322d37"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "closure #1 (Relay.SelectorData) -&gt; A in closure #1 (Swift.Optional&lt;Relay.SelectorData&gt;) -&gt; Swift.Optional&lt;A&gt; in Relay.Reader.read&lt;A where A: Relay.Readable&gt;(A.Type) -&gt; Relay.Snapshot&lt;Swift.Optional&lt;A&gt;&gt;"
+                  moduleName = "RelayStarWars"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/matt/Projects/Relay.swift/Sources/Relay/Reader.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "351"
+                  endingLineNumber = "351"
+                  offsetFromSymbolStart = "49">
+               </Location>
+            </Locations>
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "95BA6211-3B59-4D65-8694-8FF001B3DAC8"
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "Sources/Relay/Reader.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "402"
+            endingLineNumber = "402"
+            landmarkName = "readLink(for:from:into:)"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "35767591-4549-4502-9DA4-F94E3B19D808"
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "Sources/Relay/ResponseNormalizer.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "66"
+            endingLineNumber = "66"
+            landmarkName = "traverseSelections(node:record:data:)"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
    </Breakpoints>
 </Bucket>

@@ -37,13 +37,20 @@ public struct VariableData: Encodable, Hashable, CustomStringConvertible, Expres
         }
     }
 
+    var innerDescription: String {
+        if fields.isEmpty {
+            return ""
+        }
+
+        return fields.keys.sorted().map { k in "\(k):\(fields[k]!)" }.joined(separator: ",")
+    }
+
     public var description: String {
         if fields.isEmpty {
             return ""
         }
         
-        let varString = fields.keys.sorted().map { k in "\(k):\(fields[k]!)" }.joined(separator: ",")
-        return "{\(varString)}"
+        return "{\(innerDescription)}"
     }
 }
 

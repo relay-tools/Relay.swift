@@ -3,7 +3,7 @@ public protocol PaginationFragment: Fragment {
 
     typealias Metadata = RefetchMetadata<Operation>
 
-    var metadata: Metadata { get }
+    static var metadata: Metadata { get }
 }
 
 public struct ConnectionMetadata {

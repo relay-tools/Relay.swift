@@ -3,14 +3,11 @@ import Relay
 
 @propertyWrapper
 public struct Mutation<Operation: Relay.Operation>: DynamicProperty {
-    let operation: Operation
     @SwiftUI.Environment(\.relayEnvironment) var environment: Relay.Environment?
     @ObservedObject var tracker: MutationTracker<Operation>
 
     public init(_ type: Operation.Type) {
-        let op = Operation()
-        operation = op
-        tracker = MutationTracker(operation: op)
+        tracker = MutationTracker()
     }
 
     public var wrappedValue: Mutator<Operation> {

@@ -4,7 +4,6 @@ import Relay
 
 class FragmentLoader<Fragment: Relay.Fragment>: ObservableObject {
     var environment: Environment!
-    let fragment: Fragment
 
     var snapshot: Snapshot<Fragment.Data?>? {
         willSet {
@@ -14,9 +13,7 @@ class FragmentLoader<Fragment: Relay.Fragment>: ObservableObject {
 
     private var subscribeCancellable: AnyCancellable?
 
-    init(fragment: Fragment) {
-        self.fragment = fragment
-    }
+    init() {}
 
     private var isLoaded = false
 
@@ -24,9 +21,7 @@ class FragmentLoader<Fragment: Relay.Fragment>: ObservableObject {
         guard !isLoaded else { return }
 
         self.environment = environment
-        let pointer = fragment.getFragmentPointer(key)
-        let selector = SingularReaderSelector(fragment: fragment.node, pointer: pointer)
-        snapshot = environment.lookup(selector: selector)
+        snapshot = environment.lookup(selector: Fragment(key: key).selector)
         subscribe()
         isLoaded = true
     }

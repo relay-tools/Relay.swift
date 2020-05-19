@@ -319,16 +319,6 @@ function makeFragmentProtocol(protocolType: any, level: number): string {
 
   typeText += `${indent(level)}}\n`;
 
-  const [parentType] = protocolType.alias.split('.');
-  typeText += `
-${indent(level)}extension ${parentType} {
-${indent(level + 1)}func getFragmentPointer(_ key: ${
-    protocolType.name
-  }) -> FragmentPointer {
-${indent(level + 2)}key.${protocolType.fields[0].fieldName}
-${indent(level + 1)}}
-${indent(level)}}
-`;
   return typeText;
 }
 

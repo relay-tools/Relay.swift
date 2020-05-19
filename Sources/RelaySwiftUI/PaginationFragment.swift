@@ -11,7 +11,7 @@ public struct PaginationFragment<F: Relay.PaginationFragment>: DynamicProperty {
     var cancellable: AnyCancellable?
 
     public init(_ type: F.Type) {
-        loader = PaginationFragmentLoader(fragment: F())
+        loader = PaginationFragmentLoader()
     }
 
     public var projectedValue: F.Key {

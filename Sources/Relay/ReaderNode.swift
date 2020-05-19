@@ -127,10 +127,19 @@ public struct SingularReaderSelector {
 }
 
 public protocol Fragment {
-    init()
-    var node: ReaderFragment { get }
-    func getFragmentPointer(_ key: Key) -> FragmentPointer
+    init(key: Key)
+    var fragmentPointer: FragmentPointer { get }
+
+    static var node: ReaderFragment { get }
     
     associatedtype Key
     associatedtype Data: Readable
+}
+
+public extension Fragment {
+    var node: ReaderFragment { Self.node }
+
+    var selector: SingularReaderSelector {
+        SingularReaderSelector(fragment: node, pointer: fragmentPointer)
+    }
 }

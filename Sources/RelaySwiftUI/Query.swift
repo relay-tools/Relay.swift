@@ -12,7 +12,7 @@ public struct Query<O: Relay.Operation>: DynamicProperty {
     @ObservedObject var loader: QueryLoader<O>
 
     public init(_ type: O.Type, fetchPolicy: QueryFetchPolicy = .networkOnly) {
-        loader = QueryLoader(op: O(), fetchPolicy: fetchPolicy)
+        loader = QueryLoader(fetchPolicy: fetchPolicy)
         loader.variables = EmptyVariables() as? O.Variables
     }
 

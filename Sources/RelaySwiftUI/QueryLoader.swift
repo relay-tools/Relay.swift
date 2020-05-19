@@ -9,7 +9,6 @@ class QueryLoader<Op: Relay.Operation>: ObservableObject {
         }
     }
 
-    var op: Op
     var variables: Op.Variables? {
         didSet {
             _ = reload()
@@ -21,9 +20,7 @@ class QueryLoader<Op: Relay.Operation>: ObservableObject {
     private var fetchCancellable: AnyCancellable?
     private var subscribeCancellable: AnyCancellable?
 
-    init(op: Op, variables: Op.Variables? = nil, fetchPolicy: QueryFetchPolicy) {
-        self.op = op
-        self.variables = variables
+    init(fetchPolicy: QueryFetchPolicy) {
         self.fetchPolicy = fetchPolicy
     }
 
@@ -82,7 +79,7 @@ class QueryLoader<Op: Relay.Operation>: ObservableObject {
             preconditionFailure("Trying to use a Relay Query without setting its variables")
         }
 
-        let operation = op.createDescriptor(variables: variables)
+        let operation = Op(variables: variables).createDescriptor()
         lookupIfPossible(operation: operation)
 
         fetchCancellable = environment.execute(operation: operation, cacheConfig: CacheConfig())

@@ -3,14 +3,12 @@ import Relay
 
 @propertyWrapper
 public struct Fragment<F: Relay.Fragment>: DynamicProperty {
-    let fragment: F
     @SwiftUI.Environment(\.relayEnvironment) var environment: Relay.Environment?
     let keyBox = KeyBox()
     @ObservedObject var loader: FragmentLoader<F>
 
     public init(_ type: F.Type) {
-        fragment = F()
-        loader = FragmentLoader(fragment: fragment)
+        loader = FragmentLoader()
     }
 
     public var projectedValue: F.Key {

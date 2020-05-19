@@ -96,12 +96,12 @@ function generatePaginationFragmentExtension(node: ReaderFragment): string {
   return `extension ${node.name}: Relay.PaginationFragment {
 ${indent(1)}typealias Operation = ${operationName}
 
-${indent(1)}var metadata: Metadata {
+${indent(1)}static var metadata: Metadata {
 ${indent(2)}RefetchMetadata(
 ${indent(3)}path: [${refetch.fragmentPathInResult
     .map(elem => (typeof elem === 'string' ? `"${elem}"` : String(elem)))
     .join(', ')}],
-${indent(3)}operation: .init(),
+${indent(3)}operation: Operation.self,
 ${indent(3)}connection: ConnectionMetadata(
 ${connectionArgs
   .map(([name, expr]) => `${indent(4)}${name}: ${expr}`)
@@ -122,7 +122,13 @@ function generateConnectionConfigExpr({
 
 function generateConcreteRequestStruct(node: ConcreteRequest): string {
   return `struct ${node.operation.name} {
-${indent(1)}var node: ConcreteRequest {
+${indent(1)}var variables: Variables
+
+${indent(1)}init(variables: Variables) {
+${indent(2)}self.variables = variables
+${indent(1)}}
+
+${indent(1)}static var node: ConcreteRequest {
 ${indent(2)}ConcreteRequest(
 ${indent(3)}fragment: ${generateReaderFragmentExpr(node.fragment, 4)},
 ${indent(3)}operation: ${generateNormalizationOperationExpr(node.operation, 4)},
@@ -134,7 +140,13 @@ ${indent(1)}}
 
 function generateReaderFragmentStruct(node: ReaderFragment): string {
   return `struct ${node.name} {
-${indent(1)}var node: ReaderFragment {
+${indent(1)}var fragmentPointer: FragmentPointer
+
+${indent(1)}init(key: ${node.name}_Key) {
+${indent(2)}fragmentPointer = key.fragment_${node.name}
+${indent(1)}}
+
+${indent(1)}static var node: ReaderFragment {
 ${indent(2)}${generateReaderFragmentExpr(node, 3)}
 ${indent(1)}}
 }

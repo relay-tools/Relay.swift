@@ -2,11 +2,7 @@ import Combine
 import Relay
 
 class MutationTracker<O: Relay.Operation>: ObservableObject {
-    let operation: O
-
-    init(operation: O) {
-        self.operation = operation
-    }
+    init() {}
 
     var requestsInFlight = 0 {
         willSet {
@@ -26,8 +22,7 @@ class MutationTracker<O: Relay.Operation>: ObservableObject {
         requestsInFlight += 1
         commitMutation(
             environment,
-            operation,
-            variables: variables,
+            O(variables: variables),
             optimisticResponse: optimisticResponse,
             optimisticUpdater: optimisticUpdater,
             updater: updater

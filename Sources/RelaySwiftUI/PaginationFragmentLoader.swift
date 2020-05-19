@@ -3,7 +3,6 @@ import Foundation
 import Relay
 
 class PaginationFragmentLoader<Fragment: Relay.PaginationFragment>: ObservableObject, Paginating {
-    let fragment: Fragment
     let metadata: Fragment.Metadata
 
     var environment: Environment!
@@ -21,9 +20,8 @@ class PaginationFragmentLoader<Fragment: Relay.PaginationFragment>: ObservableOb
     var loadNextCancellable: AnyCancellable?
     var loadPreviousCancellable: AnyCancellable?
 
-    init(fragment: Fragment) {
-        self.fragment = fragment
-        self.metadata = fragment.metadata
+    init() {
+        self.metadata = Fragment.metadata
     }
 
     private var isLoaded = false
@@ -32,8 +30,7 @@ class PaginationFragmentLoader<Fragment: Relay.PaginationFragment>: ObservableOb
         guard !isLoaded else { return }
 
         self.environment = environment
-        let pointer = fragment.getFragmentPointer(key)
-        self.selector = SingularReaderSelector(fragment: fragment.node, pointer: pointer)
+        self.selector = Fragment(key: key).selector
         snapshot = environment.lookup(selector: selector)
         subscribe()
 

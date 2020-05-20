@@ -18,6 +18,13 @@ public class Environment {
 
         publishQueue = PublishQueue(store: store, handlerProvider: handlerProvider)
     }
+    
+    public func fetchQuery<Op: Operation>(_ op: Op) -> AnyPublisher<Op.Data?, Error> {
+        let operation = op.createDescriptor()
+        return execute(operation: operation, cacheConfig: CacheConfig())
+            .map { _ in self.lookup(selector: operation.fragment).data }
+            .eraseToAnyPublisher()
+    }
 
     public func execute(
         operation: OperationDescriptor,

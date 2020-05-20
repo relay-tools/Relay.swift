@@ -9,17 +9,6 @@ public protocol Network {
     ) -> AnyPublisher<Data, Error>
 }
 
-public struct AnyEncodable: Encodable {
-    private let encode: (Encoder) throws -> Void
-    public init<T: Encodable>(_ wrapped: T) {
-        self.encode = wrapped.encode
-    }
-
-    public func encode(to encoder: Encoder) throws {
-        try encode(encoder)
-    }
-}
-
 public struct GraphQLError: LocalizedError, Decodable {
     public var message: String
 

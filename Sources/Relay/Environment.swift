@@ -20,6 +20,7 @@ public class Environment {
     }
     
     public func fetchQuery<Op: Operation>(_ op: Op) -> AnyPublisher<Op.Data?, Error> {
+        precondition(op.node.params.operationKind == .query, "fetchQuery: Expected query operation")
         let operation = op.createDescriptor()
         return execute(operation: operation, cacheConfig: CacheConfig())
             .map { _ in self.lookup(selector: operation.fragment).data }

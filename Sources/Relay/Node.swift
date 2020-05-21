@@ -14,13 +14,12 @@ public struct RequestParameters: Codable {
         self.id = id
     }
 
-    func identifier<Vars: Encodable>(variables: Vars) -> RequestIdentifier {
+    func identifier(variables: VariableData) -> RequestIdentifier {
         guard let requestID = id ?? text else {
             preconditionFailure("Expected request \(name) to have either text or id")
         }
 
-        let encodedVars = try! JSONEncoder().encode(variables)
-        return "\(requestID)\(String(data: encodedVars, encoding: .utf8)!)"
+        return "\(requestID)\(variables)"
     }
 }
 

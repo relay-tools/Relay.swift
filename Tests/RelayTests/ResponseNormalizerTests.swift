@@ -27,19 +27,16 @@ class ResponseNormalizerTests: XCTestCase {
       "id": "UG9rZW1vbjowMDE=",
       "number": "001",
       "name": "Bulbasaur",
-      "classification": "Seed Pokémon"
     },
     {
       "id": "UG9rZW1vbjowMDI=",
       "number": "002",
       "name": "Ivysaur",
-      "classification": "Seed Pokémon"
     },
     {
       "id": "UG9rZW1vbjowMDM=",
       "number": "003",
       "name": "Venusaur",
-      "classification": "Seed Pokémon"
     }
   ]
 }
@@ -49,7 +46,7 @@ class ResponseNormalizerTests: XCTestCase {
         var recordSource: RecordSource = DefaultRecordSource()
         recordSource[.rootID] = .root
 
-        let op = PokemonListQuery().createDescriptor(variables: .init())
+        let op = PokemonListQuery().createDescriptor()
         let response = ResponseNormalizer.normalize(
             recordSource: recordSource,
             selector: op.root,
@@ -78,7 +75,6 @@ class ResponseNormalizerTests: XCTestCase {
                     "id": "UG9rZW1vbjowMDE=",
                     "number": "001",
                     "name": "Bulbasaur",
-                    "classification": "Seed Pokémon"
             ]))
         XCTAssertEqual(
             recordSource[DataID("UG9rZW1vbjowMDI=")],
@@ -89,7 +85,6 @@ class ResponseNormalizerTests: XCTestCase {
                     "id": "UG9rZW1vbjowMDI=",
                     "number": "002",
                     "name": "Ivysaur",
-                    "classification": "Seed Pokémon"
             ]))
         XCTAssertEqual(
             recordSource[DataID("UG9rZW1vbjowMDM=")],
@@ -100,7 +95,6 @@ class ResponseNormalizerTests: XCTestCase {
                     "id": "UG9rZW1vbjowMDM=",
                     "number": "003",
                     "name": "Venusaur",
-                    "classification": "Seed Pokémon"
             ]))
     }
 

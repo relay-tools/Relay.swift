@@ -20,7 +20,7 @@ class ReaderTests: XCTestCase {
     }
 
     func testReaderFromRoot() throws {
-        let operation = PokemonListQuery().createDescriptor(variables: .init())
+        let operation = PokemonListQuery().createDescriptor()
         let selector = operation.fragment
 
         var source = DefaultRecordSource()
@@ -65,17 +65,17 @@ class ReaderTests: XCTestCase {
         let snapshot = Reader.read(PokemonListQuery.Data.self, source: source, selector: selector)
 
         XCTAssertNotNil(snapshot.data)
-        XCTAssertEqual(snapshot.data!.pokemons.count, 3)
-        XCTAssertEqual(snapshot.data!.pokemons.map { $0.id }, [
+        XCTAssertEqual(snapshot.data!.pokemons!.count, 3)
+        XCTAssertEqual(snapshot.data!.pokemons!.map { $0!.id }, [
             "UG9rZW1vbjowMDE=",
             "UG9rZW1vbjowMDI=",
             "UG9rZW1vbjowMDM=",
         ])
-        XCTAssert(snapshot.data!.pokemons.allSatisfy { $0.__typename == "Pokemon" })
+        XCTAssert(snapshot.data!.pokemons!.allSatisfy { $0!.__typename == "Pokemon" })
     }
 
     func testReaderFromFragmentPointer() {
-        let operation = PokemonListQuery().createDescriptor(variables: .init())
+        let operation = PokemonListQuery().createDescriptor()
 
         var source = DefaultRecordSource()
         source[.rootID] = Record(dataID: .rootID, typename: "__Root", linkedPluralRecordIDs: [
@@ -117,16 +117,14 @@ class ReaderTests: XCTestCase {
         ])
 
         let opSnapshot = Reader.read(PokemonListQuery.Data.self, source: source, selector: operation.fragment)
-        let pointer = opSnapshot.data!.pokemons[1].fragment_PokemonListRow_pokemon
+        let pointer = opSnapshot.data!.pokemons![1]!.fragment_PokemonListRow_pokemon
 
-        let selector = SingularReaderSelector(fragment: PokemonListRow_pokemon().node, pointer: pointer)
+        let selector = SingularReaderSelector(fragment: PokemonListRow_pokemon.node, pointer: pointer)
         let snapshot = Reader.read(PokemonListRow_pokemon.Data.self, source: source, selector: selector)
 
         XCTAssertNotNil(snapshot.data)
-        XCTAssertEqual(snapshot.data!.id, "UG9rZW1vbjowMDI=")
         XCTAssertEqual(snapshot.data!.number, "002")
         XCTAssertEqual(snapshot.data!.name, "Ivysaur")
-        XCTAssertEqual(snapshot.data!.classification, "Seed Pokémon")
     }
 
 }

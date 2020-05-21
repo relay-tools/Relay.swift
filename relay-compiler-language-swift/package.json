@@ -1,5 +1,5 @@
 {
-  "version": "0.1.1",
+  "version": "0.2.0",
   "license": "MIT",
   "main": "dist/index.js",
   "typings": "dist/index.d.ts",
@@ -17,7 +17,7 @@
     "lint": "tsdx lint",
     "prepare": "tsdx build && npm run prepare-swift-build && npm run prepare-swift-copy",
     "prepare-swift-build": "cd .. && swift build -c release",
-    "prepare-swift-copy": "cp ../.build/x86_64-apple-macosx/release/find-graphql-tags ./dist/"
+    "prepare-swift-copy": "cp ../.build/x86_64-apple-macosx/release/find-graphql-tags /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/macosx/lib_InternalSwiftSyntaxParser.dylib ./dist/"
   },
   "peerDependencies": {},
   "husky": {

@@ -8,15 +8,3 @@ public protocol Network {
         cacheConfig: CacheConfig
     ) -> AnyPublisher<Data, Error>
 }
-
-public struct GraphQLError: LocalizedError, Decodable {
-    public var message: String
-
-    public init(message: String) {
-        self.message = message
-    }
-
-    public var errorDescription: String? {
-        return message
-    }
-}

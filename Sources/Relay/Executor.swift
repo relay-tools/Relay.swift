@@ -86,7 +86,10 @@ class Executor<Sink: Subject> where Sink.Output == GraphQLResponse, Sink.Failure
         }
 
         if response.data == nil {
-            throw GraphQLError(message: "No data returned for operation \(operation.request.node.params.name)")
+            throw NetworkError(
+                errors: response.errors ?? [],
+                operation: operation.request.node,
+                variables: operation.request.variables)
         }
 
         return response
@@ -158,6 +161,24 @@ class Executor<Sink: Subject> where Sink.Output == GraphQLResponse, Sink.Failure
     }
 }
 
+public struct NetworkError: LocalizedError {
+    public var errors: [GraphQLError]
+    public var operation: ConcreteRequest
+    public var variables: VariableData
+
+    public var localizedDescription: String {
+        "Network Operation Failed"
+    }
+
+    public var failureReason: String? {
+        if errors.isEmpty {
+            return "No data or errors returned for operation `\(operation.params.name)`"
+        } else {
+            return "No data returned for operation `\(operation.params.name)`, got \(errors.count == 1 ? "error" : "\(errors.count) errors"):\n" + errors.map { $0.message }.joined(separator: "\n")
+        }
+    }
+}
+
 public struct GraphQLResponse {
     public var data: [String: Any]?
     public var errors: [GraphQLError]?
@@ -178,7 +199,16 @@ public struct GraphQLResponse {
         }
 
         if let errors = dictionary["errors"] {
-            // TODO
+            guard let errors = errors as? [[String: Any]] else {
+                throw DecodingError.typeMismatch([[String: Any]]?.self, .init(codingPath: [], debugDescription: ""))
+            }
+
+            self.errors = try errors.map { error in
+                guard let error = GraphQLError(dictionary: error) else {
+                    throw DecodingError.typeMismatch([String: Any]?.self, .init(codingPath: [], debugDescription: ""))
+                }
+                return error
+            }
         }
 
         if let extensions = dictionary["extensions"] {
@@ -187,6 +217,26 @@ public struct GraphQLResponse {
             }
             self.extensions = extensions
         }
+    }
+}
+
+public struct GraphQLError: LocalizedError {
+    public var message: String
+
+    public init(message: String) {
+        self.message = message
+    }
+
+    init?(dictionary data: [String: Any]) {
+        guard let message = data["message"] as? String else {
+            return nil
+        }
+
+        self.message = message
+    }
+
+    public var errorDescription: String? {
+        return message
     }
 }
 

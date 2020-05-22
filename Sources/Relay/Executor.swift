@@ -7,6 +7,7 @@ class Executor<Sink: Subject> where Sink.Output == GraphQLResponse, Sink.Failure
     let publishQueue: PublishQueue
     let source: AnyPublisher<Data, Error>
     let sink: Sink
+    let updater: SelectorStoreUpdater?
 
     var isComplete = false
     var optimisticUpdates: [OptimisticUpdate] = []
@@ -18,12 +19,14 @@ class Executor<Sink: Subject> where Sink.Output == GraphQLResponse, Sink.Failure
          optimisticUpdater: SelectorStoreUpdater? = nil,
          publishQueue: PublishQueue,
          source: AnyPublisher<Data, Error>,
-         sink: Sink) {
+         sink: Sink,
+         updater: SelectorStoreUpdater? = nil) {
         self.operation = operation
         self.operationTracker = operationTracker
         self.publishQueue = publishQueue
         self.source = source
         self.sink = sink
+        self.updater = updater
 
         DispatchQueue.main.async {
             let wrappedOptimisticResponse = optimisticResponse.map { GraphQLResponse(data: $0) }
@@ -101,7 +104,7 @@ class Executor<Sink: Subject> where Sink.Output == GraphQLResponse, Sink.Failure
                                 typeName: Record.root.typename,
                                 request: operation.request)
 
-        publishQueue.commit(payload: payload, operation: operation)
+        publishQueue.commit(payload: payload, operation: operation, updater: updater)
         return payload
     }
 

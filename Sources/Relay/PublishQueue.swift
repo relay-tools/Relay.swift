@@ -14,7 +14,7 @@ public class PublishQueue {
     }
 
     enum PendingCommit {
-        case payload(OperationDescriptor, ResponsePayload, Any?)
+        case payload(OperationDescriptor, ResponsePayload, SelectorStoreUpdater?)
         case recordSource(RecordSource)
         // TODO updater
     }
@@ -34,7 +34,7 @@ public class PublishQueue {
         }
     }
 
-    func commit(payload: ResponsePayload, operation: OperationDescriptor, updater: Any? = nil) {
+    func commit(payload: ResponsePayload, operation: OperationDescriptor, updater: SelectorStoreUpdater? = nil) {
         pendingBackupRebase = true
         pendingData.append(.payload(operation, payload, updater))
     }
@@ -76,7 +76,7 @@ public class PublishQueue {
         return invalidatedStore
     }
 
-    private func publishSource(from payload: ResponsePayload, operation: OperationDescriptor, updater: Any?) -> Bool {
+    private func publishSource(from payload: ResponsePayload, operation: OperationDescriptor, updater: SelectorStoreUpdater?) -> Bool {
         let mutator = RecordSourceMutator(base: store.source, sink: payload.source)
         var recordSourceProxy: RecordSourceProxy = DefaultRecordSourceProxy(mutator: mutator)
 
@@ -88,9 +88,21 @@ public class PublishQueue {
             handler.update(store: &recordSourceProxy, fieldPayload: fieldPayload)
         }
 
-        // TODO stuff with the updater
-        store.publish(source: mutator.sink)
-        return (recordSourceProxy as! DefaultRecordSourceProxy).invalidatedStore
+        if let updater = updater {
+            let recordSourceSelectorProxy =
+                DefaultRecordSourceSelectorProxy(mutator: mutator,
+                                                 recordSource: recordSourceProxy,
+                                                 readSelector: operation.fragment)
+            let selectorData = Reader.read(SelectorData.self, source: mutator.sink, selector: operation.fragment).data
+            updater(recordSourceSelectorProxy, selectorData)
+        }
+
+        let proxy = recordSourceProxy as! DefaultRecordSourceProxy
+
+        store.publish(
+            source: mutator.sink,
+            idsMarkedForInvalidation: proxy.idsMarkedForInvalidation)
+        return proxy.invalidatedStore
     }
 
     private func applyUpdates() {

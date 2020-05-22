@@ -17,7 +17,8 @@ class MutationTracker<O: Relay.Operation>: ObservableObject {
         variables: O.Variables,
         optimisticResponse: [String: Any]? = nil,
         optimisticUpdater: SelectorStoreUpdater? = nil,
-        updater: SelectorStoreUpdater? = nil
+        updater: SelectorStoreUpdater? = nil,
+        completion: ((Result<O.Data?, Error>) -> Void)? = nil
     ) {
         requestsInFlight += 1
         commitMutation(
@@ -26,8 +27,14 @@ class MutationTracker<O: Relay.Operation>: ObservableObject {
             optimisticResponse: optimisticResponse,
             optimisticUpdater: optimisticUpdater,
             updater: updater
-        ).sink(receiveCompletion: { [weak self] completion in
+        ).sink(receiveCompletion: { [weak self] result in
             self?.requestsInFlight -= 1
-        }) { _ in }.store(in: &cancellables)
+            
+            if case .failure(let error) = result {
+                completion?(.failure(error))
+            }
+        }) { data in
+            completion?(.success(data))
+        }.store(in: &cancellables)
     }
 }

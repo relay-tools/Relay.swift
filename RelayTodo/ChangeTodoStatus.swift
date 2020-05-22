@@ -13,7 +13,7 @@ mutation ChangeTodoStatusMutation($input: ChangeTodoStatusInput!) {
 """)
 
 extension Mutation.Mutator where Operation == ChangeTodoStatusMutation {
-    func commit(id: String, complete: Bool) {
+    func commit(id: String, complete: Bool, onError: @escaping (Error) -> Void) {
         commit(
             variables: .init(input: .init(
                 complete: complete,
@@ -28,6 +28,10 @@ extension Mutation.Mutator where Operation == ChangeTodoStatusMutation {
                     ]
                 ]
             ]
-        )
+        ) { result in
+            if case .failure(let error) = result {
+                onError(error)
+            }
+        }
     }
 }

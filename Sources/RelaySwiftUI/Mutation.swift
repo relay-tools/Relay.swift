@@ -22,14 +22,16 @@ public struct Mutation<Operation: Relay.Operation>: DynamicProperty {
             variables: Operation.Variables,
             optimisticResponse: [String: Any]? = nil,
             optimisticUpdater: SelectorStoreUpdater? = nil,
-            updater: SelectorStoreUpdater? = nil
+            updater: SelectorStoreUpdater? = nil,
+            completion: ((Result<Operation.Data?, Error>) -> Void)? = nil
         ) {
             tracker.commit(
                 environment: environment,
                 variables: variables,
                 optimisticResponse: optimisticResponse,
                 optimisticUpdater: optimisticUpdater,
-                updater: updater
+                updater: updater,
+                completion: completion
             )
         }
 

@@ -30,7 +30,9 @@ public class ConnectionHandler: Handler {
             connection.copyFields(from: serverConnection)
 
             if let serverEdges = serverConnection.getLinkedRecords(config.edges) {
-                connection.setLinkedRecords(config.edges, records: serverEdges.map { buildConnectionEdge(&store, &connection, $0) })
+                connection.setLinkedRecords(config.edges, records: serverEdges.map { edge in
+                    buildConnectionEdge(&store, connection: &connection, edge: edge)
+                })
             }
 
             record.setLinkedRecord(payload.handleKey, record: connection)
@@ -51,7 +53,9 @@ public class ConnectionHandler: Handler {
         var connection = clientConnection
         let clientPageInfo = connection.getLinkedRecord(config.pageInfo)
 
-        let serverEdges = serverConnection.getLinkedRecords(config.edges)?.map { buildConnectionEdge(&store, &connection, $0) }
+        let serverEdges = serverConnection.getLinkedRecords(config.edges)?.map { edge in
+            buildConnectionEdge(&store, connection: &connection, edge: edge)
+        }
 
         let prevEdges = connection.getLinkedRecords(config.edges)
         let prevPageInfo = connection.getLinkedRecord(config.pageInfo)
@@ -127,7 +131,7 @@ public class ConnectionHandler: Handler {
         }
     }
 
-    func buildConnectionEdge(_ store: inout RecordSourceProxy, _ connection: inout RecordProxy, _ edge: RecordProxy?) -> RecordProxy? {
+    public func buildConnectionEdge(_ store: inout RecordSourceProxy, connection: inout RecordProxy, edge: RecordProxy?) -> RecordProxy? {
         guard let edge = edge else { return nil }
 
         guard let edgeIndex = connection[nextEdgeIndex] as? Int else {
@@ -157,6 +161,60 @@ public class ConnectionHandler: Handler {
 
             targetEdges.append(edge)
         }
+    }
+
+    public func getConnection(_ record: RecordProxy, key: String, filters: VariableDataConvertible? = nil) -> RecordProxy? {
+        record.getLinkedRecord(getRelayHandleKey(handleName: "connection", key: key), args: filters)
+    }
+
+    public func createEdge(_ store: inout RecordSourceProxy, connection: inout RecordProxy, node: RecordProxy, type edgeType: String) -> RecordProxy {
+        let edgeID = connection.dataID.clientID(storageKey: node.dataID.rawValue)
+        var edge = store[edgeID] ?? store.create(dataID: edgeID, typeName: edgeType)
+        edge.setLinkedRecord(config.node, record: node)
+        return edge
+    }
+
+    public func insert(connection: inout RecordProxy, edge newEdge: RecordProxy, before cursor: String?) {
+        guard let edges = connection.getLinkedRecords(config.edges) else {
+            connection.setLinkedRecords(config.edges, records: [newEdge])
+            return
+        }
+
+        var nextEdges = edges
+        if let cursor = cursor, let cursorIndex = edges.firstIndex(where: { ($0?[config.cursor] as? String) == cursor }) {
+            nextEdges.insert(newEdge, at: cursorIndex)
+        } else {
+            nextEdges.insert(newEdge, at: 0)
+        }
+
+        connection.setLinkedRecords(config.edges, records: nextEdges)
+    }
+
+    public func insert(connection: inout RecordProxy, edge newEdge: RecordProxy, after cursor: String?) {
+        guard let edges = connection.getLinkedRecords(config.edges) else {
+            connection.setLinkedRecords(config.edges, records: [newEdge])
+            return
+        }
+
+        var nextEdges = edges
+        if let cursor = cursor, let cursorIndex = edges.firstIndex(where: { ($0?[config.cursor] as? String) == cursor }) {
+            nextEdges.insert(newEdge, at: cursorIndex + 1)
+        } else {
+            nextEdges.append(newEdge)
+        }
+
+        connection.setLinkedRecords(config.edges, records: nextEdges)
+    }
+
+    public func delete(connection: inout RecordProxy, nodeID: DataID) {
+        guard let edges = connection.getLinkedRecords(config.edges) else {
+            return
+        }
+
+        let nextEdges = edges.filter { edge in
+            edge?.getLinkedRecord(config.node)?.dataID != nodeID
+        }
+        connection.setLinkedRecords(config.edges, records: nextEdges)
     }
 }
 

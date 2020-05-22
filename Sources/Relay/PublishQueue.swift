@@ -89,12 +89,12 @@ public class PublishQueue {
         }
 
         if let updater = updater {
-            let recordSourceSelectorProxy =
+            var recordSourceSelectorProxy: RecordSourceSelectorProxy =
                 DefaultRecordSourceSelectorProxy(mutator: mutator,
                                                  recordSource: recordSourceProxy,
                                                  readSelector: operation.fragment)
             let selectorData = Reader.read(SelectorData.self, source: mutator.sink, selector: operation.fragment).data
-            updater(recordSourceSelectorProxy, selectorData)
+            updater(&recordSourceSelectorProxy, selectorData)
         }
 
         let proxy = recordSourceProxy as! DefaultRecordSourceProxy
@@ -113,17 +113,16 @@ public class PublishQueue {
         func processUpdate(_ update: OptimisticUpdate) {
             // TODO store updater if that's a thing we do
 
-            let recordSourceSelectorProxy = DefaultRecordSourceSelectorProxy(
-                mutator: mutator,
-                recordSource: recordSourceProxy,
-                readSelector: update.operation.fragment
-            )
+            var recordSourceSelectorProxy: RecordSourceSelectorProxy =
+                DefaultRecordSourceSelectorProxy(mutator: mutator,
+                                                 recordSource: recordSourceProxy,
+                                                 readSelector: update.operation.fragment)
 
             defaultRecordSourceProxy.publish(source: update.payload.source, fieldPayloads: update.payload.fieldPayloads)
             let selectorData = Reader.read(SelectorData.self, source: update.payload.source, selector: update.operation.fragment).data
 
             if let updater = update.updater {
-                updater(recordSourceSelectorProxy, selectorData)
+                updater(&recordSourceSelectorProxy, selectorData)
             }
         }
 

@@ -63,7 +63,8 @@ public class Environment {
             optimisticUpdater: optimisticUpdater,
             publishQueue: publishQueue,
             source: source,
-            sink: sink
+            sink: sink,
+            updater: updater
         ).execute()
         return sink.eraseToAnyPublisher()
     }

@@ -35,8 +35,5 @@ let package = Package(
         .target(
             name: "find-graphql-tags",
             dependencies: ["SwiftSyntax"]),
-        .target(
-            name: "generate-type-defs",
-            dependencies: ["SwiftSyntax", .product(name: "SwiftSyntaxBuilder", package: "SwiftSyntax")]),
     ]
 )

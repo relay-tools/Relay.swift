@@ -119,7 +119,9 @@ class QueryLoader<Op: Relay.Operation>: ObservableObject {
         subscribeCancellable = environment.subscribe(snapshot: snapshot)
             .receive(on: DispatchQueue.main)
             .sink { [weak self] newSnapshot in
-                self?.result = .success(newSnapshot)
+                if !newSnapshot.isMissingData {
+                    self?.result = .success(newSnapshot)
+                }
             }
     }
 }

@@ -160,7 +160,7 @@ private func getArgumentValue(_ arg: Argument, _ variables: VariableData) -> Var
     if let arg = arg as? LiteralArgument {
         return arg.value.variableValue
     } else if let arg = arg as? VariableArgument {
-        return variables[dynamicMember: arg.variableName]!
+        return variables[dynamicMember: arg.variableName] ?? .null
     } else if let arg = arg as? ObjectValueArgument {
         return Dictionary(uniqueKeysWithValues: arg.fields.map { ($0.name, getArgumentValue($0, variables)) }).variableValue
     } else if let arg = arg as? ListValueArgument {

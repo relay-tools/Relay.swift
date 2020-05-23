@@ -8,7 +8,7 @@ public struct Record: Equatable {
     public var dataID: DataID
     public var typename: String
 
-    private var fields: [String: Value] = [:]
+    public private(set) var fields: [String: Value] = [:]
 
     public init(dataID: DataID,
                 typename: String,
@@ -28,7 +28,7 @@ public struct Record: Equatable {
         }
     }
 
-    private enum Value: Equatable, CustomDebugStringConvertible {
+    public enum Value: Equatable, CustomDebugStringConvertible {
         case null
         case int(Int)
         case float(Double)
@@ -76,7 +76,7 @@ public struct Record: Equatable {
             }
         }
 
-        var debugDescription: String {
+        public var debugDescription: String {
             if let v = scalar {
                 return String(reflecting: v)
             } else if case .linkedRecord(let id) = self {

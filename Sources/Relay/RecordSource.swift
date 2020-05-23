@@ -2,7 +2,7 @@ import Foundation
 
 private let clientIDPrefix = "client:"
 
-public struct DataID: RawRepresentable, ExpressibleByStringLiteral, Hashable {
+public struct DataID: RawRepresentable, ExpressibleByStringLiteral, Hashable, Comparable {
     public var rawValue: String
 
     public init(_ value: String) {
@@ -45,6 +45,10 @@ public struct DataID: RawRepresentable, ExpressibleByStringLiteral, Hashable {
             }
         }
         return value["id"].map { DataID($0 as! String) }
+    }
+
+    public static func <(lhs: DataID, rhs: DataID) -> Bool {
+        return lhs.rawValue < rhs.rawValue
     }
 }
 

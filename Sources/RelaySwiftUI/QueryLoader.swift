@@ -19,6 +19,7 @@ class QueryLoader<Op: Relay.Operation>: ObservableObject {
     private var environment: Environment!
     private var fetchCancellable: AnyCancellable?
     private var subscribeCancellable: AnyCancellable?
+    private var retainCancellable: AnyCancellable?
 
     init(fetchPolicy: QueryFetchPolicy) {
         self.fetchPolicy = fetchPolicy
@@ -93,6 +94,8 @@ class QueryLoader<Op: Relay.Operation>: ObservableObject {
                 self?.result = .success(response)
                 self?.subscribe()
             })
+
+        retainCancellable = environment.retain(operation: operation)
 
         isLoaded = true
         return result

@@ -324,6 +324,10 @@ public struct SelectorData: Readable, Equatable {
     mutating func set(fragment: String, variables: VariableData, dataID: DataID, owner: RequestDescriptor) {
         fragments[fragment] = FragmentPointer(variables: variables, id: dataID, owner: owner)
     }
+
+    mutating func delete(_ key: String) {
+        data.removeValue(forKey: key)
+    }
 }
 
 class Reader {

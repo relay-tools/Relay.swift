@@ -51,6 +51,10 @@ struct OptimisticRecordSource: RecordSource {
         recordIDs.count
     }
 
+    mutating func remove(_ dataID: DataID) {
+        // TODO
+    }
+
     mutating func clear() {
         base = DefaultRecordSource()
         sink.clear()

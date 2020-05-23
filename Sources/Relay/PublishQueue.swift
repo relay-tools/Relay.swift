@@ -1,3 +1,5 @@
+import Combine
+
 public class PublishQueue {
     private let store: Store
     private let handlerProvider: HandlerProvider
@@ -7,6 +9,7 @@ public class PublishQueue {
     private var pendingOptimisticUpdates = Set<OptimisticUpdate>()
     private var appliedOptimisticUpdates = Set<OptimisticUpdate>()
     private var pendingBackupRebase = false
+    private var gcHold: AnyCancellable?
 
     init(store: Store, handlerProvider: HandlerProvider) {
         self.store = store
@@ -52,7 +55,14 @@ public class PublishQueue {
         }
 
         pendingBackupRebase = false
-        // TODO hold gc
+
+        if !appliedOptimisticUpdates.isEmpty {
+            if gcHold == nil {
+                gcHold = store.pauseGarbageCollection()
+            }
+        } else {
+            gcHold = nil
+        }
         
         return store.notify(sourceOperation: sourceOperation, invalidateStore: invalidatedStore)
     }

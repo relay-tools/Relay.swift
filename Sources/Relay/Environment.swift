@@ -75,6 +75,10 @@ public class Environment {
         store.lookup(selector: selector)
     }
 
+    public func retain(operation: OperationDescriptor) -> AnyCancellable {
+        store.retain(operation: operation)
+    }
+
     public func subscribe<T: Readable>(snapshot: Snapshot<T?>) -> SnapshotPublisher<T> {
         store.subscribe(snapshot: snapshot)
     }

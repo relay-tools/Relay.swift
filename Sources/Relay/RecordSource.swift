@@ -61,6 +61,7 @@ public protocol RecordSource {
     func has(_ dataID: DataID) -> Bool
     var count: Int { get }
     // TODO toJSON
+    mutating func remove(_ dataID: DataID)
     mutating func clear()
 }
 
@@ -107,6 +108,11 @@ public struct DefaultRecordSource: RecordSource {
 
     public var count: Int {
         records.count + deletedRecordIDs.count
+    }
+
+    public mutating func remove(_ dataID: DataID) {
+        deletedRecordIDs.remove(dataID)
+        records.removeValue(forKey: dataID)
     }
 
     public mutating func clear() {

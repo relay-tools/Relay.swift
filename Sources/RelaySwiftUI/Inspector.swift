@@ -1,6 +1,7 @@
 import SwiftUI
 import Relay
 
+#if !os(macOS)
 public struct Inspector: View {
     @RelayEnvironment var environment: Relay.Environment
 
@@ -174,3 +175,4 @@ struct LabeledRow: View {
         }
     }
 }
+#endif

@@ -29,9 +29,19 @@ public struct VariableArgument: Argument {
 public struct ListValueArgument: Argument {
     public var name: String
     public var items: [Argument?]
+
+    public init(name: String, items: [Argument?] = []) {
+        self.name = name
+        self.items = items
+    }
 }
 
 public struct ObjectValueArgument: Argument {
     public var name: String
     public var fields: [Argument]
+
+    public init(name: String, fields: [Argument] = []) {
+        self.name = name
+        self.fields = fields
+    }
 }

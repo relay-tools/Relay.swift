@@ -347,12 +347,18 @@ ${params.text}""")`;
 }
 
 function generateArgumentsExpr(
-  args: readonly ReaderArgument[] | readonly NormalizationArgument[],
+  args:
+    | readonly (ReaderArgument | null)[]
+    | readonly (NormalizationArgument | null)[],
   level: number
 ): string {
   return `[
 ${(args as any)
   .map(arg => {
+    if (!arg) {
+      return 'nil';
+    }
+
     switch (arg.kind) {
       case 'Literal':
         return `${indent(level + 1)}LiteralArgument(name: "${
@@ -362,6 +368,14 @@ ${(args as any)
         return `${indent(level + 1)}VariableArgument(name: "${
           arg.name
         }", variableName: "${arg.variableName}")`;
+      case 'ListValue':
+        return `${indent(level + 1)}ListValueArgument(name: "${
+          arg.name
+        }", items: ${generateArgumentsExpr(arg.items, level + 1)})`;
+      case 'ObjectValue':
+        return `${indent(level + 1)}ObjectValueArgument(name: "${
+          arg.name
+        }", fields: ${generateArgumentsExpr(arg.fields, level + 1)})`;
       default:
         return '';
     }

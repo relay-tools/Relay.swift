@@ -62,10 +62,22 @@ extension Int: ReadableScalar {
     }
 }
 
+extension Double: ReadableScalar {
+    public init(from value: SelectorData.Value) {
+        if case .float(let v) = value {
+            self = v
+        } else if case .int(let v) = value {
+            self = .init(v)
+        } else {
+            preconditionFailure("Tried to decode a Double from a non-float value: \(value)")
+        }
+    }
+}
+
 extension String: ReadableScalar {
     public init(from value: SelectorData.Value) {
         guard case .string(let v) = value else {
-            preconditionFailure("Tried to decode an String from a non-string value: \(value)")
+            preconditionFailure("Tried to decode a String from a non-string value: \(value)")
         }
 
         self = v

@@ -159,6 +159,7 @@ function generateReaderFragmentExpr(
 ): string {
   return `ReaderFragment(
 ${indent(level)}name: "${fragment.name}",
+${indent(level)}type: "${fragment.type}",
 ${indent(level)}selections: ${generateReaderSelectionsExpr(
     fragment.selections,
     level

@@ -4,17 +4,17 @@ public protocol ReaderNode {
 
 public struct ReaderFragment: Codable, ReaderNode {
     public var name: String
-    public var concreteType: String?
+    public var type: String
     // TODO metadata
     public var argumentDefinitions: [ReaderArgumentDefinition]
     public var selections: [ReaderSelection]
 
     public init(name: String,
-                concreteType: String? = nil,
+                type: String,
                 argumentDefinitions: [ReaderArgumentDefinition] = [],
                 selections: [ReaderSelection] = []) {
         self.name = name
-        self.concreteType = concreteType
+        self.type = type
         self.argumentDefinitions = argumentDefinitions
         self.selections = selections
     }

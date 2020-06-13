@@ -102,7 +102,7 @@ class QueryLoader<Op: Relay.Operation>: ObservableObject {
     }
 
     func lookupIfPossible(operation: OperationDescriptor) {
-        guard fetchPolicy == .storeAndNetwork else { return }
+        guard fetchPolicy == .storeAndNetwork || environment is MockEnvironment else { return }
 
         let snapshot: Snapshot<Op.Data?> = environment.lookup(selector: operation.fragment)
         if !snapshot.isMissingData {

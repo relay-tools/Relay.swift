@@ -2,8 +2,10 @@ import Combine
 import Foundation
 
 public class MockEnvironment: Environment {
+    private let mockNetwork = MockNetwork()
+
     public init(handlerProvider: HandlerProvider = DefaultHandlerProvider()) {
-        super.init(network: MockNetwork(), store: Store(), handlerProvider: handlerProvider)
+        super.init(network: mockNetwork, store: Store(), handlerProvider: handlerProvider)
     }
 
     public func cachePayload<O: Operation>(_ op: O, _ payload: [String: Any]) {
@@ -20,10 +22,29 @@ public class MockEnvironment: Environment {
         publishQueue.commit(payload: responsePayload, operation: operation)
         _ = publishQueue.run()
     }
+
+    public func mockResponse<O: Operation>(_ op: O, _ payload: [String: Any]) {
+        cachePayload(op, payload)
+        
+        let identifer = op.createDescriptor().request.identifier
+        mockNetwork.mockedResponses[identifer] = payload
+    }
 }
 
-struct MockNetwork: Network {
+class MockNetwork: Network {
+    var mockedResponses: [RequestIdentifier: [String: Any]] = [:]
+
     func execute(request: RequestParameters, variables: VariableData, cacheConfig: CacheConfig) -> AnyPublisher<Data, Error> {
-        return Empty().eraseToAnyPublisher()
+        let identifier = request.identifier(variables: variables)
+        guard let mockedResponse = mockedResponses[identifier] else {
+            return Empty().eraseToAnyPublisher()
+        }
+
+        do {
+            let data = try JSONSerialization.data(withJSONObject: mockedResponse, options: [])
+            return Result.Publisher(.success(data)).eraseToAnyPublisher()
+        } catch {
+            return Fail(error: error).eraseToAnyPublisher()
+        }
     }
 }

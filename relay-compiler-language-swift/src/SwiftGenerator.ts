@@ -134,18 +134,32 @@ function createVisitor(
         };
       },
       LinkedField(node) {
-        const { typeString, baseTypeString } = transformObjectType(
+        const { typeString, baseTypeString, kind } = transformObjectType(
           schema,
           node.type,
           node.alias,
           state
         );
+
+        let childTypeKind: string;
+        switch (kind) {
+          case 'Object':
+            childTypeKind = 'readableStruct';
+            break;
+          case 'Union':
+            childTypeKind = 'readableUnion';
+            break;
+          case 'Interface':
+            childTypeKind = 'readableInterface';
+            break;
+        }
+
         return {
           kind: 'field',
           fieldName: node.alias,
           typeName: typeString,
           childType: {
-            kind: 'readableStruct',
+            kind: childTypeKind,
             name: baseTypeString,
             fields: node.selections,
             childTypes: node.selections
@@ -166,6 +180,28 @@ function createVisitor(
           protocolName: `${node.name}_Key`,
         };
       },
+      InlineFragment(node) {
+        const { baseTypeString } = transformObjectType(
+          schema,
+          node.typeCondition,
+          '',
+          state
+        );
+        return {
+          kind: 'inlineFragment',
+          childType: {
+            kind: 'readableStruct',
+            name: baseTypeString,
+            fields: node.selections,
+            childTypes: node.selections
+              .filter((selection: any) => selection.childType != null)
+              .map((selection: any) => selection.childType),
+            extends: node.selections
+              .filter((selection: any) => selection.protocolName != null)
+              .map((selection: any) => selection.protocolName),
+          },
+        };
+      },
     },
   };
 }
@@ -176,6 +212,8 @@ function makeTypeNode(node: any, level: number): string {
       return makeInputStruct(node, level);
     case 'readableStruct':
       return makeReadableStruct(node, level);
+    case 'readableUnion':
+      return makeReadableUnion(node, level);
     case 'enum':
       return makeReadableEnum(node, level);
     case 'protocol':
@@ -275,11 +313,73 @@ ${makeReadableStruct({ ...structType, name: childType }, level + 1)}${indent(
   typeText += `${indent(level + 1)}}\n`;
 
   for (const childType of structType.childTypes) {
-    typeText += `\n${makeReadableStruct(childType, level + 1)}`;
+    typeText += `\n${makeTypeNode(childType, level + 1)}`;
   }
 
   typeText += `${indent(level)}}\n`;
   return typeText;
+}
+
+function makeReadableUnion(unionType: any, level: number): string {
+  const extendsStr = ['Readable', ...unionType.extends].join(', ');
+  let typeText = `${indent(level)}enum ${unionType.name}: ${extendsStr} {\n`;
+
+  for (const field of unionType.fields) {
+    if (field.kind !== 'inlineFragment') {
+      throw new Error(
+        `Unexpected field kind '${field.kind}' in union type ${unionType.name}`
+      );
+    }
+
+    typeText += `${indent(level + 1)}case ${enumTypeCaseName(
+      field.childType.name
+    )}(${field.childType.name})\n`;
+  }
+
+  typeText += `${indent(level + 1)}case unknown
+  
+${indent(level + 1)}init(from data: SelectorData) {
+${indent(level + 2)}let typeName = data.get(String.self, "__typename")
+${indent(level + 2)}switch typeName {
+`;
+
+  for (const field of unionType.fields) {
+    typeText += `${indent(level + 2)}case "${field.childType.name}":
+${indent(level + 3)}self = .${enumTypeCaseName(field.childType.name)}(${
+      field.childType.name
+    }(from: data))
+`;
+  }
+
+  typeText += `${indent(level + 2)}default:
+${indent(level + 3)}self = .unknown
+${indent(level + 2)}}
+${indent(level + 1)}}
+`;
+
+  for (const field of unionType.fields) {
+    typeText += `
+${indent(level + 1)}var as${field.childType.name}: ${field.childType.name}? {
+${indent(level + 2)}if case .${enumTypeCaseName(
+      field.childType.name
+    )}(let val) = self {
+${indent(level + 3)}return val
+${indent(level + 2)}}
+${indent(level + 2)}return nil
+${indent(level + 1)}}
+`;
+  }
+
+  for (const childType of unionType.childTypes) {
+    typeText += `\n${makeTypeNode(childType, level + 1)}`;
+  }
+
+  typeText += `${indent(level)}}\n`;
+  return typeText;
+}
+
+function enumTypeCaseName(typeName: string): string {
+  return typeName.replace(/^[A-Z]+/, s => s.toLowerCase());
 }
 
 function makeReadableEnum(enumType: any, level: number): string {
@@ -386,12 +486,18 @@ function transformGraphQLEnumType(schema: Schema, type: TypeID, state: State) {
   return schema.getTypeString(schema.getTypeString(type));
 }
 
+interface TransformedObjectType {
+  kind: 'Object' | 'Union' | 'Interface';
+  typeString: string;
+  baseTypeString: string;
+}
+
 function transformObjectType(
   schema: Schema,
   type: TypeID,
   alias: string,
   state: State
-) {
+): TransformedObjectType {
   if (schema.isNonNull(type)) {
     return transformNonNullableObjectType(
       schema,
@@ -400,13 +506,13 @@ function transformObjectType(
       state
     );
   } else {
-    const { typeString, baseTypeString } = transformNonNullableObjectType(
+    const { typeString, ...rest } = transformNonNullableObjectType(
       schema,
       type,
       alias,
       state
     );
-    return { typeString: `${typeString}?`, baseTypeString };
+    return { typeString: `${typeString}?`, ...rest };
   }
 }
 
@@ -415,20 +521,38 @@ function transformNonNullableObjectType(
   type: TypeID,
   alias: string,
   state: State
-): { typeString: string; baseTypeString: string } {
+): TransformedObjectType {
   if (schema.isList(type)) {
-    const { typeString, baseTypeString } = transformObjectType(
+    const { typeString, ...rest } = transformObjectType(
       schema,
       schema.getListItemType(type),
       alias,
       state
     );
-    return { typeString: `[${typeString}]`, baseTypeString };
-  } else if (schema.isObject(type)) {
-    const typeString = `${schema.getTypeString(type)}_${alias}`;
+    return { typeString: `[${typeString}]`, ...rest };
+  } else if (
+    schema.isObject(type) ||
+    schema.isUnion(type) ||
+    schema.isInterface(type)
+  ) {
+    let kind: TransformedObjectType['kind'];
+    if (schema.isObject(type)) {
+      kind = 'Object';
+    } else if (schema.isUnion(type)) {
+      kind = 'Union';
+    } else if (schema.isInterface(type)) {
+      kind = 'Interface';
+    } else {
+      throw new Error('Unexpected type');
+    }
+    let typeString = schema.getTypeString(type);
+    if (alias) {
+      typeString = `${typeString}_${alias}`;
+    }
     return {
       typeString,
       baseTypeString: typeString,
+      kind,
     };
   } else {
     throw new Error(`Could not convert from GraphQL type ${String(type)}`);

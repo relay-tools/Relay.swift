@@ -192,6 +192,9 @@ function generateReaderSelectionExpr(
     case 'FragmentSpread':
       typeText += `.fragmentSpread(ReaderFragmentSpread(\n`;
       break;
+    case 'InlineFragment':
+      typeText += `.inlineFragment(ReaderInlineFragment(\n`;
+      break;
   }
 
   const args: [string, string][] = [];
@@ -214,6 +217,10 @@ function generateReaderSelectionExpr(
 
   if ('plural' in selection) {
     args.push(['plural', selection.plural ? 'true' : 'false']);
+  }
+
+  if ('type' in selection) {
+    args.push(['type', stringLiteral(selection.type)]);
   }
 
   if ('selections' in selection) {
@@ -276,6 +283,9 @@ ${indent(level + 1)}kind: .${
       },
 `;
       break;
+    case 'InlineFragment':
+      typeText += `.inlineFragment(NormalizationInlineFragment(\n`;
+      break;
   }
 
   const args: [string, string][] = [];
@@ -318,6 +328,14 @@ ${indent(level + 1)}kind: .${
   if ('plural' in selection) {
     args.push(['plural', selection.plural ? 'true' : 'false']);
   }
+
+  if ('type' in selection) {
+    args.push(['type', stringLiteral(selection.type)]);
+  }
+
+  // if ('abstractKey' in selection && selection.abstractKey) {
+  //   args.push(['abstractKey', stringLiteral(selection.abstractKey)]);
+  // }
 
   if ('selections' in selection) {
     args.push([

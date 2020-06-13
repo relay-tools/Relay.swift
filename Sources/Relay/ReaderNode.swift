@@ -27,6 +27,7 @@ public struct ReaderArgumentDefinition: Codable {
 public enum ReaderSelection: Codable {
     case field(ReaderField)
     case fragmentSpread(ReaderFragmentSpread)
+    case inlineFragment(ReaderInlineFragment)
 
     public init(from: Decoder) throws {
         preconditionFailure("not implemented yet")
@@ -102,6 +103,20 @@ public struct ReaderFragmentSpread {
                 args: [Argument]? = nil) {
         self.name = name
         self.args = args
+    }
+}
+
+public struct ReaderInlineFragment {
+    var type: String
+    var abstractKey: String?
+    var selections: [ReaderSelection]
+
+    public init(type: String,
+                abstractKey: String? = nil,
+                selections: [ReaderSelection] = []) {
+        self.type = type
+        self.abstractKey = abstractKey
+        self.selections = selections
     }
 }
 

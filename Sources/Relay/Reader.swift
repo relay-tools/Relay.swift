@@ -386,6 +386,11 @@ class Reader {
                 }
             case .fragmentSpread(let fragmentSpread):
                 createFragmentPointer(for: fragmentSpread, to: record, into: &data)
+            case .inlineFragment(let inlineFragment):
+                data.set("__typename", scalar: record.typename)
+                if record.typename == inlineFragment.type {
+                    traverse(selections: inlineFragment.selections, record: record, data: &data)
+                }
             }
         }
     }

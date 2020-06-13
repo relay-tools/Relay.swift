@@ -98,16 +98,6 @@ public struct NormalizationScalarField: NormalizationField {
     }
 }
 
-public struct NormalizationInlineFragment: NormalizationNode {
-    public var type: String
-    public var selections: [NormalizationSelection]
-
-    public init(type: String, selections: [NormalizationSelection] = []) {
-        self.type = type
-        self.selections = selections
-    }
-}
-
 public struct NormalizationHandle: Storable {
     public enum Kind {
         case scalar
@@ -154,5 +144,19 @@ public struct NormalizationHandle: Storable {
         } else {
             return handleName
         }
+    }
+}
+
+public struct NormalizationInlineFragment: NormalizationNode {
+    public var type: String
+    public var abstractKey: String?
+    public var selections: [NormalizationSelection]
+
+    public init(type: String,
+                abstractKey: String? = nil,
+                selections: [NormalizationSelection] = []) {
+        self.type = type
+        self.abstractKey = abstractKey
+        self.selections = selections
     }
 }

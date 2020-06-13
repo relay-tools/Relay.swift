@@ -134,12 +134,12 @@ function createVisitor(
         };
       },
       LinkedField(node) {
-        const { typeString, baseTypeString, kind } = transformObjectType(
-          schema,
-          node.type,
-          node.alias,
-          state
-        );
+        const {
+          typeString,
+          baseTypeString,
+          originalTypeName,
+          kind,
+        } = transformObjectType(schema, node.type, node.alias, state);
 
         let childTypeKind: string;
         switch (kind) {
@@ -161,6 +161,7 @@ function createVisitor(
           childType: {
             kind: childTypeKind,
             name: baseTypeString,
+            originalTypeName,
             fields: node.selections,
             childTypes: node.selections
               .filter((selection: any) => selection.childType != null)
@@ -214,6 +215,8 @@ function makeTypeNode(node: any, level: number): string {
       return makeReadableStruct(node, level);
     case 'readableUnion':
       return makeReadableUnion(node, level);
+    case 'readableInterface':
+      return makeReadableInterface(node, level);
     case 'enum':
       return makeReadableEnum(node, level);
     case 'protocol':
@@ -378,6 +381,101 @@ ${indent(level + 1)}}
   return typeText;
 }
 
+function makeReadableInterface(interfaceType: any, level: number): string {
+  const extendsStr = ['Readable', ...interfaceType.extends].join(', ');
+  let typeText = `${indent(level)}enum ${
+    interfaceType.name
+  }: ${extendsStr} {\n`;
+
+  for (const field of interfaceType.fields) {
+    if (field.kind !== 'inlineFragment') {
+      continue;
+    }
+
+    typeText += `${indent(level + 1)}case ${enumTypeCaseName(
+      field.childType.name
+    )}(${field.childType.name})\n`;
+  }
+
+  typeText += `${indent(level + 1)}case ${enumTypeCaseName(
+    interfaceType.originalTypeName
+  )}(${interfaceType.originalTypeName})
+  
+${indent(level + 1)}init(from data: SelectorData) {
+${indent(level + 2)}let typeName = data.get(String.self, "__typename")
+${indent(level + 2)}switch typeName {
+`;
+
+  for (const field of interfaceType.fields) {
+    if (field.kind !== 'inlineFragment') {
+      continue;
+    }
+
+    typeText += `${indent(level + 2)}case "${field.childType.name}":
+${indent(level + 3)}self = .${enumTypeCaseName(field.childType.name)}(${
+      field.childType.name
+    }(from: data))
+`;
+  }
+
+  typeText += `${indent(level + 2)}default:
+${indent(level + 3)}self = .${enumTypeCaseName(
+    interfaceType.originalTypeName
+  )}(${interfaceType.originalTypeName}(from: data))
+${indent(level + 2)}}
+${indent(level + 1)}}
+`;
+
+  const otherTypeFields = interfaceType.fields.filter(
+    field => field.kind === 'field'
+  );
+  const otherChildTypes = otherTypeFields
+    .filter((selection: any) => selection.childType != null)
+    .map((selection: any) => selection.childType);
+  const otherExtends = otherTypeFields
+    .filter((selection: any) => selection.protocolName != null)
+    .map((selection: any) => selection.protocolName);
+
+  const childTypes = [
+    ...interfaceType.childTypes,
+    {
+      kind: 'readableStruct',
+      name: interfaceType.originalTypeName,
+      fields: [],
+      childTypes: [],
+      extends: [],
+    },
+  ];
+
+  for (const childType of childTypes) {
+    typeText += `
+${indent(level + 1)}var as${childType.name}: ${childType.name}? {
+${indent(level + 2)}if case .${enumTypeCaseName(
+      childType.name
+    )}(let val) = self {
+${indent(level + 3)}return val
+${indent(level + 2)}}
+${indent(level + 2)}return nil
+${indent(level + 1)}}
+`;
+  }
+
+  for (const childType of childTypes) {
+    typeText += `\n${makeTypeNode(
+      {
+        ...childType,
+        fields: [...otherTypeFields, ...childType.fields],
+        childTypes: [...otherChildTypes, ...childType.childTypes],
+        extends: [...otherExtends, ...childType.extends],
+      },
+      level + 1
+    )}`;
+  }
+
+  typeText += `${indent(level)}}\n`;
+  return typeText;
+}
+
 function enumTypeCaseName(typeName: string): string {
   return typeName.replace(/^[A-Z]+/, s => s.toLowerCase());
 }
@@ -490,6 +588,7 @@ interface TransformedObjectType {
   kind: 'Object' | 'Union' | 'Interface';
   typeString: string;
   baseTypeString: string;
+  originalTypeName: string;
 }
 
 function transformObjectType(
@@ -552,6 +651,7 @@ function transformNonNullableObjectType(
     return {
       typeString,
       baseTypeString: typeString,
+      originalTypeName: schema.getTypeString(type),
       kind,
     };
   } else {

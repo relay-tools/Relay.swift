@@ -141,17 +141,19 @@ function createVisitor(
           kind,
         } = transformObjectType(schema, node.type, node.alias, state);
 
-        let childTypeKind: string;
-        switch (kind) {
-          case 'Object':
-            childTypeKind = 'readableStruct';
-            break;
-          case 'Union':
+        let childTypeKind = 'readableStruct';
+
+        // Only generate an enum here if there are actually inline fragments in the selections.
+        // If the type is a union or interface but only contains fragment spreads or fields from
+        // the interface, then we should represent it as a struct.
+        if (
+          node.selections.some((field: any) => field.kind === 'inlineFragment')
+        ) {
+          if (kind === 'Union') {
             childTypeKind = 'readableUnion';
-            break;
-          case 'Interface':
+          } else if (kind === 'Interface') {
             childTypeKind = 'readableInterface';
-            break;
+          }
         }
 
         return {

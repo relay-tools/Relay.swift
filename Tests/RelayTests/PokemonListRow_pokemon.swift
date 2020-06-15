@@ -12,6 +12,7 @@ struct PokemonListRow_pokemon {
     static var node: ReaderFragment {
         ReaderFragment(
             name: "PokemonListRow_pokemon",
+            type: "Pokemon",
             selections: [
                 .field(ReaderScalarField(
                     name: "name"

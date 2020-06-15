@@ -13,6 +13,7 @@ struct PokemonListQuery {
         ConcreteRequest(
             fragment: ReaderFragment(
                 name: "PokemonListQuery",
+                type: "Query",
                 selections: [
                     .field(ReaderLinkedField(
                         name: "pokemons",

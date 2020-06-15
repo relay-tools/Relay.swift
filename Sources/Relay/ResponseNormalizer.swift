@@ -1,21 +1,5 @@
 import Foundation
 
-struct ResponsePayload {
-    var errors: [GraphQLError]?
-    var fieldPayloads: [HandleFieldPayload]
-    // TODO other payloads
-    var source: RecordSource
-    var isFinal: Bool
-}
-
-public struct HandleFieldPayload {
-    var args: VariableData
-    var dataID: DataID
-    var fieldKey: String
-    var handle: String
-    var handleKey: String
-}
-
 class ResponseNormalizer {
     private var recordSource: RecordSource
     private let variables: VariableData
@@ -66,7 +50,7 @@ class ResponseNormalizer {
                 handleFieldPayloads.append(HandleFieldPayload(
                     args: handle.args.map { getArgumentValues($0, variables) } ?? VariableData(),
                     dataID: record.dataID,
-                    fieldKey: getStorageKey(field: handle, variables: variables),
+                    fieldKey: handle.storageKey(from: variables),
                     handle: handle.handle,
                     handleKey: handle.handleKey(from: variables)
                 ))
@@ -77,7 +61,7 @@ class ResponseNormalizer {
     }
 
     private func normalizeField(parent: NormalizationNode, field: NormalizationField, record: inout Record, data: [String: Any]) {
-        let storageKey = getStorageKey(field: field, variables: variables)
+        let storageKey = field.storageKey(from: variables)
         guard let fieldValue = data[field.responseKey] else {
             record[storageKey] = nil
             return

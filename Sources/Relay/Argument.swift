@@ -1,5 +1,6 @@
 public protocol Argument {
     var name: String { get }
+    func value(from variables: VariableData) -> VariableValue
 }
 
 public struct LiteralArgument: Argument {
@@ -11,6 +12,10 @@ public struct LiteralArgument: Argument {
         self.name = name
         self.type = type
         self.value = value
+    }
+
+    public func value(from variables: VariableData) -> VariableValue {
+        value.variableValue
     }
 }
 
@@ -24,6 +29,10 @@ public struct VariableArgument: Argument {
         self.type = type
         self.variableName = variableName
     }
+
+    public func value(from variables: VariableData) -> VariableValue {
+        variables[dynamicMember: variableName] ?? .null
+    }
 }
 
 public struct ListValueArgument: Argument {
@@ -34,6 +43,16 @@ public struct ListValueArgument: Argument {
         self.name = name
         self.items = items
     }
+
+    public func value(from variables: VariableData) -> VariableValue {
+        items.map { item -> VariableValue in
+            if let item = item {
+                return item.value(from: variables)
+            } else {
+                return .null
+            }
+        }.variableValue
+    }
 }
 
 public struct ObjectValueArgument: Argument {
@@ -43,5 +62,11 @@ public struct ObjectValueArgument: Argument {
     public init(name: String, fields: [Argument] = []) {
         self.name = name
         self.fields = fields
+    }
+
+    public func value(from variables: VariableData) -> VariableValue {
+        Dictionary(uniqueKeysWithValues: fields.map {
+            ($0.name, $0.value(from: variables))
+        }).variableValue
     }
 }

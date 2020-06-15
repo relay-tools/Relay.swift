@@ -239,7 +239,7 @@ fileprivate class ReferenceMarker {
     }
 
     func traverseLink(_ field: NormalizationLinkedField, _ record: Record) {
-        let storageKey = getStorageKey(field: field, variables: variables)
+        let storageKey = field.storageKey(from: variables)
 
         if let linkedID = record.getLinkedRecordID(storageKey), let linkedID2 = linkedID {
             traverse(field, linkedID2)
@@ -247,7 +247,7 @@ fileprivate class ReferenceMarker {
     }
 
     func traversePluralLink(_ field: NormalizationLinkedField, _ record: Record) {
-        let storageKey = getStorageKey(field: field, variables: variables)
+        let storageKey = field.storageKey(from: variables)
 
         if let linkedIDs = record.getLinkedRecordIDs(storageKey) {
             for linkedID in linkedIDs ?? [] {

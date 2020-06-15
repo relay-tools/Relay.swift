@@ -1,11 +1,3 @@
-public protocol PaginationFragment: Fragment {
-    associatedtype Operation: Relay.Operation
-
-    typealias Metadata = RefetchMetadata<Operation>
-
-    static var metadata: Metadata { get }
-}
-
 public struct ConnectionMetadata {
     public var pathInFragment: [Any]
     public var backward: ConnectionVariableConfig?
@@ -28,9 +20,4 @@ public struct ConnectionVariableConfig {
         self.count = count
         self.cursor = cursor
     }
-}
-
-public enum PaginationDirection: Hashable {
-    case forward
-    case backward
 }

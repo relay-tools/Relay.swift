@@ -1,5 +1,3 @@
-import Foundation
-
 public struct RequestParameters: Codable {
     public var name: String
     public var operationKind: OperationKind
@@ -27,26 +25,4 @@ public enum OperationKind: String, Codable {
     case mutation
     case query
     case subscription
-}
-
-public enum GeneratedNode {
-    case request(ConcreteRequest)
-}
-
-public struct ConcreteRequest {
-    var fragment: ReaderFragment
-    var operation: NormalizationOperation
-    var params: RequestParameters
-
-    public init(fragment: ReaderFragment, operation: NormalizationOperation, params: RequestParameters) {
-        self.fragment = fragment
-        self.operation = operation
-        self.params = params
-    }
-}
-
-struct NormalizationSelector {
-    var dataID: DataID
-    var node: NormalizationNode
-    var variables: VariableData
 }

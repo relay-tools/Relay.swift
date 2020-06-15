@@ -1,11 +1,3 @@
-//
-//  ReaderTests.swift
-//  RelayTests
-//
-//  Created by Matt Moriarity on 5/6/20.
-//  Copyright © 2020 Matt Moriarity. All rights reserved.
-//
-
 import XCTest
 @testable import Relay
 

@@ -21,8 +21,7 @@ class MutationTracker<O: Relay.Operation>: ObservableObject {
         completion: ((Result<O.Data?, Error>) -> Void)? = nil
     ) {
         requestsInFlight += 1
-        commitMutation(
-            environment,
+        environment.commitMutation(
             O(variables: variables),
             optimisticResponse: optimisticResponse,
             optimisticUpdater: optimisticUpdater,

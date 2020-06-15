@@ -2,7 +2,7 @@ public protocol ReaderNode {
     var selections: [ReaderSelection] { get }
 }
 
-public struct ReaderFragment: Codable, ReaderNode {
+public struct ReaderFragment: ReaderNode {
     public var name: String
     public var type: String
     // TODO metadata
@@ -20,22 +20,13 @@ public struct ReaderFragment: Codable, ReaderNode {
     }
 }
 
-public struct ReaderArgumentDefinition: Codable {
-
+public struct ReaderArgumentDefinition {
 }
 
-public enum ReaderSelection: Codable {
+public enum ReaderSelection {
     case field(ReaderField)
     case fragmentSpread(ReaderFragmentSpread)
     case inlineFragment(ReaderInlineFragment)
-
-    public init(from: Decoder) throws {
-        preconditionFailure("not implemented yet")
-    }
-
-    public func encode(to encoder: Encoder) throws {
-        preconditionFailure("not implemented yet")
-    }
 }
 
 public protocol ReaderField: Storable {

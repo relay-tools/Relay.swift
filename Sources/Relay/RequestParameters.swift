@@ -1,4 +1,4 @@
-public struct RequestParameters: Codable {
+public struct RequestParameters {
     public var name: String
     public var operationKind: OperationKind
 //    public var metadata: [String: Any] = [:]
@@ -21,7 +21,7 @@ public struct RequestParameters: Codable {
     }
 }
 
-public enum OperationKind: String, Codable {
+public enum OperationKind: String {
     case mutation
     case query
     case subscription

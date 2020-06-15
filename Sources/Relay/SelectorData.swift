@@ -107,16 +107,6 @@ public struct SelectorData: Readable, Equatable {
         return values.map { $0.map { T(from: $0) } }
     }
 
-    public func get(_ type: String?.Type, _ key: String) -> String? {
-        guard let val = data[key] else { return nil }
-
-        if case .string(let v) = val {
-            return v
-        } else {
-            preconditionFailure("Expected key \(key) to be a String")
-        }
-    }
-
     public func get(_ type: SelectorData?.Type, _ key: String) -> SelectorData? {
         guard let val = data[key] else { return nil }
 
@@ -125,6 +115,16 @@ public struct SelectorData: Readable, Equatable {
         }
 
         preconditionFailure("Expected key \(key) to contain an object, instead it was \(String(describing: data[key]))")
+    }
+
+    public func get(_ type: [SelectorData]?.Type, _ key: String) -> [SelectorData]? {
+        guard let val = data[key] else { return nil }
+
+        if case .objects(let objs) = val {
+            return objs?.map { $0! }
+        }
+
+        preconditionFailure("Expected key \(key) to contain an array of objects, instead it was \(String(describing: data[key]))")
     }
 
     public func get(_ type: [SelectorData?]?.Type, _ key: String) -> [SelectorData?]? {
@@ -147,6 +147,14 @@ public struct SelectorData: Readable, Equatable {
 
     public func get<T: Readable>(_ type: [T].Type, _ key: String) -> [T] {
         return get([SelectorData?]?.self, key)!.map { T(from: $0!) }
+    }
+
+    public func get<T: Readable>(_ type: [T]?.Type, _ key: String) -> [T]? {
+        return get([SelectorData]?.self, key)?.map { T(from: $0) }
+    }
+
+    public func get<T: Readable>(_ type: [T?].Type, _ key: String) -> [T?] {
+        return get([SelectorData?]?.self, key)!.map { $0.map(T.init(from:)) }
     }
 
     public func get<T: Readable>(_ type: [T?]?.Type, _ key: String) -> [T?]? {
@@ -218,9 +226,5 @@ public struct SelectorData: Readable, Equatable {
 
     mutating func set(fragment: String, variables: VariableData, dataID: DataID, owner: RequestDescriptor) {
         fragments[fragment] = FragmentPointer(variables: variables, id: dataID, owner: owner)
-    }
-
-    mutating func delete(_ key: String) {
-        data.removeValue(forKey: key)
     }
 }

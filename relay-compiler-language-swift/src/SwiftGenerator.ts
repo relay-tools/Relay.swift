@@ -90,9 +90,25 @@ function createVisitor(
         ];
       },
       Fragment(node) {
+        let typeKind = 'readableStruct';
+
+        // Only generate an enum here if there are actually inline fragments in the selections.
+        // If the type is a union or interface but only contains fragment spreads or fields from
+        // the interface, then we should represent it as a struct.
+        if (
+          node.selections.some((field: any) => field.kind === 'inlineFragment')
+        ) {
+          if (schema.isUnion(node.type)) {
+            typeKind = 'readableUnion';
+          } else if (schema.isInterface(node.type)) {
+            typeKind = 'readableInterface';
+          }
+        }
+
         const struct = {
-          kind: 'readableStruct',
+          kind: typeKind,
           name: `${node.name}.Data`,
+          originalTypeName: schema.getTypeString(node.type),
           fields: node.selections,
           childTypes: node.selections
             .filter((selection: any) => selection.childType != null)
@@ -326,14 +342,27 @@ ${makeReadableStruct({ ...structType, name: childType }, level + 1)}${indent(
 }
 
 function makeReadableUnion(unionType: any, level: number): string {
+  if (unionType.name.indexOf('.') !== -1) {
+    const [parentType, childType] = unionType.name.split('.');
+    return `${indent(level)}extension ${parentType} {
+${makeReadableUnion({ ...unionType, name: childType }, level + 1)}${indent(
+      level
+    )}}
+`;
+  }
+
   const extendsStr = ['Readable', ...unionType.extends].join(', ');
   let typeText = `${indent(level)}enum ${unionType.name}: ${extendsStr} {\n`;
 
   for (const field of unionType.fields) {
     if (field.kind !== 'inlineFragment') {
-      throw new Error(
-        `Unexpected field kind '${field.kind}' in union type ${unionType.name}`
-      );
+      if (field.typeName !== 'FragmentPointer') {
+        throw new Error(
+          `Unexpected field kind '${field.kind}' in union type ${unionType.name}`
+        );
+      } else {
+        continue;
+      }
     }
 
     typeText += `${indent(level + 1)}case ${enumTypeCaseName(
@@ -349,6 +378,10 @@ ${indent(level + 2)}switch typeName {
 `;
 
   for (const field of unionType.fields) {
+    if (field.kind !== 'inlineFragment') {
+      continue;
+    }
+
     typeText += `${indent(level + 2)}case "${field.childType.name}":
 ${indent(level + 3)}self = .${enumTypeCaseName(field.childType.name)}(${
       field.childType.name
@@ -363,6 +396,10 @@ ${indent(level + 1)}}
 `;
 
   for (const field of unionType.fields) {
+    if (field.kind !== 'inlineFragment') {
+      continue;
+    }
+
     typeText += `
 ${indent(level + 1)}var as${field.childType.name}: ${field.childType.name}? {
 ${indent(level + 2)}if case .${enumTypeCaseName(
@@ -375,8 +412,50 @@ ${indent(level + 1)}}
 `;
   }
 
+  const otherTypeFields = unionType.fields.filter(
+    field => field.kind === 'field'
+  );
+  const otherChildTypes = otherTypeFields
+    .filter((selection: any) => selection.childType != null)
+    .map((selection: any) => selection.childType);
+  const otherExtends = otherTypeFields
+    .filter((selection: any) => selection.protocolName != null)
+    .map((selection: any) => selection.protocolName);
+
+  for (const field of otherTypeFields) {
+    typeText += `\n${indent(level + 1)}var ${field.fieldName}: ${
+      field.typeName
+    } {
+${indent(level + 2)}switch self {
+`;
+
+    for (const childType of unionType.childTypes) {
+      typeText += `${indent(level + 2)}case .${enumTypeCaseName(
+        childType.name
+      )}(let val):
+${indent(level + 3)}return val.${field.fieldName}
+`;
+    }
+
+    typeText += `${indent(level + 2)}default:
+${indent(level + 3)}preconditionFailure("Trying to access field '${
+      field.fieldName
+    }' from unknown union member")
+${indent(level + 2)}}
+${indent(level + 1)}}
+`;
+  }
+
   for (const childType of unionType.childTypes) {
-    typeText += `\n${makeTypeNode(childType, level + 1)}`;
+    typeText += `\n${makeTypeNode(
+      {
+        ...childType,
+        fields: [...otherTypeFields, ...childType.fields],
+        childTypes: [...otherChildTypes, ...childType.childTypes],
+        extends: [...otherExtends, ...childType.extends],
+      },
+      level + 1
+    )}`;
   }
 
   typeText += `${indent(level)}}\n`;
@@ -384,6 +463,16 @@ ${indent(level + 1)}}
 }
 
 function makeReadableInterface(interfaceType: any, level: number): string {
+  if (interfaceType.name.indexOf('.') !== -1) {
+    const [parentType, childType] = interfaceType.name.split('.');
+    return `${indent(level)}extension ${parentType} {
+${makeReadableInterface(
+  { ...interfaceType, name: childType },
+  level + 1
+)}${indent(level)}}
+`;
+  }
+
   const extendsStr = ['Readable', ...interfaceType.extends].join(', ');
   let typeText = `${indent(level)}enum ${
     interfaceType.name

@@ -1,0 +1,311 @@
+▿ DefaultRecordSource
+  - deletedRecordIDs: 0 members
+  ▿ records: 14 key/value pairs
+    ▿ (2 elements)
+      ▿ key: DataID
+        - rawValue: "ZmlsbXM6MQ=="
+      ▿ value: Record
+        ▿ dataID: DataID
+          - rawValue: "ZmlsbXM6MQ=="
+        ▿ fields: 6 key/value pairs
+          ▿ (2 elements)
+            - key: "__typename"
+            ▿ value: Value
+              - string: "Film"
+          ▿ (2 elements)
+            - key: "director"
+            ▿ value: Value
+              - string: "George Lucas"
+          ▿ (2 elements)
+            - key: "episodeID"
+            ▿ value: Value
+              - int: 4
+          ▿ (2 elements)
+            - key: "id"
+            ▿ value: Value
+              - string: "ZmlsbXM6MQ=="
+          ▿ (2 elements)
+            - key: "releaseDate"
+            ▿ value: Value
+              - string: "1977-05-25"
+          ▿ (2 elements)
+            - key: "title"
+            ▿ value: Value
+              - string: "A New Hope"
+        - typename: "Film"
+    ▿ (2 elements)
+      ▿ key: DataID
+        - rawValue: "ZmlsbXM6Mg=="
+      ▿ value: Record
+        ▿ dataID: DataID
+          - rawValue: "ZmlsbXM6Mg=="
+        ▿ fields: 6 key/value pairs
+          ▿ (2 elements)
+            - key: "__typename"
+            ▿ value: Value
+              - string: "Film"
+          ▿ (2 elements)
+            - key: "director"
+            ▿ value: Value
+              - string: "Irvin Kershner"
+          ▿ (2 elements)
+            - key: "episodeID"
+            ▿ value: Value
+              - int: 5
+          ▿ (2 elements)
+            - key: "id"
+            ▿ value: Value
+              - string: "ZmlsbXM6Mg=="
+          ▿ (2 elements)
+            - key: "releaseDate"
+            ▿ value: Value
+              - string: "1980-05-17"
+          ▿ (2 elements)
+            - key: "title"
+            ▿ value: Value
+              - string: "The Empire Strikes Back"
+        - typename: "Film"
+    ▿ (2 elements)
+      ▿ key: DataID
+        - rawValue: "ZmlsbXM6Mw=="
+      ▿ value: Record
+        ▿ dataID: DataID
+          - rawValue: "ZmlsbXM6Mw=="
+        ▿ fields: 6 key/value pairs
+          ▿ (2 elements)
+            - key: "__typename"
+            ▿ value: Value
+              - string: "Film"
+          ▿ (2 elements)
+            - key: "director"
+            ▿ value: Value
+              - string: "Richard Marquand"
+          ▿ (2 elements)
+            - key: "episodeID"
+            ▿ value: Value
+              - int: 6
+          ▿ (2 elements)
+            - key: "id"
+            ▿ value: Value
+              - string: "ZmlsbXM6Mw=="
+          ▿ (2 elements)
+            - key: "releaseDate"
+            ▿ value: Value
+              - string: "1983-05-25"
+          ▿ (2 elements)
+            - key: "title"
+            ▿ value: Value
+              - string: "Return of the Jedi"
+        - typename: "Film"
+    ▿ (2 elements)
+      ▿ key: DataID
+        - rawValue: "client:local:0"
+      ▿ value: Record
+        ▿ dataID: DataID
+          - rawValue: "client:local:0"
+        ▿ fields: 2 key/value pairs
+          ▿ (2 elements)
+            - key: "edges"
+            ▿ value: Value
+              ▿ linkedRecords: 3 elements
+                ▿ Optional<DataID>
+                  ▿ some: DataID
+                    - rawValue: "client:local:1"
+                ▿ Optional<DataID>
+                  ▿ some: DataID
+                    - rawValue: "client:local:2"
+                ▿ Optional<DataID>
+                  ▿ some: DataID
+                    - rawValue: "client:local:3"
+          ▿ (2 elements)
+            - key: "pageInfo"
+            ▿ value: Value
+              ▿ linkedRecord: DataID
+                - rawValue: "client:local:4"
+        - typename: "FilmsConnection"
+    ▿ (2 elements)
+      ▿ key: DataID
+        - rawValue: "client:local:1"
+      ▿ value: Record
+        ▿ dataID: DataID
+          - rawValue: "client:local:1"
+        ▿ fields: 2 key/value pairs
+          ▿ (2 elements)
+            - key: "cursor"
+            ▿ value: Value
+              - string: "YXJyYXljb25uZWN0aW9uOjA="
+          ▿ (2 elements)
+            - key: "node"
+            ▿ value: Value
+              ▿ linkedRecord: DataID
+                - rawValue: "ZmlsbXM6MQ=="
+        - typename: "FilmsEdge"
+    ▿ (2 elements)
+      ▿ key: DataID
+        - rawValue: "client:local:2"
+      ▿ value: Record
+        ▿ dataID: DataID
+          - rawValue: "client:local:2"
+        ▿ fields: 2 key/value pairs
+          ▿ (2 elements)
+            - key: "cursor"
+            ▿ value: Value
+              - string: "YXJyYXljb25uZWN0aW9uOjE="
+          ▿ (2 elements)
+            - key: "node"
+            ▿ value: Value
+              ▿ linkedRecord: DataID
+                - rawValue: "ZmlsbXM6Mg=="
+        - typename: "FilmsEdge"
+    ▿ (2 elements)
+      ▿ key: DataID
+        - rawValue: "client:local:3"
+      ▿ value: Record
+        ▿ dataID: DataID
+          - rawValue: "client:local:3"
+        ▿ fields: 2 key/value pairs
+          ▿ (2 elements)
+            - key: "cursor"
+            ▿ value: Value
+              - string: "YXJyYXljb25uZWN0aW9uOjI="
+          ▿ (2 elements)
+            - key: "node"
+            ▿ value: Value
+              ▿ linkedRecord: DataID
+                - rawValue: "ZmlsbXM6Mw=="
+        - typename: "FilmsEdge"
+    ▿ (2 elements)
+      ▿ key: DataID
+        - rawValue: "client:local:4"
+      ▿ value: Record
+        ▿ dataID: DataID
+          - rawValue: "client:local:4"
+        ▿ fields: 2 key/value pairs
+          ▿ (2 elements)
+            - key: "endCursor"
+            ▿ value: Value
+              - string: "YXJyYXljb25uZWN0aW9uOjI="
+          ▿ (2 elements)
+            - key: "hasNextPage"
+            ▿ value: Value
+              - int: 1
+        - typename: "PageInfo"
+    ▿ (2 elements)
+      ▿ key: DataID
+        - rawValue: "client:root"
+      ▿ value: Record
+        ▿ dataID: DataID
+          - rawValue: "client:root"
+        ▿ fields: 2 key/value pairs
+          ▿ (2 elements)
+            - key: "__MoviesList_allFilms_connection"
+            ▿ value: Value
+              ▿ linkedRecord: DataID
+                - rawValue: "client:root:__MoviesList_allFilms_connection"
+          ▿ (2 elements)
+            - key: "allFilms(first:3)"
+            ▿ value: Value
+              ▿ linkedRecord: DataID
+                - rawValue: "client:local:0"
+        - typename: "__Root"
+    ▿ (2 elements)
+      ▿ key: DataID
+        - rawValue: "client:root:__MoviesList_allFilms_connection"
+      ▿ value: Record
+        ▿ dataID: DataID
+          - rawValue: "client:root:__MoviesList_allFilms_connection"
+        ▿ fields: 3 key/value pairs
+          ▿ (2 elements)
+            - key: "__connection_next_edge_index"
+            ▿ value: Value
+              - int: 3
+          ▿ (2 elements)
+            - key: "edges"
+            ▿ value: Value
+              ▿ linkedRecords: 3 elements
+                ▿ Optional<DataID>
+                  ▿ some: DataID
+                    - rawValue: "client:root:__MoviesList_allFilms_connection:edges:0"
+                ▿ Optional<DataID>
+                  ▿ some: DataID
+                    - rawValue: "client:root:__MoviesList_allFilms_connection:edges:1"
+                ▿ Optional<DataID>
+                  ▿ some: DataID
+                    - rawValue: "client:root:__MoviesList_allFilms_connection:edges:2"
+          ▿ (2 elements)
+            - key: "pageInfo"
+            ▿ value: Value
+              ▿ linkedRecord: DataID
+                - rawValue: "client:root:__MoviesList_allFilms_connection:pageInfo"
+        - typename: "FilmsConnection"
+    ▿ (2 elements)
+      ▿ key: DataID
+        - rawValue: "client:root:__MoviesList_allFilms_connection:edges:0"
+      ▿ value: Record
+        ▿ dataID: DataID
+          - rawValue: "client:root:__MoviesList_allFilms_connection:edges:0"
+        ▿ fields: 2 key/value pairs
+          ▿ (2 elements)
+            - key: "cursor"
+            ▿ value: Value
+              - string: "YXJyYXljb25uZWN0aW9uOjA="
+          ▿ (2 elements)
+            - key: "node"
+            ▿ value: Value
+              ▿ linkedRecord: DataID
+                - rawValue: "ZmlsbXM6MQ=="
+        - typename: "FilmsEdge"
+    ▿ (2 elements)
+      ▿ key: DataID
+        - rawValue: "client:root:__MoviesList_allFilms_connection:edges:1"
+      ▿ value: Record
+        ▿ dataID: DataID
+          - rawValue: "client:root:__MoviesList_allFilms_connection:edges:1"
+        ▿ fields: 2 key/value pairs
+          ▿ (2 elements)
+            - key: "cursor"
+            ▿ value: Value
+              - string: "YXJyYXljb25uZWN0aW9uOjE="
+          ▿ (2 elements)
+            - key: "node"
+            ▿ value: Value
+              ▿ linkedRecord: DataID
+                - rawValue: "ZmlsbXM6Mg=="
+        - typename: "FilmsEdge"
+    ▿ (2 elements)
+      ▿ key: DataID
+        - rawValue: "client:root:__MoviesList_allFilms_connection:edges:2"
+      ▿ value: Record
+        ▿ dataID: DataID
+          - rawValue: "client:root:__MoviesList_allFilms_connection:edges:2"
+        ▿ fields: 2 key/value pairs
+          ▿ (2 elements)
+            - key: "cursor"
+            ▿ value: Value
+              - string: "YXJyYXljb25uZWN0aW9uOjI="
+          ▿ (2 elements)
+            - key: "node"
+            ▿ value: Value
+              ▿ linkedRecord: DataID
+                - rawValue: "ZmlsbXM6Mw=="
+        - typename: "FilmsEdge"
+    ▿ (2 elements)
+      ▿ key: DataID
+        - rawValue: "client:root:__MoviesList_allFilms_connection:pageInfo"
+      ▿ value: Record
+        ▿ dataID: DataID
+          - rawValue: "client:root:__MoviesList_allFilms_connection:pageInfo"
+        ▿ fields: 3 key/value pairs
+          ▿ (2 elements)
+            - key: "endCursor"
+            ▿ value: Value
+              - string: "YXJyYXljb25uZWN0aW9uOjI="
+          ▿ (2 elements)
+            - key: "hasNextPage"
+            ▿ value: Value
+              - int: 1
+          ▿ (2 elements)
+            - key: "hasPreviousPage"
+            ▿ value: Value
+              - bool: false
+        - typename: "PageInfo"

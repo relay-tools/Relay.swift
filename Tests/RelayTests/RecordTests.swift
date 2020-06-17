@@ -1,23 +1,24 @@
 import XCTest
+import Nimble
 @testable import Relay
 
 class RecordTests: XCTestCase {
     func testRootRecord() throws {
-        XCTAssertEqual("client:root", Record.root.dataID)
-        XCTAssertEqual("__Root", Record.root.typename)
-        XCTAssertTrue(Record.root.fields.isEmpty)
+        expect(Record.root.dataID) == "client:root"
+        expect(Record.root.typename) == "__Root"
+        expect(Record.root.fields).to(beEmpty())
     }
 
     func testCreateEmptyRecord() throws {
         let record = Record(dataID: "record_123", typename: "Pokemon")
-        XCTAssertEqual("record_123", record.dataID)
-        XCTAssertEqual("Pokemon", record.typename)
-        XCTAssertTrue(record.fields.isEmpty)
+        expect(record.dataID) == "record_123"
+        expect(record.typename) == "Pokemon"
+        expect(record.fields).to(beEmpty())
     }
 
     func testReadEmptyScalarField() throws {
         let record = Record(dataID: "record_123", typename: "Pokemon")
-        XCTAssertNil(record["someField"])
+        expect(record["someField"]).to(beNil())
     }
 
     func testAssignAndReadScalars() throws {
@@ -28,11 +29,11 @@ class RecordTests: XCTestCase {
         record["stringField"] = "hello world"
         record["boolField"] = true
 
-        XCTAssertEqual(NSNull(), record["nullField"] as! NSNull)
-        XCTAssertEqual(123, record["intField"] as! Int)
-        XCTAssertEqual(1.234, record["floatField"] as! Double)
-        XCTAssertEqual("hello world", record["stringField"] as! String)
-        XCTAssertTrue(record["boolField"] as! Bool)
+        expect(record["nullField"] as? NSNull) == NSNull()
+        expect(record["intField"] as? Int) == 123
+        expect(record["floatField"] as? Double) == 1.234
+        expect(record["stringField"] as? String) == "hello world"
+        expect(record["boolField"] as? Bool).to(beTrue())
     }
 
     func testAssignAndReadScalarArrays() throws {
@@ -43,24 +44,24 @@ class RecordTests: XCTestCase {
         record["boolsField"] = [NSNull(), true, false]
 
         let ints = record["intsField"] as! [Any]
-        XCTAssertEqual(4, ints.count)
-        XCTAssertEqual(456, ints[1] as! Int)
-        XCTAssertEqual(NSNull(), ints[3] as! NSNull)
+        expect(ints).to(haveCount(4))
+        expect(ints[1] as? Int) == 456
+        expect(ints[3] as? NSNull) == NSNull()
 
         let floats = record["floatsField"] as! [Any]
-        XCTAssertEqual(3, floats.count)
-        XCTAssertEqual(56.78, floats[2] as! Double)
-        XCTAssertEqual(NSNull(), floats[1] as! NSNull)
+        expect(floats).to(haveCount(3))
+        expect(floats[2] as? Double) == 56.78
+        expect(floats[1] as? NSNull) == NSNull()
 
         let strings = record["stringsField"] as! [Any]
-        XCTAssertEqual(3, strings.count)
-        XCTAssertEqual("world", strings[2] as! String)
-        XCTAssertEqual(NSNull(), strings[0] as! NSNull)
+        expect(strings).to(haveCount(3))
+        expect(strings[2] as? String) == "world"
+        expect(strings[0] as? NSNull) == NSNull()
 
         let bools = record["boolsField"] as! [Any]
-        XCTAssertEqual(3, bools.count)
-        XCTAssertFalse(bools[2] as! Bool)
-        XCTAssertEqual(NSNull(), bools[0] as! NSNull)
+        expect(bools).to(haveCount(3))
+        expect(bools[2] as? Bool).to(beFalse())
+        expect(bools[0] as? NSNull) == NSNull()
     }
 
     func testRemoveScalarValue() throws {
@@ -68,47 +69,47 @@ class RecordTests: XCTestCase {
         record["someField"] = "hello"
         record["someField"] = nil
 
-        XCTAssertNil(record["someField"])
+        expect(record["someField"]).to(beNil())
     }
 
     func testGetLinkedRecordIDEmpty() throws {
         let record = Record(dataID: "record_123", typename: "Pokemon")
-        XCTAssertNil(record.getLinkedRecordID("child") as Any?)
+        expect(record.getLinkedRecordID("child")).to(beNil())
     }
 
     func testGetLinkedRecordIDNull() throws {
         var record = Record(dataID: "record_123", typename: "Pokemon")
         record["child"] = NSNull()
-        XCTAssertNotNil(record.getLinkedRecordID("child") as Any?)
-        XCTAssertNil(record.getLinkedRecordID("child")!)
+        expect(record.getLinkedRecordID("child")).notTo(beNil())
+        expect(record.getLinkedRecordID("child")!).to(beNil())
     }
 
     func testGetLinkedRecordIDPresent() throws {
         var record = Record(dataID: "record_123", typename: "Pokemon")
         record.setLinkedRecordID("child", "record_456")
-        XCTAssertNotNil(record.getLinkedRecordID("child") as Any?)
-        XCTAssertNotNil(record.getLinkedRecordID("child")!)
-        XCTAssertEqual("record_456", record.getLinkedRecordID("child"))
+        expect(record.getLinkedRecordID("child")).notTo(beNil())
+        expect(record.getLinkedRecordID("child")!).notTo(beNil())
+        expect(record.getLinkedRecordID("child")) == "record_456"
     }
 
     func testGetLinkedRecordIDsEmpty() throws {
         let record = Record(dataID: "record_123", typename: "Pokemon")
-        XCTAssertNil(record.getLinkedRecordIDs("child") as Any?)
+        expect(record.getLinkedRecordIDs("child")).to(beNil())
     }
 
     func testGetLinkedRecordIDsNull() throws {
         var record = Record(dataID: "record_123", typename: "Pokemon")
         record["child"] = NSNull()
-        XCTAssertNotNil(record.getLinkedRecordIDs("child") as Any?)
-        XCTAssertNil(record.getLinkedRecordIDs("child")!)
+        expect(record.getLinkedRecordIDs("child")).notTo(beNil())
+        expect(record.getLinkedRecordIDs("child")!).to(beNil())
     }
 
     func testGetLinkedRecordIDsPresent() throws {
         var record = Record(dataID: "record_123", typename: "Pokemon")
         record.setLinkedRecordIDs("child", ["record_456", nil, "record_789"])
-        XCTAssertNotNil(record.getLinkedRecordIDs("child") as Any?)
-        XCTAssertNotNil(record.getLinkedRecordIDs("child")!)
-        XCTAssertEqual(["record_456", nil, "record_789"], record.getLinkedRecordIDs("child"))
+        expect(record.getLinkedRecordIDs("child")).notTo(beNil())
+        expect(record.getLinkedRecordIDs("child")!).notTo(beNil())
+        expect(record.getLinkedRecordIDs("child")) == ["record_456", nil, "record_789"]
     }
 
     func testCopyFields() throws {
@@ -132,8 +133,8 @@ class RecordTests: XCTestCase {
         let source = record1 // ensure source record doesn't get mutated
         dest.copyFields(from: source)
 
-        XCTAssertNotEqual("record_123", dest.dataID)
-        XCTAssertEqual(dest.fields, [
+        expect(dest.dataID) != "record_123"
+        expect(dest.fields) == [
             "field1": .string("hello"),
             "field2": .string("world"),
             "field3": .null,
@@ -144,7 +145,7 @@ class RecordTests: XCTestCase {
             "children1": .linkedRecords(["record_234", nil]),
             "children2": .linkedRecords(["record_345"]),
             "children3": .linkedRecords([nil, "record_678"]),
-        ])
+        ]
     }
 
     func testUpdate() throws {
@@ -168,7 +169,7 @@ class RecordTests: XCTestCase {
         let source = record1 // ensure source record doesn't get mutated
         dest.update(from: source)
 
-        XCTAssertEqual(dest.fields, [
+        expect(dest.fields) == [
             "field1": .string("hello"),
             "field2": .string("world"),
             "field3": .null,
@@ -179,6 +180,6 @@ class RecordTests: XCTestCase {
             "children1": .linkedRecords(["record_234", nil]),
             "children2": .linkedRecords(["record_345"]),
             "children3": .linkedRecords([nil, "record_678"]),
-        ])
+        ]
     }
 }

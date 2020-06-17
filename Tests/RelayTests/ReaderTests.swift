@@ -1,5 +1,6 @@
 import XCTest
 import SnapshotTesting
+import Nimble
 @testable import Relay
 
 class ReaderTests: XCTestCase {
@@ -48,7 +49,7 @@ class ReaderTests: XCTestCase {
 
         let snapshot = Reader.read(PokemonListQuery.Data.self, source: source, selector: selector)
 
-        XCTAssertNotNil(snapshot.data)
+        expect(snapshot.data).notTo(beNil())
         assertSnapshot(matching: snapshot.data, as: .dump)
     }
 
@@ -100,7 +101,7 @@ class ReaderTests: XCTestCase {
         let selector = SingularReaderSelector(fragment: PokemonListRow_pokemon.node, pointer: pointer)
         let snapshot = Reader.read(PokemonListRow_pokemon.Data.self, source: source, selector: selector)
 
-        XCTAssertNotNil(snapshot.data)
+        expect(snapshot.data).notTo(beNil())
         assertSnapshot(matching: snapshot.data!, as: .dump)
     }
 }

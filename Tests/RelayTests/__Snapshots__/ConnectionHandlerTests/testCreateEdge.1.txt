@@ -1,0 +1,28 @@
+▿ DefaultRecordSource
+  - deletedRecordIDs: 0 members
+  ▿ records: 2 key/value pairs
+    ▿ (2 elements)
+      ▿ key: DataID
+        - rawValue: "client:root:__MoviesList_allFilms_connection:film_TFA"
+      ▿ value: Record
+        ▿ dataID: DataID
+          - rawValue: "client:root:__MoviesList_allFilms_connection:film_TFA"
+        ▿ fields: 1 key/value pair
+          ▿ (2 elements)
+            - key: "node"
+            ▿ value: Value
+              ▿ linkedRecord: DataID
+                - rawValue: "film_TFA"
+        - typename: "FilmsEdge"
+    ▿ (2 elements)
+      ▿ key: DataID
+        - rawValue: "film_TFA"
+      ▿ value: Record
+        ▿ dataID: DataID
+          - rawValue: "film_TFA"
+        ▿ fields: 1 key/value pair
+          ▿ (2 elements)
+            - key: "title"
+            ▿ value: Value
+              - string: "The Force Awakens"
+        - typename: "Film"

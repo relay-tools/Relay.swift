@@ -167,7 +167,7 @@ public class ConnectionHandler: Handler {
         record.getLinkedRecord(getRelayHandleKey(handleName: "connection", key: key), args: filters)
     }
 
-    public func createEdge(_ store: inout RecordSourceProxy, connection: inout RecordProxy, node: RecordProxy, type edgeType: String) -> RecordProxy {
+    public func createEdge(_ store: inout RecordSourceProxy, connection: RecordProxy, node: RecordProxy, type edgeType: String) -> RecordProxy {
         let edgeID = connection.dataID.clientID(storageKey: node.dataID.rawValue)
         var edge = store[edgeID] ?? store.create(dataID: edgeID, typeName: edgeType)
         edge.setLinkedRecord(config.node, record: node)

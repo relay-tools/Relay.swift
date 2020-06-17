@@ -1,0 +1,29 @@
+{
+  "name": "Relay.swift",
+  "version": "1.0.0",
+  "description": "The Relay GraphQL framework, ported to Swift and SwiftUI.",
+  "main": "index.js",
+  "directories": {
+    "doc": "docs"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mjm/Relay.swift.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/mjm/Relay.swift/issues"
+  },
+  "homepage": "https://github.com/mjm/Relay.swift#readme",
+  "dependencies": {
+    "graphql": "^15.1.0",
+    "relay-compiler": "^9.1.0",
+    "relay-compiler-language-swift": "file:relay-compiler-language-swift",
+    "relay-config": "^9.1.0"
+  }
+}

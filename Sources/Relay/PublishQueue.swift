@@ -1,6 +1,6 @@
 import Combine
 
-public class PublishQueue {
+class PublishQueue {
     private let store: Store
     private let handlerProvider: HandlerProvider
 

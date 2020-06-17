@@ -1,16 +1,8 @@
 import XCTest
+import SnapshotTesting
 @testable import Relay
 
 class ReaderTests: XCTestCase {
-
-    override func setUpWithError() throws {
-        // Put setup code here. This method is called before the invocation of each test method in the class.
-    }
-
-    override func tearDownWithError() throws {
-        // Put teardown code here. This method is called after the invocation of each test method in the class.
-    }
-
     func testReaderFromRoot() throws {
         let operation = PokemonListQuery().createDescriptor()
         let selector = operation.fragment
@@ -57,13 +49,7 @@ class ReaderTests: XCTestCase {
         let snapshot = Reader.read(PokemonListQuery.Data.self, source: source, selector: selector)
 
         XCTAssertNotNil(snapshot.data)
-        XCTAssertEqual(snapshot.data!.pokemons!.count, 3)
-        XCTAssertEqual(snapshot.data!.pokemons!.map { $0!.id }, [
-            "UG9rZW1vbjowMDE=",
-            "UG9rZW1vbjowMDI=",
-            "UG9rZW1vbjowMDM=",
-        ])
-        XCTAssert(snapshot.data!.pokemons!.allSatisfy { $0!.__typename == "Pokemon" })
+        assertSnapshot(matching: snapshot.data, as: .dump)
     }
 
     func testReaderFromFragmentPointer() {
@@ -115,8 +101,6 @@ class ReaderTests: XCTestCase {
         let snapshot = Reader.read(PokemonListRow_pokemon.Data.self, source: source, selector: selector)
 
         XCTAssertNotNil(snapshot.data)
-        XCTAssertEqual(snapshot.data!.number, "002")
-        XCTAssertEqual(snapshot.data!.name, "Ivysaur")
+        assertSnapshot(matching: snapshot.data!, as: .dump)
     }
-
 }

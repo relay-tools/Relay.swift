@@ -17,6 +17,14 @@ public struct DataID: RawRepresentable, ExpressibleByStringLiteral, Hashable, Co
         self.rawValue = value
     }
 
+    var isClient: Bool {
+        rawValue.hasPrefix("client:")
+    }
+
+    var isClientGenerated: Bool {
+        rawValue.hasPrefix("client:local:")
+    }
+
     public static let rootID: DataID = "client:root"
     public static let viewerID = DataID.rootID.clientID(storageKey: "viewer")
 

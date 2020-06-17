@@ -1,0 +1,5 @@
+▿ Data
+  ▿ name: Optional<String>
+    - some: "Ivysaur"
+  ▿ number: Optional<String>
+    - some: "002"

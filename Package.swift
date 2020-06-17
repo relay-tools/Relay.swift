@@ -21,6 +21,7 @@ let package = Package(
     ],
     dependencies: [
         .package(name: "SwiftSyntax", url: "https://github.com/apple/swift-syntax.git", .exact("0.50200.0")),
+        .package(name: "SnapshotTesting", url: "https://github.com/pointfreeco/swift-snapshot-testing.git", from: "1.8.0"),
     ],
     targets: [
         .target(
@@ -28,7 +29,7 @@ let package = Package(
             dependencies: []),
         .testTarget(
             name: "RelayTests",
-            dependencies: ["Relay"]),
+            dependencies: ["Relay", "SnapshotTesting"]),
         .target(
             name: "RelaySwiftUI",
             dependencies: ["Relay"]),

@@ -101,6 +101,7 @@ extension Snapshotting {
                 newSource[record.dataID] = record
             }
 
+            newSource.deletedRecordIDs = Set(recordSource.recordIDs.filter { recordSource.getStatus($0) == .nonexistent })
             return newSource
         }
     }

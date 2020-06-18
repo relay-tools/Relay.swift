@@ -1,0 +1,43 @@
+▿ {array:[123,null,456],bool:true,float:1.234,int:123,null:null,object:{id:"123",name:"foo"},string:"hello"}
+  ▿ fields: 7 key/value pairs
+    ▿ (2 elements)
+      - key: "array"
+      ▿ value: [123,null,456]
+        ▿ array: 3 elements
+          ▿ 123
+            - int: 123
+          - null
+          ▿ 456
+            - int: 456
+    ▿ (2 elements)
+      - key: "bool"
+      ▿ value: true
+        - bool: true
+    ▿ (2 elements)
+      - key: "float"
+      ▿ value: 1.234
+        - float: 1.234
+    ▿ (2 elements)
+      - key: "int"
+      ▿ value: 123
+        - int: 123
+    ▿ (2 elements)
+      - key: "null"
+      - value: null
+    ▿ (2 elements)
+      - key: "object"
+      ▿ value: {id:"123",name:"foo"}
+        ▿ object: {id:"123",name:"foo"}
+          ▿ fields: 2 key/value pairs
+            ▿ (2 elements)
+              - key: "id"
+              ▿ value: "123"
+                - string: "123"
+            ▿ (2 elements)
+              - key: "name"
+              ▿ value: "foo"
+                - string: "foo"
+    ▿ (2 elements)
+      - key: "string"
+      ▿ value: "hello"
+        - string: "hello"

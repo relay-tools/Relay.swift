@@ -1,0 +1,9 @@
+▿ 2 elements
+  ▿ Pokemon
+    - id: "1234"
+    ▿ name: Optional<String>
+      - some: "Bulbasaur"
+  ▿ Pokemon
+    - id: "5678"
+    ▿ name: Optional<String>
+      - some: "Charmander"

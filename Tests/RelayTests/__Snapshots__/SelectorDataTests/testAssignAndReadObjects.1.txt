@@ -1,0 +1,12 @@
+▿ 3 elements
+  ▿ Optional<Pokemon>
+    ▿ some: Pokemon
+      - id: "1234"
+      ▿ name: Optional<String>
+        - some: "Bulbasaur"
+  - Optional<Pokemon>.none
+  ▿ Optional<Pokemon>
+    ▿ some: Pokemon
+      - id: "5678"
+      ▿ name: Optional<String>
+        - some: "Charmander"

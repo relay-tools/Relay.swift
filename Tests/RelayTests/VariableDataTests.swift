@@ -1,16 +1,18 @@
 import XCTest
+import SnapshotTesting
+import Nimble
 @testable import Relay
 
 class VariableDataTests: XCTestCase {
     func testIsEmpty() throws {
         var data: VariableData = [:]
-        XCTAssertTrue(data.isEmpty)
+        expect(data.isEmpty).to(beTrue())
 
         data.id = .string("foo_123")
-        XCTAssertFalse(data.isEmpty)
+        expect(data.isEmpty).to(beFalse())
 
         data.id = nil
-        XCTAssertTrue(data.isEmpty)
+        expect(data.isEmpty).to(beTrue())
     }
 
     func testCreateFromDictionary() throws {
@@ -26,15 +28,8 @@ class VariableDataTests: XCTestCase {
             ],
             "array": [123, nil, 456],
         ]
-
-        XCTAssertFalse(data.isEmpty)
-        XCTAssertEqual(.null, data.null)
-        XCTAssertEqual(.int(123), data.int)
-        XCTAssertEqual(.float(1.234), data.float)
-        XCTAssertEqual(.string("hello"), data.string)
-        XCTAssertEqual(.bool(true), data.bool)
-        XCTAssertEqual(.object(["id": "123", "name": "foo"]), data.object)
-        XCTAssertEqual(.array([.int(123), .null, .int(456)]), data.array)
+        expect(data.isEmpty).to(beFalse())
+        assertSnapshot(matching: data, as: .dump)
 
         let data2 = VariableData([
             "null": nil as String?,
@@ -48,8 +43,7 @@ class VariableDataTests: XCTestCase {
             ],
             "array": [123, nil, 456],
         ])
-
-        XCTAssertEqual(data, data2)
+        expect(data2) == data
     }
 
     func testEncodeToJSON() throws {
@@ -76,37 +70,17 @@ class VariableDataTests: XCTestCase {
         let encoded = try JSONEncoder().encode(data)
         let decoded = try JSONSerialization.jsonObject(with: encoded, options: []) as! NSDictionary
 
-        NSLog("decoded: \(decoded)")
-
-        XCTAssertEqual([
-            "null": NSNull(),
-            "int": 123,
-            "float": 1.234,
-            "string": "hello",
-            "bool": true,
-            "object": [
-                "id": "123",
-                "name": "foo",
-                "data": [
-                    "foo": "bar",
-                ],
-            ] as [String: Any],
-            "array": [123, NSNull(), 456],
-            "objectArray": [
-                ["name": "Dave"],
-                ["name": "Anne"],
-            ],
-        ], decoded)
+        assertSnapshot(matching: decoded, as: .description)
     }
 
     func testDescriptionEmpty() throws {
         let data: VariableData = [:]
-        XCTAssertEqual("", "\(data)")
+        expect("\(data)").to(beEmpty())
     }
 
     func testDescriptionSimple() throws {
         let data: VariableData = ["a": "b", "c": "d"]
-        XCTAssertEqual("{a:\"b\",c:\"d\"}", "\(data)")
+        assertSnapshot(matching: data, as: .description)
     }
 
     func testDescriptionComplex() throws {
@@ -129,18 +103,17 @@ class VariableDataTests: XCTestCase {
                 ["name": "Anne"],
             ],
         ]
-
-        XCTAssertEqual("{array:[123,null,456],bool:true,float:1.234,int:123,null:null,object:{data:{foo:\"bar\"},id:\"123\",name:\"foo\"},objectArray:[{name:\"Dave\"},{name:\"Anne\"}],string:\"hello\"}", "\(data)")
+        assertSnapshot(matching: data, as: .description)
     }
 
     func testInnerDescriptionEmpty() throws {
         let data: VariableData = [:]
-        XCTAssertEqual("", data.innerDescription)
+        expect(data.innerDescription).to(beEmpty())
     }
 
     func testInnerDescriptionSimple() throws {
         let data: VariableData = ["a": "b", "c": "d"]
-        XCTAssertEqual("a:\"b\",c:\"d\"", data.innerDescription)
+        assertSnapshot(matching: data.innerDescription, as: .lines)
     }
 
     func testInnerDescriptionComplex() throws {
@@ -163,14 +136,13 @@ class VariableDataTests: XCTestCase {
                 ["name": "Anne"],
             ],
         ]
-
-        XCTAssertEqual("array:[123,null,456],bool:true,float:1.234,int:123,null:null,object:{data:{foo:\"bar\"},id:\"123\",name:\"foo\"},objectArray:[{name:\"Dave\"},{name:\"Anne\"}],string:\"hello\"", data.innerDescription)
+        assertSnapshot(matching: data.innerDescription, as: .lines)
     }
 
     func testMerge() throws {
         var data: VariableData = ["a": "b", "c": "d"]
         data.merge(["a": "g", "b": "h"])
 
-        XCTAssertEqual(["a": "g", "b": "h", "c": "d"], data)
+        expect(data) == ["a": "g", "b": "h", "c": "d"]
     }
 }

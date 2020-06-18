@@ -1,0 +1,1 @@
+array:[123,null,456],bool:true,float:1.234,int:123,null:null,object:{data:{foo:"bar"},id:"123",name:"foo"},objectArray:[{name:"Dave"},{name:"Anne"}],string:"hello"

@@ -1,0 +1,1 @@
+- FragmentPointer(variables: {a:"b"}, id: Relay.DataID(rawValue: "record_123"), ownerIdentifier: "query PokemonListQuery {\n  pokemons(first: 50) {\n    __typename\n    id\n    name\n    ...PokemonListRow_pokemon\n  }\n}\n\nfragment PokemonListRow_pokemon on Pokemon {\n  name\n  number\n}{a:\"b\"}", ownerVariables: {a:"b"})

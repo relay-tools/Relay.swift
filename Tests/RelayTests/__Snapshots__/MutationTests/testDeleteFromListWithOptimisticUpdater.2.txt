@@ -1,6 +1,6 @@
 ▿ DefaultRecordSource
   - deletedRecordIDs: 0 members
-  ▿ records: 7 key/value pairs
+  ▿ records: 6 key/value pairs
     ▿ (2 elements)
       ▿ key: DataID
         - rawValue: "VG9kbzow"
@@ -68,13 +68,10 @@
           ▿ (2 elements)
             - key: "edges"
             ▿ value: Value
-              ▿ linkedRecords: 2 elements
+              ▿ linkedRecords: 1 element
                 ▿ Optional<DataID>
                   ▿ some: DataID
                     - rawValue: "client:local:1"
-                ▿ Optional<DataID>
-                  ▿ some: DataID
-                    - rawValue: "client:local:2"
         - typename: "TodoConnection"
     ▿ (2 elements)
       ▿ key: DataID
@@ -88,19 +85,6 @@
             ▿ value: Value
               ▿ linkedRecord: DataID
                 - rawValue: "VG9kbzow"
-        - typename: "TodoEdge"
-    ▿ (2 elements)
-      ▿ key: DataID
-        - rawValue: "client:local:2"
-      ▿ value: Record
-        ▿ dataID: DataID
-          - rawValue: "client:local:2"
-        ▿ fields: 1 key/value pair
-          ▿ (2 elements)
-            - key: "node"
-            ▿ value: Value
-              ▿ linkedRecord: DataID
-                - rawValue: "VG9kbzox"
         - typename: "TodoEdge"
     ▿ (2 elements)
       ▿ key: DataID

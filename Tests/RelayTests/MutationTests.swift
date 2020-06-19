@@ -13,6 +13,7 @@ class MutationTests: XCTestCase {
 
     func testBasicNodeUpdate() throws {
         try loadInitialData()
+        assertSnapshot(matching: environment.store.source, as: .recordSource)
 
         let input = ChangeTodoStatusInput(
             complete: true, id: "VG9kbzox", userId: "me")
@@ -34,11 +35,12 @@ class MutationTests: XCTestCase {
 
         waitUntilComplete(environment.commitMutation(op))
 
-        assertSnapshot(matching: environment.store.recordSource, as: .recordSource)
+        assertSnapshot(matching: environment.store.source, as: .recordSource)
     }
 
     func testDeleteFromListInUpdater() throws {
         try loadInitialData()
+        assertSnapshot(matching: environment.store.source, as: .recordSource)
 
         let input = ChangeTodoStatusInput(
             complete: true, id: "VG9kbzox", userId: "me")
@@ -66,10 +68,53 @@ class MutationTests: XCTestCase {
             assertSnapshot(matching: data, as: .dump)
         }))
 
-        assertSnapshot(matching: environment.store.recordSource, as: .recordSource)
+        assertSnapshot(matching: environment.store.source, as: .recordSource)
     }
 
-    // TODO test optimistic updates once we support delayed response in the mock environment
+    func testDeleteFromListWithOptimisticUpdater() throws {
+        try loadInitialData()
+        assertSnapshot(matching: environment.store.source, as: .recordSource)
+
+        let input = ChangeTodoStatusInput(
+            complete: true, id: "VG9kbzox", userId: "me")
+        let op = ChangeTodoStatusMutation(variables: .init(input: input))
+        let payload = """
+{
+  "errors": [{"message": "This is an error that occurred in the mutation."}],
+}
+"""
+        let parsedPayload = try JSONSerialization.jsonObject(with: payload.data(using: .utf8)!, options: []) as! [String: Any]
+        let advance = environment.delayMockedResponse(op, parsedPayload)
+
+        var todosID: DataID?
+        let updater: SelectorStoreUpdater = { store, data in
+            let user = store.root.getLinkedRecord("user", args: ["id": "me"])!
+            var todos = user.getLinkedRecord("todos", args: ["first": 100])!
+            todosID = todos.dataID
+            ConnectionHandler.default.delete(connection: &todos, nodeID: "VG9kbzox")
+        }
+
+        let publisher = environment.commitMutation(op, optimisticUpdater: updater, updater: updater)
+
+        expect(todosID).toNotEventually(beNil())
+        expect(self.environment.store.source[todosID!]?.getLinkedRecordIDs("edges")!!).toEventually(haveCount(1))
+        assertSnapshot(matching: environment.store.source, as: .recordSource)
+
+        advance()
+        var completion: Subscribers.Completion<Error>?
+        waitUntilComplete(publisher.handleEvents(receiveCompletion: { theCompletion in
+            completion = theCompletion
+        }))
+
+        expect(completion).toNot(beNil())
+        guard case .failure(let error) = completion! else {
+            fail("mutation completed successfully when it should have failed")
+            return
+        }
+        expect(error).to(beAKindOf(NetworkError.self))
+
+        assertSnapshot(matching: environment.store.source, as: .recordSource)
+    }
 
     private func loadInitialData() throws {
         let payload = """
@@ -107,7 +152,6 @@ class MutationTests: XCTestCase {
 """
         let parsedPayload = try JSONSerialization.jsonObject(with: payload.data(using: .utf8)!, options: []) as! [String: Any]
         environment.cachePayload(CurrentUserToDoListQuery(), parsedPayload)
-        assertSnapshot(matching: environment.store.recordSource, as: .recordSource)
     }
 }
 

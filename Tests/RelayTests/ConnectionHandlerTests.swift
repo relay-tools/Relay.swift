@@ -14,7 +14,7 @@ class ConnectionHandlerTests: XCTestCase {
 
     func testUpdateInitialPayload() throws {
         try loadInitialPage()
-        assertSnapshot(matching: environment.store.recordSource, as: .recordSource)
+        assertSnapshot(matching: environment.store.source, as: .recordSource)
     }
 
     private func loadInitialPage() throws {
@@ -128,7 +128,7 @@ class ConnectionHandlerTests: XCTestCase {
 
         waitUntilComplete(environment.fetchQuery(op))
 
-        assertSnapshot(matching: environment.store.recordSource, as: .recordSource)
+        assertSnapshot(matching: environment.store.source, as: .recordSource)
     }
 
     func testCreateEdge() throws {

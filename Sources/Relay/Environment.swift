@@ -34,15 +34,12 @@ public class Environment {
         let source = network.execute(request: operation.request.node.params,
                                      variables: operation.request.variables,
                                      cacheConfig: cacheConfig)
-        let sink = PassthroughSubject<GraphQLResponse, Error>()
-        Executor(
+        return Executor(
             operation: operation,
             operationTracker: operationTracker,
             publishQueue: publishQueue,
-            source: source,
-            sink: sink
+            source: source
         ).execute()
-        return sink.eraseToAnyPublisher()
     }
 
     public func executeMutation(
@@ -55,18 +52,15 @@ public class Environment {
         let source = network.execute(request: operation.request.node.params,
                                      variables: operation.request.variables,
                                      cacheConfig: cacheConfig)
-        let sink = PassthroughSubject<GraphQLResponse, Error>()
-        Executor(
+        return Executor(
             operation: operation,
             operationTracker: operationTracker,
             optimisticResponse: optimisticResponse,
             optimisticUpdater: optimisticUpdater,
             publishQueue: publishQueue,
             source: source,
-            sink: sink,
             updater: updater
         ).execute()
-        return sink.eraseToAnyPublisher()
     }
 
     public func lookup<T: Readable>(

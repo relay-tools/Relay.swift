@@ -32,7 +32,7 @@ class MutationTests: XCTestCase {
         let parsedPayload = try JSONSerialization.jsonObject(with: payload.data(using: .utf8)!, options: []) as! [String: Any]
         environment.mockResponse(op, parsedPayload)
 
-        _ = environment.commitMutation(op)
+        waitUntilComplete(environment.commitMutation(op))
 
         assertSnapshot(matching: environment.store.recordSource, as: .recordSource)
     }
@@ -62,6 +62,8 @@ class MutationTests: XCTestCase {
             let user = store.root.getLinkedRecord("user", args: ["id": "me"])!
             var todos = user.getLinkedRecord("todos", args: ["first": 100])!
             ConnectionHandler.default.delete(connection: &todos, nodeID: "VG9kbzox")
+        }).handleEvents(receiveOutput: { data in
+            assertSnapshot(matching: data, as: .dump)
         }))
 
         assertSnapshot(matching: environment.store.recordSource, as: .recordSource)

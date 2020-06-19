@@ -1,12 +1,12 @@
 import Combine
 import Foundation
 
-class Executor<Sink: Subject> where Sink.Output == GraphQLResponse, Sink.Failure == Error {
+class Executor {
     let operation: OperationDescriptor
     let operationTracker: OperationTracker
     let publishQueue: PublishQueue
     let source: AnyPublisher<Data, Error>
-    let sink: Sink
+//    let sink: Sink
     let updater: SelectorStoreUpdater?
 
     var isComplete = false
@@ -19,13 +19,13 @@ class Executor<Sink: Subject> where Sink.Output == GraphQLResponse, Sink.Failure
          optimisticUpdater: SelectorStoreUpdater? = nil,
          publishQueue: PublishQueue,
          source: AnyPublisher<Data, Error>,
-         sink: Sink,
+//         sink: Sink,
          updater: SelectorStoreUpdater? = nil) {
         self.operation = operation
         self.operationTracker = operationTracker
         self.publishQueue = publishQueue
         self.source = source
-        self.sink = sink
+//        self.sink = sink
         self.updater = updater
 
         DispatchQueue.main.async {
@@ -34,10 +34,10 @@ class Executor<Sink: Subject> where Sink.Output == GraphQLResponse, Sink.Failure
         }
     }
 
-    func execute() {
+    func execute() -> AnyPublisher<GraphQLResponse, Error> {
         operationTracker.start(request: operation.request)
 
-        cancellable = source.tryMap { data -> GraphQLResponse in
+        return source.tryMap { data -> GraphQLResponse in
             guard let obj = try JSONSerialization.jsonObject(with: data, options: []) as? [String: Any] else {
                 throw DecodingError.typeMismatch([String: Any].self, .init(codingPath: [], debugDescription: ""))
             }
@@ -45,11 +45,9 @@ class Executor<Sink: Subject> where Sink.Output == GraphQLResponse, Sink.Failure
             return try GraphQLResponse(dictionary: obj)
         }.receive(on: DispatchQueue.main).tryCompactMap { response in
             try self.handle(response: response)
-        }.sink(receiveCompletion: { completion in
+        }.handleEvents(receiveCompletion: { completion in
             self.complete(completion)
-        }) { response in
-            self.sink.send(response)
-        }
+        }).eraseToAnyPublisher()
     }
 
     private func complete(_ completion: Subscribers.Completion<Error>) {
@@ -65,8 +63,6 @@ class Executor<Sink: Subject> where Sink.Output == GraphQLResponse, Sink.Failure
         }
 
         // TODO complete in operation tracker
-
-        sink.send(completion: completion)
     }
 
     private func handle(response: GraphQLResponse) throws -> GraphQLResponse? {

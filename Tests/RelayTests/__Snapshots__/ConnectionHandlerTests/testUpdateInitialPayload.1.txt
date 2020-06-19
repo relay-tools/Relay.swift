@@ -1,6 +1,6 @@
 ▿ DefaultRecordSource
   - deletedRecordIDs: 0 members
-  ▿ records: 14 key/value pairs
+  ▿ records: 17 key/value pairs
     ▿ (2 elements)
       ▿ key: DataID
         - rawValue: "ZmlsbXM6MQ=="
@@ -218,20 +218,20 @@
           ▿ (2 elements)
             - key: "__connection_next_edge_index"
             ▿ value: Value
-              - int: 3
+              - int: 6
           ▿ (2 elements)
             - key: "edges"
             ▿ value: Value
               ▿ linkedRecords: 3 elements
                 ▿ Optional<DataID>
                   ▿ some: DataID
-                    - rawValue: "client:root:__MoviesList_allFilms_connection:edges:0"
+                    - rawValue: "client:root:__MoviesList_allFilms_connection:edges:3"
                 ▿ Optional<DataID>
                   ▿ some: DataID
-                    - rawValue: "client:root:__MoviesList_allFilms_connection:edges:1"
+                    - rawValue: "client:root:__MoviesList_allFilms_connection:edges:4"
                 ▿ Optional<DataID>
                   ▿ some: DataID
-                    - rawValue: "client:root:__MoviesList_allFilms_connection:edges:2"
+                    - rawValue: "client:root:__MoviesList_allFilms_connection:edges:5"
           ▿ (2 elements)
             - key: "pageInfo"
             ▿ value: Value
@@ -278,6 +278,57 @@
       ▿ value: Record
         ▿ dataID: DataID
           - rawValue: "client:root:__MoviesList_allFilms_connection:edges:2"
+        ▿ fields: 2 key/value pairs
+          ▿ (2 elements)
+            - key: "cursor"
+            ▿ value: Value
+              - string: "YXJyYXljb25uZWN0aW9uOjI="
+          ▿ (2 elements)
+            - key: "node"
+            ▿ value: Value
+              ▿ linkedRecord: DataID
+                - rawValue: "ZmlsbXM6Mw=="
+        - typename: "FilmsEdge"
+    ▿ (2 elements)
+      ▿ key: DataID
+        - rawValue: "client:root:__MoviesList_allFilms_connection:edges:3"
+      ▿ value: Record
+        ▿ dataID: DataID
+          - rawValue: "client:root:__MoviesList_allFilms_connection:edges:3"
+        ▿ fields: 2 key/value pairs
+          ▿ (2 elements)
+            - key: "cursor"
+            ▿ value: Value
+              - string: "YXJyYXljb25uZWN0aW9uOjA="
+          ▿ (2 elements)
+            - key: "node"
+            ▿ value: Value
+              ▿ linkedRecord: DataID
+                - rawValue: "ZmlsbXM6MQ=="
+        - typename: "FilmsEdge"
+    ▿ (2 elements)
+      ▿ key: DataID
+        - rawValue: "client:root:__MoviesList_allFilms_connection:edges:4"
+      ▿ value: Record
+        ▿ dataID: DataID
+          - rawValue: "client:root:__MoviesList_allFilms_connection:edges:4"
+        ▿ fields: 2 key/value pairs
+          ▿ (2 elements)
+            - key: "cursor"
+            ▿ value: Value
+              - string: "YXJyYXljb25uZWN0aW9uOjE="
+          ▿ (2 elements)
+            - key: "node"
+            ▿ value: Value
+              ▿ linkedRecord: DataID
+                - rawValue: "ZmlsbXM6Mg=="
+        - typename: "FilmsEdge"
+    ▿ (2 elements)
+      ▿ key: DataID
+        - rawValue: "client:root:__MoviesList_allFilms_connection:edges:5"
+      ▿ value: Record
+        ▿ dataID: DataID
+          - rawValue: "client:root:__MoviesList_allFilms_connection:edges:5"
         ▿ fields: 2 key/value pairs
           ▿ (2 elements)
             - key: "cursor"

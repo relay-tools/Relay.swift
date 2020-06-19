@@ -69,7 +69,7 @@ class ConnectionHandlerTests: XCTestCase {
         let op = MoviesTabQuery()
         environment.mockResponse(op, parsedPayload)
 
-        _ = environment.fetchQuery(op)
+        waitUntilComplete(environment.fetchQuery(op))
     }
 
     func testUpdateLoadNext() throws {
@@ -126,7 +126,7 @@ class ConnectionHandlerTests: XCTestCase {
         let op = MoviesListPaginationQuery(variables: .init(cursor: "YXJyYXljb25uZWN0aW9uOjI="))
         environment.mockResponse(op, parsedPayload)
 
-        _ = environment.fetchQuery(op)
+        waitUntilComplete(environment.fetchQuery(op))
 
         assertSnapshot(matching: environment.store.recordSource, as: .recordSource)
     }

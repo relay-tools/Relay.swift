@@ -17,13 +17,13 @@
                     - rawValue: "client:root:__MoviesList_allFilms_connection:film_TFA"
                 ▿ Optional<DataID>
                   ▿ some: DataID
-                    - rawValue: "client:root:__MoviesList_allFilms_connection:edges:0"
+                    - rawValue: "client:root:__MoviesList_allFilms_connection:edges:3"
                 ▿ Optional<DataID>
                   ▿ some: DataID
-                    - rawValue: "client:root:__MoviesList_allFilms_connection:edges:1"
+                    - rawValue: "client:root:__MoviesList_allFilms_connection:edges:4"
                 ▿ Optional<DataID>
                   ▿ some: DataID
-                    - rawValue: "client:root:__MoviesList_allFilms_connection:edges:2"
+                    - rawValue: "client:root:__MoviesList_allFilms_connection:edges:5"
         - typename: "FilmsConnection"
     ▿ (2 elements)
       ▿ key: DataID

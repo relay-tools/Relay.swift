@@ -14,8 +14,8 @@
               ▿ linkedRecords: 2 elements
                 ▿ Optional<DataID>
                   ▿ some: DataID
-                    - rawValue: "client:root:__MoviesList_allFilms_connection:edges:0"
+                    - rawValue: "client:root:__MoviesList_allFilms_connection:edges:3"
                 ▿ Optional<DataID>
                   ▿ some: DataID
-                    - rawValue: "client:root:__MoviesList_allFilms_connection:edges:1"
+                    - rawValue: "client:root:__MoviesList_allFilms_connection:edges:4"
         - typename: "FilmsConnection"

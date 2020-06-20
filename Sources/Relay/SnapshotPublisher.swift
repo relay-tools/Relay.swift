@@ -1,6 +1,6 @@
 import Combine
 
-public struct SnapshotPublisher<Data: Readable>: Publisher {
+public struct SnapshotPublisher<Data: Decodable>: Publisher {
     public typealias Output = Snapshot<Data?>
     public typealias Failure = Never
 

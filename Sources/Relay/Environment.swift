@@ -63,7 +63,7 @@ public class Environment {
         ).execute()
     }
 
-    public func lookup<T: Readable>(
+    public func lookup<T: Decodable>(
         selector: SingularReaderSelector
     ) -> Snapshot<T?> {
         store.lookup(selector: selector)
@@ -73,7 +73,7 @@ public class Environment {
         store.retain(operation: operation)
     }
 
-    public func subscribe<T: Readable>(snapshot: Snapshot<T?>) -> SnapshotPublisher<T> {
+    public func subscribe<T: Decodable>(snapshot: Snapshot<T?>) -> SnapshotPublisher<T> {
         store.subscribe(snapshot: snapshot)
     }
 

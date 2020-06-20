@@ -1,7 +1,3 @@
-public protocol Readable: Equatable {
-    init(from data: SelectorData)
-}
-
 public protocol ReadableScalar {
     init(from value: SelectorData.Value)
 }

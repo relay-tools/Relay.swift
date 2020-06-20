@@ -304,7 +304,7 @@ ${makeReadableStruct({ ...structType, name: childType }, level + 1)}${indent(
 `;
   }
 
-  const extendsStr = ['Readable', ...structType.extends].join(', ');
+  const extendsStr = ['Decodable', ...structType.extends].join(', ');
   let typeText = `${indent(level)}struct ${structType.name}: ${extendsStr} {\n`;
 
   for (const field of structType.fields) {
@@ -316,22 +316,6 @@ ${makeReadableStruct({ ...structType, name: childType }, level + 1)}${indent(
       field.typeName
     }\n`;
   }
-
-  typeText += `\n${indent(level + 1)}init(from data: SelectorData) {\n`;
-  for (const field of structType.fields) {
-    if (field.fieldName == null) {
-      continue;
-    }
-
-    const getExpr =
-      field.typeName === 'FragmentPointer'
-        ? `fragment: "${field.fragmentName}"`
-        : `${field.typeName}.self, "${field.fieldName}"`;
-    typeText += `${indent(level + 2)}${
-      field.fieldName
-    } = data.get(${getExpr})\n`;
-  }
-  typeText += `${indent(level + 1)}}\n`;
 
   for (const childType of structType.childTypes) {
     typeText += `\n${makeTypeNode(childType, level + 1)}`;
@@ -351,7 +335,7 @@ ${makeReadableUnion({ ...unionType, name: childType }, level + 1)}${indent(
 `;
   }
 
-  const extendsStr = ['Readable', ...unionType.extends].join(', ');
+  const extendsStr = ['Decodable', ...unionType.extends].join(', ');
   let typeText = `${indent(level)}enum ${unionType.name}: ${extendsStr} {\n`;
 
   for (const field of unionType.fields) {
@@ -371,9 +355,18 @@ ${makeReadableUnion({ ...unionType, name: childType }, level + 1)}${indent(
   }
 
   typeText += `${indent(level + 1)}case unknown
+
+${indent(level + 1)}private enum TypeKeys: String, CodingKey {
+${indent(level + 2)}case __typename  
+${indent(level + 1)}}
   
-${indent(level + 1)}init(from data: SelectorData) {
-${indent(level + 2)}let typeName = data.get(String.self, "__typename")
+${indent(level + 1)}init(from decoder: Decoder) throws {
+${indent(
+  level + 2
+)}let container = try decoder.container(keyedBy: TypeKeys.self)
+${indent(
+  level + 2
+)}let typeName = try container.decode(String.self, forKey: .__typename)
 ${indent(level + 2)}switch typeName {
 `;
 
@@ -383,9 +376,9 @@ ${indent(level + 2)}switch typeName {
     }
 
     typeText += `${indent(level + 2)}case "${field.childType.name}":
-${indent(level + 3)}self = .${enumTypeCaseName(field.childType.name)}(${
+${indent(level + 3)}self = .${enumTypeCaseName(field.childType.name)}(try ${
       field.childType.name
-    }(from: data))
+    }(from: decoder))
 `;
   }
 
@@ -473,7 +466,7 @@ ${makeReadableInterface(
 `;
   }
 
-  const extendsStr = ['Readable', ...interfaceType.extends].join(', ');
+  const extendsStr = ['Decodable', ...interfaceType.extends].join(', ');
   let typeText = `${indent(level)}enum ${
     interfaceType.name
   }: ${extendsStr} {\n`;
@@ -491,9 +484,18 @@ ${makeReadableInterface(
   typeText += `${indent(level + 1)}case ${enumTypeCaseName(
     interfaceType.originalTypeName
   )}(${interfaceType.originalTypeName})
+
+${indent(level + 1)}private enum TypeKeys: String, CodingKey {
+${indent(level + 2)}case __typename  
+${indent(level + 1)}}
   
-${indent(level + 1)}init(from data: SelectorData) {
-${indent(level + 2)}let typeName = data.get(String.self, "__typename")
+${indent(level + 1)}init(from decoder: Decoder) throws {
+${indent(
+  level + 2
+)}let container = try decoder.container(keyedBy: TypeKeys.self)
+${indent(
+  level + 2
+)}let typeName = try container.decode(String.self, forKey: .__typename)
 ${indent(level + 2)}switch typeName {
 `;
 
@@ -503,16 +505,16 @@ ${indent(level + 2)}switch typeName {
     }
 
     typeText += `${indent(level + 2)}case "${field.childType.name}":
-${indent(level + 3)}self = .${enumTypeCaseName(field.childType.name)}(${
+${indent(level + 3)}self = .${enumTypeCaseName(field.childType.name)}(try ${
       field.childType.name
-    }(from: data))
+    }(from: decoder))
 `;
   }
 
   typeText += `${indent(level + 2)}default:
 ${indent(level + 3)}self = .${enumTypeCaseName(
     interfaceType.originalTypeName
-  )}(${interfaceType.originalTypeName}(from: data))
+  )}(try ${interfaceType.originalTypeName}(from: decoder))
 ${indent(level + 2)}}
 ${indent(level + 1)}}
 `;

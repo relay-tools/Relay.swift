@@ -92,25 +92,14 @@ extension PokemonListQuery {
 }
 
 extension PokemonListQuery {
-    struct Data: Readable {
+    struct Data: Decodable {
         var pokemons: [Pokemon_pokemons?]?
 
-        init(from data: SelectorData) {
-            pokemons = data.get([Pokemon_pokemons?]?.self, "pokemons")
-        }
-
-        struct Pokemon_pokemons: Readable, PokemonListRow_pokemon_Key {
+        struct Pokemon_pokemons: Decodable, PokemonListRow_pokemon_Key {
             var __typename: String
             var id: String
             var name: String?
             var fragment_PokemonListRow_pokemon: FragmentPointer
-
-            init(from data: SelectorData) {
-                __typename = data.get(String.self, "__typename")
-                id = data.get(String.self, "id")
-                name = data.get(String?.self, "name")
-                fragment_PokemonListRow_pokemon = data.get(fragment: "PokemonListRow_pokemon")
-            }
         }
     }
 }

@@ -6,7 +6,6 @@ class Executor {
     let operationTracker: OperationTracker
     let publishQueue: PublishQueue
     let source: AnyPublisher<Data, Error>
-//    let sink: Sink
     let updater: SelectorStoreUpdater?
 
     var isComplete = false
@@ -19,13 +18,11 @@ class Executor {
          optimisticUpdater: SelectorStoreUpdater? = nil,
          publishQueue: PublishQueue,
          source: AnyPublisher<Data, Error>,
-//         sink: Sink,
          updater: SelectorStoreUpdater? = nil) {
         self.operation = operation
         self.operationTracker = operationTracker
         self.publishQueue = publishQueue
         self.source = source
-//        self.sink = sink
         self.updater = updater
 
         DispatchQueue.main.async {

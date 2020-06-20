@@ -2,6 +2,8 @@ import Foundation
 import Combine
 
 public class SelectorDataDecoder: TopLevelDecoder {
+    public init() {}
+    
     public func decode<T>(_ type: T.Type, from data: SelectorData) throws -> T where T : Decodable {
         let decoder = _SelectorDataDecoder(referencing: .value(.object(data)))
         return try decoder.decode(type)
@@ -119,8 +121,13 @@ fileprivate struct _SelectorDataKeyedDecodingContainer<K : CodingKey> : KeyedDec
     }
 
     public func decodeNil(forKey key: Key) throws -> Bool {
-        if let entry = container.data[key.stringValue], entry != nil {
-            return false
+        if let entry = container.data[key.stringValue], let entry2 = entry {
+            switch entry2 {
+            case .object(nil), .objects(nil):
+                return true
+            default:
+                return false
+            }
         }
 
         if container.fragments[key.stringValue] != nil {
@@ -511,16 +518,24 @@ fileprivate struct _SelectorDataUnkeyedDecodingContainer: UnkeyedDecodingContain
         decoder.codingPath.append(_SelectorDataKey(index: self.currentIndex))
         defer { decoder.codingPath.removeLast() }
 
-        guard let values = objects else {
-            throw DecodingError.typeMismatch([T].self, DecodingError.Context(codingPath: decoder.codingPath, debugDescription: "Expected object array but found value \(container) instead"))
-        }
+        switch container {
+        case .array(let values):
+            guard let decoded = try decoder.unbox(values[currentIndex].map { .value($0) }, as: type) else {
+                throw DecodingError.valueNotFound(type, DecodingError.Context(codingPath: decoder.codingPath + [_SelectorDataKey(index: currentIndex)], debugDescription: "Expected \(type) but found null instead."))
+            }
 
-        guard let decoded = try decoder.unbox(values[currentIndex].map { .value(.object($0)) }, as: type) else {
-            throw DecodingError.valueNotFound(type, DecodingError.Context(codingPath: decoder.codingPath + [_SelectorDataKey(index: currentIndex)], debugDescription: "Expected \(type) but found null instead."))
-        }
+            currentIndex += 1
+            return decoded
+        case .objects(let values?):
+            guard let decoded = try decoder.unbox(values[currentIndex].map { .value(.object($0)) }, as: type) else {
+                throw DecodingError.valueNotFound(type, DecodingError.Context(codingPath: decoder.codingPath + [_SelectorDataKey(index: currentIndex)], debugDescription: "Expected \(type) but found null instead."))
+            }
 
-        currentIndex += 1
-        return decoded
+            currentIndex += 1
+            return decoded
+        default:
+            throw DecodingError.typeMismatch([T].self, DecodingError.Context(codingPath: decoder.codingPath, debugDescription: "Expected array but found value \(container) instead"))
+        }
     }
 
     public mutating func nestedContainer<NestedKey>(keyedBy type: NestedKey.Type) throws -> KeyedDecodingContainer<NestedKey> {

@@ -576,6 +576,7 @@ function enumTypeCaseName(typeName: string): string {
 function makeReadableEnum(enumType: any, level: number): string {
   const extendsStr = [
     'String',
+    'Decodable',
     'Hashable',
     'VariableValueConvertible',
     'ReadableScalar',

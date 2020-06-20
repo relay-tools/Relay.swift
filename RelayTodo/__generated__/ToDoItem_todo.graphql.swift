@@ -12,6 +12,7 @@ struct ToDoItem_todo {
     static var node: ReaderFragment {
         ReaderFragment(
             name: "ToDoItem_todo",
+            type: "Todo",
             selections: [
                 .field(ReaderScalarField(
                     name: "id"
@@ -28,16 +29,10 @@ struct ToDoItem_todo {
 
 
 extension ToDoItem_todo {
-    struct Data: Readable {
+    struct Data: Decodable {
         var id: String
         var text: String
         var complete: Bool
-
-        init(from data: SelectorData) {
-            id = data.get(String.self, "id")
-            text = data.get(String.self, "text")
-            complete = data.get(Bool.self, "complete")
-        }
     }
 }
 

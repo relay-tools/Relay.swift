@@ -13,6 +13,7 @@ struct MoviesListPaginationQuery {
         ConcreteRequest(
             fragment: ReaderFragment(
                 name: "MoviesListPaginationQuery",
+                type: "Root",
                 selections: [
                     .fragmentSpread(ReaderFragmentSpread(
                         name: "MoviesList_films",
@@ -150,12 +151,8 @@ extension MoviesListPaginationQuery {
 }
 
 extension MoviesListPaginationQuery {
-    struct Data: Readable, MoviesList_films_Key {
+    struct Data: Decodable, MoviesList_films_Key {
         var fragment_MoviesList_films: FragmentPointer
-
-        init(from data: SelectorData) {
-            fragment_MoviesList_films = data.get(fragment: "MoviesList_films")
-        }
     }
 }
 

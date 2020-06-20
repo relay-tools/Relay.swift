@@ -12,6 +12,7 @@ struct PokemonDetailInfoSection_pokemon {
     static var node: ReaderFragment {
         ReaderFragment(
             name: "PokemonDetailInfoSection_pokemon",
+            type: "Pokemon",
             selections: [
                 .field(ReaderScalarField(
                     name: "name"
@@ -54,39 +55,21 @@ struct PokemonDetailInfoSection_pokemon {
 
 
 extension PokemonDetailInfoSection_pokemon {
-    struct Data: Readable {
+    struct Data: Decodable {
         var name: String?
         var number: String?
         var classification: String?
         var weight: PokemonDimension_weight?
         var height: PokemonDimension_height?
 
-        init(from data: SelectorData) {
-            name = data.get(String?.self, "name")
-            number = data.get(String?.self, "number")
-            classification = data.get(String?.self, "classification")
-            weight = data.get(PokemonDimension_weight?.self, "weight")
-            height = data.get(PokemonDimension_height?.self, "height")
-        }
-
-        struct PokemonDimension_weight: Readable {
+        struct PokemonDimension_weight: Decodable {
             var minimum: String?
             var maximum: String?
-
-            init(from data: SelectorData) {
-                minimum = data.get(String?.self, "minimum")
-                maximum = data.get(String?.self, "maximum")
-            }
         }
 
-        struct PokemonDimension_height: Readable {
+        struct PokemonDimension_height: Decodable {
             var minimum: String?
             var maximum: String?
-
-            init(from data: SelectorData) {
-                minimum = data.get(String?.self, "minimum")
-                maximum = data.get(String?.self, "maximum")
-            }
         }
     }
 }

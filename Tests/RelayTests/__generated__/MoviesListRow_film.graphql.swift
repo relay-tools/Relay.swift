@@ -35,20 +35,12 @@ struct MoviesListRow_film {
 
 
 extension MoviesListRow_film {
-    struct Data: Readable {
+    struct Data: Decodable {
         var id: String
         var episodeID: Int?
         var title: String?
         var director: String?
         var releaseDate: String?
-
-        init(from data: SelectorData) {
-            id = data.get(String.self, "id")
-            episodeID = data.get(Int?.self, "episodeID")
-            title = data.get(String?.self, "title")
-            director = data.get(String?.self, "director")
-            releaseDate = data.get(String?.self, "releaseDate")
-        }
     }
 }
 

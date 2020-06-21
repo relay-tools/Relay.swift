@@ -13,6 +13,7 @@ struct CurrentUserToDoListQuery {
         ConcreteRequest(
             fragment: ReaderFragment(
                 name: "CurrentUserToDoListQuery",
+                type: "Query",
                 selections: [
                     .field(ReaderLinkedField(
                         name: "user",
@@ -120,21 +121,12 @@ extension CurrentUserToDoListQuery {
 }
 
 extension CurrentUserToDoListQuery {
-    struct Data: Readable {
+    struct Data: Decodable {
         var user: User_user?
 
-        init(from data: SelectorData) {
-            user = data.get(User_user?.self, "user")
-        }
-
-        struct User_user: Readable, ToDoList_user_Key {
+        struct User_user: Decodable, ToDoList_user_Key {
             var id: String
             var fragment_ToDoList_user: FragmentPointer
-
-            init(from data: SelectorData) {
-                id = data.get(String.self, "id")
-                fragment_ToDoList_user = data.get(fragment: "ToDoList_user")
-            }
         }
     }
 }

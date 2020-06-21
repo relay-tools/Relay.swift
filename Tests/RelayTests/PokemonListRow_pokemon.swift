@@ -26,14 +26,9 @@ struct PokemonListRow_pokemon {
 
 
 extension PokemonListRow_pokemon {
-    struct Data: Readable {
+    struct Data: Decodable {
         var name: String?
         var number: String?
-
-        init(from data: SelectorData) {
-            name = data.get(String?.self, "name")
-            number = data.get(String?.self, "number")
-        }
     }
 }
 

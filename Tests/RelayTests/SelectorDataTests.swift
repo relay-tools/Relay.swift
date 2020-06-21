@@ -3,28 +3,32 @@ import SnapshotTesting
 import Nimble
 @testable import Relay
 
-fileprivate struct Pokemon: Readable, Hashable {
+fileprivate struct Data: Decodable {
+    var pokemon: Pokemon?
+}
+
+fileprivate struct Data2: Decodable {
+    var pokemons: [Pokemon?]
+    var pokemons2: [Pokemon?]?
+    var pokemons3: [Pokemon]
+    var pokemons4: [Pokemon]?
+}
+
+fileprivate struct Data3: Decodable {
+    var fragment_PokemonListRow_pokemon: FragmentPointer
+}
+
+fileprivate struct Pokemon: Decodable, Hashable {
     var id: String
     var name: String?
-
-    init(from data: SelectorData) {
-        id = data.get(String.self, "id")
-        name = data.get(String?.self, "name")
-    }
 }
 
 class SelectorDataTests: XCTestCase {
     func testEmptyData() throws {
         let data = SelectorData()
         expect(data.get(String?.self, "someField")).to(beNil())
-        expect(data.get([String]?.self, "someField")).to(beNil())
-        expect(data.get([String?]?.self, "someField")).to(beNil())
         expect(data.get(SelectorData?.self, "someField")).to(beNil())
-        expect(data.get([SelectorData]?.self, "someField")).to(beNil())
         expect(data.get([SelectorData?]?.self, "someField")).to(beNil())
-        expect(data.get(Pokemon?.self, "someField")).to(beNil())
-        expect(data.get([Pokemon]?.self, "someField")).to(beNil())
-        expect(data.get([Pokemon?]?.self, "someField")).to(beNil())
     }
 
     func testAssignAndReadScalars() throws {
@@ -47,21 +51,6 @@ class SelectorDataTests: XCTestCase {
         expect(data.get(Bool?.self, "boolField")).to(beTrue())
     }
 
-    func testAssignAndReadScalarArrays() throws {
-        var data = SelectorData()
-        data.set("intsField", scalar: [123, 456, nil])
-        data.set("floatsField", scalar: [1.234, 56.78])
-        data.set("stringsField", scalar: ["hello", "world"])
-        data.set("boolsField", scalar: [nil, true, false])
-
-        expect(data.get([Int?].self, "intsField")) == [123, 456, nil]
-        expect(data.get([Double].self, "floatsField")) == [1.234, 56.78]
-        expect(data.get([Double?].self, "floatsField")) == [1.234, 56.78]
-        expect(data.get([String].self, "stringsField")) == ["hello", "world"]
-        expect(data.get([String?].self, "stringsField")) == ["hello", "world"]
-        expect(data.get([Bool?].self, "boolsField")) == [nil, true, false]
-    }
-
     func testAssignAndReadObject() throws {
         var pokemonData = SelectorData()
         pokemonData.set("id", scalar: "1234")
@@ -70,20 +59,18 @@ class SelectorDataTests: XCTestCase {
         var data = SelectorData()
         data.set("pokemon", object: pokemonData)
 
-        let pokemon = data.get(Pokemon.self, "pokemon")
+        let readData = try SelectorDataDecoder().decode(Data.self, from: data)
 
-        expect(pokemon.id) == "1234"
-        expect(pokemon.name) == "Bulbasaur"
-
-        let pokemon2 = data.get(Pokemon?.self, "pokemon")
-        expect(pokemon2) == pokemon
+        expect(readData.pokemon?.id) == "1234"
+        expect(readData.pokemon?.name) == "Bulbasaur"
     }
 
     func testReadNilObject() throws {
         var data = SelectorData()
         data.set("pokemon", object: nil)
 
-        expect(data.get(Pokemon?.self, "pokemon")).to(beNil())
+        let readData = try SelectorDataDecoder().decode(Data.self, from: data)
+        expect(readData.pokemon).to(beNil())
     }
 
     func testAssignAndReadObjects() throws {
@@ -97,20 +84,15 @@ class SelectorDataTests: XCTestCase {
 
         var data = SelectorData()
         data.set("pokemons", objects: [pokemonData, nil, pokemonData2])
+        data.set("pokemons2", objects: [pokemonData, nil, pokemonData2])
+        data.set("pokemons3", objects: [pokemonData, pokemonData2])
+        data.set("pokemons4", objects: [pokemonData, pokemonData2])
 
-        let pokemons = data.get([Pokemon?].self, "pokemons")
-        assertSnapshot(matching: pokemons, as: .dump)
-
-        let pokemons2 = data.get([Pokemon?]?.self, "pokemons")
-        expect(pokemons2) == pokemons
-
-        data.set("pokemons", objects: [pokemonData, pokemonData2])
-
-        let pokemons3 = data.get([Pokemon].self, "pokemons")
-        assertSnapshot(matching: pokemons3, as: .dump)
-
-        let pokemons4 = data.get([Pokemon]?.self, "pokemons")
-        expect(pokemons4) == pokemons3
+        let readData = try SelectorDataDecoder().decode(Data2.self, from: data)
+        assertSnapshot(matching: readData.pokemons, as: .dump)
+        expect(readData.pokemons2) == readData.pokemons
+        assertSnapshot(matching: readData.pokemons3, as: .dump)
+        expect(readData.pokemons4) == readData.pokemons3
     }
 
     func testAssignAndReadFragmentPointer() throws {
@@ -120,8 +102,8 @@ class SelectorDataTests: XCTestCase {
                  dataID: "record_123",
                  owner: PokemonListQuery.createDescriptor(variables: ["a": "b"]).request)
 
-        let pointer = data.get(fragment: "PokemonListRow_pokemon")
-        assertSnapshot(matching: pointer, as: .dump)
+        let readData = try SelectorDataDecoder().decode(Data3.self, from: data)
+        assertSnapshot(matching: readData.fragment_PokemonListRow_pokemon, as: .dump)
     }
 
     func testGetByPath() throws {

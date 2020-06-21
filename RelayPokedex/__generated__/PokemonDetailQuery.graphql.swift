@@ -13,6 +13,7 @@ struct PokemonDetailQuery {
         ConcreteRequest(
             fragment: ReaderFragment(
                 name: "PokemonDetailQuery",
+                type: "Query",
                 selections: [
                     .field(ReaderLinkedField(
                         name: "pokemon",
@@ -146,23 +147,13 @@ extension PokemonDetailQuery {
 }
 
 extension PokemonDetailQuery {
-    struct Data: Readable {
+    struct Data: Decodable {
         var pokemon: Pokemon_pokemon?
 
-        init(from data: SelectorData) {
-            pokemon = data.get(Pokemon_pokemon?.self, "pokemon")
-        }
-
-        struct Pokemon_pokemon: Readable, PokemonDetailInfoSection_pokemon_Key, PokemonDetailTypesSection_pokemon_Key {
+        struct Pokemon_pokemon: Decodable, PokemonDetailInfoSection_pokemon_Key, PokemonDetailTypesSection_pokemon_Key {
             var id: String
             var fragment_PokemonDetailInfoSection_pokemon: FragmentPointer
             var fragment_PokemonDetailTypesSection_pokemon: FragmentPointer
-
-            init(from data: SelectorData) {
-                id = data.get(String.self, "id")
-                fragment_PokemonDetailInfoSection_pokemon = data.get(fragment: "PokemonDetailInfoSection_pokemon")
-                fragment_PokemonDetailTypesSection_pokemon = data.get(fragment: "PokemonDetailTypesSection_pokemon")
-            }
         }
     }
 }

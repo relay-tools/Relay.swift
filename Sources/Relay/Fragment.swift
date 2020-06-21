@@ -5,7 +5,7 @@ public protocol Fragment {
     static var node: ReaderFragment { get }
 
     associatedtype Key
-    associatedtype Data: Readable
+    associatedtype Data: Decodable
 }
 
 public extension Fragment {

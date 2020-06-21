@@ -12,6 +12,7 @@ struct ToDoList_user {
     static var node: ReaderFragment {
         ReaderFragment(
             name: "ToDoList_user",
+            type: "User",
             selections: [
                 .field(ReaderLinkedField(
                     name: "todos",
@@ -49,35 +50,18 @@ struct ToDoList_user {
 
 
 extension ToDoList_user {
-    struct Data: Readable {
+    struct Data: Decodable {
         var todos: TodoConnection_todos?
 
-        init(from data: SelectorData) {
-            todos = data.get(TodoConnection_todos?.self, "todos")
-        }
-
-        struct TodoConnection_todos: Readable {
+        struct TodoConnection_todos: Decodable {
             var edges: [TodoEdge_edges?]?
 
-            init(from data: SelectorData) {
-                edges = data.get([TodoEdge_edges?]?.self, "edges")
-            }
-
-            struct TodoEdge_edges: Readable {
+            struct TodoEdge_edges: Decodable {
                 var node: Todo_node?
 
-                init(from data: SelectorData) {
-                    node = data.get(Todo_node?.self, "node")
-                }
-
-                struct Todo_node: Readable, ToDoItem_todo_Key {
+                struct Todo_node: Decodable, ToDoItem_todo_Key {
                     var id: String
                     var fragment_ToDoItem_todo: FragmentPointer
-
-                    init(from data: SelectorData) {
-                        id = data.get(String.self, "id")
-                        fragment_ToDoItem_todo = data.get(fragment: "ToDoItem_todo")
-                    }
                 }
             }
         }

@@ -16,13 +16,13 @@ class Reader {
         self.variables = selector.variables
     }
 
-    static func read<T: Readable>(_ type: T.Type, source: RecordSource, selector: SingularReaderSelector) -> Snapshot<T?> {
+    static func read<T: Decodable>(_ type: T.Type, source: RecordSource, selector: SingularReaderSelector) -> Snapshot<T?> {
         Reader(source: source, selector: selector).read(type)
     }
 
-    func read<T: Readable>(_ type: T.Type) -> Snapshot<T?> {
+    func read<T: Decodable>(_ type: T.Type) -> Snapshot<T?> {
         let data = traverse(node: selector.node, dataID: selector.dataID)
-        return Snapshot(data: data, reify: { $0.map { T(from: $0) } }, isMissingData: isMissingData, seenRecords: seenRecords, selector: selector)
+        return Snapshot(data: data, reify: { $0.map { try! SelectorDataDecoder().decode(type, from: $0) } }, isMissingData: isMissingData, seenRecords: seenRecords, selector: selector)
     }
 
     private func traverse(node: ReaderNode, dataID: DataID, previousData: SelectorData? = nil) -> SelectorData? {

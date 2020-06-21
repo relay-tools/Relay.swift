@@ -46,7 +46,7 @@ public class Store {
         }
     }
 
-    public func lookup<T: Readable>(selector: SingularReaderSelector) -> Snapshot<T?> {
+    public func lookup<T: Decodable>(selector: SingularReaderSelector) -> Snapshot<T?> {
         Reader.read(T.self, source: source, selector: selector)
     }
 
@@ -89,7 +89,7 @@ public class Store {
         return updatedOwners
     }
 
-    public func subscribe<Data: Readable>(snapshot: Snapshot<Data?>) -> SnapshotPublisher<Data> {
+    public func subscribe<Data: Decodable>(snapshot: Snapshot<Data?>) -> SnapshotPublisher<Data> {
         SnapshotPublisher(store: self, initialSnapshot: snapshot)
     }
 

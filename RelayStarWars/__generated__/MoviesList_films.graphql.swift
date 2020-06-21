@@ -12,6 +12,7 @@ struct MoviesList_films {
     static var node: ReaderFragment {
         ReaderFragment(
             name: "MoviesList_films",
+            type: "Root",
             selections: [
                 .field(ReaderLinkedField(
                     name: "__MoviesList_allFilms_connection",
@@ -66,35 +67,18 @@ struct MoviesList_films {
 
 
 extension MoviesList_films {
-    struct Data: Readable {
+    struct Data: Decodable {
         var allFilms: FilmsConnection_allFilms?
 
-        init(from data: SelectorData) {
-            allFilms = data.get(FilmsConnection_allFilms?.self, "allFilms")
-        }
-
-        struct FilmsConnection_allFilms: Readable {
+        struct FilmsConnection_allFilms: Decodable {
             var edges: [FilmsEdge_edges?]?
 
-            init(from data: SelectorData) {
-                edges = data.get([FilmsEdge_edges?]?.self, "edges")
-            }
-
-            struct FilmsEdge_edges: Readable {
+            struct FilmsEdge_edges: Decodable {
                 var node: Film_node?
 
-                init(from data: SelectorData) {
-                    node = data.get(Film_node?.self, "node")
-                }
-
-                struct Film_node: Readable, MoviesListRow_film_Key {
+                struct Film_node: Decodable, MoviesListRow_film_Key {
                     var id: String
                     var fragment_MoviesListRow_film: FragmentPointer
-
-                    init(from data: SelectorData) {
-                        id = data.get(String.self, "id")
-                        fragment_MoviesListRow_film = data.get(fragment: "MoviesListRow_film")
-                    }
                 }
             }
         }

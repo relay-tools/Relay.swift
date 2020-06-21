@@ -12,6 +12,7 @@ struct PokemonDetailTypesSection_pokemon {
     static var node: ReaderFragment {
         ReaderFragment(
             name: "PokemonDetailTypesSection_pokemon",
+            type: "Pokemon",
             selections: [
                 .field(ReaderScalarField(
                     name: "types"
@@ -28,16 +29,10 @@ struct PokemonDetailTypesSection_pokemon {
 
 
 extension PokemonDetailTypesSection_pokemon {
-    struct Data: Readable {
+    struct Data: Decodable {
         var types: [String?]?
         var resistant: [String?]?
         var weaknesses: [String?]?
-
-        init(from data: SelectorData) {
-            types = data.get([String?]?.self, "types")
-            resistant = data.get([String?]?.self, "resistant")
-            weaknesses = data.get([String?]?.self, "weaknesses")
-        }
     }
 }
 

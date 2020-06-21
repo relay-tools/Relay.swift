@@ -4,7 +4,7 @@ public protocol Operation {
 
     static var node: ConcreteRequest { get }
     associatedtype Variables: VariableDataConvertible
-    associatedtype Data: Readable
+    associatedtype Data: Decodable
 }
 
 extension Operation {

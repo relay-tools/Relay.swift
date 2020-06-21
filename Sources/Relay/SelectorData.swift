@@ -1,6 +1,6 @@
-public struct SelectorData: Readable, Equatable {
-    private var data: [String: Value?] = [:]
-    private var fragments: [String: FragmentPointer] = [:]
+public struct SelectorData: Decodable, Equatable {
+    private(set) var data: [String: Value?] = [:]
+    private(set) var fragments: [String: FragmentPointer] = [:]
 
     public enum Value: Equatable {
         case int(Int)
@@ -64,6 +64,11 @@ public struct SelectorData: Readable, Equatable {
         self = data
     }
 
+    public init(from decoder: Decoder) throws {
+        // this would be an infinite recursion if SelectorDataDecoder didn't special-case this
+        self = try decoder.singleValueContainer().decode(SelectorData.self)
+    }
+
     public func get<T: ReadableScalar>(_ type: T.Type, _ key: String) -> T {
         return T(from: data[key]!!)
     }
@@ -71,40 +76,6 @@ public struct SelectorData: Readable, Equatable {
     public func get<T: ReadableScalar>(_ type: T?.Type, _ key: String) -> T? {
         guard let val = data[key], let val2 = val else { return nil }
         return T(from: val2)
-    }
-
-    public func get<T: ReadableScalar>(_ type: [T].Type, _ key: String) -> [T] {
-        guard case .array(let values) = data[key] else {
-            preconditionFailure("Expected key \(key) to be an array of values")
-        }
-
-        return values.map { T(from: $0!) }
-    }
-
-    public func get<T: ReadableScalar>(_ type: [T]?.Type, _ key: String) -> [T]? {
-        guard let val = data[key] else { return nil }
-        guard case .array(let values) = val else {
-            preconditionFailure("Expected key \(key) to be an array of values")
-        }
-
-        return values.map { T(from: $0!) }
-    }
-
-    public func get<T: ReadableScalar>(_ type: [T?].Type, _ key: String) -> [T?] {
-        guard case .array(let values) = data[key] else {
-            preconditionFailure("Expected key \(key) to be an array of values")
-        }
-
-        return values.map { $0.map { T(from: $0) } }
-    }
-
-    public func get<T: ReadableScalar>(_ type: [T?]?.Type, _ key: String) -> [T?]? {
-        guard let val = data[key] else { return nil }
-        guard case .array(let values) = val else {
-            preconditionFailure("Expected key \(key) to be an array of values")
-        }
-
-        return values.map { $0.map { T(from: $0) } }
     }
 
     public func get(_ type: SelectorData?.Type, _ key: String) -> SelectorData? {
@@ -117,16 +88,6 @@ public struct SelectorData: Readable, Equatable {
         preconditionFailure("Expected key \(key) to contain an object, instead it was \(String(describing: data[key]))")
     }
 
-    public func get(_ type: [SelectorData]?.Type, _ key: String) -> [SelectorData]? {
-        guard let val = data[key] else { return nil }
-
-        if case .objects(let objs) = val {
-            return objs?.map { $0! }
-        }
-
-        preconditionFailure("Expected key \(key) to contain an array of objects, instead it was \(String(describing: data[key]))")
-    }
-
     public func get(_ type: [SelectorData?]?.Type, _ key: String) -> [SelectorData?]? {
         guard let val = data[key] else { return nil }
 
@@ -135,34 +96,6 @@ public struct SelectorData: Readable, Equatable {
         }
 
         preconditionFailure("Expected key \(key) to contain an array of objects, instead it was \(String(describing: data[key]))")
-    }
-
-    public func get<T: Readable>(_ type: T.Type, _ key: String) -> T {
-        return T(from: get(SelectorData?.self, key)!)
-    }
-
-    public func get<T: Readable>(_ type: T?.Type, _ key: String) -> T? {
-        return get(SelectorData?.self, key).map { T(from: $0) }
-    }
-
-    public func get<T: Readable>(_ type: [T].Type, _ key: String) -> [T] {
-        return get([SelectorData?]?.self, key)!.map { T(from: $0!) }
-    }
-
-    public func get<T: Readable>(_ type: [T]?.Type, _ key: String) -> [T]? {
-        return get([SelectorData]?.self, key)?.map { T(from: $0) }
-    }
-
-    public func get<T: Readable>(_ type: [T?].Type, _ key: String) -> [T?] {
-        return get([SelectorData?]?.self, key)!.map { $0.map(T.init(from:)) }
-    }
-
-    public func get<T: Readable>(_ type: [T?]?.Type, _ key: String) -> [T?]? {
-        return get([SelectorData?]?.self, key)?.map { $0.map(T.init(from:)) }
-    }
-
-    public func get(fragment: String) -> FragmentPointer {
-        return fragments[fragment]!
     }
 
     public func get(path: [Any]) -> Any? {

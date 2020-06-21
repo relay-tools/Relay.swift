@@ -13,6 +13,7 @@ struct ChangeTodoStatusMutation {
         ConcreteRequest(
             fragment: ReaderFragment(
                 name: "ChangeTodoStatusMutation",
+                type: "Mutation",
                 selections: [
                     .field(ReaderLinkedField(
                         name: "changeTodoStatus",
@@ -113,28 +114,15 @@ struct ChangeTodoStatusInput: VariableDataConvertible {
 }
 
 extension ChangeTodoStatusMutation {
-    struct Data: Readable {
+    struct Data: Decodable {
         var changeTodoStatus: ChangeTodoStatusPayload_changeTodoStatus?
 
-        init(from data: SelectorData) {
-            changeTodoStatus = data.get(ChangeTodoStatusPayload_changeTodoStatus?.self, "changeTodoStatus")
-        }
-
-        struct ChangeTodoStatusPayload_changeTodoStatus: Readable {
+        struct ChangeTodoStatusPayload_changeTodoStatus: Decodable {
             var todo: Todo_todo
 
-            init(from data: SelectorData) {
-                todo = data.get(Todo_todo.self, "todo")
-            }
-
-            struct Todo_todo: Readable {
+            struct Todo_todo: Decodable {
                 var id: String
                 var complete: Bool
-
-                init(from data: SelectorData) {
-                    id = data.get(String.self, "id")
-                    complete = data.get(Bool.self, "complete")
-                }
             }
         }
     }

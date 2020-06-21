@@ -527,7 +527,7 @@ fileprivate struct _SelectorDataUnkeyedDecodingContainer: UnkeyedDecodingContain
             currentIndex += 1
             return decoded
         case .objects(let values?):
-            guard let decoded = try decoder.unbox(values[currentIndex].map { .value(.object($0)) }, as: type) else {
+            guard let decoded = try decoder.unbox(.value(.object(values[currentIndex])), as: type) else {
                 throw DecodingError.valueNotFound(type, DecodingError.Context(codingPath: decoder.codingPath + [_SelectorDataKey(index: currentIndex)], debugDescription: "Expected \(type) but found null instead."))
             }
 
@@ -581,7 +581,16 @@ extension _SelectorDataDecoder: SingleValueDecodingContainer {
     }
 
     func decodeNil() -> Bool {
-        return storage.topContainer == nil
+        guard let topContainer = storage.topContainer else {
+            return true
+        }
+
+        switch topContainer {
+        case .value(.object(nil)), .value(.objects(nil)):
+            return true
+        default:
+            return false
+        }
     }
 
     func decode(_ type: Bool.Type) throws -> Bool {

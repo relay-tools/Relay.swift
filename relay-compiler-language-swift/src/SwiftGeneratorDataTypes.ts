@@ -75,9 +75,8 @@ export function makeTypeNode(node: TypeNode, level: number): string {
     case 'readableStruct':
       return makeReadableStruct(node, level);
     case 'readableUnion':
-      return makeReadableUnion(node, level);
     case 'readableInterface':
-      return makeReadableInterface(node, level);
+      return makeReadableUnionOrInterface(node, level);
     case 'enum':
       return makeReadableEnum(node, level);
     case 'protocol':
@@ -169,147 +168,14 @@ ${makeReadableStruct({ ...structType, name: childType }, level + 1)}${indent(
   return typeText;
 }
 
-function makeReadableUnion(
-  unionType: ReadableUnionNode,
-  level: number
-): string {
-  if (unionType.name.indexOf('.') !== -1) {
-    const [parentType, childType] = unionType.name.split('.');
-    return `${indent(level)}extension ${parentType} {
-${makeReadableUnion({ ...unionType, name: childType }, level + 1)}${indent(
-      level
-    )}}
-`;
-  }
-
-  const extendsStr = ['Decodable', ...unionType.extends].join(', ');
-  let typeText = `${indent(level)}enum ${unionType.name}: ${extendsStr} {\n`;
-
-  for (const field of unionType.fields) {
-    if (field.kind !== 'inlineFragment') {
-      if (field.typeName !== 'FragmentPointer') {
-        throw new Error(
-          `Unexpected field kind '${field.kind}' in union type ${unionType.name}`
-        );
-      } else {
-        continue;
-      }
-    }
-
-    typeText += `${indent(level + 1)}case ${enumTypeCaseName(
-      field.childType.name
-    )}(${field.childType.name})\n`;
-  }
-
-  typeText += `${indent(level + 1)}case unknown
-
-${indent(level + 1)}private enum TypeKeys: String, CodingKey {
-${indent(level + 2)}case __typename  
-${indent(level + 1)}}
-  
-${indent(level + 1)}init(from decoder: Decoder) throws {
-${indent(
-  level + 2
-)}let container = try decoder.container(keyedBy: TypeKeys.self)
-${indent(
-  level + 2
-)}let typeName = try container.decode(String.self, forKey: .__typename)
-${indent(level + 2)}switch typeName {
-`;
-
-  for (const field of unionType.fields) {
-    if (field.kind !== 'inlineFragment') {
-      continue;
-    }
-
-    typeText += `${indent(level + 2)}case "${field.childType.name}":
-${indent(level + 3)}self = .${enumTypeCaseName(field.childType.name)}(try ${
-      field.childType.name
-    }(from: decoder))
-`;
-  }
-
-  typeText += `${indent(level + 2)}default:
-${indent(level + 3)}self = .unknown
-${indent(level + 2)}}
-${indent(level + 1)}}
-`;
-
-  for (const field of unionType.fields) {
-    if (field.kind !== 'inlineFragment') {
-      continue;
-    }
-
-    typeText += `
-${indent(level + 1)}var as${field.childType.name}: ${field.childType.name}? {
-${indent(level + 2)}if case .${enumTypeCaseName(
-      field.childType.name
-    )}(let val) = self {
-${indent(level + 3)}return val
-${indent(level + 2)}}
-${indent(level + 2)}return nil
-${indent(level + 1)}}
-`;
-  }
-
-  const otherTypeFields = unionType.fields.filter(
-    (field): field is FieldNode => field.kind === 'field'
-  );
-  const otherChildTypes = otherTypeFields
-    .filter(selection => selection.childType != null)
-    .map(selection => selection.childType!);
-  const otherExtends = otherTypeFields
-    .filter(selection => selection.protocolName != null)
-    .map(selection => selection.protocolName!);
-
-  for (const field of otherTypeFields) {
-    typeText += `\n${indent(level + 1)}var ${field.fieldName}: ${
-      field.typeName
-    } {
-${indent(level + 2)}switch self {
-`;
-
-    for (const childType of unionType.childTypes) {
-      typeText += `${indent(level + 2)}case .${enumTypeCaseName(
-        childType.name
-      )}(let val):
-${indent(level + 3)}return val.${field.fieldName}
-`;
-    }
-
-    typeText += `${indent(level + 2)}default:
-${indent(level + 3)}preconditionFailure("Trying to access field '${
-      field.fieldName
-    }' from unknown union member")
-${indent(level + 2)}}
-${indent(level + 1)}}
-`;
-  }
-
-  for (const childType of unionType.childTypes) {
-    typeText += `\n${makeTypeNode(
-      {
-        ...childType,
-        fields: [...otherTypeFields, ...childType.fields],
-        childTypes: [...otherChildTypes, ...childType.childTypes],
-        extends: [...otherExtends, ...childType.extends],
-      } as TypeNode,
-      level + 1
-    )}`;
-  }
-
-  typeText += `${indent(level)}}\n`;
-  return typeText;
-}
-
-function makeReadableInterface(
-  interfaceType: ReadableInterfaceNode,
+function makeReadableUnionOrInterface(
+  interfaceType: ReadableUnionNode | ReadableInterfaceNode,
   level: number
 ): string {
   if (interfaceType.name.indexOf('.') !== -1) {
     const [parentType, childType] = interfaceType.name.split('.');
     return `${indent(level)}extension ${parentType} {
-${makeReadableInterface(
+${makeReadableUnionOrInterface(
   { ...interfaceType, name: childType },
   level + 1
 )}${indent(level)}}
@@ -336,7 +202,7 @@ ${makeReadableInterface(
   )}(${interfaceType.originalTypeName})
 
 ${indent(level + 1)}private enum TypeKeys: String, CodingKey {
-${indent(level + 2)}case __typename  
+${indent(level + 2)}case __typename
 ${indent(level + 1)}}
   
 ${indent(level + 1)}init(from decoder: Decoder) throws {
@@ -401,6 +267,22 @@ ${indent(level + 2)}}
 ${indent(level + 2)}return nil
 ${indent(level + 1)}}
 `;
+  }
+
+  for (const field of otherTypeFields) {
+    typeText += `\n${indent(level + 1)}var ${field.fieldName}: ${
+      field.typeName
+    } {
+${indent(level + 2)}switch self {
+`;
+
+    for (const childType of childTypes) {
+      typeText += `${indent(level + 2)}case .${enumTypeCaseName(
+        childType.name
+      )}(let val):
+${indent(level + 3)}return val.${field.fieldName}
+`;
+    }
   }
 
   for (const childType of childTypes) {

@@ -11,7 +11,7 @@ class QueryLoader<Op: Relay.Operation>: ObservableObject {
 
     var variables: Op.Variables? {
         didSet {
-            _ = reload()
+            reload()
         }
     }
     var fetchPolicy: QueryFetchPolicy

@@ -117,8 +117,8 @@ class PublishQueue {
 
     private func applyUpdates() {
         let mutator = RecordSourceMutator(base: store.source, sink: DefaultRecordSource())
-        var defaultRecordSourceProxy = DefaultRecordSourceProxy(mutator: mutator, handlerProvider: handlerProvider)
-        var recordSourceProxy = defaultRecordSourceProxy as RecordSourceProxy
+        let defaultRecordSourceProxy = DefaultRecordSourceProxy(mutator: mutator, handlerProvider: handlerProvider)
+        let recordSourceProxy = defaultRecordSourceProxy as RecordSourceProxy
 
         func processUpdate(_ update: OptimisticUpdate) {
             // TODO store updater if that's a thing we do

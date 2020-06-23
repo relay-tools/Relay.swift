@@ -283,6 +283,10 @@ ${indent(level + 2)}switch self {
 ${indent(level + 3)}return val.${field.fieldName}
 `;
     }
+
+    typeText += `${indent(level + 2)}}
+${indent(level + 1)}}
+`;
   }
 
   for (const childType of childTypes) {

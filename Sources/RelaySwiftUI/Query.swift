@@ -12,13 +12,17 @@ public struct Query<O: Relay.Operation>: DynamicProperty {
     @ObservedObject var loader: QueryLoader<O>
 
     public init(_ type: O.Type, fetchPolicy: QueryFetchPolicy = .networkOnly) {
-        loader = QueryLoader(fetchPolicy: fetchPolicy)
+        loader = QueryLoader()
+        loader.fetchPolicy = fetchPolicy
         loader.variables = EmptyVariables() as? O.Variables
     }
 
     public var projectedValue: O.Variables {
         get { loader.variables! }
-        nonmutating set { loader.variables = newValue }
+        nonmutating set {
+            loader.variables = newValue
+            loader.reload()
+        }
     }
 
     public var wrappedValue: Result {
@@ -63,5 +67,89 @@ public struct Query<O: Relay.Operation>: DynamicProperty {
             }
             return nil
         }
+    }
+}
+
+@available(iOS 14.0, *)
+@propertyWrapper
+public struct QueryNext<O: Relay.Operation>: DynamicProperty {
+    @SwiftUI.Environment(\.relayEnvironment) var environment
+    @StateObject var loader = QueryLoader<O>()
+
+    let configBox: ConfigBox
+
+    public init(_ type: O.Type, fetchPolicy: QueryFetchPolicy = .networkOnly) {
+        configBox = ConfigBox(fetchPolicy: fetchPolicy)
+        configBox.variables = EmptyVariables() as? O.Variables
+    }
+
+    public var wrappedValue: WrappedValue {
+        WrappedValue(query: self)
+    }
+
+    public struct WrappedValue {
+        let query: QueryNext<O>
+
+        public func get(_ variables: O.Variables) -> Result {
+            switch query.loader.loadIfNeeded(
+                environment: query.environment,
+                fetchPolicy: query.configBox.fetchPolicy,
+                variables: variables
+            ) {
+            case nil:
+                return .loading
+            case .failure(let error):
+                return .failure(error)
+            case .success:
+                if let data = query.loader.data {
+                    return .success(data)
+                } else {
+                    return .loading
+                }
+            }
+        }
+    }
+
+    public enum Result {
+        case loading
+        case failure(Error)
+        case success(O.Data?)
+
+        public var isLoading: Bool {
+            if case .loading = self {
+                return true
+            }
+            return false
+        }
+
+        public var error: Error? {
+            if case .failure(let error) = self {
+                return error
+            }
+            return nil
+        }
+
+        public var data: O.Data? {
+            if case .success(let data) = self {
+                return data
+            }
+            return nil
+        }
+    }
+
+    class ConfigBox {
+        var variables: O.Variables?
+        var fetchPolicy: QueryFetchPolicy
+
+        init(fetchPolicy: QueryFetchPolicy) {
+            self.fetchPolicy = fetchPolicy
+        }
+    }
+}
+
+@available(iOS 14.0, *)
+extension QueryNext.WrappedValue where O.Variables == EmptyVariables {
+    public func get() -> QueryNext.Result {
+        get(.init())
     }
 }

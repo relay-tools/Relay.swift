@@ -6,7 +6,7 @@ class PaginationFragmentLoader<Fragment: Relay.PaginationFragment>: ObservableOb
     let metadata: Fragment.Metadata
 
     var environment: Environment!
-    var selector: SingularReaderSelector!
+    var selector: SingularReaderSelector?
 
     var snapshot: Snapshot<Fragment.Data?>? {
         // not sure why this is needed instead of using Published.
@@ -27,11 +27,14 @@ class PaginationFragmentLoader<Fragment: Relay.PaginationFragment>: ObservableOb
     private var isLoaded = false
 
     func load(from environment: Environment, key: Fragment.Key) {
-        guard !isLoaded else { return }
+        let newSelector = Fragment(key: key).selector
+        if newSelector == selector {
+            return
+        }
 
         self.environment = environment
-        self.selector = Fragment(key: key).selector
-        snapshot = environment.lookup(selector: selector)
+        self.selector = newSelector
+        snapshot = environment.lookup(selector: newSelector)
         subscribe()
 
         isLoaded = true
@@ -109,8 +112,8 @@ class PaginationFragmentLoader<Fragment: Relay.PaginationFragment>: ObservableOb
     private func loadMore(direction: PaginationDirection, count: Int) -> AnyPublisher<(), Error> {
         let (cursor, _) = getConnectionState(direction: direction)
 
-        var baseVariables = selector.owner.variables
-        baseVariables.merge(selector.variables)
+        var baseVariables = selector!.owner.variables
+        baseVariables.merge(selector!.variables)
 
         let paginationVariables = getPaginationVariables(
             direction: direction,
@@ -128,7 +131,7 @@ class PaginationFragmentLoader<Fragment: Relay.PaginationFragment>: ObservableOb
     }
 
     private func getConnectionState(direction: PaginationDirection) -> (String?, Bool) {
-        let data: SelectorData? = environment.lookup(selector: selector).data
+        let data: SelectorData? = environment.lookup(selector: selector!).data
 
         guard let maybeConnection = data?.get(path: metadata.connection!.pathInFragment) as? SelectorData? else {
             preconditionFailure("Expected connection to be either null or a plain object")

@@ -1,4 +1,4 @@
-public struct SingularReaderSelector {
+public struct SingularReaderSelector: Hashable {
     var dataID: DataID
     var node: ReaderFragment
     public var owner: RequestDescriptor
@@ -16,5 +16,15 @@ public struct SingularReaderSelector {
         node = fragment
         owner = pointer.owner
         variables = pointer.variables
+    }
+
+    public static func ==(lhs: SingularReaderSelector, rhs: SingularReaderSelector) -> Bool {
+        return lhs.dataID == rhs.dataID && lhs.owner == rhs.owner && lhs.variables.variableData == rhs.variables.variableData
+    }
+
+    public func hash(into hasher: inout Hasher) {
+        hasher.combine(dataID)
+        hasher.combine(owner)
+        hasher.combine(variables.variableData)
     }
 }

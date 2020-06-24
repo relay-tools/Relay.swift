@@ -22,7 +22,7 @@ class Reader {
 
     func read<T: Decodable>(_ type: T.Type) -> Snapshot<T?> {
         let data = traverse(node: selector.node, dataID: selector.dataID)
-        return Snapshot(data: data, reify: { $0.map { try! SelectorDataDecoder().decode(type, from: $0) } }, isMissingData: isMissingData, seenRecords: seenRecords, selector: selector)
+        return Snapshot(data: data, reify: { $0.flatMap { try? SelectorDataDecoder().decode(type, from: $0) } }, isMissingData: isMissingData, seenRecords: seenRecords, selector: selector)
     }
 
     private func traverse(node: ReaderNode, dataID: DataID, previousData: SelectorData? = nil) -> SelectorData? {

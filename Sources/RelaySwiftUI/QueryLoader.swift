@@ -9,21 +9,15 @@ class QueryLoader<Op: Relay.Operation>: ObservableObject {
         }
     }
 
-    var variables: Op.Variables? {
-        didSet {
-            reload()
-        }
-    }
-    var fetchPolicy: QueryFetchPolicy
+    var variables: Op.Variables?
+    var fetchPolicy: QueryFetchPolicy?
 
     private var environment: Environment!
     private var fetchCancellable: AnyCancellable?
     private var subscribeCancellable: AnyCancellable?
     private var retainCancellable: AnyCancellable?
 
-    init(fetchPolicy: QueryFetchPolicy) {
-        self.fetchPolicy = fetchPolicy
-    }
+    init() {}
 
     var isLoading: Bool {
         if result == nil {
@@ -64,13 +58,25 @@ class QueryLoader<Op: Relay.Operation>: ObservableObject {
         }
     }
 
-    func loadIfNeeded(environment: Environment?) -> Result<Snapshot<Op.Data?>, Error>? {
-        guard !isLoaded || environment !== self.environment else {
+    func loadIfNeeded(
+        environment: Environment?,
+        fetchPolicy: QueryFetchPolicy? = nil,
+        variables: Op.Variables? = nil
+    ) -> Result<Snapshot<Op.Data?>, Error>? {
+        guard !isLoaded || environment !== self.environment || (fetchPolicy != nil && fetchPolicy != self.fetchPolicy) || (variables != nil && variables?.variableData != self.variables?.variableData) else {
             return result
         }
 
         if let environment = environment {
             self.environment = environment
+        }
+
+        if let fetchPolicy = fetchPolicy {
+            self.fetchPolicy = fetchPolicy
+        }
+
+        if let variables = variables {
+            self.variables = variables
         }
 
         guard let environment = self.environment else {

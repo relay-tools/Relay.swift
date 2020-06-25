@@ -1,5 +1,9 @@
 import Combine
 import Foundation
+import os
+
+@available(iOS 14.0, *)
+private let logger = Logger(subsystem: "io.github.mjm.Relay", category: "garbage-collection")
 
 class GarbageCollector {
     let store: Store
@@ -39,7 +43,9 @@ class GarbageCollector {
                 return
             }
 
-            NSLog("releasing operation \(id.prefix(while: { $0 != "\n" }))")
+            if #available(iOS 14.0, *) {
+                logger.info("GC Release: \(operation.request.node.params.name, privacy: .public), variables: \(operation.request.variables)")
+            }
             self.roots[id]?.refCount -= 1
 
             // TODO query cache expiration time
@@ -50,7 +56,9 @@ class GarbageCollector {
             }
         }
 
-        NSLog("retaining operation \(id.prefix(while: { $0 != "\n" }))")
+        if #available(iOS 14.0, *) {
+            logger.info("GC Retain:  \(operation.request.node.params.name, privacy: .public), variables: \(operation.request.variables)")
+        }
 
         guard let rootEntry = roots[id] else {
             roots[id] = Entry(operation: operation)
@@ -87,14 +95,28 @@ class GarbageCollector {
             shouldSchedule = true
         }
         holdCounter += 1
-        NSLog("Pausing garbage-collection")
+
+        if #available(iOS 14.0, *) {
+            let holdCounter = self.holdCounter
+            logger.info("GC Pause   (hold counter: \(holdCounter)")
+        }
+
         return AnyCancellable {
-            NSLog("Unpausing garbage-collection")
             if self.holdCounter > 0 {
                 self.holdCounter -= 1
+
+                if #available(iOS 14.0, *) {
+                    let holdCounter = self.holdCounter
+                    logger.info("GC Unpause (hold counter: \(holdCounter)")
+                }
+
                 if self.holdCounter == 0 && self.shouldSchedule {
                     self.schedule()
                     self.shouldSchedule = false
+                }
+            } else {
+                if #available(iOS 14.0, *) {
+                    logger.error("GC Unpause when hold counter is already 0")
                 }
             }
         }
@@ -122,7 +144,10 @@ class GarbageCollector {
             return
         }
 
-        NSLog("Scheduling garbage collection")
+        if #available(iOS 14.0, *) {
+            logger.notice("GC Schedule")
+        }
+
         isRunning = true
         scheduler.async {
             self.collect()
@@ -146,13 +171,18 @@ class GarbageCollector {
                 selector: selector,
                 references: &references)
 
-            if startEpoch != store.currentWriteEpoch {
-                NSLog("Store changed while garbage-collecting, restarting.")
+            let currentEpoch = store.currentWriteEpoch
+            if startEpoch != currentEpoch {
+                if #available(iOS 14.0, *) {
+                    logger.info("GC Restart: store updated while collecting (start epoch: \(startEpoch), current epoch: \(currentEpoch))")
+                }
                 return false
             }
 
             if shouldSchedule {
-                NSLog("GC paused while in-progress, abandoning.")
+                if #available(iOS 14.0, *) {
+                    logger.info("GC Cancel: paused while collecting")
+                }
                 return true
             }
         }
@@ -162,19 +192,26 @@ class GarbageCollector {
             // check this again now that we're on the main queue.
             // after this, nothing should be able to interrupt us, because updates
             // to the store should all happen on the main queue.
-            if startEpoch != store.currentWriteEpoch {
-                NSLog("Store changed while garbage-collecting, restarting")
+            let currentEpoch = store.currentWriteEpoch
+            if startEpoch != currentEpoch {
+                if #available(iOS 14.0, *) {
+                    logger.info("GC Restart: store updated while collecting (start epoch: \(startEpoch), current epoch: \(currentEpoch))")
+                }
                 return false
             }
 
             if shouldSchedule {
-                NSLog("GC paused while in-progress, abandoning")
+                if #available(iOS 14.0, *) {
+                    logger.info("GC Cancel: paused while collecting")
+                }
                 return true
             }
 
             if references.isEmpty {
-                NSLog("Clearing entire store")
                 store.recordSource.clear()
+                if #available(iOS 14.0, *) {
+                    logger.notice("GC Result:  0 references found, cleared entire store")
+                }
             } else {
                 var deletedCount = 0
                 for dataID in store.recordSource.recordIDs {
@@ -183,7 +220,9 @@ class GarbageCollector {
                         deletedCount += 1
                     }
                 }
-                NSLog("Garbage-collected \(deletedCount) records")
+                if #available(iOS 14.0, *) {
+                    logger.notice("GC Result:  \(references.count) references found, deleted \(deletedCount) records")
+                }
             }
 
             return true

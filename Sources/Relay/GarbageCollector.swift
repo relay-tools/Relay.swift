@@ -2,8 +2,10 @@ import Combine
 import Foundation
 import os
 
+private let log = OSLog(subsystem: "io.github.mjm.Relay", category: "garbage-collection")
+
 @available(iOS 14.0, *)
-private let logger = Logger(subsystem: "io.github.mjm.Relay", category: "garbage-collection")
+private let logger = Logger(log)
 
 class GarbageCollector {
     let store: Store
@@ -31,6 +33,7 @@ class GarbageCollector {
 
     func retain(_ operation: OperationDescriptor) -> AnyCancellable {
         let id = operation.request.identifier
+        let signpostID = OSSignpostID(log: log)
 
         var isCancelled = false
         let cancel = AnyCancellable {
@@ -46,6 +49,7 @@ class GarbageCollector {
             if #available(iOS 14.0, *) {
                 logger.info("GC Release: \(operation.request.node.params.name, privacy: .public), variables: \(operation.request.variables)")
             }
+            os_signpost(.event, log: log, name: "release operation", signpostID: signpostID)
             self.roots[id]?.refCount -= 1
 
             // TODO query cache expiration time
@@ -59,6 +63,7 @@ class GarbageCollector {
         if #available(iOS 14.0, *) {
             logger.info("GC Retain:  \(operation.request.node.params.name, privacy: .public), variables: \(operation.request.variables)")
         }
+        os_signpost(.event, log: log, name: "retain operation", signpostID: signpostID)
 
         guard let rootEntry = roots[id] else {
             roots[id] = Entry(operation: operation)
@@ -100,6 +105,7 @@ class GarbageCollector {
             let holdCounter = self.holdCounter
             logger.info("GC Pause   (hold counter: \(holdCounter)")
         }
+        os_signpost(.event, log: log, name: "pause")
 
         return AnyCancellable {
             if self.holdCounter > 0 {
@@ -109,6 +115,7 @@ class GarbageCollector {
                     let holdCounter = self.holdCounter
                     logger.info("GC Unpause (hold counter: \(holdCounter)")
                 }
+                os_signpost(.event, log: log, name: "unpause")
 
                 if self.holdCounter == 0 && self.shouldSchedule {
                     self.schedule()
@@ -147,19 +154,23 @@ class GarbageCollector {
         if #available(iOS 14.0, *) {
             logger.notice("GC Schedule")
         }
+        let id = OSSignpostID(log: log)
+        os_signpost(.event, log: log, name: "schedule", signpostID: id)
 
         isRunning = true
         scheduler.async {
-            self.collect()
+            self.collect(id)
         }
     }
 
-    private func collect() {
-        while !attemptCollection() { }
+    private func collect(_ signpostID: OSSignpostID) {
+        os_signpost(.begin, log: log, name: "garbage collection", signpostID: signpostID)
+        while !attemptCollection(signpostID) { }
         isRunning = false
+        os_signpost(.end, log: log, name: "garbage collection", signpostID: signpostID)
     }
 
-    private func attemptCollection() -> Bool {
+    private func attemptCollection(_ signpostID: OSSignpostID) -> Bool {
         let startEpoch = store.currentWriteEpoch
         var references = Set<DataID>()
 
@@ -176,6 +187,7 @@ class GarbageCollector {
                 if #available(iOS 14.0, *) {
                     logger.info("GC Restart: store updated while collecting (start epoch: \(startEpoch), current epoch: \(currentEpoch))")
                 }
+                os_signpost(.event, log: log, name: "restart garbage collection", signpostID: signpostID)
                 return false
             }
 
@@ -183,6 +195,7 @@ class GarbageCollector {
                 if #available(iOS 14.0, *) {
                     logger.info("GC Cancel: paused while collecting")
                 }
+                os_signpost(.event, log: log, name: "cancel garbage collection", signpostID: signpostID)
                 return true
             }
         }
@@ -197,6 +210,7 @@ class GarbageCollector {
                 if #available(iOS 14.0, *) {
                     logger.info("GC Restart: store updated while collecting (start epoch: \(startEpoch), current epoch: \(currentEpoch))")
                 }
+                os_signpost(.event, log: log, name: "restart garbage collection", signpostID: signpostID)
                 return false
             }
 
@@ -204,6 +218,7 @@ class GarbageCollector {
                 if #available(iOS 14.0, *) {
                     logger.info("GC Cancel: paused while collecting")
                 }
+                os_signpost(.event, log: log, name: "cancel garbage collection", signpostID: signpostID)
                 return true
             }
 

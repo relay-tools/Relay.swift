@@ -1,4 +1,8 @@
 import Foundation
+import os
+
+@available(iOS 14.0, *)
+private let logger = Logger(subsystem: "io.github.mjm.Relay", category: "reader")
 
 class Reader {
     let recordSource: RecordSource
@@ -22,7 +26,24 @@ class Reader {
 
     func read<T: Decodable>(_ type: T.Type) -> Snapshot<T?> {
         let data = traverse(node: selector.node, dataID: selector.dataID)
-        return Snapshot(data: data, reify: { $0.flatMap { try? SelectorDataDecoder().decode(type, from: $0) } }, isMissingData: isMissingData, seenRecords: seenRecords, selector: selector)
+        return Snapshot(
+            data: data,
+            reify: { data in
+                guard let data = data else { return nil }
+
+                do {
+                    return try SelectorDataDecoder().decode(type, from: data)
+                } catch {
+                    if #available(iOS 14.0, *) {
+                        logger.debug("Decoding fragment data into \(String(reflecting: type), privacy: .public) failed (this may be harmless): \(error as NSError)")
+                    }
+                    return nil
+                }
+            },
+            isMissingData: isMissingData,
+            seenRecords: seenRecords,
+            selector: selector
+        )
     }
 
     private func traverse(node: ReaderNode, dataID: DataID, previousData: SelectorData? = nil) -> SelectorData? {

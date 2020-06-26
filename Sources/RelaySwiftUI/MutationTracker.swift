@@ -10,8 +10,6 @@ class MutationTracker<O: Relay.Operation>: ObservableObject {
         }
     }
 
-    var cancellables = Set<AnyCancellable>()
-
     func commit(
         environment: Environment,
         variables: O.Variables,
@@ -21,7 +19,9 @@ class MutationTracker<O: Relay.Operation>: ObservableObject {
         completion: ((Result<O.Data?, Error>) -> Void)? = nil
     ) {
         requestsInFlight += 1
-        environment.commitMutation(
+
+        var cancellable: AnyCancellable?
+        cancellable = environment.commitMutation(
             O(variables: variables),
             optimisticResponse: optimisticResponse,
             optimisticUpdater: optimisticUpdater,
@@ -32,8 +32,10 @@ class MutationTracker<O: Relay.Operation>: ObservableObject {
             if case .failure(let error) = result {
                 completion?(.failure(error))
             }
+
+            cancellable?.cancel()
         }) { data in
             completion?(.success(data))
-        }.store(in: &cancellables)
+        }
     }
 }

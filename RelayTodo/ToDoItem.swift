@@ -51,3 +51,31 @@ struct ToDoItem: View {
         }
     }
 }
+
+private let previewQuery = graphql("""
+query ToDoItemPreviewQuery {
+    user(id: "me") {
+        todos(first: 3) {
+            edges {
+                node {
+                    id
+                    ...ToDoItem_todo
+                }
+            }
+        }
+    }
+}
+""")
+
+struct ToDoItem_Previews: PreviewProvider {
+    static let op = ToDoItemPreviewQuery()
+
+    static var previews: some View {
+        QueryPreview(op) { data in
+            List(data.user!.todos!.edges!.map { $0!.node! }, id: \.id) { todoItem in
+                ToDoItem(todo: todoItem)
+            }
+        }
+        .previewPayload(op, resource: "ToDoItemPreview")
+    }
+}

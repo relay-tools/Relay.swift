@@ -13,13 +13,18 @@ jobs:
 
     steps:
     - uses: actions/checkout@v2
+    - name: Get Swift version
+      id: swift-version
+      run: |
+        echo "::set-output name=version::$(swift -version | shasum | cut -d' ' -f 1)"
+      shell: bash
     - name: Cache SwiftPM dependencies
       uses: actions/cache@v2
       with:
         path: .build
-        key: ${{ runner.os }}-spm-${{ hashFiles('**/Package.resolved') }}
+        key: ${{ runner.os }}-spm-${{ steps.swift-version.outputs.version }}-${{ hashFiles('**/Package.resolved') }}
         restore-keys: |
-          ${{ runner.os }}-spm-
+          ${{ runner.os }}-spm-${{ steps.swift-version.outputs.version }}-
     - name: Build
       run: swift build
     - name: Run tests

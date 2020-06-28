@@ -25,3 +25,22 @@ public struct QueryPreview<Operation: Relay.Operation, Content: View>: View {
         }
     }
 }
+
+struct WithCachedPayload<Operation: Relay.Operation>: ViewModifier {
+    let environment: MockEnvironment
+
+    init(_ operation: Operation, resource: String, extension: String = "json", bundle: Bundle = .main) {
+        environment = MockEnvironment()
+        try! environment.cachePayload(operation, resource: resource, extension: `extension`, bundle: bundle)
+    }
+
+    func body(content: Content) -> some View {
+        content.relayEnvironment(environment)
+    }
+}
+
+public extension View {
+    func previewPayload<Operation: Relay.Operation>(_ operation: Operation, resource: String, extension: String = "json", bundle: Bundle = .main) -> some View {
+        modifier(WithCachedPayload(operation, resource: resource, extension: `extension`, bundle: bundle))
+    }
+}

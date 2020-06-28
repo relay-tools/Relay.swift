@@ -23,6 +23,14 @@ public class MockEnvironment: Environment {
         _ = publishQueue.run()
     }
 
+    public func cachePayload<O: Operation>(_ op: O, resource: String, extension: String = "json", bundle: Bundle = .main) throws {
+        let dataFile = bundle.url(forResource: resource, withExtension: `extension`)!
+        let contents = try Data(contentsOf: dataFile)
+        let parsedContents = try JSONSerialization.jsonObject(with: contents, options: []) as! [String: Any]
+
+        cachePayload(op, parsedContents)
+    }
+
     public func mockResponse<O: Operation>(_ op: O, _ payload: [String: Any]) {
         cachePayload(op, payload)
         

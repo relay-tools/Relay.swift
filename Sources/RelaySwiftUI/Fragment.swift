@@ -33,6 +33,7 @@ public struct Fragment<F: Relay.Fragment>: DynamicProperty {
     }
 }
 
+#if swift(>=5.3)
 @available(iOS 14.0, *)
 @propertyWrapper
 public struct FragmentNext<F: Relay.Fragment>: DynamicProperty {
@@ -63,3 +64,4 @@ public struct FragmentNext<F: Relay.Fragment>: DynamicProperty {
         init() {}
     }
 }
+#endif

@@ -61,6 +61,7 @@ public struct PaginationFragment<F: Relay.PaginationFragment>: DynamicProperty {
     }
 }
 
+#if swift(>=5.3)
 @available(iOS 14.0, *)
 @propertyWrapper
 public struct PaginationFragmentNext<F: Relay.PaginationFragment>: DynamicProperty {
@@ -118,3 +119,4 @@ public struct PaginationFragmentNext<F: Relay.PaginationFragment>: DynamicProper
         init() {}
     }
 }
+#endif

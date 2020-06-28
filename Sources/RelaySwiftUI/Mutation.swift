@@ -51,6 +51,7 @@ extension Mutation.Mutator where Operation.Variables == EmptyVariables {
     }
 }
 
+#if swift(>=5.3)
 @available(iOS 14.0, *)
 @propertyWrapper
 public struct MutationNext<Operation: Relay.Operation>: DynamicProperty {
@@ -100,3 +101,4 @@ extension MutationNext.Mutator where Operation.Variables == EmptyVariables {
         commit(variables: .init(), optimisticResponse: optimisticResponse, optimisticUpdater: optimisticUpdater, updater: updater)
     }
 }
+#endif

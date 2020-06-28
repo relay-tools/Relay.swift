@@ -70,6 +70,7 @@ public struct Query<O: Relay.Operation>: DynamicProperty {
     }
 }
 
+#if swift(>=5.3)
 @available(iOS 14.0, *)
 @propertyWrapper
 public struct QueryNext<O: Relay.Operation>: DynamicProperty {
@@ -153,3 +154,4 @@ extension QueryNext.WrappedValue where O.Variables == EmptyVariables {
         get(.init())
     }
 }
+#endif

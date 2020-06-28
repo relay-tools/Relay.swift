@@ -1,8 +1,10 @@
 import Foundation
 import os
 
+#if swift(>=5.3)
 @available(iOS 14.0, *)
 private let logger = Logger(subsystem: "io.github.mjm.Relay", category: "reader")
+#endif
 
 class Reader {
     let recordSource: RecordSource
@@ -34,9 +36,11 @@ class Reader {
                 do {
                     return try SelectorDataDecoder().decode(type, from: data)
                 } catch {
+                    #if swift(>=5.3)
                     if #available(iOS 14.0, *) {
                         logger.debug("Decoding fragment data into \(String(reflecting: type), privacy: .public) failed (this may be harmless): \(error as NSError)")
                     }
+                    #endif
                     return nil
                 }
             },

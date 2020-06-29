@@ -77,11 +77,10 @@ public struct QueryNext<O: Relay.Operation>: DynamicProperty {
     @SwiftUI.Environment(\.relayEnvironment) var environment
     @StateObject var loader = QueryLoader<O>()
 
-    let configBox: ConfigBox
+    let fetchPolicy: QueryFetchPolicy
 
     public init(_ type: O.Type, fetchPolicy: QueryFetchPolicy = .networkOnly) {
-        configBox = ConfigBox(fetchPolicy: fetchPolicy)
-        configBox.variables = EmptyVariables() as? O.Variables
+        self.fetchPolicy = fetchPolicy
     }
 
     public var wrappedValue: WrappedValue {
@@ -94,7 +93,7 @@ public struct QueryNext<O: Relay.Operation>: DynamicProperty {
         public func get(_ variables: O.Variables) -> Result {
             switch query.loader.loadIfNeeded(
                 environment: query.environment,
-                fetchPolicy: query.configBox.fetchPolicy,
+                fetchPolicy: query.fetchPolicy,
                 variables: variables
             ) {
             case nil:
@@ -135,15 +134,6 @@ public struct QueryNext<O: Relay.Operation>: DynamicProperty {
                 return data
             }
             return nil
-        }
-    }
-
-    class ConfigBox {
-        var variables: O.Variables?
-        var fetchPolicy: QueryFetchPolicy
-
-        init(fetchPolicy: QueryFetchPolicy) {
-            self.fetchPolicy = fetchPolicy
         }
     }
 }

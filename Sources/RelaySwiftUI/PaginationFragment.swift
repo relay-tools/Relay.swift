@@ -62,7 +62,7 @@ public struct PaginationFragment<F: Relay.PaginationFragment>: DynamicProperty {
 }
 
 #if swift(>=5.3)
-@available(iOS 14.0, *)
+@available(iOS 14.0, macOS 10.16, tvOS 14.0, watchOS 7.0, *)
 @propertyWrapper
 public struct PaginationFragmentNext<F: Relay.PaginationFragment>: DynamicProperty {
     @SwiftUI.Environment(\.relayEnvironment) var environment

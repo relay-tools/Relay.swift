@@ -52,7 +52,7 @@ extension Mutation.Mutator where Operation.Variables == EmptyVariables {
 }
 
 #if swift(>=5.3)
-@available(iOS 14.0, *)
+@available(iOS 14.0, macOS 10.16, tvOS 14.0, watchOS 7.0, *)
 @propertyWrapper
 public struct MutationNext<Operation: Relay.Operation>: DynamicProperty {
     @SwiftUI.Environment(\.relayEnvironment) var environment: Relay.Environment?
@@ -91,7 +91,7 @@ public struct MutationNext<Operation: Relay.Operation>: DynamicProperty {
     }
 }
 
-@available(iOS 14.0, *)
+@available(iOS 14.0, macOS 10.16, tvOS 14.0, watchOS 7.0, *)
 extension MutationNext.Mutator where Operation.Variables == EmptyVariables {
     public func commit(
         optimisticResponse: [String: Any]? = nil,

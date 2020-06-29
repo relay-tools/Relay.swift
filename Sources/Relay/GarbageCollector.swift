@@ -5,7 +5,7 @@ import os
 private let log = OSLog(subsystem: "io.github.mjm.Relay", category: "garbage-collection")
 
 #if swift(>=5.3)
-@available(iOS 14.0, *)
+@available(iOS 14.0, macOS 10.16, tvOS 14.0, watchOS 7.0, *)
 private let logger = Logger(log)
 #endif
 
@@ -49,7 +49,7 @@ class GarbageCollector {
             }
 
             #if swift(>=5.3)
-            if #available(iOS 14.0, *) {
+            if #available(iOS 14.0, macOS 10.16, tvOS 14.0, watchOS 7.0, *) {
                 logger.info("GC Release: \(operation.request.node.params.name, privacy: .public), variables: \(operation.request.variables)")
             }
             #endif
@@ -65,7 +65,7 @@ class GarbageCollector {
         }
 
         #if swift(>=5.3)
-        if #available(iOS 14.0, *) {
+        if #available(iOS 14.0, macOS 10.16, tvOS 14.0, watchOS 7.0, *) {
             logger.info("GC Retain:  \(operation.request.node.params.name, privacy: .public), variables: \(operation.request.variables)")
         }
         #endif
@@ -108,7 +108,7 @@ class GarbageCollector {
         holdCounter += 1
 
         #if swift(>=5.3)
-        if #available(iOS 14.0, *) {
+        if #available(iOS 14.0, macOS 10.16, tvOS 14.0, watchOS 7.0, *) {
             let holdCounter = self.holdCounter
             logger.info("GC Pause   (hold counter: \(holdCounter)")
         }
@@ -120,7 +120,7 @@ class GarbageCollector {
                 self.holdCounter -= 1
 
                 #if swift(>=5.3)
-                if #available(iOS 14.0, *) {
+                if #available(iOS 14.0, macOS 10.16, tvOS 14.0, watchOS 7.0, *) {
                     let holdCounter = self.holdCounter
                     logger.info("GC Unpause (hold counter: \(holdCounter)")
                 }
@@ -133,7 +133,7 @@ class GarbageCollector {
                 }
             } else {
                 #if swift(>=5.3)
-                if #available(iOS 14.0, *) {
+                if #available(iOS 14.0, macOS 10.16, tvOS 14.0, watchOS 7.0, *) {
                     logger.error("GC Unpause when hold counter is already 0")
                 }
                 #endif
@@ -164,7 +164,7 @@ class GarbageCollector {
         }
 
         #if swift(>=5.3)
-        if #available(iOS 14.0, *) {
+        if #available(iOS 14.0, macOS 10.16, tvOS 14.0, watchOS 7.0, *) {
             logger.notice("GC Schedule")
         }
         #endif
@@ -199,7 +199,7 @@ class GarbageCollector {
             let currentEpoch = store.currentWriteEpoch
             if startEpoch != currentEpoch {
                 #if swift(>=5.3)
-                if #available(iOS 14.0, *) {
+                if #available(iOS 14.0, macOS 10.16, tvOS 14.0, watchOS 7.0, *) {
                     logger.info("GC Restart: store updated while collecting (start epoch: \(startEpoch), current epoch: \(currentEpoch))")
                 }
                 #endif
@@ -209,7 +209,7 @@ class GarbageCollector {
 
             if shouldSchedule {
                 #if swift(>=5.3)
-                if #available(iOS 14.0, *) {
+                if #available(iOS 14.0, macOS 10.16, tvOS 14.0, watchOS 7.0, *) {
                     logger.info("GC Cancel: paused while collecting")
                 }
                 #endif
@@ -226,7 +226,7 @@ class GarbageCollector {
             let currentEpoch = store.currentWriteEpoch
             if startEpoch != currentEpoch {
                 #if swift(>=5.3)
-                if #available(iOS 14.0, *) {
+                if #available(iOS 14.0, macOS 10.16, tvOS 14.0, watchOS 7.0, *) {
                     logger.info("GC Restart: store updated while collecting (start epoch: \(startEpoch), current epoch: \(currentEpoch))")
                 }
                 #endif
@@ -236,7 +236,7 @@ class GarbageCollector {
 
             if shouldSchedule {
                 #if swift(>=5.3)
-                if #available(iOS 14.0, *) {
+                if #available(iOS 14.0, macOS 10.16, tvOS 14.0, watchOS 7.0, *) {
                     logger.info("GC Cancel: paused while collecting")
                 }
                 #endif
@@ -247,7 +247,7 @@ class GarbageCollector {
             if references.isEmpty {
                 store.recordSource.clear()
                 #if swift(>=5.3)
-                if #available(iOS 14.0, *) {
+                if #available(iOS 14.0, macOS 10.16, tvOS 14.0, watchOS 7.0, *) {
                     logger.notice("GC Result:  0 references found, cleared entire store")
                 }
                 #endif
@@ -260,7 +260,7 @@ class GarbageCollector {
                     }
                 }
                 #if swift(>=5.3)
-                if #available(iOS 14.0, *) {
+                if #available(iOS 14.0, macOS 10.16, tvOS 14.0, watchOS 7.0, *) {
                     logger.notice("GC Result:  \(references.count) references found, deleted \(deletedCount) records")
                 }
                 #endif

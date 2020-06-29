@@ -2,7 +2,7 @@ import Foundation
 import os
 
 #if swift(>=5.3)
-@available(iOS 14.0, *)
+@available(iOS 14.0, macOS 10.16, tvOS 14.0, watchOS 7.0, *)
 private let logger = Logger(subsystem: "io.github.mjm.Relay", category: "reader")
 #endif
 
@@ -37,7 +37,7 @@ class Reader {
                     return try SelectorDataDecoder().decode(type, from: data)
                 } catch {
                     #if swift(>=5.3)
-                    if #available(iOS 14.0, *) {
+                    if #available(iOS 14.0, macOS 10.16, tvOS 14.0, watchOS 7.0, *) {
                         logger.debug("Decoding fragment data into \(String(reflecting: type), privacy: .public) failed (this may be harmless): \(error as NSError)")
                     }
                     #endif

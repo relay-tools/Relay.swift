@@ -71,7 +71,7 @@ public struct Query<O: Relay.Operation>: DynamicProperty {
 }
 
 #if swift(>=5.3)
-@available(iOS 14.0, *)
+@available(iOS 14.0, macOS 10.16, tvOS 14.0, watchOS 7.0, *)
 @propertyWrapper
 public struct QueryNext<O: Relay.Operation>: DynamicProperty {
     @SwiftUI.Environment(\.relayEnvironment) var environment
@@ -138,7 +138,7 @@ public struct QueryNext<O: Relay.Operation>: DynamicProperty {
     }
 }
 
-@available(iOS 14.0, *)
+@available(iOS 14.0, macOS 10.16, tvOS 14.0, watchOS 7.0, *)
 extension QueryNext.WrappedValue where O.Variables == EmptyVariables {
     public func get() -> QueryNext.Result {
         get(.init())

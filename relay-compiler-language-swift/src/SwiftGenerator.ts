@@ -61,6 +61,7 @@ function createVisitor(
         const variables: InputStructNode = {
           kind: 'inputStruct',
           name: `${node.name}.Variables`,
+          isRootVariables: true,
           fields: node.argumentDefinitions.map(arg => {
             return {
               kind: 'field',

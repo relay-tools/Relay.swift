@@ -31,6 +31,7 @@ export interface InputStructNode {
   kind: 'inputStruct';
   name: string;
   fields: FieldNode[];
+  isRootVariables?: boolean;
 }
 
 interface ReadableNode {
@@ -131,6 +132,25 @@ ${indent(level + 2)}[
 ${indent(level + 1)}}
 ${indent(level)}}
 `;
+
+  if (structType.isRootVariables === true) {
+    typeText += `
+${indent(level)}init(`;
+    typeText += structType.fields
+      .map(
+        field =>
+          `${field.fieldName}: ${field.typeName}${
+            field.typeName.endsWith('?') ? ' = nil' : ''
+          }`
+      )
+      .join(', ');
+    typeText += `) {
+${indent(level + 1)}self.init(variables: .init(${structType.fields
+      .map(field => `${field.fieldName}: ${field.fieldName}`)
+      .join(', ')}))
+${indent(level)}}
+`;
+  }
   return typeText;
 }
 

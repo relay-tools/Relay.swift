@@ -1,0 +1,27 @@
+{
+  "deletedRecordIDs" : [
+
+  ],
+  "records" : {
+    "client:root:__MoviesList_allFilms_connection:film_TFA" : {
+      "dataID" : "client:root:__MoviesList_allFilms_connection:film_TFA",
+      "fields" : {
+        "node" : {
+          "__type" : "linkedRecord",
+          "value" : "film_TFA"
+        }
+      },
+      "typename" : "FilmsEdge"
+    },
+    "film_TFA" : {
+      "dataID" : "film_TFA",
+      "fields" : {
+        "title" : {
+          "__type" : "string",
+          "value" : "The Force Awakens"
+        }
+      },
+      "typename" : "Film"
+    }
+  }
+}

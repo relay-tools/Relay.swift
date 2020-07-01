@@ -1,0 +1,89 @@
+{
+  "deletedRecordIDs" : [
+
+  ],
+  "records" : {
+    "client:local:0" : {
+      "dataID" : "client:local:0",
+      "fields" : {
+        "edges" : {
+          "__type" : "linkedRecords",
+          "value" : [
+            "client:local:1"
+          ]
+        }
+      },
+      "typename" : "TodoConnection"
+    },
+    "client:local:1" : {
+      "dataID" : "client:local:1",
+      "fields" : {
+        "node" : {
+          "__type" : "linkedRecord",
+          "value" : "VG9kbzow"
+        }
+      },
+      "typename" : "TodoEdge"
+    },
+    "client:root" : {
+      "dataID" : "client:root",
+      "fields" : {
+        "user(id:\"me\")" : {
+          "__type" : "linkedRecord",
+          "value" : "VXNlcjptZQ=="
+        }
+      },
+      "typename" : "__Root"
+    },
+    "VG9kbzow" : {
+      "dataID" : "VG9kbzow",
+      "fields" : {
+        "complete" : {
+          "__type" : "int",
+          "value" : 1
+        },
+        "id" : {
+          "__type" : "string",
+          "value" : "VG9kbzow"
+        },
+        "text" : {
+          "__type" : "string",
+          "value" : "Taste JavaScript"
+        }
+      },
+      "typename" : "Todo"
+    },
+    "VG9kbzox" : {
+      "dataID" : "VG9kbzox",
+      "fields" : {
+        "complete" : {
+          "__type" : "int",
+          "value" : 0
+        },
+        "id" : {
+          "__type" : "string",
+          "value" : "VG9kbzox"
+        },
+        "text" : {
+          "__type" : "string",
+          "value" : "Buy a unicorn"
+        }
+      },
+      "typename" : "Todo"
+    },
+    "VXNlcjptZQ==" : {
+      "dataID" : "VXNlcjptZQ==",
+      "fields" : {
+        "id" : {
+          "__type" : "string",
+          "value" : "VXNlcjptZQ=="
+        },
+        "todos(first:100)" : {
+          "__type" : "linkedRecord",
+          "value" : "client:local:0"
+        }
+      },
+      "typename" : "User"
+    }
+  }
+}

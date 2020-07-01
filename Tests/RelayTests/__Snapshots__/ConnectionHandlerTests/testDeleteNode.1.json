@@ -1,0 +1,20 @@
+{
+  "deletedRecordIDs" : [
+
+  ],
+  "records" : {
+    "client:root:__MoviesList_allFilms_connection" : {
+      "dataID" : "client:root:__MoviesList_allFilms_connection",
+      "fields" : {
+        "edges" : {
+          "__type" : "linkedRecords",
+          "value" : [
+            "client:root:__MoviesList_allFilms_connection:edges:3",
+            "client:root:__MoviesList_allFilms_connection:edges:4"
+          ]
+        }
+      },
+      "typename" : "FilmsConnection"
+    }
+  }
+}

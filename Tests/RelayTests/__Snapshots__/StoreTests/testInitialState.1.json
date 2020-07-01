@@ -1,0 +1,14 @@
+{
+  "deletedRecordIDs" : [
+
+  ],
+  "records" : {
+    "client:root" : {
+      "dataID" : "client:root",
+      "fields" : {
+
+      },
+      "typename" : "__Root"
+    }
+  }
+}

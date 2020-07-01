@@ -10,7 +10,6 @@ public protocol RecordSource {
     func getStatus(_ dataID: DataID) -> RecordState
     func has(_ dataID: DataID) -> Bool
     var count: Int { get }
-    // TODO toJSON
     mutating func remove(_ dataID: DataID)
     mutating func clear()
 }
@@ -96,5 +95,33 @@ extension RecordSource {
                 updatedRecordIDs.insert(dataID)
             }
         }
+    }
+}
+
+extension DefaultRecordSource: Codable {
+    enum CodingKeys: String, CodingKey {
+        case records
+        case deletedRecordIDs
+    }
+    
+    public init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        records = Dictionary(
+            uniqueKeysWithValues: try container.decode([String: Record].self, forKey: .records).map { key, value in
+                (DataID(key), value)
+            }
+        )
+        deletedRecordIDs = try container.decode(Set<DataID>.self, forKey: .deletedRecordIDs)
+    }
+    
+    public func encode(to encoder: Encoder) throws {
+        var container = encoder.container(keyedBy: CodingKeys.self)
+        try container.encode(
+            Dictionary(uniqueKeysWithValues: records.map { key, value in
+                (key.rawValue, value)
+            }),
+            forKey: .records
+        )
+        try container.encode(deletedRecordIDs.sorted(), forKey: .deletedRecordIDs)
     }
 }

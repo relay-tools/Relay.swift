@@ -1,0 +1,17 @@
+{
+  "deletedRecordIDs" : [
+
+  ],
+  "records" : {
+    "ZmlsbXM6Mg==" : {
+      "dataID" : "ZmlsbXM6Mg==",
+      "fields" : {
+        "director" : {
+          "__type" : "string",
+          "value" : "Some Other Guy"
+        }
+      },
+      "typename" : "Film"
+    }
+  }
+}

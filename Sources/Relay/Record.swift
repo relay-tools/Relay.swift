@@ -179,3 +179,69 @@ extension Record: CustomDebugStringConvertible {
         return s
     }
 }
+
+extension Record: Codable {
+}
+
+extension Record.Value: Codable {
+    enum CodingKeys: String, CodingKey {
+        case type = "__type"
+        case value
+    }
+    
+    public init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        let type = try container.decode(String.self, forKey: .type)
+        
+        switch type {
+        case "null":
+            self = .null
+        case "int":
+            self = .int(try container.decode(Int.self, forKey: .value))
+        case "float":
+            self = .float(try container.decode(Double.self, forKey: .value))
+        case "string":
+            self = .string(try container.decode(String.self, forKey: .value))
+        case "bool":
+            self = .bool(try container.decode(Bool.self, forKey: .value))
+        case "array":
+            self = .array(try container.decode([Record.Value?].self, forKey: .value))
+        case "linkedRecord":
+            self = .linkedRecord(try container.decode(DataID.self, forKey: .value))
+        case "linkedRecords":
+            self = .linkedRecords(try container.decode([DataID?].self, forKey: .value))
+        default:
+            throw DecodingError.dataCorruptedError(forKey: .type, in: container, debugDescription: "Unexpected type \"\(type)\" in record value")
+        }
+    }
+    
+    public func encode(to encoder: Encoder) throws {
+        var container = encoder.container(keyedBy: CodingKeys.self)
+        
+        switch self {
+        case .null:
+            try container.encode("null", forKey: .type)
+        case .int(let v):
+            try container.encode("int", forKey: .type)
+            try container.encode(v, forKey: .value)
+        case .float(let v):
+            try container.encode("float", forKey: .type)
+            try container.encode(v, forKey: .value)
+        case .string(let v):
+            try container.encode("string", forKey: .type)
+            try container.encode(v, forKey: .value)
+        case .bool(let v):
+            try container.encode("bool", forKey: .type)
+            try container.encode(v, forKey: .value)
+        case .array(let v):
+            try container.encode("array", forKey: .type)
+            try container.encode(v, forKey: .value)
+        case .linkedRecord(let v):
+            try container.encode("linkedRecord", forKey: .type)
+            try container.encode(v, forKey: .value)
+        case .linkedRecords(let v):
+            try container.encode("linkedRecords", forKey: .type)
+            try container.encode(v, forKey: .value)
+        }
+    }
+}

@@ -1,9 +1,9 @@
 import SnapshotTesting
 @testable import Relay
 
-extension Snapshotting {
-    static var recordSource: Snapshotting<RecordSource, String> {
-        Snapshotting<RecordSource, String>.dump.pullback { recordSource in
+extension Snapshotting where Value == RecordSource {
+    static var recordSource: Snapshotting<Value, String> {
+        Snapshotting<DefaultRecordSource, String>.json.pullback { recordSource in
             var newSource = DefaultRecordSource()
 
             // first, go through records in deterministic order, and record the local IDs we see along

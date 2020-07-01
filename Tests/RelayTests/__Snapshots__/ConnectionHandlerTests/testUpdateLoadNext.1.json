@@ -1,0 +1,564 @@
+{
+  "deletedRecordIDs" : [
+
+  ],
+  "records" : {
+    "client:local:0" : {
+      "dataID" : "client:local:0",
+      "fields" : {
+        "edges" : {
+          "__type" : "linkedRecords",
+          "value" : [
+            "client:local:2",
+            "client:local:3",
+            "client:local:4"
+          ]
+        },
+        "pageInfo" : {
+          "__type" : "linkedRecord",
+          "value" : "client:local:5"
+        }
+      },
+      "typename" : "FilmsConnection"
+    },
+    "client:local:1" : {
+      "dataID" : "client:local:1",
+      "fields" : {
+        "edges" : {
+          "__type" : "linkedRecords",
+          "value" : [
+            "client:local:6",
+            "client:local:7",
+            "client:local:8"
+          ]
+        },
+        "pageInfo" : {
+          "__type" : "linkedRecord",
+          "value" : "client:local:9"
+        }
+      },
+      "typename" : "FilmsConnection"
+    },
+    "client:local:2" : {
+      "dataID" : "client:local:2",
+      "fields" : {
+        "cursor" : {
+          "__type" : "string",
+          "value" : "YXJyYXljb25uZWN0aW9uOjM="
+        },
+        "node" : {
+          "__type" : "linkedRecord",
+          "value" : "ZmlsbXM6NA=="
+        }
+      },
+      "typename" : "FilmsEdge"
+    },
+    "client:local:3" : {
+      "dataID" : "client:local:3",
+      "fields" : {
+        "cursor" : {
+          "__type" : "string",
+          "value" : "YXJyYXljb25uZWN0aW9uOjQ="
+        },
+        "node" : {
+          "__type" : "linkedRecord",
+          "value" : "ZmlsbXM6NQ=="
+        }
+      },
+      "typename" : "FilmsEdge"
+    },
+    "client:local:4" : {
+      "dataID" : "client:local:4",
+      "fields" : {
+        "cursor" : {
+          "__type" : "string",
+          "value" : "YXJyYXljb25uZWN0aW9uOjU="
+        },
+        "node" : {
+          "__type" : "linkedRecord",
+          "value" : "ZmlsbXM6Ng=="
+        }
+      },
+      "typename" : "FilmsEdge"
+    },
+    "client:local:5" : {
+      "dataID" : "client:local:5",
+      "fields" : {
+        "endCursor" : {
+          "__type" : "string",
+          "value" : "YXJyYXljb25uZWN0aW9uOjU="
+        },
+        "hasNextPage" : {
+          "__type" : "int",
+          "value" : 0
+        }
+      },
+      "typename" : "PageInfo"
+    },
+    "client:local:6" : {
+      "dataID" : "client:local:6",
+      "fields" : {
+        "cursor" : {
+          "__type" : "string",
+          "value" : "YXJyYXljb25uZWN0aW9uOjA="
+        },
+        "node" : {
+          "__type" : "linkedRecord",
+          "value" : "ZmlsbXM6MQ=="
+        }
+      },
+      "typename" : "FilmsEdge"
+    },
+    "client:local:7" : {
+      "dataID" : "client:local:7",
+      "fields" : {
+        "cursor" : {
+          "__type" : "string",
+          "value" : "YXJyYXljb25uZWN0aW9uOjE="
+        },
+        "node" : {
+          "__type" : "linkedRecord",
+          "value" : "ZmlsbXM6Mg=="
+        }
+      },
+      "typename" : "FilmsEdge"
+    },
+    "client:local:8" : {
+      "dataID" : "client:local:8",
+      "fields" : {
+        "cursor" : {
+          "__type" : "string",
+          "value" : "YXJyYXljb25uZWN0aW9uOjI="
+        },
+        "node" : {
+          "__type" : "linkedRecord",
+          "value" : "ZmlsbXM6Mw=="
+        }
+      },
+      "typename" : "FilmsEdge"
+    },
+    "client:local:9" : {
+      "dataID" : "client:local:9",
+      "fields" : {
+        "endCursor" : {
+          "__type" : "string",
+          "value" : "YXJyYXljb25uZWN0aW9uOjI="
+        },
+        "hasNextPage" : {
+          "__type" : "int",
+          "value" : 1
+        }
+      },
+      "typename" : "PageInfo"
+    },
+    "client:root" : {
+      "dataID" : "client:root",
+      "fields" : {
+        "__MoviesList_allFilms_connection" : {
+          "__type" : "linkedRecord",
+          "value" : "client:root:__MoviesList_allFilms_connection"
+        },
+        "allFilms(after:\"YXJyYXljb25uZWN0aW9uOjI=\",first:null)" : {
+          "__type" : "linkedRecord",
+          "value" : "client:local:0"
+        },
+        "allFilms(first:3)" : {
+          "__type" : "linkedRecord",
+          "value" : "client:local:1"
+        }
+      },
+      "typename" : "__Root"
+    },
+    "client:root:__MoviesList_allFilms_connection" : {
+      "dataID" : "client:root:__MoviesList_allFilms_connection",
+      "fields" : {
+        "__connection_next_edge_index" : {
+          "__type" : "int",
+          "value" : 12
+        },
+        "edges" : {
+          "__type" : "linkedRecords",
+          "value" : [
+            "client:root:__MoviesList_allFilms_connection:edges:3",
+            "client:root:__MoviesList_allFilms_connection:edges:4",
+            "client:root:__MoviesList_allFilms_connection:edges:5",
+            "client:root:__MoviesList_allFilms_connection:edges:6",
+            "client:root:__MoviesList_allFilms_connection:edges:7",
+            "client:root:__MoviesList_allFilms_connection:edges:8"
+          ]
+        },
+        "pageInfo" : {
+          "__type" : "linkedRecord",
+          "value" : "client:root:__MoviesList_allFilms_connection:pageInfo"
+        }
+      },
+      "typename" : "FilmsConnection"
+    },
+    "client:root:__MoviesList_allFilms_connection:edges:0" : {
+      "dataID" : "client:root:__MoviesList_allFilms_connection:edges:0",
+      "fields" : {
+        "cursor" : {
+          "__type" : "string",
+          "value" : "YXJyYXljb25uZWN0aW9uOjA="
+        },
+        "node" : {
+          "__type" : "linkedRecord",
+          "value" : "ZmlsbXM6MQ=="
+        }
+      },
+      "typename" : "FilmsEdge"
+    },
+    "client:root:__MoviesList_allFilms_connection:edges:1" : {
+      "dataID" : "client:root:__MoviesList_allFilms_connection:edges:1",
+      "fields" : {
+        "cursor" : {
+          "__type" : "string",
+          "value" : "YXJyYXljb25uZWN0aW9uOjE="
+        },
+        "node" : {
+          "__type" : "linkedRecord",
+          "value" : "ZmlsbXM6Mg=="
+        }
+      },
+      "typename" : "FilmsEdge"
+    },
+    "client:root:__MoviesList_allFilms_connection:edges:2" : {
+      "dataID" : "client:root:__MoviesList_allFilms_connection:edges:2",
+      "fields" : {
+        "cursor" : {
+          "__type" : "string",
+          "value" : "YXJyYXljb25uZWN0aW9uOjI="
+        },
+        "node" : {
+          "__type" : "linkedRecord",
+          "value" : "ZmlsbXM6Mw=="
+        }
+      },
+      "typename" : "FilmsEdge"
+    },
+    "client:root:__MoviesList_allFilms_connection:edges:3" : {
+      "dataID" : "client:root:__MoviesList_allFilms_connection:edges:3",
+      "fields" : {
+        "cursor" : {
+          "__type" : "string",
+          "value" : "YXJyYXljb25uZWN0aW9uOjA="
+        },
+        "node" : {
+          "__type" : "linkedRecord",
+          "value" : "ZmlsbXM6MQ=="
+        }
+      },
+      "typename" : "FilmsEdge"
+    },
+    "client:root:__MoviesList_allFilms_connection:edges:4" : {
+      "dataID" : "client:root:__MoviesList_allFilms_connection:edges:4",
+      "fields" : {
+        "cursor" : {
+          "__type" : "string",
+          "value" : "YXJyYXljb25uZWN0aW9uOjE="
+        },
+        "node" : {
+          "__type" : "linkedRecord",
+          "value" : "ZmlsbXM6Mg=="
+        }
+      },
+      "typename" : "FilmsEdge"
+    },
+    "client:root:__MoviesList_allFilms_connection:edges:5" : {
+      "dataID" : "client:root:__MoviesList_allFilms_connection:edges:5",
+      "fields" : {
+        "cursor" : {
+          "__type" : "string",
+          "value" : "YXJyYXljb25uZWN0aW9uOjI="
+        },
+        "node" : {
+          "__type" : "linkedRecord",
+          "value" : "ZmlsbXM6Mw=="
+        }
+      },
+      "typename" : "FilmsEdge"
+    },
+    "client:root:__MoviesList_allFilms_connection:edges:6" : {
+      "dataID" : "client:root:__MoviesList_allFilms_connection:edges:6",
+      "fields" : {
+        "cursor" : {
+          "__type" : "string",
+          "value" : "YXJyYXljb25uZWN0aW9uOjM="
+        },
+        "node" : {
+          "__type" : "linkedRecord",
+          "value" : "ZmlsbXM6NA=="
+        }
+      },
+      "typename" : "FilmsEdge"
+    },
+    "client:root:__MoviesList_allFilms_connection:edges:7" : {
+      "dataID" : "client:root:__MoviesList_allFilms_connection:edges:7",
+      "fields" : {
+        "cursor" : {
+          "__type" : "string",
+          "value" : "YXJyYXljb25uZWN0aW9uOjQ="
+        },
+        "node" : {
+          "__type" : "linkedRecord",
+          "value" : "ZmlsbXM6NQ=="
+        }
+      },
+      "typename" : "FilmsEdge"
+    },
+    "client:root:__MoviesList_allFilms_connection:edges:8" : {
+      "dataID" : "client:root:__MoviesList_allFilms_connection:edges:8",
+      "fields" : {
+        "cursor" : {
+          "__type" : "string",
+          "value" : "YXJyYXljb25uZWN0aW9uOjU="
+        },
+        "node" : {
+          "__type" : "linkedRecord",
+          "value" : "ZmlsbXM6Ng=="
+        }
+      },
+      "typename" : "FilmsEdge"
+    },
+    "client:root:__MoviesList_allFilms_connection:edges:9" : {
+      "dataID" : "client:root:__MoviesList_allFilms_connection:edges:9",
+      "fields" : {
+        "cursor" : {
+          "__type" : "string",
+          "value" : "YXJyYXljb25uZWN0aW9uOjM="
+        },
+        "node" : {
+          "__type" : "linkedRecord",
+          "value" : "ZmlsbXM6NA=="
+        }
+      },
+      "typename" : "FilmsEdge"
+    },
+    "client:root:__MoviesList_allFilms_connection:edges:10" : {
+      "dataID" : "client:root:__MoviesList_allFilms_connection:edges:10",
+      "fields" : {
+        "cursor" : {
+          "__type" : "string",
+          "value" : "YXJyYXljb25uZWN0aW9uOjQ="
+        },
+        "node" : {
+          "__type" : "linkedRecord",
+          "value" : "ZmlsbXM6NQ=="
+        }
+      },
+      "typename" : "FilmsEdge"
+    },
+    "client:root:__MoviesList_allFilms_connection:edges:11" : {
+      "dataID" : "client:root:__MoviesList_allFilms_connection:edges:11",
+      "fields" : {
+        "cursor" : {
+          "__type" : "string",
+          "value" : "YXJyYXljb25uZWN0aW9uOjU="
+        },
+        "node" : {
+          "__type" : "linkedRecord",
+          "value" : "ZmlsbXM6Ng=="
+        }
+      },
+      "typename" : "FilmsEdge"
+    },
+    "client:root:__MoviesList_allFilms_connection:pageInfo" : {
+      "dataID" : "client:root:__MoviesList_allFilms_connection:pageInfo",
+      "fields" : {
+        "endCursor" : {
+          "__type" : "string",
+          "value" : "YXJyYXljb25uZWN0aW9uOjU="
+        },
+        "hasNextPage" : {
+          "__type" : "bool",
+          "value" : false
+        },
+        "hasPreviousPage" : {
+          "__type" : "bool",
+          "value" : false
+        }
+      },
+      "typename" : "PageInfo"
+    },
+    "ZmlsbXM6Mg==" : {
+      "dataID" : "ZmlsbXM6Mg==",
+      "fields" : {
+        "__typename" : {
+          "__type" : "string",
+          "value" : "Film"
+        },
+        "director" : {
+          "__type" : "string",
+          "value" : "Irvin Kershner"
+        },
+        "episodeID" : {
+          "__type" : "int",
+          "value" : 5
+        },
+        "id" : {
+          "__type" : "string",
+          "value" : "ZmlsbXM6Mg=="
+        },
+        "releaseDate" : {
+          "__type" : "string",
+          "value" : "1980-05-17"
+        },
+        "title" : {
+          "__type" : "string",
+          "value" : "The Empire Strikes Back"
+        }
+      },
+      "typename" : "Film"
+    },
+    "ZmlsbXM6MQ==" : {
+      "dataID" : "ZmlsbXM6MQ==",
+      "fields" : {
+        "__typename" : {
+          "__type" : "string",
+          "value" : "Film"
+        },
+        "director" : {
+          "__type" : "string",
+          "value" : "George Lucas"
+        },
+        "episodeID" : {
+          "__type" : "int",
+          "value" : 4
+        },
+        "id" : {
+          "__type" : "string",
+          "value" : "ZmlsbXM6MQ=="
+        },
+        "releaseDate" : {
+          "__type" : "string",
+          "value" : "1977-05-25"
+        },
+        "title" : {
+          "__type" : "string",
+          "value" : "A New Hope"
+        }
+      },
+      "typename" : "Film"
+    },
+    "ZmlsbXM6Mw==" : {
+      "dataID" : "ZmlsbXM6Mw==",
+      "fields" : {
+        "__typename" : {
+          "__type" : "string",
+          "value" : "Film"
+        },
+        "director" : {
+          "__type" : "string",
+          "value" : "Richard Marquand"
+        },
+        "episodeID" : {
+          "__type" : "int",
+          "value" : 6
+        },
+        "id" : {
+          "__type" : "string",
+          "value" : "ZmlsbXM6Mw=="
+        },
+        "releaseDate" : {
+          "__type" : "string",
+          "value" : "1983-05-25"
+        },
+        "title" : {
+          "__type" : "string",
+          "value" : "Return of the Jedi"
+        }
+      },
+      "typename" : "Film"
+    },
+    "ZmlsbXM6NA==" : {
+      "dataID" : "ZmlsbXM6NA==",
+      "fields" : {
+        "__typename" : {
+          "__type" : "string",
+          "value" : "Film"
+        },
+        "director" : {
+          "__type" : "string",
+          "value" : "George Lucas"
+        },
+        "episodeID" : {
+          "__type" : "int",
+          "value" : 1
+        },
+        "id" : {
+          "__type" : "string",
+          "value" : "ZmlsbXM6NA=="
+        },
+        "releaseDate" : {
+          "__type" : "string",
+          "value" : "1999-05-19"
+        },
+        "title" : {
+          "__type" : "string",
+          "value" : "The Phantom Menace"
+        }
+      },
+      "typename" : "Film"
+    },
+    "ZmlsbXM6Ng==" : {
+      "dataID" : "ZmlsbXM6Ng==",
+      "fields" : {
+        "__typename" : {
+          "__type" : "string",
+          "value" : "Film"
+        },
+        "director" : {
+          "__type" : "string",
+          "value" : "George Lucas"
+        },
+        "episodeID" : {
+          "__type" : "int",
+          "value" : 3
+        },
+        "id" : {
+          "__type" : "string",
+          "value" : "ZmlsbXM6Ng=="
+        },
+        "releaseDate" : {
+          "__type" : "string",
+          "value" : "2005-05-19"
+        },
+        "title" : {
+          "__type" : "string",
+          "value" : "Revenge of the Sith"
+        }
+      },
+      "typename" : "Film"
+    },
+    "ZmlsbXM6NQ==" : {
+      "dataID" : "ZmlsbXM6NQ==",
+      "fields" : {
+        "__typename" : {
+          "__type" : "string",
+          "value" : "Film"
+        },
+        "director" : {
+          "__type" : "string",
+          "value" : "George Lucas"
+        },
+        "episodeID" : {
+          "__type" : "int",
+          "value" : 2
+        },
+        "id" : {
+          "__type" : "string",
+          "value" : "ZmlsbXM6NQ=="
+        },
+        "releaseDate" : {
+          "__type" : "string",
+          "value" : "2002-05-16"
+        },
+        "title" : {
+          "__type" : "string",
+          "value" : "Attack of the Clones"
+        }
+      },
+      "typename" : "Film"
+    }
+  }
+}

@@ -1,0 +1,42 @@
+{
+  "deletedRecordIDs" : [
+
+  ],
+  "records" : {
+    "client:root:__MoviesList_allFilms_connection" : {
+      "dataID" : "client:root:__MoviesList_allFilms_connection",
+      "fields" : {
+        "edges" : {
+          "__type" : "linkedRecords",
+          "value" : [
+            "client:root:__MoviesList_allFilms_connection:edges:3",
+            "client:root:__MoviesList_allFilms_connection:film_TFA",
+            "client:root:__MoviesList_allFilms_connection:edges:4",
+            "client:root:__MoviesList_allFilms_connection:edges:5"
+          ]
+        }
+      },
+      "typename" : "FilmsConnection"
+    },
+    "client:root:__MoviesList_allFilms_connection:film_TFA" : {
+      "dataID" : "client:root:__MoviesList_allFilms_connection:film_TFA",
+      "fields" : {
+        "node" : {
+          "__type" : "linkedRecord",
+          "value" : "film_TFA"
+        }
+      },
+      "typename" : "FilmsEdge"
+    },
+    "film_TFA" : {
+      "dataID" : "film_TFA",
+      "fields" : {
+        "title" : {
+          "__type" : "string",
+          "value" : "The Force Awakens"
+        }
+      },
+      "typename" : "Film"
+    }
+  }
+}

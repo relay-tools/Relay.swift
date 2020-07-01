@@ -1,0 +1,31 @@
+{
+  "deletedRecordIDs" : [
+
+  ],
+  "records" : {
+    "char_Leia" : {
+      "dataID" : "char_Leia",
+      "fields" : {
+        "homeworld" : {
+          "__type" : "linkedRecord",
+          "value" : "client:char_Leia:homeworld"
+        },
+        "name" : {
+          "__type" : "string",
+          "value" : "Leia Organa"
+        }
+      },
+      "typename" : "Person"
+    },
+    "client:char_Leia:homeworld" : {
+      "dataID" : "client:char_Leia:homeworld",
+      "fields" : {
+        "name" : {
+          "__type" : "string",
+          "value" : "Alderaan"
+        }
+      },
+      "typename" : "Planet"
+    }
+  }
+}

@@ -59,3 +59,14 @@ public struct DataID: RawRepresentable, ExpressibleByStringLiteral, Hashable, Co
         return lhs.rawValue < rhs.rawValue
     }
 }
+
+extension DataID: Codable {
+    public init(from decoder: Decoder) throws {
+        self.rawValue = try decoder.singleValueContainer().decode(String.self)
+    }
+    
+    public func encode(to encoder: Encoder) throws {
+        var container = encoder.singleValueContainer()
+        try container.encode(rawValue)
+    }
+}

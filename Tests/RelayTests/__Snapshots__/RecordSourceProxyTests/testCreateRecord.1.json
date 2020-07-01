@@ -1,0 +1,21 @@
+{
+  "deletedRecordIDs" : [
+
+  ],
+  "records" : {
+    "record_123" : {
+      "dataID" : "record_123",
+      "fields" : {
+        "episodeID" : {
+          "__type" : "int",
+          "value" : 7
+        },
+        "title" : {
+          "__type" : "string",
+          "value" : "The Force Awakens"
+        }
+      },
+      "typename" : "Film"
+    }
+  }
+}

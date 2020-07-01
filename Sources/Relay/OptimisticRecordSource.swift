@@ -1,12 +1,12 @@
 struct OptimisticRecordSource: RecordSource {
     var base: RecordSource
-    var sink: RecordSource
+    var sink: DefaultRecordSource
 
     init(base: RecordSource) {
         self.base = base
         self.sink = DefaultRecordSource()
     }
-
+    
     subscript(_ dataID: DataID) -> Record? {
         get {
             if sink.has(dataID) {
@@ -58,5 +58,28 @@ struct OptimisticRecordSource: RecordSource {
     mutating func clear() {
         base = DefaultRecordSource()
         sink.clear()
+    }
+}
+
+extension OptimisticRecordSource: Codable {
+    enum CodingKeys: String, CodingKey {
+        case base
+        case sink
+    }
+    
+    init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        base = try container.decode(DefaultRecordSource.self, forKey: .base)
+        sink = try container.decode(DefaultRecordSource.self, forKey: .sink)
+    }
+    
+    func encode(to encoder: Encoder) throws {
+        var container = encoder.container(keyedBy: CodingKeys.self)
+        if let base = base as? DefaultRecordSource {
+            try container.encode(base, forKey: .base)
+        } else {
+            preconditionFailure("Don't know how to encode record source of type \(type(of: base))")
+        }
+        try container.encode(sink, forKey: .sink)
     }
 }

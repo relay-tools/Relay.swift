@@ -157,10 +157,15 @@ function createVisitor(
         return [struct, protocol, ...enumDefs];
       },
       ScalarField(node): FieldNode {
+        const typeName = transformScalarType(schema, node.type, state);
         return {
           kind: 'field',
           fieldName: node.alias,
-          typeName: transformScalarType(schema, node.type, state),
+          typeName: typeName,
+          protocolName:
+            node.alias === 'id' && typeName === 'String'
+              ? 'Identifiable'
+              : undefined,
         };
       },
       LinkedField(node): FieldNode {

@@ -76,7 +76,7 @@ extension MoviesList_films {
             struct FilmsEdge_edges: Decodable {
                 var node: Film_node?
 
-                struct Film_node: Decodable, MoviesListRow_film_Key {
+                struct Film_node: Decodable, Identifiable, MoviesListRow_film_Key {
                     var id: String
                     var fragment_MoviesListRow_film: FragmentPointer
                 }

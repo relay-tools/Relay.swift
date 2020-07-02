@@ -35,7 +35,7 @@ struct MoviesListRow_film {
 
 
 extension MoviesListRow_film {
-    struct Data: Decodable {
+    struct Data: Decodable, Identifiable {
         var id: String
         var episodeID: Int?
         var title: String?

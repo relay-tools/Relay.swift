@@ -27,7 +27,7 @@ struct MoviesList: View {
         NavigationView {
             List {
                 if let films = films {
-                    ForEach(films.nodes, id: \.id) { node in
+                    ForEach(films.nodes) { node in
                         MoviesListRow(film: node.asFragment())
                     }
 

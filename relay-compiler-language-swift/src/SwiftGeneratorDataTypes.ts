@@ -88,11 +88,39 @@ export function makeTypeNode(node: TypeNode, level: number): string {
 function makeInputStruct(structType: InputStructNode, level: number): string {
   if (structType.name.indexOf('.') !== -1) {
     const [parentType, childType] = structType.name.split('.');
-    return `${indent(level)}extension ${parentType} {
+    let text = `${indent(level)}extension ${parentType} {
 ${makeInputStruct({ ...structType, name: childType }, level + 1)}${indent(
       level
     )}}
 `;
+
+    if (structType.isRootVariables) {
+      text += `
+#if canImport(RelaySwiftUI)
+
+import RelaySwiftUI
+
+@available(iOS 14.0, macOS 10.16, tvOS 14.0, watchOS 7.0, *)
+extension RelaySwiftUI.QueryNext.WrappedValue where O == ${parentType} {
+${indent(1)}func get(${structType.fields
+        .map(
+          field =>
+            `${field.fieldName}: ${field.typeName}${
+              field.typeName.endsWith('?') ? ' = nil' : ''
+            }`
+        )
+        .join(', ')}) -> RelaySwiftUI.QueryNext<${parentType}>.Result {
+${indent(2)}self.get(.init(${structType.fields
+        .map(field => `${field.fieldName}: ${field.fieldName}`)
+        .join(', ')}))
+${indent(1)}}
+}
+
+#endif
+`;
+    }
+
+    return text;
   }
 
   if (!structType.fields.length) {

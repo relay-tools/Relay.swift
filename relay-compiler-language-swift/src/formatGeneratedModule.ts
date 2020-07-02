@@ -21,8 +21,7 @@ import Relay
 ${generateNodeStruct(schema, node)}
 
 ${typeText}
-${generatePostamble(node)}
-`;
+${generatePostamble(node)}`;
   };
 }
 
@@ -45,20 +44,26 @@ function generatePostamble(node: ConcreteRequest | ReaderFragment): string {
     case 'Request':
       return `extension ${
         (node as ConcreteRequest).operation.name
-      }: Relay.Operation {}`;
+      }: Relay.Operation {}
+`;
     case 'Fragment':
       const fragment = node as ReaderFragment;
-      const fragmentExt = `extension ${fragment.name}: Relay.Fragment {}`;
+      let text = `extension ${fragment.name}: Relay.Fragment {}
+`;
       if (
         fragment.metadata &&
         fragment.metadata.connection &&
         fragment.metadata.refetch
       ) {
-        return `${fragmentExt}
-
-${generatePaginationFragmentExtension(fragment)}`;
+        text += `
+${generatePaginationFragmentExtension(fragment)}
+`;
       }
-      return fragmentExt;
+
+      text += `
+${generateSwiftUIExtension(fragment)}
+`;
+      return text;
     default:
       return '';
   }
@@ -118,6 +123,35 @@ function generateConnectionConfigExpr({
   cursor: string;
 }): string {
   return `ConnectionVariableConfig(count: "${count}", cursor: "${cursor}")`;
+}
+
+function generateSwiftUIExtension(fragment: ReaderFragment): string {
+  let text = `#if canImport(RelaySwiftUI)
+
+import RelaySwiftUI
+
+extension ${fragment.name}_Key {
+${indent(1)}@available(iOS 14.0, macOS 10.16, tvOS 14.0, watchOS 7.0, *)
+${indent(1)}func asFragment() -> RelaySwiftUI.FragmentNext<${fragment.name}> {
+${indent(2)}RelaySwiftUI.FragmentNext<${fragment.name}>(self)
+${indent(1)}}
+`;
+
+  if (fragment.metadata && fragment.metadata.connection) {
+    text += `
+${indent(1)}@available(iOS 14.0, macOS 10.16, tvOS 14.0, watchOS 7.0, *)
+${indent(1)}func asFragment() -> RelaySwiftUI.PaginationFragmentNext<${
+      fragment.name
+    }> {
+${indent(2)}RelaySwiftUI.PaginationFragmentNext<${fragment.name}>(self)
+${indent(1)}}
+`;
+  }
+
+  text += `}
+
+#endif`;
+  return text;
 }
 
 function generateConcreteRequestStruct(node: ConcreteRequest): string {

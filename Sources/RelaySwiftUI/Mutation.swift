@@ -58,6 +58,7 @@ public struct MutationNext<Operation: Relay.Operation>: DynamicProperty {
     @SwiftUI.Environment(\.relayEnvironment) var environment: Relay.Environment?
     @StateObject var tracker = MutationTracker<Operation>()
 
+    public init() {}
     public init(_ type: Operation.Type) {}
 
     public var wrappedValue: Mutator<Operation> {

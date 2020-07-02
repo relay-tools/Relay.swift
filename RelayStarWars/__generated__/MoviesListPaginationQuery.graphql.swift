@@ -148,6 +148,10 @@ extension MoviesListPaginationQuery {
             ]
         }
     }
+
+    init(count: Int? = nil, cursor: String? = nil) {
+        self.init(variables: .init(count: count, cursor: cursor))
+    }
 }
 
 extension MoviesListPaginationQuery {

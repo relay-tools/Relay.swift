@@ -66,18 +66,20 @@ public struct PaginationFragment<F: Relay.PaginationFragment>: DynamicProperty {
 @propertyWrapper
 public struct PaginationFragmentNext<F: Relay.PaginationFragment>: DynamicProperty {
     @SwiftUI.Environment(\.relayEnvironment) var environment
-    let keyBox = KeyBox()
     @StateObject var loader = PaginationFragmentLoader<F>()
+    
+    let key: F.Key?
 
-    public init(_ type: F.Type) {}
-
-    public var projectedValue: F.Key {
-        get { keyBox.key! }
-        set { keyBox.key = newValue }
+    public init() {
+        self.key = nil
+    }
+    
+    public init(_ key: F.Key) {
+        self.key = key
     }
 
     public var wrappedValue: Wrapper? {
-        guard let key = keyBox.key else {
+        guard let key = key else {
             return nil
         }
 
@@ -112,11 +114,6 @@ public struct PaginationFragmentNext<F: Relay.PaginationFragment>: DynamicProper
         public var hasPrevious: Bool { paging.hasPrevious }
         public var isLoadingNext: Bool { paging.isLoadingNext }
         public var isLoadingPrevious: Bool { paging.isLoadingPrevious }
-    }
-
-    class KeyBox {
-        var key: F.Key?
-        init() {}
     }
 }
 #endif

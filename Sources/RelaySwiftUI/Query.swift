@@ -78,9 +78,13 @@ public struct QueryNext<O: Relay.Operation>: DynamicProperty {
     @StateObject var loader = QueryLoader<O>()
 
     let fetchPolicy: QueryFetchPolicy
+    
+    public init(fetchPolicy: QueryFetchPolicy = .networkOnly) {
+        self.fetchPolicy = fetchPolicy
+    }
 
     public init(_ type: O.Type, fetchPolicy: QueryFetchPolicy = .networkOnly) {
-        self.fetchPolicy = fetchPolicy
+        self.init(fetchPolicy: fetchPolicy)
     }
 
     public var wrappedValue: WrappedValue {

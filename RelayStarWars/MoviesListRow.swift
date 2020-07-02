@@ -13,29 +13,25 @@ fragment MoviesListRow_film on Film {
 """)
 
 struct MoviesListRow: View {
-    @Fragment(MoviesListRow_film.self) var film
+    @FragmentNext<MoviesListRow_film> var film
 
-    init(film: MoviesListRow_film_Key) {
-        $film = film
-    }
-
-    var body: some View {
-        HStack {
-            if film != nil {
+    @ViewBuilder var body: some View {
+        if let film = film {
+            HStack {
                 VStack(alignment: .leading, spacing: 8) {
                     HStack {
-                        Text("Episode \(film!.episodeID!):")
-                        Text(film!.title!)
+                        Text("Episode \(film.episodeID!):")
+                        Text(film.title!)
                     }.font(.headline)
-                    Text("Directed by \(film!.director!)")
+                    Text("Directed by \(film.director!)")
                         .font(.footnote)
                 }
                 Spacer()
-                Text(film!.releaseYear)
+                Text(film.releaseYear)
                     .font(.callout)
                     .foregroundColor(.secondary)
-            }
-        }.padding(.vertical, 4)
+            }.padding(.vertical, 4)
+        }
     }
 }
 

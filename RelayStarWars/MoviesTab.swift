@@ -8,23 +8,26 @@ query MoviesTabQuery {
 """)
 
 struct MoviesTab: View {
-    @Query(MoviesTabQuery.self) var movies
+    @QueryNext<MoviesTabQuery> var movies
     
     var body: some View {
         Group {
-            if movies.isLoading {
+            switch movies.get() {
+            case .loading:
                 LoadingView()
-            } else if movies.error != nil {
-                ErrorView(error: movies.error!)
-            } else if movies.data != nil {
-                MoviesList(films: movies.data!)
-            }
-        }
-            .tabItem {
-                VStack {
-                    Image(systemName: "film.fill")
-                    Text("Movies")
+            case .failure(let error):
+                ErrorView(error: error)
+            case .success(let data):
+                if let data = data {
+                    MoviesList(films: data.asFragment())
                 }
             }
+        }
+        .tabItem {
+            VStack {
+                Image(systemName: "film.fill")
+                Text("Movies")
+            }
+        }
     }
 }

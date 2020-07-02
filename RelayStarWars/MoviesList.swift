@@ -21,39 +21,36 @@ fragment MoviesList_films on Root
 """)
 
 struct MoviesList: View {
-    @PaginationFragment(MoviesList_films.self) var films
-
-    init(films: MoviesList_films_Key) {
-        $films = films
-    }
-
-    private var filmNodes: [Film] {
-        films?.allFilms?.edges?.compactMap { $0?.node } ?? []
-    }
+    @PaginationFragmentNext<MoviesList_films> var films
 
     var body: some View {
         NavigationView {
             List {
-                if films != nil {
-                    ForEach(filmNodes) { node in
-                        MoviesListRow(film: node)
+                if let films = films {
+                    ForEach(films.nodes, id: \.id) { node in
+                        MoviesListRow(film: node.asFragment())
                     }
 
-                    if films!.isLoadingNext {
+                    if films.isLoadingNext {
                         Text("Loading more…")
                             .foregroundColor(.secondary)
-                    } else if films!.hasNext == true {
-                        Button("Load more…") {
-                            self.films!.loadNext(3)
+                    } else if films.hasNext == true {
+                        Button {
+                            films.loadNext(3)
+                        } label: {
+                            Label("Load more…", systemImage: "ellipsis.circle.fill")
+                                .foregroundColor(.accentColor)
                         }
                     }
                 }
-            }.navigationBarTitle("Movies")
+            }
+            .navigationBarTitle("Movies")
         }
     }
 }
 
-
-private typealias Film = MoviesList_films.Data.FilmsConnection_allFilms.FilmsEdge_edges.Film_node
-
-extension Film: Identifiable {}
+extension MoviesList_films.Data {
+    var nodes: [FilmsConnection_allFilms.FilmsEdge_edges.Film_node] {
+        allFilms?.edges?.compactMap { $0?.node } ?? []
+    }
+}

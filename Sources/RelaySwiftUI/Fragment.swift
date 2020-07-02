@@ -38,18 +38,20 @@ public struct Fragment<F: Relay.Fragment>: DynamicProperty {
 @propertyWrapper
 public struct FragmentNext<F: Relay.Fragment>: DynamicProperty {
     @SwiftUI.Environment(\.relayEnvironment) var environment: Relay.Environment?
-    let keyBox = KeyBox()
     @StateObject var loader = FragmentLoader<F>()
+    
+    let key: F.Key?
 
-    public init(_ type: F.Type) {}
-
-    public var projectedValue: F.Key {
-        get { keyBox.key! }
-        nonmutating set { keyBox.key = newValue }
+    public init() {
+        self.key = nil
+    }
+    
+    public init(_ key: F.Key) {
+        self.key = key
     }
 
     public var wrappedValue: F.Data? {
-        guard let key = keyBox.key else {
+        guard let key = key else {
             return nil
         }
 
@@ -57,11 +59,6 @@ public struct FragmentNext<F: Relay.Fragment>: DynamicProperty {
         loader.load(from: environment!, key: key)
 
         return loader.data
-    }
-
-    class KeyBox {
-        var key: F.Key?
-        init() {}
     }
 }
 #endif

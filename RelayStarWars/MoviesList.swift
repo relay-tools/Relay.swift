@@ -27,7 +27,7 @@ struct MoviesList: View {
         NavigationView {
             List {
                 if let films = films {
-                    ForEach(films.nodes) { node in
+                    ForEach(films.allFilms?.compactMap { $0 } ?? []) { node in
                         MoviesListRow(film: node.asFragment())
                     }
 
@@ -49,8 +49,3 @@ struct MoviesList: View {
     }
 }
 
-extension MoviesList_films.Data {
-    var nodes: [FilmsConnection_allFilms.FilmsEdge_edges.Film_node] {
-        allFilms?.edges?.compactMap { $0?.node } ?? []
-    }
-}

@@ -193,6 +193,32 @@ function createVisitor(
           }
         }
 
+        // If the field is a connection field, add protocols to the edge and node types
+        // to turn the connection field into a collection.
+        if (
+          node.directives?.some(directive => directive.name === 'connection')
+        ) {
+          const edgesField = fields.find(
+            (field): field is FieldNode =>
+              field.kind === 'field' && field.fieldName === 'edges'
+          );
+          if (edgesField && edgesField.childType) {
+            const nodeField = (edgesField.childType.fields as (
+              | FieldNode
+              | InlineFragmentNode
+            )[]).find(
+              (field): field is FieldNode =>
+                field.kind === 'field' && field.fieldName === 'node'
+            );
+            if (nodeField && nodeField.childType) {
+              // protocolName gets added to the type containing the field
+              edgesField.protocolName = 'ConnectionCollection';
+              edgesField.childType.extends.push('ConnectionEdge');
+              nodeField.childType.extends.push('ConnectionNode');
+            }
+          }
+        }
+
         return {
           kind: 'field',
           fieldName: node.alias,

@@ -70,13 +70,13 @@ extension MoviesList_films {
     struct Data: Decodable {
         var allFilms: FilmsConnection_allFilms?
 
-        struct FilmsConnection_allFilms: Decodable {
+        struct FilmsConnection_allFilms: Decodable, ConnectionCollection {
             var edges: [FilmsEdge_edges?]?
 
-            struct FilmsEdge_edges: Decodable {
+            struct FilmsEdge_edges: Decodable, ConnectionEdge {
                 var node: Film_node?
 
-                struct Film_node: Decodable, Identifiable, MoviesListRow_film_Key {
+                struct Film_node: Decodable, Identifiable, MoviesListRow_film_Key, ConnectionNode {
                     var id: String
                     var fragment_MoviesListRow_film: FragmentPointer
                 }

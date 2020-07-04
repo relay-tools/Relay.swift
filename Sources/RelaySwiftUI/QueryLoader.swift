@@ -11,6 +11,7 @@ class QueryLoader<Op: Relay.Operation>: ObservableObject {
 
     var variables: Op.Variables?
     var fetchPolicy: QueryFetchPolicy?
+    var fetchKey: String?
 
     private var environment: Environment!
     private var fetchCancellable: AnyCancellable?
@@ -60,10 +61,16 @@ class QueryLoader<Op: Relay.Operation>: ObservableObject {
 
     func loadIfNeeded(
         environment: Environment?,
+        variables: Op.Variables? = nil,
         fetchPolicy: QueryFetchPolicy? = nil,
-        variables: Op.Variables? = nil
+        fetchKey: Any? = nil
     ) -> Result<Snapshot<Op.Data?>, Error>? {
-        guard !isLoaded || environment !== self.environment || (fetchPolicy != nil && fetchPolicy != self.fetchPolicy) || (variables != nil && variables?.variableData != self.variables?.variableData) else {
+        guard !isLoaded ||
+                environment !== self.environment ||
+                (fetchPolicy != nil && fetchPolicy != self.fetchPolicy) ||
+                (variables != nil && variables?.variableData != self.variables?.variableData) ||
+                (fetchKey != nil && String(describing: fetchKey!) != self.fetchKey)
+        else {
             return result
         }
 
@@ -77,6 +84,14 @@ class QueryLoader<Op: Relay.Operation>: ObservableObject {
 
         if let variables = variables {
             self.variables = variables
+        }
+        
+        if let fetchKey = fetchKey {
+            let fetchKeyString = String(describing: fetchKey)
+            if fetchKeyString != self.fetchKey {
+                self.result = nil
+                self.fetchKey = fetchKeyString
+            }
         }
 
         guard let environment = self.environment else {

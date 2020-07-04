@@ -22,6 +22,12 @@ fragment MoviesList_films on Root
 
 struct MoviesList: View {
     @PaginationFragmentNext<MoviesList_films> var films
+    let onRefetch: () -> Void
+    
+    init(films: PaginationFragmentNext<MoviesList_films>, onRefetch: @escaping () -> Void) {
+        self._films = films
+        self.onRefetch = onRefetch
+    }
 
     var body: some View {
         NavigationView {
@@ -45,6 +51,13 @@ struct MoviesList: View {
                 }
             }
             .navigationBarTitle("Movies")
+            .toolbar {
+                ToolbarItem(placement: .navigationBarTrailing) {
+                    Button {
+                        onRefetch()
+                    } label: { Image(systemName: "arrow.clockwise") }
+                }
+            }
         }
     }
 }

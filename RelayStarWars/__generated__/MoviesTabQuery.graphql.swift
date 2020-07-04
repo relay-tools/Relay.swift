@@ -132,19 +132,6 @@ extension MoviesTabQuery {
     typealias Variables = EmptyVariables
 }
 
-#if canImport(RelaySwiftUI)
-
-import RelaySwiftUI
-
-@available(iOS 14.0, macOS 10.16, tvOS 14.0, watchOS 7.0, *)
-extension RelaySwiftUI.QueryNext.WrappedValue where O == MoviesTabQuery {
-    func get() -> RelaySwiftUI.QueryNext<MoviesTabQuery>.Result {
-        self.get(.init())
-    }
-}
-
-#endif
-
 extension MoviesTabQuery {
     struct Data: Decodable, MoviesList_films_Key {
         var fragment_MoviesList_films: FragmentPointer

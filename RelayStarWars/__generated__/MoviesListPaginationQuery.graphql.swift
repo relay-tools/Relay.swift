@@ -160,8 +160,8 @@ import RelaySwiftUI
 
 @available(iOS 14.0, macOS 10.16, tvOS 14.0, watchOS 7.0, *)
 extension RelaySwiftUI.QueryNext.WrappedValue where O == MoviesListPaginationQuery {
-    func get(count: Int? = nil, cursor: String? = nil) -> RelaySwiftUI.QueryNext<MoviesListPaginationQuery>.Result {
-        self.get(.init(count: count, cursor: cursor))
+    func get(count: Int? = nil, cursor: String? = nil, fetchKey: Any? = nil) -> RelaySwiftUI.QueryNext<MoviesListPaginationQuery>.Result {
+        self.get(.init(count: count, cursor: cursor), fetchKey: fetchKey)
     }
 }
 

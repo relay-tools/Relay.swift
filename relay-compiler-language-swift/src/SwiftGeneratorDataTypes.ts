@@ -94,7 +94,7 @@ ${makeInputStruct({ ...structType, name: childType }, level + 1)}${indent(
     )}}
 `;
 
-    if (structType.isRootVariables) {
+    if (structType.isRootVariables && structType.fields.length) {
       text += `
 #if canImport(RelaySwiftUI)
 
@@ -109,10 +109,12 @@ ${indent(1)}func get(${structType.fields
               field.typeName.endsWith('?') ? ' = nil' : ''
             }`
         )
-        .join(', ')}) -> RelaySwiftUI.QueryNext<${parentType}>.Result {
+        .join(
+          ', '
+        )}, fetchKey: Any? = nil) -> RelaySwiftUI.QueryNext<${parentType}>.Result {
 ${indent(2)}self.get(.init(${structType.fields
         .map(field => `${field.fieldName}: ${field.fieldName}`)
-        .join(', ')}))
+        .join(', ')}), fetchKey: fetchKey)
 ${indent(1)}}
 }
 

@@ -94,11 +94,12 @@ public struct QueryNext<O: Relay.Operation>: DynamicProperty {
     public struct WrappedValue {
         let query: QueryNext<O>
 
-        public func get(_ variables: O.Variables) -> Result {
+        public func get(_ variables: O.Variables, fetchKey: Any? = nil) -> Result {
             switch query.loader.loadIfNeeded(
                 environment: query.environment,
+                variables: variables,
                 fetchPolicy: query.fetchPolicy,
-                variables: variables
+                fetchKey: fetchKey
             ) {
             case nil:
                 return .loading
@@ -144,8 +145,8 @@ public struct QueryNext<O: Relay.Operation>: DynamicProperty {
 
 @available(iOS 14.0, macOS 10.16, tvOS 14.0, watchOS 7.0, *)
 extension QueryNext.WrappedValue where O.Variables == EmptyVariables {
-    public func get() -> QueryNext.Result {
-        get(.init())
+    public func get(fetchKey: Any? = nil) -> QueryNext.Result {
+        get(.init(), fetchKey: fetchKey)
     }
 }
 #endif

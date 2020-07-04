@@ -3,7 +3,7 @@ import Foundation
 import Relay
 
 class QueryLoader<Op: Relay.Operation>: ObservableObject {
-    var result: Result<Snapshot<Op.Data?>, Error>? {
+    @Published var result: Result<Snapshot<Op.Data?>, Error>? {
         willSet {
             objectWillChange.send()
         }
@@ -123,7 +123,7 @@ class QueryLoader<Op: Relay.Operation>: ObservableObject {
     }
 
     func lookupIfPossible(operation: OperationDescriptor) {
-        guard fetchPolicy == .storeAndNetwork || environment is MockEnvironment else { return }
+        guard fetchPolicy == .storeAndNetwork || environment.forceFetchFromStore else { return }
 
         let snapshot: Snapshot<Op.Data?> = environment.lookup(selector: operation.fragment)
         if !snapshot.isMissingData {

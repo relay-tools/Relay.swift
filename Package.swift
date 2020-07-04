@@ -34,6 +34,9 @@ let package = Package(
         .target(
             name: "RelaySwiftUI",
             dependencies: ["Relay"]),
+        .testTarget(
+            name: "RelaySwiftUITests",
+            dependencies: ["RelaySwiftUI", "SnapshotTesting", "Nimble"]),
         .target(
             name: "find-graphql-tags",
             dependencies: ["SwiftSyntax"]),

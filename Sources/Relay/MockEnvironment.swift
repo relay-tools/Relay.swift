@@ -61,6 +61,12 @@ public class MockEnvironment: Environment {
         mockNetwork.mockedResponses[identifer] = publisher
         return advance!
     }
+    
+    private var _forceFetchFromStore = true
+    override public var forceFetchFromStore: Bool {
+        get { _forceFetchFromStore }
+        set { _forceFetchFromStore = newValue }
+    }
 }
 
 class MockNetwork: Network {

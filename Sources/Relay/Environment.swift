@@ -80,4 +80,8 @@ public class Environment {
     public func isActive(request: RequestDescriptor) -> Bool {
         operationTracker.isActive(request: request)
     }
+    
+    public var forceFetchFromStore: Bool {
+        false
+    }
 }

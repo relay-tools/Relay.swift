@@ -73,10 +73,76 @@ class QueryLoaderTests: XCTestCase {
         assertSnapshot(matching: snapshot.data, as: .dump)
         
         var resultWasSet = false
-        loader.$result.sink { _ in resultWasSet = true }.store(in: &cancellables)
-        
+        loader.$result.dropFirst().sink { _ in resultWasSet = true }.store(in: &cancellables)
+
         advance()
         expect(resultWasSet).toEventually(beTrue())
+        snapshot = try loader.result!.get()
+        expect(snapshot.isMissingData).to(beFalse())
+        
+        assertSnapshot(matching: snapshot.data, as: .dump)
+    }
+    
+    func testDoesNotReloadIfNothingChanged() throws {
+        let advance = environment.delayMockedResponse(MoviesTabQuery(), allFilmsData)
+        var result = loader.loadIfNeeded(environment: environment, variables: .init(), fetchPolicy: .networkOnly)
+        expect(result).to(beNil())
+        
+        advance()
+        expect { self.loader.result }.toEventuallyNot(beNil())
+        let snapshot = try loader.result!.get()
+        expect(snapshot.isMissingData).to(beFalse())
+        
+        result = loader.loadIfNeeded(environment: environment, variables: .init(), fetchPolicy: .networkOnly)
+        expect(result).toNot(beNil())
+        
+        var resultWasSet = false
+        loader.$result.dropFirst().sink { _ in resultWasSet = true }.store(in: &cancellables)
+        RunLoop.main.run(until: Date(timeIntervalSinceNow: 0.2))
+        expect(resultWasSet).to(beFalse())
+    }
+    
+    func testDoesNotReloadIfFetchKeyIsUnchanged() throws {
+        let fetchKey = UUID()
+        
+        let advance = environment.delayMockedResponse(MoviesTabQuery(), allFilmsData)
+        var result = loader.loadIfNeeded(environment: environment, variables: .init(), fetchPolicy: .networkOnly, fetchKey: fetchKey)
+        expect(result).to(beNil())
+        
+        advance()
+        expect { self.loader.result }.toEventuallyNot(beNil())
+        let snapshot = try loader.result!.get()
+        expect(snapshot.isMissingData).to(beFalse())
+        
+        result = loader.loadIfNeeded(environment: environment, variables: .init(), fetchPolicy: .networkOnly, fetchKey: fetchKey)
+        expect(result).toNot(beNil())
+        
+        var resultWasSet = false
+        loader.$result.dropFirst().sink { _ in resultWasSet = true }.store(in: &cancellables)
+        RunLoop.main.run(until: Date(timeIntervalSinceNow: 0.2))
+        expect(resultWasSet).to(beFalse())
+    }
+    
+    func testReloadsWhenFetchKeyChanges() throws {
+        var fetchKey = UUID()
+        
+        let advance = environment.delayMockedResponse(MoviesTabQuery(), allFilmsData)
+        var result = loader.loadIfNeeded(environment: environment, variables: .init(), fetchPolicy: .networkOnly, fetchKey: fetchKey)
+        expect(result).to(beNil())
+        
+        advance()
+        expect { self.loader.result }.toEventuallyNot(beNil())
+        var snapshot = try loader.result!.get()
+        expect(snapshot.isMissingData).to(beFalse())
+        
+        fetchKey = UUID()
+        result = loader.loadIfNeeded(environment: environment, variables: .init(), fetchPolicy: .networkOnly, fetchKey: fetchKey)
+        expect(result).to(beNil())
+        
+        var resultWasSet = false
+        loader.$result.dropFirst().sink { _ in resultWasSet = true }.store(in: &cancellables)
+        expect(resultWasSet).toEventually(beTrue())
+        
         snapshot = try loader.result!.get()
         expect(snapshot.isMissingData).to(beFalse())
         

@@ -96,7 +96,7 @@ ${makeInputStruct({ ...structType, name: childType }, level + 1)}${indent(
 
     if (structType.isRootVariables && structType.fields.length) {
       text += `
-#if canImport(RelaySwiftUI)
+#if swift(>=5.3) && canImport(RelaySwiftUI)
 
 import RelaySwiftUI
 

@@ -42,7 +42,7 @@ protocol ToDoItem_todo_Key {
 
 extension ToDoItem_todo: Relay.Fragment {}
 
-#if canImport(RelaySwiftUI)
+#if swift(>=5.3) && canImport(RelaySwiftUI)
 
 import RelaySwiftUI
 

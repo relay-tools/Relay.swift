@@ -74,7 +74,7 @@ protocol ToDoList_user_Key {
 
 extension ToDoList_user: Relay.Fragment {}
 
-#if canImport(RelaySwiftUI)
+#if swift(>=5.3) && canImport(RelaySwiftUI)
 
 import RelaySwiftUI
 

@@ -126,7 +126,7 @@ function generateConnectionConfigExpr({
 }
 
 function generateSwiftUIExtension(fragment: ReaderFragment): string {
-  let text = `#if canImport(RelaySwiftUI)
+  let text = `#if swift(>=5.3) && canImport(RelaySwiftUI)
 
 import RelaySwiftUI
 

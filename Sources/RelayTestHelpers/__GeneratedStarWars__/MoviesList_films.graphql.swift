@@ -70,13 +70,13 @@ extension MoviesList_films {
     struct Data: Decodable {
         var allFilms: FilmsConnection_allFilms?
 
-        struct FilmsConnection_allFilms: Decodable {
+        struct FilmsConnection_allFilms: Decodable, ConnectionCollection {
             var edges: [FilmsEdge_edges?]?
 
-            struct FilmsEdge_edges: Decodable {
+            struct FilmsEdge_edges: Decodable, ConnectionEdge {
                 var node: Film_node?
 
-                struct Film_node: Decodable, MoviesListRow_film_Key {
+                struct Film_node: Decodable, Identifiable, MoviesListRow_film_Key, ConnectionNode {
                     var id: String
                     var fragment_MoviesListRow_film: FragmentPointer
                 }
@@ -103,3 +103,21 @@ extension MoviesList_films: Relay.PaginationFragment {
                 forward: ConnectionVariableConfig(count: "count", cursor: "cursor")))
     }
 }
+
+#if canImport(RelaySwiftUI)
+
+import RelaySwiftUI
+
+extension MoviesList_films_Key {
+    @available(iOS 14.0, macOS 10.16, tvOS 14.0, watchOS 7.0, *)
+    func asFragment() -> RelaySwiftUI.FragmentNext<MoviesList_films> {
+        RelaySwiftUI.FragmentNext<MoviesList_films>(self)
+    }
+
+    @available(iOS 14.0, macOS 10.16, tvOS 14.0, watchOS 7.0, *)
+    func asFragment() -> RelaySwiftUI.PaginationFragmentNext<MoviesList_films> {
+        RelaySwiftUI.PaginationFragmentNext<MoviesList_films>(self)
+    }
+}
+
+#endif

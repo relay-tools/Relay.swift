@@ -7,7 +7,9 @@
     "doc": "docs"
   },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "relay": "npm run relay-starwars && npm run relay-todo",
+    "relay-starwars": "relay-compiler --src Sources/RelayTestHelpers/StarWars --schema Sources/RelayTestHelpers/StarWars/schema.graphql --language swift --artifactDirectory Sources/RelayTestHelpers/__GeneratedStarWars__",
+    "relay-todo": "relay-compiler --src Sources/RelayTestHelpers/ToDo --schema Sources/RelayTestHelpers/ToDo/schema.graphql --language swift --artifactDirectory Sources/RelayTestHelpers/__GeneratedToDo__"
   },
   "repository": {
     "type": "git",

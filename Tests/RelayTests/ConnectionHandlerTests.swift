@@ -2,6 +2,7 @@ import XCTest
 import SnapshotTesting
 import Nimble
 @testable import Relay
+@testable import RelayTestHelpers
 
 class ConnectionHandlerTests: XCTestCase {
     private var environment: MockEnvironment!

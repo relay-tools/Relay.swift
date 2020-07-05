@@ -22,7 +22,7 @@ let package = Package(
     dependencies: [
         .package(name: "SwiftSyntax", url: "https://github.com/apple/swift-syntax.git", .exact("0.50200.0")),
         .package(name: "SnapshotTesting", url: "https://github.com/pointfreeco/swift-snapshot-testing.git", from: "1.8.0"),
-        .package(url: "https://github.com/Quick/Nimble.git", .upToNextMajor(from: "8.0.1")),
+        .package(name: "Nimble", url: "https://github.com/Quick/Nimble.git", .upToNextMajor(from: "8.0.1")),
     ],
     targets: [
         .target(
@@ -30,13 +30,16 @@ let package = Package(
             dependencies: []),
         .testTarget(
             name: "RelayTests",
-            dependencies: ["Relay", "SnapshotTesting", "Nimble"]),
+            dependencies: ["Relay", "RelayTestHelpers", "SnapshotTesting", "Nimble"]),
         .target(
             name: "RelaySwiftUI",
             dependencies: ["Relay"]),
         .testTarget(
             name: "RelaySwiftUITests",
-            dependencies: ["RelaySwiftUI", "SnapshotTesting", "Nimble"]),
+            dependencies: ["RelaySwiftUI", "RelayTestHelpers", "SnapshotTesting", "Nimble"]),
+        .target(
+            name: "RelayTestHelpers",
+            dependencies: ["Relay", "RelaySwiftUI", "SnapshotTesting"]),
         .target(
             name: "find-graphql-tags",
             dependencies: ["SwiftSyntax"]),

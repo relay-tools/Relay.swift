@@ -2,43 +2,46 @@ import XCTest
 import Combine
 import SnapshotTesting
 import Nimble
+@testable import RelayTestHelpers
 @testable import RelaySwiftUI
 
 class QueryLoaderTests: XCTestCase {
     private var environment: MockEnvironment!
-    private var loader: QueryLoader<MoviesTabQuery>!
     private var cancellables: Set<AnyCancellable>!
     
     override func setUpWithError() throws {
         environment = MockEnvironment()
         environment.forceFetchFromStore = false
-        loader = QueryLoader<MoviesTabQuery>()
         cancellables = Set<AnyCancellable>()
     }
     
     func testIsInitiallyLoading() throws {
-        expect(self.loader.isLoading).to(beTrue())
+        let loader = QueryLoader<MoviesTabQuery>()
+        expect(loader.isLoading).to(beTrue())
     }
     
     func testFailsWhenNotPassedAnEnvironment() throws {
+        let loader = QueryLoader<MoviesTabQuery>()
         expect {
-            _ = self.loader.loadIfNeeded(environment: nil, variables: .init())
+            _ = loader.loadIfNeeded(environment: nil, variables: .init())
         }.to(throwAssertion())
     }
     
     func testFailsWhenNotPassedVariables() throws {
+        let loader = QueryLoader<MoviesTabQuery>()
         expect {
-            _ = self.loader.loadIfNeeded(environment: self.environment)
+            _ = loader.loadIfNeeded(environment: self.environment)
         }.to(throwAssertion())
     }
     
     func testLoadsInitialDataFromNetwork() throws {
+        let loader = QueryLoader<MoviesTabQuery>()
         let advance = environment.delayMockedResponse(MoviesTabQuery(), allFilmsData)
         let result = loader.loadIfNeeded(environment: environment, variables: .init(), fetchPolicy: .networkOnly)
         expect(result).to(beNil())
         
         advance()
-        expect { self.loader.result }.toEventuallyNot(beNil())
+        expect { loader.result }.toEventuallyNot(beNil())
         let snapshot = try loader.result!.get()
         expect(snapshot.isMissingData).to(beFalse())
         
@@ -49,11 +52,12 @@ class QueryLoaderTests: XCTestCase {
         environment.cachePayload(MoviesTabQuery(), allFilmsData)
         
         let advance = environment.delayMockedResponse(MoviesTabQuery(), allFilmsData)
+        let loader = QueryLoader<MoviesTabQuery>()
         let result = loader.loadIfNeeded(environment: environment, variables: .init(), fetchPolicy: .networkOnly)
         expect(result).to(beNil())
         
         advance()
-        expect { self.loader.result }.toEventuallyNot(beNil())
+        expect { loader.result }.toEventuallyNot(beNil())
         let snapshot = try loader.result!.get()
         expect(snapshot.isMissingData).to(beFalse())
         
@@ -64,6 +68,7 @@ class QueryLoaderTests: XCTestCase {
         environment.cachePayload(MoviesTabQuery(), allFilmsData)
         
         let advance = environment.delayMockedResponse(MoviesTabQuery(), allFilmsData)
+        let loader = QueryLoader<MoviesTabQuery>()
         let result = loader.loadIfNeeded(environment: environment, variables: .init(), fetchPolicy: .storeAndNetwork)
         expect(result).toNot(beNil())
         
@@ -85,11 +90,12 @@ class QueryLoaderTests: XCTestCase {
     
     func testDoesNotReloadIfNothingChanged() throws {
         let advance = environment.delayMockedResponse(MoviesTabQuery(), allFilmsData)
+        let loader = QueryLoader<MoviesTabQuery>()
         var result = loader.loadIfNeeded(environment: environment, variables: .init(), fetchPolicy: .networkOnly)
         expect(result).to(beNil())
         
         advance()
-        expect { self.loader.result }.toEventuallyNot(beNil())
+        expect { loader.result }.toEventuallyNot(beNil())
         let snapshot = try loader.result!.get()
         expect(snapshot.isMissingData).to(beFalse())
         
@@ -106,11 +112,12 @@ class QueryLoaderTests: XCTestCase {
         let fetchKey = UUID()
         
         let advance = environment.delayMockedResponse(MoviesTabQuery(), allFilmsData)
+        let loader = QueryLoader<MoviesTabQuery>()
         var result = loader.loadIfNeeded(environment: environment, variables: .init(), fetchPolicy: .networkOnly, fetchKey: fetchKey)
         expect(result).to(beNil())
         
         advance()
-        expect { self.loader.result }.toEventuallyNot(beNil())
+        expect { loader.result }.toEventuallyNot(beNil())
         let snapshot = try loader.result!.get()
         expect(snapshot.isMissingData).to(beFalse())
         
@@ -127,11 +134,12 @@ class QueryLoaderTests: XCTestCase {
         var fetchKey = UUID()
         
         let advance = environment.delayMockedResponse(MoviesTabQuery(), allFilmsData)
+        let loader = QueryLoader<MoviesTabQuery>()
         var result = loader.loadIfNeeded(environment: environment, variables: .init(), fetchPolicy: .networkOnly, fetchKey: fetchKey)
         expect(result).to(beNil())
         
         advance()
-        expect { self.loader.result }.toEventuallyNot(beNil())
+        expect { loader.result }.toEventuallyNot(beNil())
         var snapshot = try loader.result!.get()
         expect(snapshot.isMissingData).to(beFalse())
         
@@ -147,6 +155,42 @@ class QueryLoaderTests: XCTestCase {
         expect(snapshot.isMissingData).to(beFalse())
         
         assertSnapshot(matching: snapshot.data, as: .dump)
+    }
+    
+    // TODO check cases around missing data
+    
+    func testUpdatesResultForRelevantStoreChanges() throws {
+        try environment.mockResponse(CurrentUserToDoListQuery(), myTodosPayload)
+        let loader = QueryLoader<CurrentUserToDoListQuery>()
+        let result = loader.loadIfNeeded(environment: environment, variables: .init(), fetchPolicy: .networkOnly)
+        expect(result).to(beNil())
+        expect { loader.result }.toEventuallyNot(beNil())
+        
+        let snapshot = try loader.result!.get()
+        assertSnapshot(matching: snapshot.data, as: .dump)
+        
+        try environment.cachePayload(CurrentUserToDoListQuery(), myTodosRelevantUpdatePayload)
+        expect { loader.data?.user?.id }.toEventually(equal("a_new_user_id"))
+        assertSnapshot(matching: loader.data, as: .dump)
+    }
+    
+    func testDoesNotUpdateResultForIrrelevantStoreChanges() throws {
+        try environment.mockResponse(CurrentUserToDoListQuery(), myTodosPayload)
+        let loader = QueryLoader<CurrentUserToDoListQuery>()
+        let result = loader.loadIfNeeded(environment: environment, variables: .init(), fetchPolicy: .networkOnly)
+        expect(result).to(beNil())
+        expect { loader.result }.toEventuallyNot(beNil())
+        
+        let snapshot = try loader.result!.get()
+        assertSnapshot(matching: snapshot.data, as: .dump)
+        
+        var resultWasSet = false
+        loader.$result.dropFirst().sink { _ in resultWasSet = true }.store(in: &cancellables)
+        
+        try environment.cachePayload(CurrentUserToDoListQuery(), myTodosIrrelevantUpdatePayload)
+        RunLoop.main.run(until: Date(timeIntervalSinceNow: 0.2))
+        expect(resultWasSet).to(beFalse())
+        assertSnapshot(matching: loader.data, as: .dump)
     }
 }
 
@@ -195,3 +239,92 @@ private let allFilmsData = [
         ]
     ]
 ]
+
+private let myTodosPayload = """
+{
+  "data": {
+    "user": {
+      "id": "VXNlcjptZQ==",
+      "todos": {
+        "edges": [
+          {
+            "node": {
+              "id": "VG9kbzow",
+              "text": "Taste JavaScript",
+              "complete": true
+            }
+          },
+          {
+            "node": {
+              "id": "VG9kbzox",
+              "text": "Buy a unicorn",
+              "complete": false
+            }
+          }
+        ]
+      }
+    }
+  }
+}
+"""
+
+// includes a change of the user ID, which is part of the query's read selector
+// and should trigger an update in the query loader.
+private let myTodosRelevantUpdatePayload = """
+{
+  "data": {
+    "user": {
+      "id": "a_new_user_id",
+      "todos": {
+        "edges": [
+          {
+            "node": {
+              "id": "VG9kbzow",
+              "text": "Taste JavaScript",
+              "complete": true
+            }
+          },
+          {
+            "node": {
+              "id": "VG9kbzox",
+              "text": "Buy a unicorn",
+              "complete": false
+            }
+          }
+        ]
+      }
+    }
+  }
+}
+"""
+
+// includes changes in the actual edge nodes, which is in a fragment lower down the tree
+// and should not cause an update to the query because those fields aren't part of its
+// read selector.
+private let myTodosIrrelevantUpdatePayload = """
+{
+  "data": {
+    "user": {
+      "id": "VXNlcjptZQ==",
+      "todos": {
+        "edges": [
+          {
+            "node": {
+              "id": "VG9kbzow",
+              "text": "Taste Swift",
+              "complete": true
+            }
+          },
+          {
+            "node": {
+              "id": "VG9kbzox",
+              "text": "Buy a horse",
+              "complete": false
+            }
+          }
+        ]
+      }
+    }
+  }
+}
+"""

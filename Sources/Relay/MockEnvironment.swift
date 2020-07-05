@@ -23,12 +23,12 @@ public class MockEnvironment: Environment {
         _ = publishQueue.run()
     }
 
-    public func cachePayload<O: Operation>(_ op: O, resource: String, extension: String = "json", bundle: Bundle = .main) throws {
-        let dataFile = bundle.url(forResource: resource, withExtension: `extension`)!
-        let contents = try Data(contentsOf: dataFile)
-        let parsedContents = try JSONSerialization.jsonObject(with: contents, options: []) as! [String: Any]
+    public func cachePayload<O: Operation>(_ op: O, _ payload: String) throws {
+        cachePayload(op, try load(payload))
+    }
 
-        cachePayload(op, parsedContents)
+    public func cachePayload<O: Operation>(_ op: O, resource: String, extension: String = "json", bundle: Bundle = .main) throws {
+        cachePayload(op, try load(resource: resource, extension: `extension`, bundle: bundle))
     }
 
     public func mockResponse<O: Operation>(_ op: O, _ payload: [String: Any]) {
@@ -43,6 +43,14 @@ public class MockEnvironment: Environment {
             publisher = Fail(error: error).eraseToAnyPublisher()
         }
         mockNetwork.mockedResponses[identifer] = publisher
+    }
+
+    public func mockResponse<O: Operation>(_ op: O, _ payload: String) throws {
+        mockResponse(op, try load(payload))
+    }
+    
+    public func mockResponse<O: Operation>(_ op: O, resource: String, extension: String = "json", bundle: Bundle = .main) throws {
+        mockResponse(op, try load(resource: resource, extension: `extension`, bundle: bundle))
     }
 
     public func delayMockedResponse<O: Operation>(_ op: O, _ payload: [String: Any]) -> (() -> Void) {
@@ -60,6 +68,24 @@ public class MockEnvironment: Environment {
         }.eraseToAnyPublisher()
         mockNetwork.mockedResponses[identifer] = publisher
         return advance!
+    }
+    
+    public func delayMockedResponse<O: Operation>(_ op: O, _ payload: String) throws -> (() -> Void) {
+        delayMockedResponse(op, try load(payload))
+    }
+    
+    public func delayMockedResponse<O: Operation>(_ op: O, resource: String, extension: String = "json", bundle: Bundle = .main) throws -> (() -> Void) {
+        delayMockedResponse(op, try load(resource: resource, extension: `extension`, bundle: bundle))
+    }
+    
+    private func load(resource: String, extension: String, bundle: Bundle) throws -> [String: Any] {
+        let dataFile = bundle.url(forResource: resource, withExtension: `extension`)!
+        let contents = try Data(contentsOf: dataFile)
+        return try JSONSerialization.jsonObject(with: contents, options: []) as! [String: Any]
+    }
+    
+    private func load(_ contents: String) throws -> [String: Any] {
+        return try JSONSerialization.jsonObject(with: contents.data(using: .utf8)!, options: []) as! [String: Any]
     }
     
     private var _forceFetchFromStore = true

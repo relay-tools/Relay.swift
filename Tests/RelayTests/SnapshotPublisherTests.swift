@@ -3,6 +3,7 @@ import Combine
 import SnapshotTesting
 import Nimble
 @testable import Relay
+@testable import RelayTestHelpers
 
 class SnapshotPublisherTests: XCTestCase {
     var environment: MockEnvironment!

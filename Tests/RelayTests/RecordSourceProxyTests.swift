@@ -2,6 +2,7 @@ import XCTest
 import Nimble
 import SnapshotTesting
 @testable import Relay
+@testable import RelayTestHelpers
 
 private let initialPayload = """
 {

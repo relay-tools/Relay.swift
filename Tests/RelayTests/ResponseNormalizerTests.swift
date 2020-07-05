@@ -1,7 +1,7 @@
 import XCTest
 import SnapshotTesting
 @testable import Relay
-
+@testable import RelayTestHelpers
 
 class ResponseNormalizerTests: XCTestCase {
     func testNormalizeValidPayload() throws {

@@ -8,9 +8,14 @@ on:
 
 jobs:
   build:
-
+    strategy:
+      matrix:
+        xcode:
+          - "11.5"
+          - "12_beta"
     runs-on: macos-latest
-
+    env:
+      DEVELOPER_DIR: /Applications/Xcode_${{ matrix.xcode }}.app/Contents/Developer
     steps:
     - uses: actions/checkout@v2
     - name: Get Swift version

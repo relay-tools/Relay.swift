@@ -1,0 +1,11 @@
+▿ Optional<Data>
+  ▿ some: Data
+    ▿ director: Optional<String>
+      - some: "Irvin Kershner"
+    ▿ episodeID: Optional<Int>
+      - some: 5
+    - id: "ZmlsbXM6Mg=="
+    ▿ releaseDate: Optional<String>
+      - some: "1980-05-17"
+    ▿ title: Optional<String>
+      - some: "The Empire Strikes Back"

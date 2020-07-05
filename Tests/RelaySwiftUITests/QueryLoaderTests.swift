@@ -143,13 +143,14 @@ class QueryLoaderTests: XCTestCase {
         var snapshot = try loader.result!.get()
         expect(snapshot.isMissingData).to(beFalse())
         
+        var resultWasSet = false
+        loader.$result.dropFirst().sink { _ in resultWasSet = true }.store(in: &cancellables)
+
         fetchKey = UUID()
         result = loader.loadIfNeeded(environment: environment, variables: .init(), fetchPolicy: .networkOnly, fetchKey: fetchKey)
         expect(result).to(beNil())
-        
-        var resultWasSet = false
-        loader.$result.dropFirst().sink { _ in resultWasSet = true }.store(in: &cancellables)
         expect(resultWasSet).toEventually(beTrue())
+        expect(loader.result).toEventuallyNot(beNil())
         
         snapshot = try loader.result!.get()
         expect(snapshot.isMissingData).to(beFalse())
@@ -173,20 +174,20 @@ class QueryLoaderTests: XCTestCase {
         expect { loader.data?.user?.id }.toEventually(equal("a_new_user_id"))
         assertSnapshot(matching: loader.data, as: .dump)
     }
-    
+
     func testDoesNotUpdateResultForIrrelevantStoreChanges() throws {
         try environment.mockResponse(CurrentUserToDoListQuery(), myTodosPayload)
         let loader = QueryLoader<CurrentUserToDoListQuery>()
         let result = loader.loadIfNeeded(environment: environment, variables: .init(), fetchPolicy: .networkOnly)
         expect(result).to(beNil())
         expect { loader.result }.toEventuallyNot(beNil())
-        
+
         let snapshot = try loader.result!.get()
         assertSnapshot(matching: snapshot.data, as: .dump)
-        
+
         var resultWasSet = false
         loader.$result.dropFirst().sink { _ in resultWasSet = true }.store(in: &cancellables)
-        
+
         try environment.cachePayload(CurrentUserToDoListQuery(), myTodosIrrelevantUpdatePayload)
         RunLoop.main.run(until: Date(timeIntervalSinceNow: 0.2))
         expect(resultWasSet).to(beFalse())

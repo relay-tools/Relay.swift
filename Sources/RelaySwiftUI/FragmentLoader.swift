@@ -6,7 +6,7 @@ class FragmentLoader<Fragment: Relay.Fragment>: ObservableObject {
     var environment: Environment!
     var selector: SingularReaderSelector?
 
-    var snapshot: Snapshot<Fragment.Data?>? {
+    @Published var snapshot: Snapshot<Fragment.Data?>? {
         willSet {
             self.objectWillChange.send()
         }
@@ -15,8 +15,6 @@ class FragmentLoader<Fragment: Relay.Fragment>: ObservableObject {
     private var subscribeCancellable: AnyCancellable?
 
     init() {}
-
-    private var isLoaded = false
 
     func load(from environment: Environment, key: Fragment.Key) {
         let newSelector = Fragment(key: key).selector
@@ -28,7 +26,6 @@ class FragmentLoader<Fragment: Relay.Fragment>: ObservableObject {
         self.selector = newSelector
         snapshot = environment.lookup(selector: newSelector)
         subscribe()
-        isLoaded = true
     }
 
     var data: Fragment.Data? {

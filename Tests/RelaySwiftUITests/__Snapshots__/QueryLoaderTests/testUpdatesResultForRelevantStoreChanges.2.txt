@@ -1,0 +1,6 @@
+▿ Optional<Data>
+  ▿ some: Data
+    ▿ user: Optional<User_user>
+      ▿ some: User_user
+        - fragment_ToDoList_user: FragmentPointer(variables: , id: Relay.DataID(rawValue: "a_new_user_id"), ownerIdentifier: "query CurrentUserToDoListQuery {\n  user(id: \"me\") {\n    id\n    ...ToDoList_user\n  }\n}\n\nfragment ToDoItem_todo on Todo {\n  id\n  text\n  complete\n}\n\nfragment ToDoList_user on User {\n  todos(first: 100) {\n    edges {\n      node {\n        id\n        ...ToDoItem_todo\n      }\n    }\n  }\n}", ownerVariables: )
+        - id: "a_new_user_id"

@@ -60,8 +60,7 @@ class RecordSourceProxyTests: XCTestCase {
 
     override func setUpWithError() throws {
         environment = MockEnvironment()
-        let parsedPayload = try JSONSerialization.jsonObject(with: initialPayload.data(using: .utf8)!, options: []) as! [String: Any]
-        environment.cachePayload(MoviesTabQuery(), parsedPayload)
+        try environment.cachePayload(MoviesTabQuery(), initialPayload)
         mutator = RecordSourceMutator(base: environment.store.recordSource, sink: DefaultRecordSource())
         store = DefaultRecordSourceProxy(mutator: mutator, handlerProvider: DefaultHandlerProvider())
     }

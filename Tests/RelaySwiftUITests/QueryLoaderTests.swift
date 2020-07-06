@@ -18,6 +18,8 @@ class QueryLoaderTests: XCTestCase {
     func testIsInitiallyLoading() throws {
         let loader = QueryLoader<MoviesTabQuery>()
         expect(loader.isLoading).to(beTrue())
+        expect(loader.data).to(beNil())
+        expect(loader.error).to(beNil())
     }
     
     func testFailsWhenNotPassedAnEnvironment() throws {
@@ -46,6 +48,9 @@ class QueryLoaderTests: XCTestCase {
         expect(snapshot.isMissingData).to(beFalse())
         
         assertSnapshot(matching: snapshot.data, as: .dump)
+        expect(loader.data).notTo(beNil())
+        expect(loader.error).to(beNil())
+        expect(loader.isLoading).to(beFalse())
     }
     
     func testSkipsDataInStoreWhenNetworkOnly() throws {
@@ -193,6 +198,45 @@ class QueryLoaderTests: XCTestCase {
         expect(resultWasSet).to(beFalse())
         assertSnapshot(matching: loader.data, as: .dump)
     }
+
+    func testHandlesErrorFromTheServer() throws {
+        let loader = QueryLoader<MoviesTabQuery>()
+        let advance = try environment.delayMockedResponse(MoviesTabQuery(), allFilmsErrorPayload)
+        let result = loader.loadIfNeeded(environment: environment, variables: .init(), fetchPolicy: .networkOnly)
+        expect(result).to(beNil())
+
+        advance()
+        expect { loader.result }.toEventuallyNot(beNil())
+        expect { try loader.result!.get() }.to(throwError {
+            assertSnapshot(matching: $0, as: .dump)
+        })
+        expect(loader.error).notTo(beNil())
+        expect(loader.data).to(beNil())
+        expect(loader.isLoading).to(beFalse())
+    }
+
+    func testShowsErrorWhenThereIsExistingStoreData() throws {
+        environment.cachePayload(MoviesTabQuery(), allFilmsData)
+
+        let loader = QueryLoader<MoviesTabQuery>()
+        let advance = try environment.delayMockedResponse(MoviesTabQuery(), allFilmsErrorPayload)
+        let result = loader.loadIfNeeded(environment: environment, variables: .init(), fetchPolicy: .storeAndNetwork)
+        expect(result).notTo(beNil())
+        expect(loader.data).notTo(beNil())
+
+        var resultWasSet = false
+        loader.$result.dropFirst().sink { _ in resultWasSet = true }.store(in: &cancellables)
+
+        advance()
+        expect(resultWasSet).toEventually(beTrue())
+        
+        expect { try loader.result!.get() }.to(throwError {
+            assertSnapshot(matching: $0, as: .dump)
+        })
+        expect(loader.error).notTo(beNil())
+        expect(loader.data).to(beNil())
+        expect(loader.isLoading).to(beFalse())
+    }
 }
 
 private let allFilmsData = [
@@ -327,5 +371,13 @@ private let myTodosIrrelevantUpdatePayload = """
       }
     }
   }
+}
+"""
+
+private let allFilmsErrorPayload = """
+{
+    "errors": [
+        {"message": "This is an error that the server returned."}
+    ]
 }
 """

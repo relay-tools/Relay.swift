@@ -1,0 +1,140 @@
+▿ NetworkError
+  ▿ errors: 1 element
+    ▿ GraphQLError
+      - message: "This is an error that the server returned."
+  ▿ operation: ConcreteRequest
+    ▿ fragment: ReaderFragment
+      - argumentDefinitions: 0 elements
+      - name: "MoviesTabQuery"
+      ▿ selections: 1 element
+        ▿ ReaderSelection
+          ▿ fragmentSpread: ReaderFragmentSpread
+            - args: Optional<Array<Argument>>.none
+            - name: "MoviesList_films"
+      - type: "Root"
+    ▿ operation: NormalizationOperation
+      - argumentDefinitions: 0 elements
+      - name: "MoviesTabQuery"
+      ▿ selections: 2 elements
+        ▿ NormalizationSelection
+          ▿ field: NormalizationLinkedField
+            - alias: Optional<String>.none
+            ▿ args: Optional<Array<Argument>>
+              ▿ some: 1 element
+                ▿ LiteralArgument
+                  - name: "first"
+                  - type: Optional<String>.none
+                  - value: 3
+            ▿ concreteType: Optional<String>
+              - some: "FilmsConnection"
+            - name: "allFilms"
+            - plural: false
+            ▿ selections: 2 elements
+              ▿ NormalizationSelection
+                ▿ field: NormalizationLinkedField
+                  - alias: Optional<String>.none
+                  - args: Optional<Array<Argument>>.none
+                  ▿ concreteType: Optional<String>
+                    - some: "FilmsEdge"
+                  - name: "edges"
+                  - plural: true
+                  ▿ selections: 2 elements
+                    ▿ NormalizationSelection
+                      ▿ field: NormalizationLinkedField
+                        - alias: Optional<String>.none
+                        - args: Optional<Array<Argument>>.none
+                        ▿ concreteType: Optional<String>
+                          - some: "Film"
+                        - name: "node"
+                        - plural: false
+                        ▿ selections: 6 elements
+                          ▿ NormalizationSelection
+                            ▿ field: NormalizationScalarField
+                              - alias: Optional<String>.none
+                              - args: Optional<Array<Argument>>.none
+                              - name: "id"
+                              - storageKey: Optional<String>.none
+                          ▿ NormalizationSelection
+                            ▿ field: NormalizationScalarField
+                              - alias: Optional<String>.none
+                              - args: Optional<Array<Argument>>.none
+                              - name: "episodeID"
+                              - storageKey: Optional<String>.none
+                          ▿ NormalizationSelection
+                            ▿ field: NormalizationScalarField
+                              - alias: Optional<String>.none
+                              - args: Optional<Array<Argument>>.none
+                              - name: "title"
+                              - storageKey: Optional<String>.none
+                          ▿ NormalizationSelection
+                            ▿ field: NormalizationScalarField
+                              - alias: Optional<String>.none
+                              - args: Optional<Array<Argument>>.none
+                              - name: "director"
+                              - storageKey: Optional<String>.none
+                          ▿ NormalizationSelection
+                            ▿ field: NormalizationScalarField
+                              - alias: Optional<String>.none
+                              - args: Optional<Array<Argument>>.none
+                              - name: "releaseDate"
+                              - storageKey: Optional<String>.none
+                          ▿ NormalizationSelection
+                            ▿ field: NormalizationScalarField
+                              - alias: Optional<String>.none
+                              - args: Optional<Array<Argument>>.none
+                              - name: "__typename"
+                              - storageKey: Optional<String>.none
+                        - storageKey: Optional<String>.none
+                    ▿ NormalizationSelection
+                      ▿ field: NormalizationScalarField
+                        - alias: Optional<String>.none
+                        - args: Optional<Array<Argument>>.none
+                        - name: "cursor"
+                        - storageKey: Optional<String>.none
+                  - storageKey: Optional<String>.none
+              ▿ NormalizationSelection
+                ▿ field: NormalizationLinkedField
+                  - alias: Optional<String>.none
+                  - args: Optional<Array<Argument>>.none
+                  ▿ concreteType: Optional<String>
+                    - some: "PageInfo"
+                  - name: "pageInfo"
+                  - plural: false
+                  ▿ selections: 2 elements
+                    ▿ NormalizationSelection
+                      ▿ field: NormalizationScalarField
+                        - alias: Optional<String>.none
+                        - args: Optional<Array<Argument>>.none
+                        - name: "endCursor"
+                        - storageKey: Optional<String>.none
+                    ▿ NormalizationSelection
+                      ▿ field: NormalizationScalarField
+                        - alias: Optional<String>.none
+                        - args: Optional<Array<Argument>>.none
+                        - name: "hasNextPage"
+                        - storageKey: Optional<String>.none
+                  - storageKey: Optional<String>.none
+            ▿ storageKey: Optional<String>
+              - some: "allFilms(first:3)"
+        ▿ NormalizationSelection
+          ▿ handle: NormalizationHandle
+            - alias: Optional<String>.none
+            ▿ args: Optional<Array<Argument>>
+              ▿ some: 1 element
+                ▿ LiteralArgument
+                  - name: "first"
+                  - type: Optional<String>.none
+                  - value: 3
+            - filters: Optional<Array<String>>.none
+            - handle: "connection"
+            - key: "MoviesList_allFilms"
+            - kind: Kind.linked
+            - name: "allFilms"
+    ▿ params: RequestParameters
+      - id: Optional<String>.none
+      - name: "MoviesTabQuery"
+      - operationKind: OperationKind.query
+      ▿ text: Optional<String>
+        - some: "query MoviesTabQuery {\n  ...MoviesList_films\n}\n\nfragment MoviesListRow_film on Film {\n  id\n  episodeID\n  title\n  director\n  releaseDate\n}\n\nfragment MoviesList_films on Root {\n  allFilms(first: 3) {\n    edges {\n      node {\n        id\n        ...MoviesListRow_film\n        __typename\n      }\n      cursor\n    }\n    pageInfo {\n      endCursor\n      hasNextPage\n    }\n  }\n}"
+  ▿ variables: 
+    - fields: 0 key/value pairs

@@ -10,6 +10,8 @@ public struct Record: Equatable {
 
     public private(set) var fields: [String: Value] = [:]
 
+    public internal(set) var invalidatedAt: Int?
+
     public init(dataID: DataID,
                 typename: String,
                 values: [String: Any] = [:],

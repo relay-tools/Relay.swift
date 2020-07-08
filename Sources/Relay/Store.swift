@@ -11,10 +11,11 @@ public class Store {
     private var gc: GarbageCollector!
 
     private var _currentWriteEpoch = 0
-    private let _writeEpochLock = DispatchQueue(label: "relay-store-write-epoch-lock")
+    private let writeEpochLock = DispatchQueue(label: "relay-store-write-epoch-lock")
+    private var globalInvalidationEpoch: Int?
 
     var currentWriteEpoch: Int {
-        _writeEpochLock.sync { _currentWriteEpoch }
+        writeEpochLock.sync { _currentWriteEpoch }
     }
 
     public init(source: RecordSource = DefaultRecordSource()) {
@@ -54,21 +55,51 @@ public class Store {
         gc.retain(operation)
     }
 
-    public func publish(source: RecordSource, idsMarkedForInvalidation: Set<DataID>? = nil) {
+    public func check(operation: OperationDescriptor) -> OperationAvailability {
+        let selector = operation.root
+        let rootEntry = gc.roots[operation.request.identifier]
+        let lastWrittenAt = rootEntry?.epoch
+
+        if let globalInvalidationEpoch = globalInvalidationEpoch {
+            guard let lastWrittenAt = lastWrittenAt,
+                  lastWrittenAt > globalInvalidationEpoch else {
+                return .stale
+            }
+        }
+
+        let operationAvailability = DataChecker.check(source: source, selector: selector)
+
+        if let mostRecentlyInvalidatedAt = operationAvailability.mostRecentlyInvalidatedAt {
+            if let lastWrittenAt = lastWrittenAt, mostRecentlyInvalidatedAt > lastWrittenAt {
+                return .stale
+            }
+        }
+
+        if case .missing = operationAvailability {
+            return .missing
+        }
+
+        return .available(rootEntry?.fetchTime)
+    }
+
+    public func publish(source: RecordSource, idsMarkedForInvalidation: Set<DataID> = []) {
         self.source.update(from: source,
                            currentWriteEpoch: currentWriteEpoch + 1,
+                           idsMarkedForInvalidation: idsMarkedForInvalidation,
                            updatedRecordIDs: &updatedRecordIDs,
                            invalidatedRecordIDs: &invalidatedRecordIDs)
     }
 
-    public func notify(sourceOperation: OperationDescriptor? = nil,
-                       invalidateStore: Bool = false) -> [RequestDescriptor] {
-        _writeEpochLock.sync {
+    public func notify(
+        sourceOperation: OperationDescriptor? = nil,
+        invalidateStore: Bool = false
+    ) -> [RequestDescriptor] {
+        writeEpochLock.sync {
             _currentWriteEpoch += 1
-        }
 
-        if invalidateStore {
-            // TODO update invalidation epoch
+            if invalidateStore {
+                globalInvalidationEpoch = _currentWriteEpoch
+            }
         }
 
         var updatedOwners: [RequestDescriptor] = []

@@ -70,8 +70,8 @@ class DefaultRecordProxy: RecordProxy {
     func getLinkedRecord(_ name: String, args: VariableDataConvertible?) -> RecordProxy? {
         let storageKey = formatStorageKey(name: name, variables: args)
 
-        if let linkedID = mutator.getLinkedRecordID(dataID: dataID, key: storageKey) {
-            return source[linkedID]
+        if let linkedID = mutator.getLinkedRecordID(dataID: dataID, key: storageKey), let linkedID2 = linkedID {
+            return source[linkedID2]
         } else {
             return nil
         }
@@ -80,8 +80,8 @@ class DefaultRecordProxy: RecordProxy {
     func getLinkedRecords(_ name: String, args: VariableDataConvertible?) -> [RecordProxy?]? {
         let storageKey = formatStorageKey(name: name, variables: args)
 
-        if let linkedIDs = mutator.getLinkedRecordIDs(dataID: dataID, key: storageKey) {
-            return linkedIDs.map { $0.flatMap { source[$0] } }
+        if let linkedIDs = mutator.getLinkedRecordIDs(dataID: dataID, key: storageKey), let linkedIDs2 = linkedIDs {
+            return linkedIDs2.map { $0.flatMap { source[$0] } }
         } else {
             return nil
         }

@@ -145,6 +145,32 @@ public struct NormalizationHandle: Storable {
             return handleName
         }
     }
+
+    func clonedSourceField(selections: [NormalizationSelection], variables: VariableData) -> NormalizationLinkedField {
+        precondition(kind == .linked, "clonedSourceField should only be used for linked handles")
+
+        let linkedFields = selections.compactMap { selection -> NormalizationLinkedField? in
+            if case .field(let field) = selection, let field2 = field as? NormalizationLinkedField {
+                return field2
+            }
+            return nil
+        }
+        guard let sourceField = linkedFields.first(where: {
+            // TODO check args somehow
+            $0.name == name && $0.alias == alias
+        }) else {
+            preconditionFailure("Expected a corresponding source field for handle `\(handle)`")
+        }
+
+        let handleKey = self.handleKey(from: variables)
+        return NormalizationLinkedField(
+            name: handleKey,
+            alias: sourceField.alias,
+            storageKey: handleKey,
+            concreteType: sourceField.concreteType,
+            plural: sourceField.plural,
+            selections: sourceField.selections)
+    }
 }
 
 public struct NormalizationInlineFragment: NormalizationNode {

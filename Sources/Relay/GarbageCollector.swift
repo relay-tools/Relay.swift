@@ -17,7 +17,7 @@ class GarbageCollector {
     private var shouldSchedule = false
     private var isRunning = false
     private var holdCounter = 0
-    private var roots: [String: Entry] = [:]
+    private(set) var roots: [String: Entry] = [:]
     private var releaseBuffer: [String] = []
 
     init(store: Store, gcReleaseBufferSize: Int = 0) {
@@ -339,28 +339,7 @@ fileprivate class ReferenceMarker {
     }
 
     func traverseLinkedHandle(_ handle: NormalizationHandle, _ selections: [NormalizationSelection], _ record: Record) {
-        let linkedFields = selections.compactMap { selection -> NormalizationLinkedField? in
-            if case .field(let field) = selection, let field2 = field as? NormalizationLinkedField {
-                return field2
-            }
-            return nil
-        }
-        guard let sourceField = linkedFields.first(where: {
-            // TODO check args somehow
-            $0.name == handle.name && $0.alias == handle.alias
-        }) else {
-            preconditionFailure("Expected a corresponding source field for handle `\(handle.handle)`")
-        }
-
-        let handleKey = handle.handleKey(from: variables)
-        let field = NormalizationLinkedField(
-            name: handleKey,
-            alias: sourceField.alias,
-            storageKey: handleKey,
-            concreteType: sourceField.concreteType,
-            plural: sourceField.plural,
-            selections: sourceField.selections)
-
+        let field = handle.clonedSourceField(selections: selections, variables: variables)
         if field.plural {
             traversePluralLink(field, record)
         } else {

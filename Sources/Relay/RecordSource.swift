@@ -73,10 +73,27 @@ public struct DefaultRecordSource: RecordSource {
 extension RecordSource {
     mutating func update(from source: RecordSource,
                          currentWriteEpoch: Int,
-                         idsMarkedForInvalidation: Set<DataID>? = nil,
+                         idsMarkedForInvalidation: Set<DataID> = [],
                          updatedRecordIDs: inout Set<DataID>,
                          invalidatedRecordIDs: inout Set<DataID>) {
-        // TODO ids marked for invalidation
+        for dataID in idsMarkedForInvalidation {
+            if source.getStatus(dataID) == .nonexistent {
+                continue
+            }
+
+            var nextRecord: Record
+            if let targetRecord = self[dataID] {
+                nextRecord = targetRecord
+            } else if let sourceRecord = source[dataID] {
+                nextRecord = sourceRecord
+            } else {
+                continue
+            }
+
+            nextRecord.invalidatedAt = currentWriteEpoch
+            invalidatedRecordIDs.insert(dataID)
+            self[dataID] = nextRecord
+        }
 
         for dataID in source.recordIDs {
             let sourceRecord = source[dataID]

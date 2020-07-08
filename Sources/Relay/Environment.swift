@@ -69,6 +69,10 @@ public class Environment {
         store.lookup(selector: selector)
     }
 
+    public func check(operation: OperationDescriptor) -> OperationAvailability {
+        store.check(operation: operation)
+    }
+
     public func retain(operation: OperationDescriptor) -> AnyCancellable {
         store.retain(operation: operation)
     }

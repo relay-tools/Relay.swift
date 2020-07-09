@@ -163,8 +163,6 @@ class QueryLoaderTests: XCTestCase {
         assertSnapshot(matching: snapshot.data, as: .dump)
     }
     
-    // TODO check cases around missing data
-    
     func testUpdatesResultForRelevantStoreChanges() throws {
         try environment.mockResponse(CurrentUserToDoListQuery(), myTodosPayload)
         let loader = QueryLoader<CurrentUserToDoListQuery>()
@@ -236,6 +234,23 @@ class QueryLoaderTests: XCTestCase {
         expect(loader.error).notTo(beNil())
         expect(loader.data).to(beNil())
         expect(loader.isLoading).to(beFalse())
+    }
+
+    func testAvoidsStoreLookupWhenDataIsMissing() throws {
+        environment.cachePayload(MoviesTabQuery(), allFilmsData)
+        environment.store.source.remove("ZmlsbXM6Mg==")
+
+        let advance = environment.delayMockedResponse(MoviesTabQuery(), allFilmsData)
+        let loader = QueryLoader<MoviesTabQuery>()
+        let result = loader.loadIfNeeded(environment: environment, variables: .init(), fetchPolicy: .storeAndNetwork)
+        expect(result).to(beNil())
+
+        advance()
+        expect { loader.result }.toEventuallyNot(beNil())
+        let snapshot = try loader.result!.get()
+        expect(snapshot.isMissingData).to(beFalse())
+
+        assertSnapshot(matching: snapshot.data, as: .dump)
     }
 }
 

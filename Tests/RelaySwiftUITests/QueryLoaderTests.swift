@@ -72,7 +72,7 @@ class QueryLoaderTests: XCTestCase {
     func testUsesStoreDataWhenStoreAndNetworkPolicy() throws {
         environment.cachePayload(MoviesTabQuery(), allFilmsData)
         
-        let advance = environment.delayMockedResponse(MoviesTabQuery(), allFilmsData)
+        let advance = environment.delayMockedResponse(MoviesTabQuery(), alteredFilmsData)
         let loader = QueryLoader<MoviesTabQuery>()
         let result = loader.loadIfNeeded(environment: environment, variables: .init(), fetchPolicy: .storeAndNetwork)
         expect(result).toNot(beNil())
@@ -91,6 +91,64 @@ class QueryLoaderTests: XCTestCase {
         expect(snapshot.isMissingData).to(beFalse())
         
         assertSnapshot(matching: snapshot.data, as: .dump)
+    }
+
+    func testDoesNotFetchWhenStoreOnlyPolicy() throws {
+        environment.cachePayload(MoviesTabQuery(), allFilmsData)
+
+        let loader = QueryLoader<MoviesTabQuery>()
+        let advance = try environment.delayMockedResponse(MoviesTabQuery(), allFilmsErrorPayload)
+        let result = loader.loadIfNeeded(environment: environment, variables: .init(), fetchPolicy: .storeOnly)
+        expect(result).notTo(beNil())
+        expect(loader.data).notTo(beNil())
+
+        var resultWasSet = false
+        loader.$result.dropFirst().sink { _ in resultWasSet = true }.store(in: &cancellables)
+
+        advance()
+        RunLoop.main.run(until: Date(timeIntervalSinceNow: 0.2))
+        expect(resultWasSet).to(beFalse())
+
+        expect(loader.error).to(beNil())
+        expect(loader.isLoading).to(beFalse())
+        assertSnapshot(matching: loader.data, as: .dump)
+    }
+
+    func testFetchesWhenNoDataWhenStoreOrNetworkPolicy() throws {
+        let advance = environment.delayMockedResponse(MoviesTabQuery(), allFilmsData)
+        let loader = QueryLoader<MoviesTabQuery>()
+        let result = loader.loadIfNeeded(environment: environment, variables: .init(), fetchPolicy: .storeOrNetwork)
+        expect(result).to(beNil())
+
+        advance()
+        expect { loader.result }.toEventuallyNot(beNil())
+        let snapshot = try loader.result!.get()
+        expect(snapshot.isMissingData).to(beFalse())
+
+        assertSnapshot(matching: snapshot.data, as: .dump)
+    }
+
+    func testUsesStoreDataWhenStoreOrNetworkPolicy() throws {
+        environment.cachePayload(MoviesTabQuery(), allFilmsData)
+
+        let advance = environment.delayMockedResponse(MoviesTabQuery(), alteredFilmsData)
+        let loader = QueryLoader<MoviesTabQuery>()
+        let result = loader.loadIfNeeded(environment: environment, variables: .init(), fetchPolicy: .storeOrNetwork)
+        expect(result).toNot(beNil())
+
+        let snapshot = try loader.result!.get()
+        expect(snapshot.isMissingData).to(beFalse())
+
+        assertSnapshot(matching: snapshot.data, as: .dump)
+
+        var resultWasSet = false
+        loader.$result.dropFirst().sink { _ in resultWasSet = true }.store(in: &cancellables)
+
+        advance()
+        RunLoop.main.run(until: Date(timeIntervalSinceNow: 0.2))
+        expect(resultWasSet).to(beFalse())
+
+        assertSnapshot(matching: loader.data, as: .dump)
     }
     
     func testDoesNotReloadIfNothingChanged() throws {
@@ -291,6 +349,30 @@ private let allFilmsData = [
                     ],
                     "cursor": "YXJyYXljb25uZWN0aW9uOjI="
                 ]
+            ],
+            "pageInfo": [
+                "endCursor": "YXJyYXljb25uZWN0aW9uOjI=",
+                "hasNextPage": true
+            ]
+        ]
+    ]
+]
+
+private let alteredFilmsData = [
+    "data": [
+        "allFilms": [
+            "edges": [
+                [
+                    "node": [
+                        "id": "ZmlsbXM6MQ==",
+                        "episodeID": 4,
+                        "title": "A New Hope",
+                        "director": "George Lucas",
+                        "releaseDate": "1977-05-25",
+                        "__typename": "Film"
+                    ],
+                    "cursor": "YXJyYXljb25uZWN0aW9uOjA="
+                ],
             ],
             "pageInfo": [
                 "endCursor": "YXJyYXljb25uZWN0aW9uOjI=",

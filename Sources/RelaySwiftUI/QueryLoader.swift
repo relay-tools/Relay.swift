@@ -102,19 +102,10 @@ class QueryLoader<Op: Relay.Operation>: ObservableObject {
         }
 
         let operation = Op(variables: variables).createDescriptor()
-        lookupIfPossible(operation: operation)
+        let availability = environment.check(operation: operation)
 
-        fetchCancellable = environment.execute(operation: operation, cacheConfig: CacheConfig())
-            .receive(on: DispatchQueue.main)
-            .map { _ -> Snapshot<Op.Data?> in environment.lookup(selector: operation.fragment) }
-            .sink(receiveCompletion: { [weak self] completion in
-                if case .failure(let error) = completion {
-                    self?.result = .failure(error)
-                }
-            }, receiveValue: { [weak self] response in
-                self?.result = .success(response)
-                self?.subscribe()
-            })
+        lookupIfNeeded(operation, availability)
+        fetchIfNeeded(operation, availability)
 
         retainCancellable = environment.retain(operation: operation)
 
@@ -122,8 +113,8 @@ class QueryLoader<Op: Relay.Operation>: ObservableObject {
         return result
     }
 
-    func lookupIfPossible(operation: OperationDescriptor) {
-        guard fetchPolicy == .storeAndNetwork || environment.forceFetchFromStore else { return }
+    func lookupIfNeeded(_ operation: OperationDescriptor, _ availability: OperationAvailability) {
+        guard fetchPolicy != .networkOnly || environment.forceFetchFromStore else { return }
         guard case .available = environment.check(operation: operation) else {
             result = nil
             return
@@ -134,6 +125,25 @@ class QueryLoader<Op: Relay.Operation>: ObservableObject {
             result = .success(snapshot)
             subscribe()
         }
+    }
+
+    func fetchIfNeeded(_ operation: OperationDescriptor, _ availability: OperationAvailability) {
+        guard fetchPolicy != .storeOnly else { return }
+        if case .success = result, fetchPolicy == .storeOrNetwork {
+            return
+        }
+
+        fetchCancellable = environment.execute(operation: operation, cacheConfig: CacheConfig())
+            .receive(on: DispatchQueue.main)
+            .map { [environment] _ -> Snapshot<Op.Data?> in environment!.lookup(selector: operation.fragment) }
+            .sink(receiveCompletion: { [weak self] completion in
+                if case .failure(let error) = completion {
+                    self?.result = .failure(error)
+                }
+            }, receiveValue: { [weak self] response in
+                self?.result = .success(response)
+                self?.subscribe()
+            })
     }
 
     func subscribe() {

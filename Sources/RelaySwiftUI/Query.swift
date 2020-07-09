@@ -2,8 +2,10 @@ import SwiftUI
 import Relay
 
 public enum QueryFetchPolicy {
+    case storeOnly
     case networkOnly
     case storeAndNetwork
+    case storeOrNetwork
 }
 
 @propertyWrapper

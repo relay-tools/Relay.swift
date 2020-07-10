@@ -16,7 +16,7 @@
     "test": "tsdx test",
     "lint": "tsdx lint",
     "prepare": "tsdx build && npm run prepare-swift-build && npm run prepare-swift-copy",
-    "prepare-swift-build": "cd .. && swift build -c release",
+    "prepare-swift-build": "cd .. && swift build -c release --product find-graphql-tags",
     "prepare-swift-copy": "cp ../.build/x86_64-apple-macosx/release/find-graphql-tags \"$(xcode-select -p)/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/macosx/lib_InternalSwiftSyntaxParser.dylib\" ./dist/"
   },
   "peerDependencies": {},

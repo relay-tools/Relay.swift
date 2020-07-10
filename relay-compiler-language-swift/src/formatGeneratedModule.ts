@@ -50,13 +50,9 @@ function generatePostamble(node: ConcreteRequest | ReaderFragment): string {
       const fragment = node as ReaderFragment;
       let text = `extension ${fragment.name}: Relay.Fragment {}
 `;
-      if (
-        fragment.metadata &&
-        fragment.metadata.connection &&
-        fragment.metadata.refetch
-      ) {
+      if (fragment.metadata && fragment.metadata.refetch) {
         text += `
-${generatePaginationFragmentExtension(fragment)}
+${generateRefetchFragmentExtension(fragment)}
 `;
       }
 
@@ -69,36 +65,15 @@ ${generateSwiftUIExtension(fragment)}
   }
 }
 
-function generatePaginationFragmentExtension(node: ReaderFragment): string {
+function generateRefetchFragmentExtension(node: ReaderFragment): string {
   const refetch = node.metadata.refetch;
   const operationName = (refetch.operation as string)
     .replace('@@MODULE_START@@', '')
     .replace('.graphql@@MODULE_END@@', '');
 
-  let connectionArgs: [string, string][] = [
-    [
-      'path',
-      `[${refetch.connection.path
-        .map(elem => (typeof elem === 'string' ? `"${elem}"` : String(elem)))
-        .join(', ')}]`,
-    ],
-  ];
-
-  if (refetch.connection.forward) {
-    connectionArgs.push([
-      'forward',
-      generateConnectionConfigExpr(refetch.connection.forward),
-    ]);
-  }
-
-  if (refetch.connection.backward) {
-    connectionArgs.push([
-      'backward',
-      generateConnectionConfigExpr(refetch.connection.backward),
-    ]);
-  }
-
-  return `extension ${node.name}: Relay.PaginationFragment {
+  let text = `extension ${node.name}: Relay.${
+    refetch.connection ? 'PaginationFragment' : 'RefetchFragment'
+  } {
 ${indent(1)}typealias Operation = ${operationName}
 
 ${indent(1)}static var metadata: Metadata {
@@ -106,13 +81,49 @@ ${indent(2)}RefetchMetadata(
 ${indent(3)}path: [${refetch.fragmentPathInResult
     .map(elem => (typeof elem === 'string' ? `"${elem}"` : String(elem)))
     .join(', ')}],
-${indent(3)}operation: Operation.self,
+`;
+
+  if ((refetch as any).identifierField) {
+    text += `${indent(3)}identifierField: "${(refetch as any).identifierField}",
+`;
+  }
+
+  text += `${indent(3)}operation: Operation.self`;
+
+  if (refetch.connection) {
+    let connectionArgs: [string, string][] = [
+      [
+        'path',
+        `[${refetch.connection.path
+          .map(elem => (typeof elem === 'string' ? `"${elem}"` : String(elem)))
+          .join(', ')}]`,
+      ],
+    ];
+
+    if (refetch.connection.forward) {
+      connectionArgs.push([
+        'forward',
+        generateConnectionConfigExpr(refetch.connection.forward),
+      ]);
+    }
+
+    if (refetch.connection.backward) {
+      connectionArgs.push([
+        'backward',
+        generateConnectionConfigExpr(refetch.connection.backward),
+      ]);
+    }
+
+    text += `,
 ${indent(3)}connection: ConnectionMetadata(
 ${connectionArgs
   .map(([name, expr]) => `${indent(4)}${name}: ${expr}`)
-  .join(',\n')}))
+  .join(',\n')})`;
+  }
+  text += `)
 ${indent(1)}}
 }`;
+  return text;
 }
 
 function generateConnectionConfigExpr({

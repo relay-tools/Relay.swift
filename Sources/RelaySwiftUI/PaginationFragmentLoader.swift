@@ -24,8 +24,6 @@ class PaginationFragmentLoader<Fragment: Relay.PaginationFragment>: ObservableOb
         self.metadata = Fragment.metadata
     }
 
-    private var isLoaded = false
-
     func load(from environment: Environment, key: Fragment.Key) {
         let newSelector = Fragment(key: key).selector
         if newSelector == selector {
@@ -36,8 +34,6 @@ class PaginationFragmentLoader<Fragment: Relay.PaginationFragment>: ObservableOb
         self.selector = newSelector
         snapshot = environment.lookup(selector: newSelector)
         subscribe()
-
-        isLoaded = true
     }
 
     func subscribe() {

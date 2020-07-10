@@ -1,9 +1,4 @@
-public protocol PaginationFragment: Fragment {
-    associatedtype Operation: Relay.Operation
-
-    typealias Metadata = RefetchMetadata<Operation>
-
-    static var metadata: Metadata { get }
+public protocol PaginationFragment: RefetchFragment {
 }
 
 public enum PaginationDirection: Hashable {

@@ -6,68 +6,41 @@ class RefetchFragmentLoader<Fragment: Relay.RefetchFragment>: ObservableObject, 
     typealias RefetchVariables = Fragment.Operation.Variables
 
     let metadata: Fragment.Metadata
+    let fragmentLoader: FragmentLoader<Fragment>
 
-    var environment: Environment!
-    var selector: SingularReaderSelector?
-
-    var snapshot: Snapshot<Fragment.Data?>? {
-        // not sure why this is needed instead of using Published.
-        // my best guess is it's because it's optional, and that adds indirection to the value.
-        willSet {
-            self.objectWillChange.send()
-        }
-    }
-
-    var subscribeCancellable: AnyCancellable?
+    var fragmentLoaderCancellable: AnyCancellable?
     var refetchCancellable: AnyCancellable?
 
     init() {
         self.metadata = Fragment.metadata
+        self.fragmentLoader = FragmentLoader()
+
+        if #available(iOS 14.0, macOS 10.16, tvOS 14.0, watchOS 7.0, *) {
+            fragmentLoader.$snapshot.assign(to: $snapshot)
+        } else {
+            fragmentLoaderCancellable = fragmentLoader.$snapshot.sink { [weak self] newSnapshot in
+                self?.snapshot = newSnapshot
+            }
+        }
     }
 
     func load(from environment: Environment, key: Fragment.Key) {
-        let newSelector = Fragment(key: key).selector
-        if newSelector == selector {
-            return
-        }
-
-        self.environment = environment
-        self.selector = newSelector
-        snapshot = environment.lookup(selector: newSelector)
-        subscribe()
+        fragmentLoader.load(from: environment, key: key)
     }
 
-    func subscribe() {
-        guard let snapshot = snapshot else { return }
-
-        subscribeCancellable = environment.subscribe(snapshot: snapshot)
-            .receive(on: DispatchQueue.main)
-            .sink { [weak self] snapshot in
-                self?.snapshot = snapshot
-            }
-    }
+    @Published var snapshot: Snapshot<Fragment.Data?>?
 
     var data: Fragment.Data? {
-        guard let snapshot = snapshot else { return nil }
-
-        if snapshot.isMissingData && environment.isActive(request: snapshot.selector.owner) {
-            // wait for the request to finish to try to get complete data.
-            // this can happen if we are loading query data from the store and we change the
-            // query variables, such that some of the records in the tree still exist but not
-            // all.
-            return nil
-        }
-
-        return snapshot.data
+        fragmentLoader.data
     }
 
     func refetch(_ variables: RefetchVariables?) {
-        guard var variables = variables?.variableData ?? selector?.owner.variables else {
+        guard var variables = variables?.variableData ?? fragmentLoader.selector?.owner.variables else {
             preconditionFailure("Attempting to refetch before the fragment has even been loaded")
         }
 
         if let identifierField = metadata.identifierField, variables.id == nil {
-            guard let data: SelectorData = environment.lookup(selector: selector!).data else {
+            guard let data: SelectorData = fragmentLoader.environment.lookup(selector: fragmentLoader.selector!).data else {
                 preconditionFailure("Could not set identifier because fragment data was nil")
             }
 
@@ -77,7 +50,7 @@ class RefetchFragmentLoader<Fragment: Relay.RefetchFragment>: ObservableObject, 
 
         let refetchQuery = metadata.operation.createDescriptor(variables: variables)
 
-        refetchCancellable = environment.execute(operation: refetchQuery, cacheConfig: CacheConfig())
+        refetchCancellable = fragmentLoader.environment.execute(operation: refetchQuery, cacheConfig: CacheConfig())
             .receive(on: DispatchQueue.main)
             .map { _ in () }
             .sink(receiveCompletion: { _ in }, receiveValue: {})

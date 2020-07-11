@@ -15,13 +15,13 @@ class RefetchFragmentLoader<Fragment: Relay.RefetchFragment>: ObservableObject, 
         self.metadata = Fragment.metadata
         self.fragmentLoader = FragmentLoader()
 
-        if #available(iOS 14.0, macOS 10.16, tvOS 14.0, watchOS 7.0, *) {
-            fragmentLoader.$snapshot.assign(to: $snapshot)
-        } else {
+//        if #available(iOS 14.0, macOS 10.16, tvOS 14.0, watchOS 7.0, *) {
+//            fragmentLoader.$snapshot.assign(to: $snapshot)
+//        } else {
             fragmentLoaderCancellable = fragmentLoader.$snapshot.sink { [weak self] newSnapshot in
                 self?.snapshot = newSnapshot
             }
-        }
+//        }
     }
 
     func load(from environment: Environment, key: Fragment.Key) {
@@ -34,13 +34,21 @@ class RefetchFragmentLoader<Fragment: Relay.RefetchFragment>: ObservableObject, 
         fragmentLoader.data
     }
 
+    var environment: Environment! {
+        fragmentLoader.environment
+    }
+
+    var selector: SingularReaderSelector? {
+        fragmentLoader.selector
+    }
+
     func refetch(_ variables: RefetchVariables?) {
-        guard var variables = variables?.variableData ?? fragmentLoader.selector?.owner.variables else {
+        guard var variables = variables?.variableData ?? selector?.owner.variables else {
             preconditionFailure("Attempting to refetch before the fragment has even been loaded")
         }
 
         if let identifierField = metadata.identifierField, variables.id == nil {
-            guard let data: SelectorData = fragmentLoader.environment.lookup(selector: fragmentLoader.selector!).data else {
+            guard let data: SelectorData = environment.lookup(selector: selector!).data else {
                 preconditionFailure("Could not set identifier because fragment data was nil")
             }
 
@@ -50,7 +58,7 @@ class RefetchFragmentLoader<Fragment: Relay.RefetchFragment>: ObservableObject, 
 
         let refetchQuery = metadata.operation.createDescriptor(variables: variables)
 
-        refetchCancellable = fragmentLoader.environment.execute(operation: refetchQuery, cacheConfig: CacheConfig())
+        refetchCancellable = environment.execute(operation: refetchQuery, cacheConfig: CacheConfig())
             .receive(on: DispatchQueue.main)
             .map { _ in () }
             .sink(receiveCompletion: { _ in }, receiveValue: {})

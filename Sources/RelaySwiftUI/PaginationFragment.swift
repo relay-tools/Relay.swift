@@ -35,10 +35,14 @@ public struct PaginationFragment<F: Relay.PaginationFragment>: DynamicProperty {
     @dynamicMemberLookup
     public struct Wrapper: Paginating {
         public let data: F.Data
-        let paging: Paginating
+        let paging: Pager<F>
 
         public subscript<Subject>(dynamicMember keyPath: KeyPath<F.Data, Subject>) -> Subject {
             return data[keyPath: keyPath]
+        }
+
+        public func refetch(_ variables: F.Operation.Variables?) {
+            paging.refetch(variables)
         }
 
         public func loadNext(_ count: Int) {
@@ -94,9 +98,9 @@ public struct PaginationFragmentNext<F: Relay.PaginationFragment>: DynamicProper
     }
 
     @dynamicMemberLookup
-    public struct Wrapper: Paginating {
+    public struct Wrapper {
         public let data: F.Data
-        let paging: Paginating
+        let paging: Pager<F>
 
         public subscript<Subject>(dynamicMember keyPath: KeyPath<F.Data, Subject>) -> Subject {
             return data[keyPath: keyPath]

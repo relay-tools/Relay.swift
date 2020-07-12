@@ -41,7 +41,7 @@ public extension RecordProxy {
 }
 
 class DefaultRecordProxy: RecordProxy {
-    private let source: DefaultRecordSourceProxy
+    private weak var source: DefaultRecordSourceProxy?
     private let mutator: RecordSourceMutator
 
     var dataID: DataID
@@ -70,7 +70,9 @@ class DefaultRecordProxy: RecordProxy {
     func getLinkedRecord(_ name: String, args: VariableDataConvertible?) -> RecordProxy? {
         let storageKey = formatStorageKey(name: name, variables: args)
 
-        if let linkedID = mutator.getLinkedRecordID(dataID: dataID, key: storageKey), let linkedID2 = linkedID {
+        if let source = source,
+           let linkedID = mutator.getLinkedRecordID(dataID: dataID, key: storageKey),
+           let linkedID2 = linkedID {
             return source[linkedID2]
         } else {
             return nil
@@ -80,7 +82,9 @@ class DefaultRecordProxy: RecordProxy {
     func getLinkedRecords(_ name: String, args: VariableDataConvertible?) -> [RecordProxy?]? {
         let storageKey = formatStorageKey(name: name, variables: args)
 
-        if let linkedIDs = mutator.getLinkedRecordIDs(dataID: dataID, key: storageKey), let linkedIDs2 = linkedIDs {
+        if let source = source,
+           let linkedIDs = mutator.getLinkedRecordIDs(dataID: dataID, key: storageKey),
+           let linkedIDs2 = linkedIDs {
             return linkedIDs2.map { $0.flatMap { source[$0] } }
         } else {
             return nil
@@ -94,7 +98,7 @@ class DefaultRecordProxy: RecordProxy {
 
         let storageKey = formatStorageKey(name: name, variables: args)
         let clientID = dataID.clientID(storageKey: storageKey)
-        let linkedRecord = source[clientID] ?? source.create(dataID: clientID, typeName: typeName)
+        let linkedRecord = source![clientID] ?? source!.create(dataID: clientID, typeName: typeName)
         setLinkedRecord(name, args: args, record: linkedRecord)
         return linkedRecord
     }
@@ -115,6 +119,6 @@ class DefaultRecordProxy: RecordProxy {
     }
 
     func invalidateRecord() {
-        source.markIDForInvalidation(dataID)
+        source?.markIDForInvalidation(dataID)
     }
 }

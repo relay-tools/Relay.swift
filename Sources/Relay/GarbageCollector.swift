@@ -50,22 +50,26 @@ class GarbageCollector {
 
             #if swift(>=5.3)
             if #available(iOS 14.0, macOS 10.16, tvOS 14.0, watchOS 7.0, *) {
+                logger.debug("GC Refcount: \(self.roots[id]?.refCount ?? 0, privacy: .public) \(operation.request.node.params.name, privacy: .public), variables: \(operation.request.variables)")
                 logger.info("GC Release: \(operation.request.node.params.name, privacy: .public), variables: \(operation.request.variables)")
             }
             #endif
             os_signpost(.event, log: log, name: "release operation", signpostID: signpostID)
             self.roots[id]?.refCount -= 1
 
-            // TODO query cache expiration time
-            self.releaseBuffer.append(id)
-            if self.releaseBuffer.count > self.gcReleaseBufferSize {
-                self.roots.removeValue(forKey: self.releaseBuffer.removeFirst())
-                self.schedule()
+            if let root = self.roots[id], root.refCount == 0 {
+                // TODO query cache expiration time
+                self.releaseBuffer.append(id)
+                if self.releaseBuffer.count > self.gcReleaseBufferSize {
+                    self.roots.removeValue(forKey: self.releaseBuffer.removeFirst())
+                    self.schedule()
+                }
             }
         }
 
         #if swift(>=5.3)
         if #available(iOS 14.0, macOS 10.16, tvOS 14.0, watchOS 7.0, *) {
+            logger.debug("GC Refcount: \(self.roots[id]?.refCount ?? 0, privacy: .public) \(operation.request.node.params.name, privacy: .public), variables: \(operation.request.variables)")
             logger.info("GC Retain:  \(operation.request.node.params.name, privacy: .public), variables: \(operation.request.variables)")
         }
         #endif

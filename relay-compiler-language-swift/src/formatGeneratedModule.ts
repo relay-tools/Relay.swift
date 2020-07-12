@@ -148,6 +148,17 @@ ${indent(2)}RelaySwiftUI.FragmentNext<${fragment.name}>(self)
 ${indent(1)}}
 `;
 
+  if (fragment.metadata && fragment.metadata.refetch) {
+    text += `
+${indent(1)}@available(iOS 14.0, macOS 10.16, tvOS 14.0, watchOS 7.0, *)
+${indent(1)}func asFragment() -> RelaySwiftUI.RefetchableFragment<${
+      fragment.name
+    }> {
+${indent(2)}RelaySwiftUI.RefetchableFragment<${fragment.name}>(self)
+${indent(1)}}
+`;
+  }
+
   if (fragment.metadata && fragment.metadata.connection) {
     text += `
 ${indent(1)}@available(iOS 14.0, macOS 10.16, tvOS 14.0, watchOS 7.0, *)

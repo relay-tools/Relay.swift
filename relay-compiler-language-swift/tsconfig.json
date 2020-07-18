@@ -1,6 +1,7 @@
 {
   "include": ["src", "types"],
   "compilerOptions": {
+    "target": "es5",
     "module": "esnext",
     "lib": ["dom", "esnext"],
     "importHelpers": true,
@@ -18,6 +19,7 @@
       "*": ["src/*", "node_modules/*"]
     },
     "jsx": "react",
+    "jsxFactory": "swiftJSX",
     "esModuleInterop": true
   }
 }

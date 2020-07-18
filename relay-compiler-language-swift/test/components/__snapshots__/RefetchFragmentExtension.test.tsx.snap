@@ -1,0 +1,30 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`pagination fragment 1`] = `
+"extension TweetList_tweets: Relay.PaginationFragment {
+    typealias Operation = TweetListPaginationQuery
+    static var metadata: Metadata {
+        RefetchMetadata(
+            path: [\\"viewer\\"],
+            operation: Operation.self,
+            connection: ConnectionMetadata(
+                path: [\\"allTweets\\"],
+                forward: ConnectionVariableConfig(count: \\"count\\", cursor: \\"cursor\\")
+            )
+        )
+    }
+}"
+`;
+
+exports[`refetchable fragment 1`] = `
+"extension TweetDetail_tweet: Relay.RefetchFragment {
+    typealias Operation = TweetDetailRefetchQuery
+    static var metadata: Metadata {
+        RefetchMetadata(
+            path: [\\"node\\"],
+            identifierField: \\"id\\",
+            operation: Operation.self
+        )
+    }
+}"
+`;

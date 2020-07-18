@@ -1,10 +1,12 @@
+/** @jsx swiftJSX */
+
+import { swiftJSX, Fragment, renderSwift } from './swiftJSX';
 import { TypeGenerator, Schema, IRVisitor } from 'relay-compiler';
 import { RunState } from './RunState';
 import * as RefetchableFragmentTransform from 'relay-compiler/lib/transforms/RefetchableFragmentTransform';
 import { TypeGeneratorOptions } from 'relay-compiler/lib/language/RelayLanguagePluginInterface';
 import { NodeVisitor } from 'relay-compiler/lib/core/IRVisitor';
 import {
-  makeTypeNode,
   ProtocolNode,
   InputStructNode,
   ReadableStructNode,
@@ -19,27 +21,33 @@ import {
   transformObjectType,
 } from './transforms';
 import { State } from 'State';
+import { DataType } from './components/DataTypes';
 
 export function SwiftGenerator(runState: RunState): TypeGenerator {
   return {
     generate(schema, node, options) {
       const ast = IRVisitor.visit(node, createVisitor(schema, options));
 
-      const typeText = ast
-        .filter(node => {
-          if (node.kind === 'enum' || node.kind === 'inputStruct') {
-            if (runState.hasGeneratedType(node.name)) {
-              return false;
-            }
+      const code = (
+        <Fragment>
+          {ast
+            .filter(node => {
+              if (node.kind === 'enum' || node.kind === 'inputStruct') {
+                if (runState.hasGeneratedType(node.name)) {
+                  return false;
+                }
 
-            runState.addGeneratedType(node.name);
-          }
-          return true;
-        })
-        .map(node => makeTypeNode(node, 0))
-        .join('\n');
+                runState.addGeneratedType(node.name);
+              }
+              return true;
+            })
+            .map(node => (
+              <DataType node={node} />
+            ))}
+        </Fragment>
+      );
 
-      return typeText;
+      return renderSwift(code);
     },
 
     transforms: [RefetchableFragmentTransform.transform],

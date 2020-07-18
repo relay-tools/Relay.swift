@@ -30,7 +30,7 @@ export default function plugin(): PluginInterface {
       };
     },
     findGraphQLTags: find,
-    formatModule: formatGeneratedModule(runState),
+    formatModule: formatGeneratedModule(),
     typeGenerator: SwiftGenerator(runState),
   } as any;
 }

@@ -1,0 +1,101 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`empty extension 1`] = `"extension DetailedTweetRow_tweet: Relay.Fragment {}"`;
+
+exports[`extension with nested types 1`] = `
+"extension DetailedTweetRow_tweet {
+    struct Data: Decodable, Identifiable {
+        var tweets: [Tweet_tweets]
+        var id: String
+        var status: TweetStatus
+        struct Tweet_tweets: Decodable {
+            var postedTweetID: String?
+        }
+    }
+}"
+`;
+
+exports[`fragment with an import 1`] = `
+"import Relay
+struct Data {
+    var foo: String
+    var bar: Int?
+}"
+`;
+
+exports[`function tagged with availability 1`] = `
+"extension TweetRow_tweetGroup_Key {
+    @available(iOS 14.0, macOS 10.16, tvOS 14.0, watchOS 7.0, *)
+    func asFragment() -> RelaySwiftUI.FragmentNext<TweetRow_tweetGroup> {
+        RelaySwiftUI.FragmentNext<TweetRow_tweetGroup>(self)
+    }
+}"
+`;
+
+exports[`nested components 1`] = `
+"extension TweetList_tweets: Relay.PaginationFragment {
+    static var metadata: Metadata {
+        RefetchMetadata(
+            path: [\\"viewer\\"],
+            operation: Operation.self,
+            connection: ConnectionMetadata(
+                path: [\\"allTweets\\"],
+                forward: ConnectionVariableConfig(count: \\"count\\", cursor: \\"cursor\\")
+            )
+        )
+    }
+}"
+`;
+
+exports[`property with a function call expression 1`] = `
+"extension TweetList_tweets: Relay.PaginationFragment {
+    static var metadata: Metadata {
+        RefetchMetadata(
+            path: [\\"viewer\\"],
+            operation: Operation.self,
+            connection: ConnectionMetadata(
+                path: [\\"allTweets\\"],
+                forward: ConnectionVariableConfig(count: \\"count\\", cursor: \\"cursor\\")
+            )
+        )
+    }
+}"
+`;
+
+exports[`public access 1`] = `
+"public extension TweetRow_tweetGroup_Key: Relay.Operation {
+    public func asFragment() -> RelaySwiftUI.FragmentNext<TweetRow_tweetGroup> {
+        RelaySwiftUI.FragmentNext<TweetRow_tweetGroup>(self)
+    }
+}
+public struct Data {
+    public var foo: String
+    public var bar: Int?
+}"
+`;
+
+exports[`struct with a nested struct 1`] = `
+"struct Data: Decodable, Identifiable {
+    var tweets: [Tweet_tweets]
+    var id: String
+    var status: TweetStatus
+    struct Tweet_tweets: Decodable {
+        var postedTweetID: String?
+    }
+}"
+`;
+
+exports[`struct with an initializer 1`] = `
+"struct DetailedTweetRow_tweet {
+    init(key: DetailedTweetRow_tweet_Key) {
+        fragmentPointer = key.fragment_DetailedTweetRow_tweet
+    }
+}"
+`;
+
+exports[`struct with some vars 1`] = `
+"struct Data {
+    var foo: String
+    var bar: Int?
+}"
+`;

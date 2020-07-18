@@ -1,0 +1,66 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`empty variables type 1`] = `
+"extension TweetsScreenQuery {
+    typealias Variables = EmptyVariables
+}"
+`;
+
+exports[`enum 1`] = `
+"enum TweetFilter: String, Decodable, Hashable, VariableValueConvertible, ReadableScalar, CustomStringConvertible {
+    case upcoming = \\"UPCOMING\\"
+    case past = \\"PAST\\"
+    var description: String {
+        rawValue
+    }
+}"
+`;
+
+exports[`fragment protocol 1`] = `
+"protocol TweetRow_tweetGroup_Key {
+    var fragment_TweetRow_tweetGroup: FragmentPointer { get }
+}"
+`;
+
+exports[`readable struct 1`] = `
+"extension TweetsList_tweets {
+    struct Data: Decodable {
+        var allTweets: TweetGroupConnection_allTweets
+        struct TweetGroupConnection_allTweets: Decodable, ConnectionCollection {
+            var edges: [TweetGroupEdge_edges]
+            struct TweetGroupEdge_edges: Decodable, ConnectionEdge {
+                var node: TweetGroup_node
+                struct TweetGroup_node: Decodable, Identifiable, TweetRow_tweetGroup_Key, ConnectionNode {
+                    var id: String
+                    var fragment_TweetRow_tweetGroup: FragmentPointer
+                }
+            }
+        }
+    }
+}"
+`;
+
+exports[`simple variables type 1`] = `
+"extension TweetDetailScreenQuery {
+    struct Variables: VariableDataConvertible {
+        var id: String
+        var variableData: VariableData {
+            [
+                \\"id\\": id
+            ]
+        }
+    }
+    init(id: String) {
+        self.init(variables: .init(id: id))
+    }
+}
+#if swift(>=5.3) && canImport(RelaySwiftUI)
+import RelaySwiftUI
+@available(iOS 14.0, macOS 10.16, tvOS 14.0, watchOS 7.0, *)
+extension RelaySwiftUI.QueryNext.WrappedValue where O == TweetDetailScreenQuery {
+    func get(id: String, fetchKey: Any? = nil) -> RelaySwiftUI.QueryNext<TweetDetailScreenQuery>.Result {
+        self.get(.init(id: id), fetchKey: fetchKey)
+    }
+}
+#endif"
+`;

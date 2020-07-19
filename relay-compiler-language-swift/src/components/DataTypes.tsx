@@ -111,47 +111,15 @@ const ReadableUnionOrInterface = ({
       <enum access="private" name="TypeKeys" inherit={['String', 'CodingKey']}>
         <case name="__typename" />
       </enum>
-      <init
-        parameters={[<paramdecl label="from" name="decoder" type="Decoder" />]}
-        throws
-      >
-        {'let container = try decoder.container(keyedBy: TypeKeys.self)'}
-        {
-          'let typeName = try container.decode(String.self, forKey: .__typename)'
-        }
-        <switch value="typeName">
-          {inlineFragmentFields.map(field => (
-            <case name={<literal string={field.childType.name} />}>
-              {`self = .${enumTypeCaseName(field.childType.name)}(try ${
-                field.childType.name
-              }(from: decoder))`}
-            </case>
-          ))}
-          <case isDefault>
-            {`self = .${enumTypeCaseName(node.originalTypeName)}(try ${
-              node.originalTypeName
-            }(from: decoder))`}
-          </case>
-        </switch>
-      </init>
+      <UnionOrInterfaceInitializer
+        node={node}
+        inlineFragmentFields={inlineFragmentFields}
+      />
       {childTypes.map(childType => (
-        <var name={`as${childType.name}`} type={`${childType.name}?`}>
-          {`if case .${enumTypeCaseName(childType.name)}(let val) = self {`}
-          {'    return val'}
-          {'}'}
-          {'return nil'}
-        </var>
+        <AsChildTypeProperty node={childType} />
       ))}
       {otherTypeFields.map(field => (
-        <var name={field.fieldName} type={field.typeName}>
-          <switch value="self">
-            {childTypes.map(childType => (
-              <case name={`.${enumTypeCaseName(childType.name)}(let val)`}>
-                {`return val.${field.fieldName}`}
-              </case>
-            ))}
-          </switch>
-        </var>
+        <CommonFieldProperty field={field} childTypes={childTypes} />
       ))}
       {childTypes.map(childType => (
         <DataType
@@ -166,6 +134,69 @@ const ReadableUnionOrInterface = ({
         />
       ))}
     </enum>
+  );
+};
+
+const UnionOrInterfaceInitializer = ({
+  node,
+  inlineFragmentFields,
+}: {
+  node: ReadableUnionNode | ReadableInterfaceNode;
+  inlineFragmentFields: readonly InlineFragmentNode[];
+}) => {
+  return (
+    <init
+      parameters={[<paramdecl label="from" name="decoder" type="Decoder" />]}
+      throws
+    >
+      {'let container = try decoder.container(keyedBy: TypeKeys.self)'}
+      {'let typeName = try container.decode(String.self, forKey: .__typename)'}
+      <switch value="typeName">
+        {inlineFragmentFields.map(field => (
+          <case name={<literal string={field.childType.name} />}>
+            {`self = .${enumTypeCaseName(field.childType.name)}(try ${
+              field.childType.name
+            }(from: decoder))`}
+          </case>
+        ))}
+        <case isDefault>
+          {`self = .${enumTypeCaseName(node.originalTypeName)}(try ${
+            node.originalTypeName
+          }(from: decoder))`}
+        </case>
+      </switch>
+    </init>
+  );
+};
+
+const AsChildTypeProperty = ({ node }: { node: TypeNode }) => {
+  return (
+    <var name={`as${node.name}`} type={`${node.name}?`}>
+      {`if case .${enumTypeCaseName(node.name)}(let val) = self {`}
+      {'    return val'}
+      {'}'}
+      {'return nil'}
+    </var>
+  );
+};
+
+const CommonFieldProperty = ({
+  field,
+  childTypes,
+}: {
+  field: FieldNode;
+  childTypes: readonly TypeNode[];
+}) => {
+  return (
+    <var name={field.fieldName} type={field.typeName}>
+      <switch value="self">
+        {childTypes.map(childType => (
+          <case name={`.${enumTypeCaseName(childType.name)}(let val)`}>
+            {`return val.${field.fieldName}`}
+          </case>
+        ))}
+      </switch>
+    </var>
   );
 };
 

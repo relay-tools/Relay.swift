@@ -1,6 +1,6 @@
 /** @jsx swiftJSX */
 
-import { swiftJSX } from '../swiftJSX';
+import { swiftJSX, DeclarationGroup } from '../swiftJSX';
 import {
   ReadableStructNode,
   TypeNode,
@@ -45,14 +45,16 @@ const ReadableStruct = ({ node }: { node: ReadableStructNode }) => {
 
   return (
     <struct name={node.name} inherit={inherit}>
-      {node.fields.map(field =>
-        field.fieldName == null ? null : (
-          <var name={field.fieldName} type={field.typeName} />
-        )
-      )}
-      {node.childTypes.map(childType => (
-        <DataType node={childType} />
-      ))}
+      <DeclarationGroup>
+        {node.fields.map(field =>
+          field.fieldName == null ? null : (
+            <var name={field.fieldName} type={field.typeName} />
+          )
+        )}
+        {node.childTypes.map(childType => (
+          <DataType node={childType} />
+        ))}
+      </DeclarationGroup>
     </struct>
   );
 };
@@ -98,41 +100,47 @@ const ReadableUnionOrInterface = ({
 
   return (
     <enum name={node.name} inherit={['Decodable', ...node.extends]}>
-      {inlineFragmentFields.map(field => (
+      <DeclarationGroup>
+        {inlineFragmentFields.map(field => (
+          <case
+            name={enumTypeCaseName(field.childType.name)}
+            parameters={[field.childType.name]}
+          />
+        ))}
         <case
-          name={enumTypeCaseName(field.childType.name)}
-          parameters={[field.childType.name]}
+          name={enumTypeCaseName(node.originalTypeName)}
+          parameters={[node.originalTypeName]}
         />
-      ))}
-      <case
-        name={enumTypeCaseName(node.originalTypeName)}
-        parameters={[node.originalTypeName]}
-      />
-      <enum access="private" name="TypeKeys" inherit={['String', 'CodingKey']}>
-        <case name="__typename" />
-      </enum>
-      <UnionOrInterfaceInitializer
-        node={node}
-        inlineFragmentFields={inlineFragmentFields}
-      />
-      {childTypes.map(childType => (
-        <AsChildTypeProperty node={childType} />
-      ))}
-      {otherTypeFields.map(field => (
-        <CommonFieldProperty field={field} childTypes={childTypes} />
-      ))}
-      {childTypes.map(childType => (
-        <DataType
-          node={
-            {
-              ...childType,
-              fields: [...otherTypeFields, ...childType.fields],
-              childTypes: [...otherChildTypes, ...childType.childTypes],
-              extends: [...otherExtends, ...childType.extends],
-            } as TypeNode
-          }
+        <enum
+          access="private"
+          name="TypeKeys"
+          inherit={['String', 'CodingKey']}
+        >
+          <case name="__typename" />
+        </enum>
+        <UnionOrInterfaceInitializer
+          node={node}
+          inlineFragmentFields={inlineFragmentFields}
         />
-      ))}
+        {childTypes.map(childType => (
+          <AsChildTypeProperty node={childType} />
+        ))}
+        {otherTypeFields.map(field => (
+          <CommonFieldProperty field={field} childTypes={childTypes} />
+        ))}
+        {childTypes.map(childType => (
+          <DataType
+            node={
+              {
+                ...childType,
+                fields: [...otherTypeFields, ...childType.fields],
+                childTypes: [...otherChildTypes, ...childType.childTypes],
+                extends: [...otherExtends, ...childType.extends],
+              } as TypeNode
+            }
+          />
+        ))}
+      </DeclarationGroup>
     </enum>
   );
 };

@@ -1,6 +1,6 @@
 /** @jsx swiftJSX */
 
-import { swiftJSX, Fragment } from '../swiftJSX';
+import { swiftJSX, Fragment, DeclarationGroup } from '../swiftJSX';
 import { ReaderFragment } from 'relay-runtime';
 import { SwiftUICheck } from './SwiftUICheck';
 import { AvailableOnNewPlatforms } from './AvailableOnNewPlatforms';
@@ -12,24 +12,26 @@ export const SwiftUIFragmentExtension = ({
 }) => {
   return (
     <SwiftUICheck>
-      <import module="RelaySwiftUI" />
-      <extension name={`${node.name}_Key`}>
-        <AsFragmentFunction fragmentName={node.name} type="FragmentNext" />
-        {node.metadata?.refetch ? (
-          <Fragment>
-            <AsFragmentFunction
-              fragmentName={node.name}
-              type="RefetchableFragment"
-            />
-            {node.metadata.refetch.connection ? (
+      <DeclarationGroup>
+        <import module="RelaySwiftUI" />
+        <extension name={`${node.name}_Key`}>
+          <AsFragmentFunction fragmentName={node.name} type="FragmentNext" />
+          {node.metadata?.refetch ? (
+            <Fragment>
               <AsFragmentFunction
                 fragmentName={node.name}
-                type="PaginationFragmentNext"
+                type="RefetchableFragment"
               />
-            ) : null}
-          </Fragment>
-        ) : null}
-      </extension>
+              {node.metadata.refetch.connection ? (
+                <AsFragmentFunction
+                  fragmentName={node.name}
+                  type="PaginationFragmentNext"
+                />
+              ) : null}
+            </Fragment>
+          ) : null}
+        </extension>
+      </DeclarationGroup>
     </SwiftUICheck>
   );
 };

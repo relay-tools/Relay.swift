@@ -1,6 +1,6 @@
 /** @jsx swiftJSX */
 
-import { swiftJSX, Fragment } from '../swiftJSX';
+import { swiftJSX, DeclarationGroup } from '../swiftJSX';
 import { InputStructNode } from '../SwiftGeneratorDataTypes';
 import { SwiftUICheck } from './SwiftUICheck';
 import { AvailableOnNewPlatforms } from './AvailableOnNewPlatforms';
@@ -10,36 +10,38 @@ export const InputType = ({ node }: { node: InputStructNode }) => {
     const [parentType, childType] = node.name.split('.');
 
     return (
-      <Fragment>
+      <DeclarationGroup>
         <extension name={parentType}>
           <InputType node={{ ...node, name: childType }} />
         </extension>
         <QueryGetConvenienceExtension node={node} />
-      </Fragment>
+      </DeclarationGroup>
     );
   }
 
   return node.fields.length ? (
-    <Fragment>
+    <DeclarationGroup>
       <struct name={node.name} inherit={['VariableDataConvertible']}>
-        {node.fields.map(field =>
-          field.fieldName == null ? null : (
-            <var name={field.fieldName} type={field.typeName} />
-          )
-        )}
-        <var name="variableData" type="VariableData">
-          <literal
-            dict={node.fields.map(field =>
-              field.fieldName == null
-                ? null
-                : [<literal string={field.fieldName} />, field.fieldName]
-            )}
-            expanded
-          />
-        </var>
+        <DeclarationGroup>
+          {node.fields.map(field =>
+            field.fieldName == null ? null : (
+              <var name={field.fieldName} type={field.typeName} />
+            )
+          )}
+          <var name="variableData" type="VariableData">
+            <literal
+              dict={node.fields.map(field =>
+                field.fieldName == null
+                  ? null
+                  : [<literal string={field.fieldName} />, field.fieldName]
+              )}
+              expanded
+            />
+          </var>
+        </DeclarationGroup>
       </struct>
       <QueryVariablesConvenienceInitializer node={node} />
-    </Fragment>
+    </DeclarationGroup>
   ) : (
     <typealias name={node.name}>EmptyVariables</typealias>
   );
@@ -54,47 +56,49 @@ const QueryGetConvenienceExtension = ({ node }: { node: InputStructNode }) => {
 
   return (
     <SwiftUICheck>
-      <import module="RelaySwiftUI" />
-      <AvailableOnNewPlatforms>
-        <extension
-          name="RelaySwiftUI.QueryNext.WrappedValue"
-          where={[`O == ${parentType}`]}
-        >
-          <function
-            name="get"
-            parameters={[
-              ...node.fields.map(field => (
-                <paramdecl
-                  name={field.fieldName}
-                  type={field.typeName}
-                  defaultValue={
-                    field.typeName.endsWith('?') ? 'nil' : undefined
-                  }
-                />
-              )),
-              <paramdecl name="fetchKey" type="Any?" defaultValue="nil" />,
-            ]}
-            returns={`RelaySwiftUI.QueryNext<${parentType}>.Result`}
+      <DeclarationGroup>
+        <import module="RelaySwiftUI" />
+        <AvailableOnNewPlatforms>
+          <extension
+            name="RelaySwiftUI.QueryNext.WrappedValue"
+            where={[`O == ${parentType}`]}
           >
-            <call
-              receiver="self"
+            <function
               name="get"
               parameters={[
-                <param>
-                  <call
-                    receiver=""
-                    name="init"
-                    parameters={node.fields.map(field => (
-                      <param label={field.fieldName}>{field.fieldName}</param>
-                    ))}
+                ...node.fields.map(field => (
+                  <paramdecl
+                    name={field.fieldName}
+                    type={field.typeName}
+                    defaultValue={
+                      field.typeName.endsWith('?') ? 'nil' : undefined
+                    }
                   />
-                </param>,
-                <param label="fetchKey">fetchKey</param>,
+                )),
+                <paramdecl name="fetchKey" type="Any?" defaultValue="nil" />,
               ]}
-            />
-          </function>
-        </extension>
-      </AvailableOnNewPlatforms>
+              returns={`RelaySwiftUI.QueryNext<${parentType}>.Result`}
+            >
+              <call
+                receiver="self"
+                name="get"
+                parameters={[
+                  <param>
+                    <call
+                      receiver=""
+                      name="init"
+                      parameters={node.fields.map(field => (
+                        <param label={field.fieldName}>{field.fieldName}</param>
+                      ))}
+                    />
+                  </param>,
+                  <param label="fetchKey">fetchKey</param>,
+                ]}
+              />
+            </function>
+          </extension>
+        </AvailableOnNewPlatforms>
+      </DeclarationGroup>
     </SwiftUICheck>
   );
 };

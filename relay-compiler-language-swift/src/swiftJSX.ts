@@ -16,6 +16,7 @@ export function swiftJSX(
 }
 
 export const Fragment = 'swiftFragment';
+export const DeclarationGroup = 'swiftDeclarationGroup';
 
 export function renderSwift(element: SwiftElement): string {
   const renderer = new Renderer();
@@ -56,8 +57,10 @@ function _renderSwift(
 
   if (typeof element.type === 'string') {
     switch (element.type) {
-      case 'swiftFragment':
+      case Fragment:
         return _renderSwift(renderer, element.props.children);
+      case DeclarationGroup:
+        return renderSwiftDeclarationGroup(renderer, element.props, context);
       case 'init':
         return renderSwiftInit(renderer, element.props);
       case 'function':
@@ -669,4 +672,44 @@ function renderSwiftSwitch(
   _renderSwift(renderer, children, { inSwitch: true });
 
   renderer.appendLine('}');
+}
+
+type CollapsibleNodeKind = 'var' | 'case' | 'import';
+
+function renderSwiftDeclarationGroup(
+  renderer: Renderer,
+  { children }: { children: SwiftNode[] },
+  context: RenderContext
+) {
+  let previousNodeKind: CollapsibleNodeKind | null = null;
+
+  children = children.flat().filter(child => child != null);
+
+  for (let i = 0; i < children.length; i++) {
+    const child = children[i];
+
+    let newNodeKind: CollapsibleNodeKind | null = null;
+    if (typeof child === 'object' && 'type' in child) {
+      if (child.type === 'var' && !child.props.children.length) {
+        newNodeKind = 'var';
+      } else if (child.type === 'case') {
+        newNodeKind = 'case';
+      } else if (child.type === 'import') {
+        newNodeKind = 'import';
+      }
+    }
+
+    if (i !== 0) {
+      if (
+        previousNodeKind === null ||
+        newNodeKind === null ||
+        previousNodeKind !== newNodeKind
+      ) {
+        renderer.appendLine('');
+      }
+    }
+
+    _renderSwift(renderer, child, context);
+    previousNodeKind = newNodeKind;
+  }
 }

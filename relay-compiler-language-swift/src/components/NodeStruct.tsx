@@ -1,6 +1,6 @@
 /** @jsx swiftJSX */
 
-import { swiftJSX, Fragment } from '../swiftJSX';
+import { swiftJSX, DeclarationGroup } from '../swiftJSX';
 import { GeneratedNode, ConcreteRequest, ReaderFragment } from 'relay-runtime';
 import { ConcreteRequestStruct } from './ConcreteRequestStruct';
 import { ReaderFragmentStruct } from './ReaderFragmentStruct';
@@ -18,19 +18,19 @@ export const NodeStruct = ({
     case 'Request':
       const request = node as ConcreteRequest;
       return (
-        <Fragment>
+        <DeclarationGroup>
           <ConcreteRequestStruct node={request} />
           {typeText}
           <extension
             name={request.operation.name}
             inherit={['Relay.Operation']}
           />
-        </Fragment>
+        </DeclarationGroup>
       );
     case 'Fragment':
       const fragment = node as ReaderFragment;
       return (
-        <Fragment>
+        <DeclarationGroup>
           <ReaderFragmentStruct node={fragment} />
           {typeText}
           <extension name={fragment.name} inherit={['Relay.Fragment']} />
@@ -38,7 +38,7 @@ export const NodeStruct = ({
             <RefetchFragmentExtension node={fragment} />
           )}
           <SwiftUIFragmentExtension node={fragment} />
-        </Fragment>
+        </DeclarationGroup>
       );
   }
 };

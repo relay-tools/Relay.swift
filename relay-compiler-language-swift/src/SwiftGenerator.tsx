@@ -1,6 +1,6 @@
 /** @jsx swiftJSX */
 
-import { swiftJSX, Fragment, renderSwift } from './swiftJSX';
+import { swiftJSX, renderSwift, DeclarationGroup } from './swiftJSX';
 import { TypeGenerator, Schema, IRVisitor } from 'relay-compiler';
 import { RunState } from './RunState';
 import * as RefetchableFragmentTransform from 'relay-compiler/lib/transforms/RefetchableFragmentTransform';
@@ -29,7 +29,7 @@ export function SwiftGenerator(runState: RunState): TypeGenerator {
       const ast = IRVisitor.visit(node, createVisitor(schema, options));
 
       const code = (
-        <Fragment>
+        <DeclarationGroup>
           {ast
             .filter(node => {
               if (node.kind === 'enum' || node.kind === 'inputStruct') {
@@ -44,7 +44,7 @@ export function SwiftGenerator(runState: RunState): TypeGenerator {
             .map(node => (
               <DataType node={node} />
             ))}
-        </Fragment>
+        </DeclarationGroup>
       );
 
       return renderSwift(code);

@@ -120,6 +120,7 @@ class Renderer {
     if (this.shouldContinue) {
       this.append(line);
     } else {
+      this.trimIfNeeded();
       this.lines.push('    '.repeat(this.level) + line);
     }
   }
@@ -149,7 +150,17 @@ class Renderer {
   }
 
   get text(): string {
+    this.trimIfNeeded();
     return this.lines.join('\n');
+  }
+
+  private trimIfNeeded() {
+    if (!this.lines.length) {
+      return;
+    }
+
+    const idx = this.lines.length - 1;
+    this.lines[idx] = this.lines[idx].trimEnd();
   }
 }
 

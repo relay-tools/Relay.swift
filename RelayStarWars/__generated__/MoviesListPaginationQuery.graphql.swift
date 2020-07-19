@@ -2,14 +2,14 @@
 
 import Relay
 
-struct MoviesListPaginationQuery {
-    var variables: Variables
+public struct MoviesListPaginationQuery {
+    public var variables: Variables
 
-    init(variables: Variables) {
+    public init(variables: Variables) {
         self.variables = variables
     }
 
-    static var node: ConcreteRequest {
+    public static var node: ConcreteRequest {
         ConcreteRequest(
             fragment: ReaderFragment(
                 name: "MoviesListPaginationQuery",
@@ -22,7 +22,8 @@ struct MoviesListPaginationQuery {
                             VariableArgument(name: "cursor", variableName: "cursor")
                         ]
                     ))
-                ]),
+                ]
+            ),
             operation: NormalizationOperation(
                 name: "MoviesListPaginationQuery",
                 selections: [
@@ -95,7 +96,8 @@ struct MoviesListPaginationQuery {
                         handle: "connection",
                         key: "MoviesList_allFilms"
                     ))
-                ]),
+                ]
+            ),
             params: RequestParameters(
                 name: "MoviesListPaginationQuery",
                 operationKind: .query,
@@ -131,46 +133,47 @@ fragment MoviesList_films_1G22uz on Root {
     }
   }
 }
-"""))
+"""
+            )
+        )
     }
 }
 
-
 extension MoviesListPaginationQuery {
-    struct Variables: VariableDataConvertible {
-        var count: Int?
-        var cursor: String?
+    public struct Variables: VariableDataConvertible {
+        public var count: Int?
+        public var cursor: String?
 
-        var variableData: VariableData {
+        public init(count: Int? = nil, cursor: String? = nil) {
+            self.count = count
+            self.cursor = cursor
+        }
+
+        public var variableData: VariableData {
             [
                 "count": count,
-                "cursor": cursor,
+                "cursor": cursor
             ]
         }
     }
 
-    init(count: Int? = nil, cursor: String? = nil) {
+    public init(count: Int? = nil, cursor: String? = nil) {
         self.init(variables: .init(count: count, cursor: cursor))
     }
 }
 
-#if canImport(RelaySwiftUI)
-
+#if swift(>=5.3) && canImport(RelaySwiftUI)
 import RelaySwiftUI
 
-@available(iOS 14.0, macOS 10.16, tvOS 14.0, watchOS 7.0, *)
-extension RelaySwiftUI.QueryNext.WrappedValue where O == MoviesListPaginationQuery {
-    func get(count: Int? = nil, cursor: String? = nil, fetchKey: Any? = nil) -> RelaySwiftUI.QueryNext<MoviesListPaginationQuery>.Result {
+@available(iOS 14.0, macOS 10.16, tvOS 14.0, watchOS 7.0, *)extension RelaySwiftUI.QueryNext.WrappedValue where O == MoviesListPaginationQuery {
+    public func get(count: Int? = nil, cursor: String? = nil, fetchKey: Any? = nil) -> RelaySwiftUI.QueryNext<MoviesListPaginationQuery>.Result {
         self.get(.init(count: count, cursor: cursor), fetchKey: fetchKey)
     }
 }
-
 #endif
-
 extension MoviesListPaginationQuery {
-    struct Data: Decodable, MoviesList_films_Key {
-        var fragment_MoviesList_films: FragmentPointer
+    public struct Data: Decodable, MoviesList_films_Key {
+        public var fragment_MoviesList_films: FragmentPointer
     }
 }
-
 extension MoviesListPaginationQuery: Relay.Operation {}

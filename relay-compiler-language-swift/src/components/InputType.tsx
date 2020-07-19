@@ -4,6 +4,7 @@ import { swiftJSX, DeclarationGroup } from '../swiftJSX';
 import { InputStructNode } from '../SwiftGeneratorDataTypes';
 import { SwiftUICheck } from './SwiftUICheck';
 import { AvailableOnNewPlatforms } from './AvailableOnNewPlatforms';
+import { MemberwiseInitializer } from './MemberwiseInitializer';
 
 export const InputType = ({ node }: { node: InputStructNode }) => {
   if (node.name.indexOf('.') !== -1) {
@@ -28,6 +29,7 @@ export const InputType = ({ node }: { node: InputStructNode }) => {
               <var name={field.fieldName} type={field.typeName} />
             )
           )}
+          <MemberwiseInitializer fields={node.fields} />
           <var name="variableData" type="VariableData">
             <literal
               dict={node.fields.map(field =>

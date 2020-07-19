@@ -2,14 +2,14 @@
 
 import Relay
 
-struct MoviesTabQuery {
-    var variables: Variables
+public struct MoviesTabQuery {
+    public var variables: Variables
 
-    init(variables: Variables) {
+    public init(variables: Variables) {
         self.variables = variables
     }
 
-    static var node: ConcreteRequest {
+    public static var node: ConcreteRequest {
         ConcreteRequest(
             fragment: ReaderFragment(
                 name: "MoviesTabQuery",
@@ -18,7 +18,8 @@ struct MoviesTabQuery {
                     .fragmentSpread(ReaderFragmentSpread(
                         name: "MoviesList_films"
                     ))
-                ]),
+                ]
+            ),
             operation: NormalizationOperation(
                 name: "MoviesTabQuery",
                 selections: [
@@ -90,7 +91,8 @@ struct MoviesTabQuery {
                         handle: "connection",
                         key: "MoviesList_allFilms"
                     ))
-                ]),
+                ]
+            ),
             params: RequestParameters(
                 name: "MoviesTabQuery",
                 operationKind: .query,
@@ -123,19 +125,19 @@ fragment MoviesList_films on Root {
     }
   }
 }
-"""))
+"""
+            )
+        )
     }
 }
 
-
 extension MoviesTabQuery {
-    typealias Variables = EmptyVariables
+    public typealias Variables = EmptyVariables
 }
 
 extension MoviesTabQuery {
-    struct Data: Decodable, MoviesList_films_Key {
-        var fragment_MoviesList_films: FragmentPointer
+    public struct Data: Decodable, MoviesList_films_Key {
+        public var fragment_MoviesList_films: FragmentPointer
     }
 }
-
 extension MoviesTabQuery: Relay.Operation {}

@@ -2,14 +2,14 @@
 
 import Relay
 
-struct MoviesListRow_film {
-    var fragmentPointer: FragmentPointer
+public struct MoviesListRow_film {
+    public var fragmentPointer: FragmentPointer
 
-    init(key: MoviesListRow_film_Key) {
+    public init(key: MoviesListRow_film_Key) {
         fragmentPointer = key.fragment_MoviesListRow_film
     }
 
-    static var node: ReaderFragment {
+    public static var node: ReaderFragment {
         ReaderFragment(
             name: "MoviesListRow_film",
             type: "Film",
@@ -29,36 +29,32 @@ struct MoviesListRow_film {
                 .field(ReaderScalarField(
                     name: "releaseDate"
                 ))
-            ])
+            ]
+        )
     }
 }
-
 
 extension MoviesListRow_film {
-    struct Data: Decodable, Identifiable {
-        var id: String
-        var episodeID: Int?
-        var title: String?
-        var director: String?
-        var releaseDate: String?
+    public struct Data: Decodable, Identifiable {
+        public var id: String
+        public var episodeID: Int?
+        public var title: String?
+        public var director: String?
+        public var releaseDate: String?
     }
 }
 
-protocol MoviesListRow_film_Key {
+public protocol MoviesListRow_film_Key {
     var fragment_MoviesListRow_film: FragmentPointer { get }
 }
-
 extension MoviesListRow_film: Relay.Fragment {}
 
-#if canImport(RelaySwiftUI)
-
+#if swift(>=5.3) && canImport(RelaySwiftUI)
 import RelaySwiftUI
-
 extension MoviesListRow_film_Key {
     @available(iOS 14.0, macOS 10.16, tvOS 14.0, watchOS 7.0, *)
-    func asFragment() -> RelaySwiftUI.FragmentNext<MoviesListRow_film> {
+    public func asFragment() -> RelaySwiftUI.FragmentNext<MoviesListRow_film> {
         RelaySwiftUI.FragmentNext<MoviesListRow_film>(self)
     }
 }
-
 #endif

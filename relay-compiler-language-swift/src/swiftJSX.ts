@@ -7,6 +7,8 @@ export type SwiftNode = null | undefined | SwiftChild | SwiftFragment;
 export type SwiftFragment = SwiftNode[];
 export type SwiftComponent<Props = any> = (props: Props) => SwiftElement | null;
 
+type CollapsibleNodeKind = 'var' | 'case' | 'import';
+
 export function swiftJSX(
   tagName: string | SwiftComponent,
   attrs: any,
@@ -18,9 +20,16 @@ export function swiftJSX(
 export const Fragment = 'swiftFragment';
 export const DeclarationGroup = 'swiftDeclarationGroup';
 
-export function renderSwift(element: SwiftElement): string {
+export function renderSwift(
+  element: SwiftElement,
+  options?: {
+    defaultAccessLevel?: AccessLevel;
+  }
+): string {
   const renderer = new Renderer();
-  _renderSwift(renderer, element);
+  _renderSwift(renderer, element, {
+    defaultAccessLevel: options?.defaultAccessLevel,
+  });
   return renderer.text;
 }
 
@@ -28,7 +37,569 @@ interface RenderContext {
   inline?: boolean;
   inProtocol?: boolean;
   inSwitch?: boolean;
+  defaultAccessLevel?: AccessLevel;
 }
+
+interface BuiltinRenderFunction<Props> {
+  (renderer: Renderer, props: Props, context: RenderContext): void;
+}
+
+const builtins: Record<string, BuiltinRenderFunction<any>> = {
+  [Fragment]: (renderer, props, context) => {
+    _renderSwift(renderer, props.children, context);
+  },
+
+  [DeclarationGroup]: (
+    renderer,
+    { children }: { children: SwiftNode[] },
+    context
+  ) => {
+    let previousNodeKind: CollapsibleNodeKind | null = null;
+
+    children = children.flat().filter(child => child != null);
+
+    for (let i = 0; i < children.length; i++) {
+      const child = children[i];
+
+      let newNodeKind: CollapsibleNodeKind | null = null;
+      if (typeof child === 'object' && 'type' in child) {
+        if (child.type === 'var' && !child.props.children.length) {
+          newNodeKind = 'var';
+        } else if (child.type === 'case') {
+          newNodeKind = 'case';
+        } else if (child.type === 'import') {
+          newNodeKind = 'import';
+        }
+      }
+
+      if (i !== 0) {
+        if (
+          previousNodeKind === null ||
+          newNodeKind === null ||
+          previousNodeKind !== newNodeKind
+        ) {
+          renderer.appendLine('');
+        }
+      }
+
+      _renderSwift(renderer, child, context);
+      previousNodeKind = newNodeKind;
+    }
+  },
+
+  import(renderer, { module }: { module: string }) {
+    renderer.appendLine(`import ${module}`);
+  },
+
+  struct(
+    renderer,
+    {
+      name,
+      inherit = [],
+      access,
+      children,
+    }: {
+      name: string;
+      inherit?: string[];
+      access?: AccessLevel;
+      children: SwiftNode[];
+    },
+    context
+  ) {
+    renderer.appendLine(formatAccess(access, context));
+    renderer.append(
+      `struct ${name}${inherit.length ? `: ${inherit.join(', ')}` : ''} {`
+    );
+    renderer.indent();
+
+    _renderSwift(renderer, children, context);
+
+    renderer.outdent();
+    renderer.appendLine('}');
+  },
+
+  enum(
+    renderer,
+    {
+      name,
+      inherit = [],
+      access,
+      children,
+    }: {
+      name: string;
+      inherit: string[];
+      access?: AccessLevel;
+      children: SwiftNode[];
+    },
+    context
+  ) {
+    renderer.appendLine(formatAccess(access, context));
+    renderer.append(`enum ${name}`);
+    if (inherit.length) {
+      renderer.append(`: ${inherit.join(', ')}`);
+    }
+    renderer.append(' {');
+    renderer.indent();
+
+    _renderSwift(renderer, children, context);
+
+    renderer.outdent();
+    renderer.appendLine('}');
+  },
+
+  protocol(
+    renderer,
+    {
+      name,
+      access,
+      children,
+    }: {
+      name: string;
+      access?: AccessLevel;
+      children: SwiftNode[];
+    },
+    context
+  ) {
+    renderer.appendLine(formatAccess(access, context));
+    renderer.append(`protocol ${name} {`);
+    renderer.indent();
+
+    _renderSwift(renderer, children, { ...context, inProtocol: true });
+
+    renderer.outdent();
+    renderer.appendLine('}');
+  },
+
+  extension(
+    renderer,
+    {
+      name,
+      inherit = [],
+      where = [],
+      // access,
+      children,
+    }: {
+      name: string;
+      inherit?: string[];
+      where?: string[];
+      access?: AccessLevel;
+      children: SwiftNode[];
+    },
+    context
+  ) {
+    // renderer.appendLine(formatAccess(access, context));
+    renderer.append(`extension ${name}`);
+    if (inherit.length) {
+      renderer.append(`: ${inherit.join(', ')}`);
+    }
+    if (where.length) {
+      renderer.append(` where ${where.join(', ')}`);
+    }
+    renderer.append(' {');
+
+    if (!children.length) {
+      renderer.append('}');
+      return;
+    }
+
+    renderer.indent();
+    _renderSwift(renderer, children, context);
+    renderer.outdent();
+    renderer.appendLine('}');
+  },
+
+  typealias(
+    renderer,
+    {
+      name,
+      children,
+      access,
+    }: {
+      name: string;
+      children: SwiftNode[];
+      access?: AccessLevel;
+    },
+    context
+  ) {
+    renderer.appendLine(formatAccess(access, context));
+    renderer.append(`typealias ${name} = `);
+    _renderSwift(renderer, children, { ...context, inline: true });
+  },
+
+  var(
+    renderer,
+    {
+      name,
+      type,
+      isStatic = false,
+      access,
+      children,
+    }: {
+      name: string;
+      type: string;
+      isStatic?: boolean;
+      access?: AccessLevel;
+      children: SwiftNode[];
+    },
+    context
+  ) {
+    renderer.appendLine(formatAccess(access, context));
+    renderer.append(`${isStatic ? 'static ' : ''}var ${name}: ${type}`);
+
+    if (context.inProtocol) {
+      renderer.append(' { get }');
+      return;
+    }
+
+    if (children.length) {
+      renderer.append(' {');
+      renderer.indent();
+
+      _renderSwift(renderer, children, context);
+
+      renderer.outdent();
+      renderer.appendLine('}');
+    }
+  },
+
+  init(
+    renderer,
+    {
+      parameters = [],
+      access,
+      throws = false,
+      children,
+    }: {
+      parameters: SwiftNode[];
+      access?: AccessLevel;
+      throws: boolean;
+      children: SwiftNode[];
+    },
+    context
+  ) {
+    renderer.appendLine(formatAccess(access, context));
+    renderer.append('init(');
+    for (let i = 0; i < parameters.length; i++) {
+      if (i !== 0) {
+        renderer.append(', ');
+      }
+      _renderSwift(renderer, parameters[i], { ...context, inline: true });
+    }
+    renderer.append(')');
+    if (throws) {
+      renderer.append(' throws');
+    }
+    renderer.append(' {');
+    renderer.indent();
+
+    _renderSwift(renderer, children, context);
+
+    renderer.outdent();
+    renderer.appendLine('}');
+  },
+
+  function(
+    renderer,
+    {
+      name,
+      parameters = [],
+      returns,
+      isStatic = false,
+      access,
+      children,
+    }: {
+      name: string;
+      parameters: SwiftNode[];
+      returns?: string;
+      isStatic?: boolean;
+      access?: AccessLevel;
+      children: SwiftNode[];
+    },
+    context
+  ) {
+    renderer.appendLine(formatAccess(access, context));
+    renderer.append(`${isStatic ? 'static ' : ''}func ${name}(`);
+    for (let i = 0; i < parameters.length; i++) {
+      if (i !== 0) {
+        renderer.append(', ');
+      }
+      _renderSwift(renderer, parameters[i], { ...context, inline: true });
+    }
+    renderer.append(`)`);
+
+    if (returns) {
+      renderer.append(` -> ${returns}`);
+    }
+
+    renderer.append(` {`);
+    renderer.indent();
+
+    _renderSwift(renderer, children, context);
+
+    renderer.outdent();
+    renderer.appendLine('}');
+  },
+
+  case(
+    renderer,
+    {
+      name,
+      parameters = [],
+      isDefault = false,
+      children,
+    }: {
+      name?: SwiftNode;
+      parameters?: SwiftNode[];
+      isDefault: boolean;
+      children: SwiftNode[];
+    },
+    context
+  ) {
+    if (isDefault) {
+      renderer.appendLine('default');
+    } else {
+      renderer.appendLine('case ');
+      _renderSwift(renderer, name, { ...context, inline: true });
+
+      if (parameters.length) {
+        renderer.append('(');
+
+        for (let i = 0; i < parameters.length; i++) {
+          if (i !== 0) {
+            renderer.append(', ');
+          }
+          _renderSwift(renderer, parameters[i], { ...context, inline: true });
+        }
+
+        renderer.append(')');
+      }
+    }
+
+    if (context.inSwitch) {
+      renderer.append(':');
+      renderer.indent();
+
+      _renderSwift(renderer, children, context);
+
+      renderer.outdent();
+    } else {
+      if (children.length) {
+        renderer.append(' = ');
+        _renderSwift(renderer, children, { ...context, inline: true });
+      }
+    }
+  },
+
+  paramdecl(
+    renderer,
+    {
+      label,
+      name,
+      type,
+      defaultValue,
+    }: {
+      label?: string;
+      name: string;
+      type: string;
+      defaultValue?: SwiftNode;
+    },
+    context
+  ) {
+    if (label) {
+      renderer.append(`${label} `);
+    }
+    renderer.append(`${name}: ${type}`);
+    if (defaultValue) {
+      renderer.append(' = ');
+      _renderSwift(renderer, defaultValue, { ...context, inline: true });
+    }
+  },
+
+  switch(
+    renderer,
+    {
+      value,
+      children,
+    }: {
+      value: SwiftNode;
+      children: SwiftNode[];
+    },
+    context
+  ) {
+    renderer.appendLine('switch ');
+    _renderSwift(renderer, value, { ...context, inline: true });
+    renderer.append(' {');
+
+    _renderSwift(renderer, children, { ...context, inSwitch: true });
+
+    renderer.appendLine('}');
+  },
+
+  call(
+    renderer,
+    {
+      receiver,
+      name,
+      parameters = [],
+      expanded = false,
+    }: {
+      receiver?: SwiftNode;
+      name: string;
+      parameters?: SwiftNode[];
+      expanded?: boolean;
+    },
+    context
+  ) {
+    renderer.appendLine(`${receiver != null ? `${receiver}.` : ''}${name}(`);
+    if (expanded) {
+      renderer.indent();
+    }
+
+    parameters = parameters.filter(p => !!p);
+    for (let i = 0; i < parameters.length; i++) {
+      if (i !== 0) {
+        renderer.append(',');
+        if (!expanded) {
+          renderer.append(' ');
+        }
+      }
+      _renderSwift(renderer, parameters[i], { ...context, inline: !expanded });
+    }
+
+    if (expanded) {
+      renderer.outdent();
+      renderer.appendLine(')');
+    } else {
+      renderer.append(')');
+    }
+  },
+
+  param(
+    renderer,
+    {
+      label,
+      children,
+    }: {
+      label?: string;
+      children: SwiftNode[];
+    },
+    context
+  ) {
+    const text = `${label ? `${label}: ` : ''}`;
+    if (context.inline) {
+      renderer.append(text);
+    } else {
+      renderer.appendLine(text);
+    }
+
+    renderer.continueLine();
+    _renderSwift(renderer, children, { ...context, inline: true });
+  },
+
+  available(
+    renderer,
+    {
+      versions,
+      children,
+    }: {
+      versions: string[];
+      children: SwiftNode[];
+    },
+    context
+  ) {
+    renderer.appendLine(`@available(${versions.join(', ')}, *)`);
+    _renderSwift(renderer, children, context);
+  },
+
+  compilecheck(
+    renderer,
+    {
+      condition,
+      children,
+    }: {
+      condition: SwiftNode;
+      children: SwiftNode[];
+    },
+    context
+  ) {
+    renderer.appendLine('#if ');
+
+    _renderSwift(renderer, condition, { ...context, inline: true });
+    _renderSwift(renderer, children, context);
+
+    renderer.appendLine('#endif');
+  },
+
+  literal(renderer, props: SwiftLiteralProps, context) {
+    const appendLine = context.inline
+      ? text => {
+          renderer.append(text);
+        }
+      : text => {
+          renderer.appendLine(text);
+        };
+
+    if ('string' in props) {
+      appendLine(JSON.stringify(props.string));
+    } else if ('int' in props) {
+      appendLine(String(props.int));
+    } else if ('bool' in props) {
+      appendLine(String(props.bool));
+    } else if ('array' in props) {
+      appendLine('[');
+      renderer.indent();
+
+      const innerContext = { ...context, inline: !props.expanded };
+
+      for (let i = 0; i < props.array.length; i++) {
+        if (i !== 0) {
+          renderer.append(',');
+          if (innerContext.inline) {
+            renderer.append(' ');
+          }
+        }
+
+        _renderSwift(renderer, props.array[i], innerContext);
+      }
+
+      renderer.outdent();
+      if (props.expanded) {
+        renderer.appendLine(']');
+      } else {
+        renderer.append(']');
+      }
+    } else if ('dict' in props) {
+      appendLine('[');
+      renderer.indent();
+
+      const innerContext = { ...context, inline: !props.expanded };
+
+      for (let i = 0; i < props.dict.length; i++) {
+        if (i !== 0) {
+          renderer.append(',');
+          if (innerContext.inline) {
+            renderer.append(' ');
+          }
+        }
+
+        const [key, value] = props.dict[i];
+        _renderSwift(renderer, key, innerContext);
+        renderer.append(': ');
+        renderer.continueLine();
+        _renderSwift(renderer, value, innerContext);
+      }
+
+      renderer.outdent();
+      if (props.expanded) {
+        renderer.appendLine(']');
+      } else {
+        renderer.append(']');
+      }
+    } else {
+      throw new Error('unrecognized props for literal');
+    }
+  },
+};
 
 function _renderSwift(
   renderer: Renderer,
@@ -56,46 +627,13 @@ function _renderSwift(
   }
 
   if (typeof element.type === 'string') {
-    switch (element.type) {
-      case Fragment:
-        return _renderSwift(renderer, element.props.children);
-      case DeclarationGroup:
-        return renderSwiftDeclarationGroup(renderer, element.props, context);
-      case 'init':
-        return renderSwiftInit(renderer, element.props);
-      case 'function':
-        return renderSwiftFunction(renderer, element.props);
-      case 'paramdecl':
-        return renderSwiftFunctionParam(renderer, element.props);
-      case 'struct':
-        return renderSwiftStruct(renderer, element.props);
-      case 'var':
-        return renderSwiftVar(renderer, element.props, context);
-      case 'extension':
-        return renderSwiftExtension(renderer, element.props);
-      case 'protocol':
-        return renderSwiftProtocol(renderer, element.props);
-      case 'enum':
-        return renderSwiftEnum(renderer, element.props);
-      case 'case':
-        return renderSwiftCase(renderer, element.props, context);
-      case 'import':
-        return renderSwiftImport(renderer, element.props);
-      case 'available':
-        return renderSwiftAvailable(renderer, element.props);
-      case 'call':
-        return renderSwiftCall(renderer, element.props);
-      case 'param':
-        return renderSwiftParam(renderer, element.props, context);
-      case 'compilecheck':
-        return renderSwiftCompileTimeCheck(renderer, element.props);
-      case 'typealias':
-        return renderSwiftTypealias(renderer, element.props);
-      case 'literal':
-        return renderSwiftLiteral(renderer, element.props, context);
-      case 'switch':
-        return renderSwiftSwitch(renderer, element.props);
+    if (element.type in builtins) {
+      const renderFn = builtins[element.type];
+      renderFn(renderer, element.props, context);
+      return;
     }
+
+    throw new Error(`Unrecognized Swift element type '${element.type}'`);
   } else {
     const rendered = element.type(element.props);
     if (!rendered) {
@@ -166,425 +704,6 @@ class Renderer {
 
 type AccessLevel = 'public' | 'internal' | 'fileprivate' | 'private';
 
-function renderSwiftStruct(
-  renderer: Renderer,
-  {
-    name,
-    inherit = [],
-    access,
-    children,
-  }: {
-    name: string;
-    inherit?: string[];
-    access?: AccessLevel;
-    children: SwiftNode[];
-  }
-) {
-  renderer.appendLine(
-    `${access ? `${access} ` : ''}struct ${name}${
-      inherit.length ? `: ${inherit.join(', ')}` : ''
-    } {`
-  );
-  renderer.indent();
-
-  _renderSwift(renderer, children);
-
-  renderer.outdent();
-  renderer.appendLine('}');
-}
-
-function renderSwiftVar(
-  renderer: Renderer,
-  {
-    name,
-    type,
-    isStatic = false,
-    access,
-    children,
-  }: {
-    name: string;
-    type: string;
-    isStatic?: boolean;
-    access?: AccessLevel;
-    children: SwiftNode[];
-  },
-  context: RenderContext = {}
-) {
-  renderer.appendLine(
-    `${access ? `${access} ` : ''}${
-      isStatic ? 'static ' : ''
-    }var ${name}: ${type}`
-  );
-
-  if (context.inProtocol) {
-    renderer.append(' { get }');
-    return;
-  }
-
-  if (children.length) {
-    renderer.append(' {');
-    renderer.indent();
-
-    _renderSwift(renderer, children, context);
-
-    renderer.outdent();
-    renderer.appendLine('}');
-  }
-}
-
-function renderSwiftFunction(
-  renderer: Renderer,
-  {
-    name,
-    parameters = [],
-    returns,
-    isStatic = false,
-    access,
-    children,
-  }: {
-    name: string;
-    parameters: SwiftNode[];
-    returns?: string;
-    isStatic?: boolean;
-    access?: AccessLevel;
-    children: SwiftNode[];
-  }
-) {
-  renderer.appendLine(
-    `${access ? `${access} ` : ''}${isStatic ? 'static ' : ''}func ${name}(`
-  );
-  for (let i = 0; i < parameters.length; i++) {
-    if (i !== 0) {
-      renderer.append(', ');
-    }
-    _renderSwift(renderer, parameters[i], { inline: true });
-  }
-  renderer.append(`)`);
-
-  if (returns) {
-    renderer.append(` -> ${returns}`);
-  }
-
-  renderer.append(` {`);
-  renderer.indent();
-
-  _renderSwift(renderer, children);
-
-  renderer.outdent();
-  renderer.appendLine('}');
-}
-
-function renderSwiftInit(
-  renderer: Renderer,
-  {
-    parameters = [],
-    access,
-    throws = false,
-    children,
-  }: {
-    parameters: SwiftNode[];
-    access?: AccessLevel;
-    throws: boolean;
-    children: SwiftNode[];
-  }
-) {
-  renderer.appendLine(`${access ? `${access} ` : ''}init(`);
-  for (let i = 0; i < parameters.length; i++) {
-    if (i !== 0) {
-      renderer.append(', ');
-    }
-    _renderSwift(renderer, parameters[i], { inline: true });
-  }
-  renderer.append(')');
-  if (throws) {
-    renderer.append(' throws');
-  }
-  renderer.append(' {');
-  renderer.indent();
-
-  _renderSwift(renderer, children);
-
-  renderer.outdent();
-  renderer.appendLine('}');
-}
-
-function renderSwiftFunctionParam(
-  renderer: Renderer,
-  {
-    label,
-    name,
-    type,
-    defaultValue,
-  }: {
-    label?: string;
-    name: string;
-    type: string;
-    defaultValue?: SwiftNode;
-  }
-) {
-  if (label) {
-    renderer.append(`${label} `);
-  }
-  renderer.append(`${name}: ${type}`);
-  if (defaultValue) {
-    renderer.append(' = ');
-    _renderSwift(renderer, defaultValue, { inline: true });
-  }
-}
-
-function renderSwiftExtension(
-  renderer: Renderer,
-  {
-    name,
-    inherit = [],
-    where = [],
-    access,
-    children,
-  }: {
-    name: string;
-    inherit?: string[];
-    where?: string[];
-    access?: AccessLevel;
-    children: SwiftNode[];
-  }
-) {
-  renderer.appendLine(`${access ? `${access} ` : ''}extension ${name}`);
-  if (inherit.length) {
-    renderer.append(`: ${inherit.join(', ')}`);
-  }
-  if (where.length) {
-    renderer.append(` where ${where.join(', ')}`);
-  }
-  renderer.append(' {');
-
-  if (!children.length) {
-    renderer.append('}');
-    return;
-  }
-
-  renderer.indent();
-  _renderSwift(renderer, children);
-  renderer.outdent();
-  renderer.appendLine('}');
-}
-
-function renderSwiftProtocol(
-  renderer: Renderer,
-  {
-    name,
-    access,
-    children,
-  }: {
-    name: string;
-    access?: AccessLevel;
-    children: SwiftNode[];
-  }
-) {
-  renderer.appendLine(`${access ? `${access} ` : ''}protocol ${name} {`);
-  renderer.indent();
-
-  _renderSwift(renderer, children, { inProtocol: true });
-
-  renderer.outdent();
-  renderer.appendLine('}');
-}
-
-function renderSwiftEnum(
-  renderer: Renderer,
-  {
-    name,
-    inherit = [],
-    access,
-    children,
-  }: {
-    name: string;
-    inherit: string[];
-    access?: AccessLevel;
-    children: SwiftNode[];
-  }
-) {
-  renderer.appendLine(`${access ? `${access} ` : ''}enum ${name}`);
-  if (inherit.length) {
-    renderer.append(`: ${inherit.join(', ')}`);
-  }
-  renderer.append(' {');
-  renderer.indent();
-
-  _renderSwift(renderer, children);
-
-  renderer.outdent();
-  renderer.appendLine('}');
-}
-
-function renderSwiftCase(
-  renderer: Renderer,
-  {
-    name,
-    parameters = [],
-    isDefault = false,
-    children,
-  }: {
-    name?: SwiftNode;
-    parameters?: SwiftNode[];
-    isDefault: boolean;
-    children: SwiftNode[];
-  },
-  context: RenderContext = {}
-) {
-  if (isDefault) {
-    renderer.appendLine('default');
-  } else {
-    renderer.appendLine('case ');
-    _renderSwift(renderer, name, { inline: true });
-
-    if (parameters.length) {
-      renderer.append('(');
-
-      for (let i = 0; i < parameters.length; i++) {
-        if (i !== 0) {
-          renderer.append(', ');
-        }
-        _renderSwift(renderer, parameters[i], { inline: true });
-      }
-
-      renderer.append(')');
-    }
-  }
-
-  if (context.inSwitch) {
-    renderer.append(':');
-    renderer.indent();
-
-    _renderSwift(renderer, children, context);
-
-    renderer.outdent();
-  } else {
-    if (children.length) {
-      renderer.append(' = ');
-      _renderSwift(renderer, children, { inline: true });
-    }
-  }
-}
-
-function renderSwiftImport(
-  renderer: Renderer,
-  {
-    module,
-  }: {
-    module: string;
-  }
-) {
-  renderer.appendLine(`import ${module}`);
-}
-
-function renderSwiftAvailable(
-  renderer: Renderer,
-  {
-    versions,
-    children,
-  }: {
-    versions: string[];
-    children: SwiftNode[];
-  }
-) {
-  renderer.appendLine(`@available(${versions.join(', ')}, *)`);
-  _renderSwift(renderer, children);
-}
-
-function renderSwiftCall(
-  renderer: Renderer,
-  {
-    receiver,
-    name,
-    parameters = [],
-    expanded = false,
-  }: {
-    receiver?: SwiftNode;
-    name: string;
-    parameters?: SwiftNode[];
-    expanded?: boolean;
-  }
-) {
-  renderer.appendLine(`${receiver != null ? `${receiver}.` : ''}${name}(`);
-  if (expanded) {
-    renderer.indent();
-  }
-
-  parameters = parameters.filter(p => !!p);
-  for (let i = 0; i < parameters.length; i++) {
-    if (i !== 0) {
-      renderer.append(',');
-      if (!expanded) {
-        renderer.append(' ');
-      }
-    }
-    _renderSwift(renderer, parameters[i], { inline: !expanded });
-  }
-
-  if (expanded) {
-    renderer.outdent();
-    renderer.appendLine(')');
-  } else {
-    renderer.append(')');
-  }
-}
-
-function renderSwiftParam(
-  renderer: Renderer,
-  {
-    label,
-    children,
-  }: {
-    label?: string;
-    children: SwiftNode[];
-  },
-  context: RenderContext = {}
-) {
-  const text = `${label ? `${label}: ` : ''}`;
-  if (context.inline) {
-    renderer.append(text);
-  } else {
-    renderer.appendLine(text);
-  }
-
-  renderer.continueLine();
-  _renderSwift(renderer, children, { ...context, inline: true });
-}
-
-function renderSwiftCompileTimeCheck(
-  renderer: Renderer,
-  {
-    condition,
-    children,
-  }: {
-    condition: SwiftNode;
-    children: SwiftNode[];
-  }
-) {
-  renderer.appendLine('#if ');
-
-  _renderSwift(renderer, condition, { inline: true });
-  _renderSwift(renderer, children);
-
-  renderer.appendLine('#endif');
-}
-
-function renderSwiftTypealias(
-  renderer: Renderer,
-  {
-    name,
-    children,
-    access,
-  }: {
-    name: string;
-    children: SwiftNode[];
-    access?: AccessLevel;
-  }
-) {
-  renderer.appendLine(`${access ? `${access} ` : ''}typealias ${name} = `);
-  _renderSwift(renderer, children, { inline: true });
-}
-
 type SwiftLiteralProps =
   | { string: string }
   | { int: number }
@@ -592,135 +711,21 @@ type SwiftLiteralProps =
   | { array: SwiftNode[]; expanded?: boolean }
   | { dict: [SwiftNode, SwiftNode][]; expanded?: boolean };
 
-function renderSwiftLiteral(
-  renderer: Renderer,
-  props: SwiftLiteralProps,
+function formatAccess(
+  access: AccessLevel | null | undefined,
   context: RenderContext
-) {
-  const appendLine = context.inline
-    ? text => {
-        renderer.append(text);
-      }
-    : text => {
-        renderer.appendLine(text);
-      };
-
-  if ('string' in props) {
-    appendLine(JSON.stringify(props.string));
-  } else if ('int' in props) {
-    appendLine(String(props.int));
-  } else if ('bool' in props) {
-    appendLine(String(props.bool));
-  } else if ('array' in props) {
-    appendLine('[');
-    renderer.indent();
-
-    const innerContext = { ...context, inline: !props.expanded };
-
-    for (let i = 0; i < props.array.length; i++) {
-      if (i !== 0) {
-        renderer.append(',');
-        if (innerContext.inline) {
-          renderer.append(' ');
-        }
-      }
-
-      _renderSwift(renderer, props.array[i], innerContext);
-    }
-
-    renderer.outdent();
-    if (props.expanded) {
-      renderer.appendLine(']');
-    } else {
-      renderer.append(']');
-    }
-  } else if ('dict' in props) {
-    appendLine('[');
-    renderer.indent();
-
-    const innerContext = { ...context, inline: !props.expanded };
-
-    for (let i = 0; i < props.dict.length; i++) {
-      if (i !== 0) {
-        renderer.append(',');
-        if (innerContext.inline) {
-          renderer.append(' ');
-        }
-      }
-
-      const [key, value] = props.dict[i];
-      _renderSwift(renderer, key, innerContext);
-      renderer.append(': ');
-      renderer.continueLine();
-      _renderSwift(renderer, value, innerContext);
-    }
-
-    renderer.outdent();
-    if (props.expanded) {
-      renderer.appendLine(']');
-    } else {
-      renderer.append(']');
-    }
-  } else {
-    throw new Error('unrecognized props for literal');
+): string {
+  if (context.inProtocol) {
+    return '';
   }
-}
 
-function renderSwiftSwitch(
-  renderer: Renderer,
-  {
-    value,
-    children,
-  }: {
-    value: SwiftNode;
-    children: SwiftNode[];
+  if (!access) {
+    access = context.defaultAccessLevel;
   }
-) {
-  renderer.appendLine('switch ');
-  _renderSwift(renderer, value, { inline: true });
-  renderer.append(' {');
 
-  _renderSwift(renderer, children, { inSwitch: true });
-
-  renderer.appendLine('}');
-}
-
-type CollapsibleNodeKind = 'var' | 'case' | 'import';
-
-function renderSwiftDeclarationGroup(
-  renderer: Renderer,
-  { children }: { children: SwiftNode[] },
-  context: RenderContext
-) {
-  let previousNodeKind: CollapsibleNodeKind | null = null;
-
-  children = children.flat().filter(child => child != null);
-
-  for (let i = 0; i < children.length; i++) {
-    const child = children[i];
-
-    let newNodeKind: CollapsibleNodeKind | null = null;
-    if (typeof child === 'object' && 'type' in child) {
-      if (child.type === 'var' && !child.props.children.length) {
-        newNodeKind = 'var';
-      } else if (child.type === 'case') {
-        newNodeKind = 'case';
-      } else if (child.type === 'import') {
-        newNodeKind = 'import';
-      }
-    }
-
-    if (i !== 0) {
-      if (
-        previousNodeKind === null ||
-        newNodeKind === null ||
-        previousNodeKind !== newNodeKind
-      ) {
-        renderer.appendLine('');
-      }
-    }
-
-    _renderSwift(renderer, child, context);
-    previousNodeKind = newNodeKind;
+  if (!access) {
+    return '';
   }
+
+  return `${access} `;
 }

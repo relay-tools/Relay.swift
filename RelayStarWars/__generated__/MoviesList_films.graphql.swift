@@ -2,14 +2,14 @@
 
 import Relay
 
-struct MoviesList_films {
-    var fragmentPointer: FragmentPointer
+public struct MoviesList_films {
+    public var fragmentPointer: FragmentPointer
 
-    init(key: MoviesList_films_Key) {
+    public init(key: MoviesList_films_Key) {
         fragmentPointer = key.fragment_MoviesList_films
     }
 
-    static var node: ReaderFragment {
+    public static var node: ReaderFragment {
         ReaderFragment(
             name: "MoviesList_films",
             type: "Root",
@@ -61,63 +61,62 @@ struct MoviesList_films {
                         ))
                     ]
                 ))
-            ])
+            ]
+        )
     }
 }
 
-
 extension MoviesList_films {
-    struct Data: Decodable {
-        var allFilms: FilmsConnection_allFilms?
+    public struct Data: Decodable {
+        public var allFilms: FilmsConnection_allFilms?
 
-        struct FilmsConnection_allFilms: Decodable, ConnectionCollection {
-            var edges: [FilmsEdge_edges?]?
+        public struct FilmsConnection_allFilms: Decodable, ConnectionCollection {
+            public var edges: [FilmsEdge_edges?]?
 
-            struct FilmsEdge_edges: Decodable, ConnectionEdge {
-                var node: Film_node?
+            public struct FilmsEdge_edges: Decodable, ConnectionEdge {
+                public var node: Film_node?
 
-                struct Film_node: Decodable, Identifiable, MoviesListRow_film_Key, ConnectionNode {
-                    var id: String
-                    var fragment_MoviesListRow_film: FragmentPointer
+                public struct Film_node: Decodable, Identifiable, MoviesListRow_film_Key, ConnectionNode {
+                    public var id: String
+                    public var fragment_MoviesListRow_film: FragmentPointer
                 }
             }
         }
     }
 }
 
-protocol MoviesList_films_Key {
+public protocol MoviesList_films_Key {
     var fragment_MoviesList_films: FragmentPointer { get }
 }
-
 extension MoviesList_films: Relay.Fragment {}
-
 extension MoviesList_films: Relay.PaginationFragment {
-    typealias Operation = MoviesListPaginationQuery
-
-    static var metadata: Metadata {
+    public typealias Operation = MoviesListPaginationQuery
+    public static var metadata: Metadata {
         RefetchMetadata(
             path: [],
             operation: Operation.self,
             connection: ConnectionMetadata(
                 path: ["allFilms"],
-                forward: ConnectionVariableConfig(count: "count", cursor: "cursor")))
+                forward: ConnectionVariableConfig(count: "count", cursor: "cursor")
+            )
+        )
     }
 }
 
-#if canImport(RelaySwiftUI)
-
+#if swift(>=5.3) && canImport(RelaySwiftUI)
 import RelaySwiftUI
-
 extension MoviesList_films_Key {
     @available(iOS 14.0, macOS 10.16, tvOS 14.0, watchOS 7.0, *)
-    func asFragment() -> RelaySwiftUI.FragmentNext<MoviesList_films> {
+    public func asFragment() -> RelaySwiftUI.FragmentNext<MoviesList_films> {
         RelaySwiftUI.FragmentNext<MoviesList_films>(self)
     }
-
     @available(iOS 14.0, macOS 10.16, tvOS 14.0, watchOS 7.0, *)
-    func asFragment() -> RelaySwiftUI.PaginationFragmentNext<MoviesList_films> {
+    public func asFragment() -> RelaySwiftUI.RefetchableFragment<MoviesList_films> {
+        RelaySwiftUI.RefetchableFragment<MoviesList_films>(self)
+    }
+    @available(iOS 14.0, macOS 10.16, tvOS 14.0, watchOS 7.0, *)
+    public func asFragment() -> RelaySwiftUI.PaginationFragmentNext<MoviesList_films> {
         RelaySwiftUI.PaginationFragmentNext<MoviesList_films>(self)
     }
 }
-
 #endif

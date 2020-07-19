@@ -47,7 +47,7 @@ export function SwiftGenerator(runState: RunState): TypeGenerator {
         </DeclarationGroup>
       );
 
-      return renderSwift(code);
+      return renderSwift(code, { defaultAccessLevel: 'public' });
     },
 
     transforms: [RefetchableFragmentTransform.transform],

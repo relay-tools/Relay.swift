@@ -2,3 +2,4 @@ node_modules
 .idea
 .build
 *.xcuserdatad
+.DS_Store

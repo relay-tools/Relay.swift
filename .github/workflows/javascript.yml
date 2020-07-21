@@ -1,0 +1,28 @@
+name: JavaScript
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  compiler:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - uses: actions/cache@v2
+      with:
+        path: ~/.npm
+        key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+        restore-keys: |
+          ${{ runner.os }}-node-
+    - name: Install node modules
+      run: npm ci
+      working-directory: relay-compiler-language-swift
+    - name: Build compiler plugin
+      run: npm run build
+      working-directory: relay-compiler-language-swift
+    - name: Run tests
+      run: npm test
+      working-directory: relay-compiler-language-swift

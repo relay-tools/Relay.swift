@@ -20,9 +20,6 @@ jobs:
     - name: Install node modules
       run: npm ci
       working-directory: relay-compiler-language-swift
-    - name: Build compiler plugin
-      run: npm run build
-      working-directory: relay-compiler-language-swift
     - name: Run tests
       run: npm test
       working-directory: relay-compiler-language-swift

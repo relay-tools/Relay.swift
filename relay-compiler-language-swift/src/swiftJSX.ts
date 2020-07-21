@@ -176,19 +176,16 @@ const builtins: Record<string, BuiltinRenderFunction<any>> = {
       name,
       inherit = [],
       where = [],
-      // access,
       children,
     }: {
       name: string;
       inherit?: string[];
       where?: string[];
-      access?: AccessLevel;
       children: SwiftNode[];
     },
     context
   ) {
-    // renderer.appendLine(formatAccess(access, context));
-    renderer.append(`extension ${name}`);
+    renderer.appendLine(`extension ${name}`);
     if (inherit.length) {
       renderer.append(`: ${inherit.join(', ')}`);
     }
@@ -644,7 +641,7 @@ function _renderSwift(
 }
 
 class Renderer {
-  private lines: string[];
+  lines: string[];
   private level: number;
   private shouldContinue: boolean;
 

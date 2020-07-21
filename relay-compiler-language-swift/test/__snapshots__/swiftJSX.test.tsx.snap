@@ -63,7 +63,7 @@ exports[`property with a function call expression 1`] = `
 `;
 
 exports[`public access 1`] = `
-"public extension TweetRow_tweetGroup_Key: Relay.Operation {
+"extension TweetRow_tweetGroup_Key: Relay.Operation {
     public func asFragment() -> RelaySwiftUI.FragmentNext<TweetRow_tweetGroup> {
         RelaySwiftUI.FragmentNext<TweetRow_tweetGroup>(self)
     }

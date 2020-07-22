@@ -1,0 +1,53 @@
+name: Examples
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  check_generated_code:
+    runs-on: macos-latest
+    steps:
+    - uses: actions/checkout@v2
+    - name: Build relay-compiler language plugin
+      run: |
+        npm ci
+        npm run prepublishOnly
+      working-directory: relay-compiler-language-swift
+    - name: Install node modules
+      run: npm ci
+    - name: Run relay-compiler
+      run: npm run relay
+    - name: Check for changes
+      run: |
+        changes=$(git diff)
+        if [[ "$changes" = "" ]]; then
+          echo "No changes to generated code."
+        else
+          echo "error: There are uncommitted changes to generated code in one or more examples."
+          echo "$changes"
+          exit 1
+        fi
+  build:
+    strategy:
+      matrix:
+        scheme:
+          - RelayTodo
+          - RelayStarWars
+          - RelayPokedex
+        xcode:
+          - "11.5"
+          - "12_beta"
+        exclude:
+          # RelayStarWars uses iOS 14+ features
+          - scheme: RelayStarWars
+            xcode: "11.5"
+    runs-on: macos-latest
+    env:
+      DEVELOPER_DIR: /Applications/Xcode_${{ matrix.xcode }}.app/Contents/Developer
+    steps:
+    - uses: actions/checkout@v2
+    - name: Build
+      run: xcodebuild -scheme ${{ matrix.scheme }} -destination 'name=iPhone 11' | xcpretty

@@ -20,9 +20,9 @@ jobs:
       uses: actions/cache@v2
       with:
         path: .build
-        key: ${{ runner.os }}-spm-${{ steps.swift-version.outputs.version }}-${{ hashFiles('**/Package.resolved') }}
+        key: generated-${{ runner.os }}-spm-${{ steps.swift-version.outputs.version }}-${{ hashFiles('**/Package.resolved') }}
         restore-keys: |
-          ${{ runner.os }}-spm-${{ steps.swift-version.outputs.version }}-
+          generated-${{ runner.os }}-spm-${{ steps.swift-version.outputs.version }}-
     - name: Cache npm dependencies
       uses: actions/cache@v2
       with:

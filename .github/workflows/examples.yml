@@ -11,6 +11,25 @@ jobs:
     runs-on: macos-latest
     steps:
     - uses: actions/checkout@v2
+    - name: Get Swift version
+      id: swift-version
+      run: |
+        echo "::set-output name=version::$(swift -version | shasum | cut -d' ' -f 1)"
+      shell: bash
+    - name: Cache SwiftPM dependencies
+      uses: actions/cache@v2
+      with:
+        path: .build
+        key: ${{ runner.os }}-spm-${{ steps.swift-version.outputs.version }}-${{ hashFiles('**/Package.resolved') }}
+        restore-keys: |
+          ${{ runner.os }}-spm-${{ steps.swift-version.outputs.version }}-
+    - name: Cache npm dependencies
+      uses: actions/cache@v2
+      with:
+        path: ~/.npm
+        key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+        restore-keys: |
+          ${{ runner.os }}-node-
     - name: Build relay-compiler language plugin
       run: |
         npm ci
@@ -50,4 +69,4 @@ jobs:
     steps:
     - uses: actions/checkout@v2
     - name: Build
-      run: xcodebuild -scheme ${{ matrix.scheme }} -destination 'name=iPhone 11' | xcpretty
+      run: set -o pipefail && xcodebuild -scheme ${{ matrix.scheme }} -destination 'name=iPhone 11' | xcpretty

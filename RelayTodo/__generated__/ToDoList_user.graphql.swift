@@ -2,20 +2,21 @@
 
 import Relay
 
-struct ToDoList_user {
-    var fragmentPointer: FragmentPointer
+public struct ToDoList_user {
+    public var fragmentPointer: FragmentPointer
 
-    init(key: ToDoList_user_Key) {
+    public init(key: ToDoList_user_Key) {
         fragmentPointer = key.fragment_ToDoList_user
     }
 
-    static var node: ReaderFragment {
+    public static var node: ReaderFragment {
         ReaderFragment(
             name: "ToDoList_user",
             type: "User",
             selections: [
                 .field(ReaderLinkedField(
                     name: "todos",
+                    storageKey: "todos(first:100)",
                     args: [
                         LiteralArgument(name: "first", value: 100)
                     ],
@@ -44,32 +45,43 @@ struct ToDoList_user {
                         ))
                     ]
                 ))
-            ])
+            ]
+        )
     }
 }
 
-
 extension ToDoList_user {
-    struct Data: Decodable {
-        var todos: TodoConnection_todos?
+    public struct Data: Decodable {
+        public var todos: TodoConnection_todos?
 
-        struct TodoConnection_todos: Decodable {
-            var edges: [TodoEdge_edges?]?
+        public struct TodoConnection_todos: Decodable {
+            public var edges: [TodoEdge_edges?]?
 
-            struct TodoEdge_edges: Decodable {
-                var node: Todo_node?
+            public struct TodoEdge_edges: Decodable {
+                public var node: Todo_node?
 
-                struct Todo_node: Decodable, ToDoItem_todo_Key {
-                    var id: String
-                    var fragment_ToDoItem_todo: FragmentPointer
+                public struct Todo_node: Decodable, Identifiable, ToDoItem_todo_Key {
+                    public var id: String
+                    public var fragment_ToDoItem_todo: FragmentPointer
                 }
             }
         }
     }
 }
 
-protocol ToDoList_user_Key {
+public protocol ToDoList_user_Key {
     var fragment_ToDoList_user: FragmentPointer { get }
 }
 
 extension ToDoList_user: Relay.Fragment {}
+
+#if swift(>=5.3) && canImport(RelaySwiftUI)
+import RelaySwiftUI
+
+extension ToDoList_user_Key {
+    @available(iOS 14.0, macOS 10.16, tvOS 14.0, watchOS 7.0, *)
+    public func asFragment() -> RelaySwiftUI.FragmentNext<ToDoList_user> {
+        RelaySwiftUI.FragmentNext<ToDoList_user>(self)
+    }
+}
+#endif

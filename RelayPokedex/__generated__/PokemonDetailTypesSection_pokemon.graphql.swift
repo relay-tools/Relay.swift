@@ -2,14 +2,14 @@
 
 import Relay
 
-struct PokemonDetailTypesSection_pokemon {
-    var fragmentPointer: FragmentPointer
+public struct PokemonDetailTypesSection_pokemon {
+    public var fragmentPointer: FragmentPointer
 
-    init(key: PokemonDetailTypesSection_pokemon_Key) {
+    public init(key: PokemonDetailTypesSection_pokemon_Key) {
         fragmentPointer = key.fragment_PokemonDetailTypesSection_pokemon
     }
 
-    static var node: ReaderFragment {
+    public static var node: ReaderFragment {
         ReaderFragment(
             name: "PokemonDetailTypesSection_pokemon",
             type: "Pokemon",
@@ -23,21 +23,32 @@ struct PokemonDetailTypesSection_pokemon {
                 .field(ReaderScalarField(
                     name: "weaknesses"
                 ))
-            ])
+            ]
+        )
     }
 }
-
 
 extension PokemonDetailTypesSection_pokemon {
-    struct Data: Decodable {
-        var types: [String?]?
-        var resistant: [String?]?
-        var weaknesses: [String?]?
+    public struct Data: Decodable {
+        public var types: [String?]?
+        public var resistant: [String?]?
+        public var weaknesses: [String?]?
     }
 }
 
-protocol PokemonDetailTypesSection_pokemon_Key {
+public protocol PokemonDetailTypesSection_pokemon_Key {
     var fragment_PokemonDetailTypesSection_pokemon: FragmentPointer { get }
 }
 
 extension PokemonDetailTypesSection_pokemon: Relay.Fragment {}
+
+#if swift(>=5.3) && canImport(RelaySwiftUI)
+import RelaySwiftUI
+
+extension PokemonDetailTypesSection_pokemon_Key {
+    @available(iOS 14.0, macOS 10.16, tvOS 14.0, watchOS 7.0, *)
+    public func asFragment() -> RelaySwiftUI.FragmentNext<PokemonDetailTypesSection_pokemon> {
+        RelaySwiftUI.FragmentNext<PokemonDetailTypesSection_pokemon>(self)
+    }
+}
+#endif

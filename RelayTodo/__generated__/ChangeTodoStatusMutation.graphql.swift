@@ -2,14 +2,14 @@
 
 import Relay
 
-struct ChangeTodoStatusMutation {
-    var variables: Variables
+public struct ChangeTodoStatusMutation {
+    public var variables: Variables
 
-    init(variables: Variables) {
+    public init(variables: Variables) {
         self.variables = variables
     }
 
-    static var node: ConcreteRequest {
+    public static var node: ConcreteRequest {
         ConcreteRequest(
             fragment: ReaderFragment(
                 name: "ChangeTodoStatusMutation",
@@ -38,7 +38,8 @@ struct ChangeTodoStatusMutation {
                             ))
                         ]
                     ))
-                ]),
+                ]
+            ),
             operation: NormalizationOperation(
                 name: "ChangeTodoStatusMutation",
                 selections: [
@@ -65,7 +66,8 @@ struct ChangeTodoStatusMutation {
                             ))
                         ]
                     ))
-                ]),
+                ]
+            ),
             params: RequestParameters(
                 name: "ChangeTodoStatusMutation",
                 operationKind: .mutation,
@@ -80,49 +82,77 @@ mutation ChangeTodoStatusMutation(
     }
   }
 }
-"""))
+"""
+            )
+        )
     }
 }
 
-
 extension ChangeTodoStatusMutation {
-    struct Variables: VariableDataConvertible {
-        var input: ChangeTodoStatusInput
+    public struct Variables: VariableDataConvertible {
+        public var input: ChangeTodoStatusInput
 
-        var variableData: VariableData {
+        public init(input: ChangeTodoStatusInput) {
+            self.input = input
+        }
+
+        public var variableData: VariableData {
             [
-                "input": input,
+                "input": input
             ]
         }
     }
+
+    public init(input: ChangeTodoStatusInput) {
+        self.init(variables: .init(input: input))
+    }
 }
 
-struct ChangeTodoStatusInput: VariableDataConvertible {
-    var complete: Bool
-    var id: String
-    var userId: String
-    var clientMutationId: String?
+#if swift(>=5.3) && canImport(RelaySwiftUI)
+import RelaySwiftUI
 
-    var variableData: VariableData {
+@available(iOS 14.0, macOS 10.16, tvOS 14.0, watchOS 7.0, *)
+extension RelaySwiftUI.QueryNext.WrappedValue where O == ChangeTodoStatusMutation {
+    public func get(input: ChangeTodoStatusInput, fetchKey: Any? = nil) -> RelaySwiftUI.QueryNext<ChangeTodoStatusMutation>.Result {
+        self.get(.init(input: input), fetchKey: fetchKey)
+    }
+}
+#endif
+
+public struct ChangeTodoStatusInput: VariableDataConvertible {
+    public var complete: Bool
+    public var id: String
+    public var userId: String
+    public var clientMutationId: String?
+
+    public init(complete: Bool, id: String, userId: String, clientMutationId: String? = nil) {
+        self.complete = complete
+        self.id = id
+        self.userId = userId
+        self.clientMutationId = clientMutationId
+    }
+
+    public var variableData: VariableData {
         [
             "complete": complete,
             "id": id,
             "userId": userId,
-            "clientMutationId": clientMutationId,
+            "clientMutationId": clientMutationId
         ]
     }
 }
 
+
 extension ChangeTodoStatusMutation {
-    struct Data: Decodable {
-        var changeTodoStatus: ChangeTodoStatusPayload_changeTodoStatus?
+    public struct Data: Decodable {
+        public var changeTodoStatus: ChangeTodoStatusPayload_changeTodoStatus?
 
-        struct ChangeTodoStatusPayload_changeTodoStatus: Decodable {
-            var todo: Todo_todo
+        public struct ChangeTodoStatusPayload_changeTodoStatus: Decodable {
+            public var todo: Todo_todo
 
-            struct Todo_todo: Decodable {
-                var id: String
-                var complete: Bool
+            public struct Todo_todo: Decodable, Identifiable {
+                public var id: String
+                public var complete: Bool
             }
         }
     }

@@ -7,9 +7,10 @@
     "doc": "docs"
   },
   "scripts": {
-    "relay": "npm run relay-starwars && npm run relay-todo",
+    "relay": "npm run relay-starwars && npm run relay-todo && npm run relay-examples",
     "relay-starwars": "relay-compiler --src Sources/RelayTestHelpers/StarWars --schema Sources/RelayTestHelpers/StarWars/schema.graphql --language swift --artifactDirectory Sources/RelayTestHelpers/__GeneratedStarWars__",
-    "relay-todo": "relay-compiler --src Sources/RelayTestHelpers/ToDo --schema Sources/RelayTestHelpers/ToDo/schema.graphql --language swift --artifactDirectory Sources/RelayTestHelpers/__GeneratedToDo__"
+    "relay-todo": "relay-compiler --src Sources/RelayTestHelpers/ToDo --schema Sources/RelayTestHelpers/ToDo/schema.graphql --language swift --artifactDirectory Sources/RelayTestHelpers/__GeneratedToDo__",
+    "relay-examples": "(cd RelayTodo && relay-compiler) && (cd RelayStarWars && relay-compiler) && (cd RelayPokedex && relay-compiler)"
   },
   "repository": {
     "type": "git",

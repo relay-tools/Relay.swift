@@ -2,14 +2,14 @@
 
 import Relay
 
-struct PokemonListQuery {
-    var variables: Variables
+public struct PokemonListQuery {
+    public var variables: Variables
 
-    init(variables: Variables) {
+    public init(variables: Variables) {
         self.variables = variables
     }
 
-    static var node: ConcreteRequest {
+    public static var node: ConcreteRequest {
         ConcreteRequest(
             fragment: ReaderFragment(
                 name: "PokemonListQuery",
@@ -17,6 +17,7 @@ struct PokemonListQuery {
                 selections: [
                     .field(ReaderLinkedField(
                         name: "pokemons",
+                        storageKey: "pokemons(first:50)",
                         args: [
                             LiteralArgument(name: "first", value: 50)
                         ],
@@ -37,7 +38,8 @@ struct PokemonListQuery {
                             ))
                         ]
                     ))
-                ]),
+                ]
+            ),
             operation: NormalizationOperation(
                 name: "PokemonListQuery",
                 selections: [
@@ -64,7 +66,8 @@ struct PokemonListQuery {
                             ))
                         ]
                     ))
-                ]),
+                ]
+            ),
             params: RequestParameters(
                 name: "PokemonListQuery",
                 operationKind: .query,
@@ -82,24 +85,26 @@ fragment PokemonListRow_pokemon on Pokemon {
   name
   number
 }
-"""))
+"""
+            )
+        )
     }
 }
 
-
 extension PokemonListQuery {
-    typealias Variables = EmptyVariables
+    public typealias Variables = EmptyVariables
 }
 
-extension PokemonListQuery {
-    struct Data: Decodable {
-        var pokemons: [Pokemon_pokemons?]?
 
-        struct Pokemon_pokemons: Decodable, PokemonListRow_pokemon_Key {
-            var __typename: String
-            var id: String
-            var name: String?
-            var fragment_PokemonListRow_pokemon: FragmentPointer
+extension PokemonListQuery {
+    public struct Data: Decodable {
+        public var pokemons: [Pokemon_pokemons?]?
+
+        public struct Pokemon_pokemons: Decodable, Identifiable, PokemonListRow_pokemon_Key {
+            public var __typename: String
+            public var id: String
+            public var name: String?
+            public var fragment_PokemonListRow_pokemon: FragmentPointer
         }
     }
 }

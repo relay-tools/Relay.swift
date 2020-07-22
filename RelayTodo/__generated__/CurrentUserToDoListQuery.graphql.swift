@@ -2,14 +2,14 @@
 
 import Relay
 
-struct CurrentUserToDoListQuery {
-    var variables: Variables
+public struct CurrentUserToDoListQuery {
+    public var variables: Variables
 
-    init(variables: Variables) {
+    public init(variables: Variables) {
         self.variables = variables
     }
 
-    static var node: ConcreteRequest {
+    public static var node: ConcreteRequest {
         ConcreteRequest(
             fragment: ReaderFragment(
                 name: "CurrentUserToDoListQuery",
@@ -17,6 +17,7 @@ struct CurrentUserToDoListQuery {
                 selections: [
                     .field(ReaderLinkedField(
                         name: "user",
+                        storageKey: "user(id:\"me\")",
                         args: [
                             LiteralArgument(name: "id", value: "me")
                         ],
@@ -31,7 +32,8 @@ struct CurrentUserToDoListQuery {
                             ))
                         ]
                     ))
-                ]),
+                ]
+            ),
             operation: NormalizationOperation(
                 name: "CurrentUserToDoListQuery",
                 selections: [
@@ -83,7 +85,8 @@ struct CurrentUserToDoListQuery {
                             ))
                         ]
                     ))
-                ]),
+                ]
+            ),
             params: RequestParameters(
                 name: "CurrentUserToDoListQuery",
                 operationKind: .query,
@@ -111,22 +114,24 @@ fragment ToDoList_user on User {
     }
   }
 }
-"""))
+"""
+            )
+        )
     }
 }
 
-
 extension CurrentUserToDoListQuery {
-    typealias Variables = EmptyVariables
+    public typealias Variables = EmptyVariables
 }
 
-extension CurrentUserToDoListQuery {
-    struct Data: Decodable {
-        var user: User_user?
 
-        struct User_user: Decodable, ToDoList_user_Key {
-            var id: String
-            var fragment_ToDoList_user: FragmentPointer
+extension CurrentUserToDoListQuery {
+    public struct Data: Decodable {
+        public var user: User_user?
+
+        public struct User_user: Decodable, Identifiable, ToDoList_user_Key {
+            public var id: String
+            public var fragment_ToDoList_user: FragmentPointer
         }
     }
 }

@@ -2,14 +2,14 @@
 
 import Relay
 
-struct PokemonListRow_pokemon {
-    var fragmentPointer: FragmentPointer
+public struct PokemonListRow_pokemon {
+    public var fragmentPointer: FragmentPointer
 
-    init(key: PokemonListRow_pokemon_Key) {
+    public init(key: PokemonListRow_pokemon_Key) {
         fragmentPointer = key.fragment_PokemonListRow_pokemon
     }
 
-    static var node: ReaderFragment {
+    public static var node: ReaderFragment {
         ReaderFragment(
             name: "PokemonListRow_pokemon",
             type: "Pokemon",
@@ -20,20 +20,31 @@ struct PokemonListRow_pokemon {
                 .field(ReaderScalarField(
                     name: "number"
                 ))
-            ])
+            ]
+        )
     }
 }
-
 
 extension PokemonListRow_pokemon {
-    struct Data: Decodable {
-        var name: String?
-        var number: String?
+    public struct Data: Decodable {
+        public var name: String?
+        public var number: String?
     }
 }
 
-protocol PokemonListRow_pokemon_Key {
+public protocol PokemonListRow_pokemon_Key {
     var fragment_PokemonListRow_pokemon: FragmentPointer { get }
 }
 
 extension PokemonListRow_pokemon: Relay.Fragment {}
+
+#if swift(>=5.3) && canImport(RelaySwiftUI)
+import RelaySwiftUI
+
+extension PokemonListRow_pokemon_Key {
+    @available(iOS 14.0, macOS 10.16, tvOS 14.0, watchOS 7.0, *)
+    public func asFragment() -> RelaySwiftUI.FragmentNext<PokemonListRow_pokemon> {
+        RelaySwiftUI.FragmentNext<PokemonListRow_pokemon>(self)
+    }
+}
+#endif

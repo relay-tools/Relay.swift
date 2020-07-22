@@ -47,10 +47,12 @@ extension MoviesListRow_film {
 public protocol MoviesListRow_film_Key {
     var fragment_MoviesListRow_film: FragmentPointer { get }
 }
+
 extension MoviesListRow_film: Relay.Fragment {}
 
 #if swift(>=5.3) && canImport(RelaySwiftUI)
 import RelaySwiftUI
+
 extension MoviesListRow_film_Key {
     @available(iOS 14.0, macOS 10.16, tvOS 14.0, watchOS 7.0, *)
     public func asFragment() -> RelaySwiftUI.FragmentNext<MoviesListRow_film> {

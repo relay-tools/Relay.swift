@@ -2,14 +2,14 @@
 
 import Relay
 
-struct ToDoItemPreviewQuery {
-    var variables: Variables
+public struct ToDoItemPreviewQuery {
+    public var variables: Variables
 
-    init(variables: Variables) {
+    public init(variables: Variables) {
         self.variables = variables
     }
 
-    static var node: ConcreteRequest {
+    public static var node: ConcreteRequest {
         ConcreteRequest(
             fragment: ReaderFragment(
                 name: "ToDoItemPreviewQuery",
@@ -17,6 +17,7 @@ struct ToDoItemPreviewQuery {
                 selections: [
                     .field(ReaderLinkedField(
                         name: "user",
+                        storageKey: "user(id:\"me\")",
                         args: [
                             LiteralArgument(name: "id", value: "me")
                         ],
@@ -25,6 +26,7 @@ struct ToDoItemPreviewQuery {
                         selections: [
                             .field(ReaderLinkedField(
                                 name: "todos",
+                                storageKey: "todos(first:3)",
                                 args: [
                                     LiteralArgument(name: "first", value: 3)
                                 ],
@@ -55,7 +57,8 @@ struct ToDoItemPreviewQuery {
                             ))
                         ]
                     ))
-                ]),
+                ]
+            ),
             operation: NormalizationOperation(
                 name: "ToDoItemPreviewQuery",
                 selections: [
@@ -107,7 +110,8 @@ struct ToDoItemPreviewQuery {
                             ))
                         ]
                     ))
-                ]),
+                ]
+            ),
             params: RequestParameters(
                 name: "ToDoItemPreviewQuery",
                 operationKind: .query,
@@ -131,31 +135,33 @@ fragment ToDoItem_todo on Todo {
   text
   complete
 }
-"""))
+"""
+            )
+        )
     }
 }
 
-
 extension ToDoItemPreviewQuery {
-    typealias Variables = EmptyVariables
+    public typealias Variables = EmptyVariables
 }
 
+
 extension ToDoItemPreviewQuery {
-    struct Data: Decodable {
-        var user: User_user?
+    public struct Data: Decodable {
+        public var user: User_user?
 
-        struct User_user: Decodable {
-            var todos: TodoConnection_todos?
+        public struct User_user: Decodable {
+            public var todos: TodoConnection_todos?
 
-            struct TodoConnection_todos: Decodable {
-                var edges: [TodoEdge_edges?]?
+            public struct TodoConnection_todos: Decodable {
+                public var edges: [TodoEdge_edges?]?
 
-                struct TodoEdge_edges: Decodable {
-                    var node: Todo_node?
+                public struct TodoEdge_edges: Decodable {
+                    public var node: Todo_node?
 
-                    struct Todo_node: Decodable, ToDoItem_todo_Key {
-                        var id: String
-                        var fragment_ToDoItem_todo: FragmentPointer
+                    public struct Todo_node: Decodable, Identifiable, ToDoItem_todo_Key {
+                        public var id: String
+                        public var fragment_ToDoItem_todo: FragmentPointer
                     }
                 }
             }

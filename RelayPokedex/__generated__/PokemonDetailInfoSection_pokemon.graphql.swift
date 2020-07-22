@@ -2,14 +2,14 @@
 
 import Relay
 
-struct PokemonDetailInfoSection_pokemon {
-    var fragmentPointer: FragmentPointer
+public struct PokemonDetailInfoSection_pokemon {
+    public var fragmentPointer: FragmentPointer
 
-    init(key: PokemonDetailInfoSection_pokemon_Key) {
+    public init(key: PokemonDetailInfoSection_pokemon_Key) {
         fragmentPointer = key.fragment_PokemonDetailInfoSection_pokemon
     }
 
-    static var node: ReaderFragment {
+    public static var node: ReaderFragment {
         ReaderFragment(
             name: "PokemonDetailInfoSection_pokemon",
             type: "Pokemon",
@@ -49,33 +49,44 @@ struct PokemonDetailInfoSection_pokemon {
                         ))
                     ]
                 ))
-            ])
+            ]
+        )
     }
 }
-
 
 extension PokemonDetailInfoSection_pokemon {
-    struct Data: Decodable {
-        var name: String?
-        var number: String?
-        var classification: String?
-        var weight: PokemonDimension_weight?
-        var height: PokemonDimension_height?
+    public struct Data: Decodable {
+        public var name: String?
+        public var number: String?
+        public var classification: String?
+        public var weight: PokemonDimension_weight?
+        public var height: PokemonDimension_height?
 
-        struct PokemonDimension_weight: Decodable {
-            var minimum: String?
-            var maximum: String?
+        public struct PokemonDimension_weight: Decodable {
+            public var minimum: String?
+            public var maximum: String?
         }
 
-        struct PokemonDimension_height: Decodable {
-            var minimum: String?
-            var maximum: String?
+        public struct PokemonDimension_height: Decodable {
+            public var minimum: String?
+            public var maximum: String?
         }
     }
 }
 
-protocol PokemonDetailInfoSection_pokemon_Key {
+public protocol PokemonDetailInfoSection_pokemon_Key {
     var fragment_PokemonDetailInfoSection_pokemon: FragmentPointer { get }
 }
 
 extension PokemonDetailInfoSection_pokemon: Relay.Fragment {}
+
+#if swift(>=5.3) && canImport(RelaySwiftUI)
+import RelaySwiftUI
+
+extension PokemonDetailInfoSection_pokemon_Key {
+    @available(iOS 14.0, macOS 10.16, tvOS 14.0, watchOS 7.0, *)
+    public func asFragment() -> RelaySwiftUI.FragmentNext<PokemonDetailInfoSection_pokemon> {
+        RelaySwiftUI.FragmentNext<PokemonDetailInfoSection_pokemon>(self)
+    }
+}
+#endif

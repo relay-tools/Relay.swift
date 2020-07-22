@@ -2,14 +2,14 @@
 
 import Relay
 
-struct PokemonDetailQuery {
-    var variables: Variables
+public struct PokemonDetailQuery {
+    public var variables: Variables
 
-    init(variables: Variables) {
+    public init(variables: Variables) {
         self.variables = variables
     }
 
-    static var node: ConcreteRequest {
+    public static var node: ConcreteRequest {
         ConcreteRequest(
             fragment: ReaderFragment(
                 name: "PokemonDetailQuery",
@@ -34,7 +34,8 @@ struct PokemonDetailQuery {
                             ))
                         ]
                     ))
-                ]),
+                ]
+            ),
             operation: NormalizationOperation(
                 name: "PokemonDetailQuery",
                 selections: [
@@ -95,7 +96,8 @@ struct PokemonDetailQuery {
                             ))
                         ]
                     ))
-                ]),
+                ]
+            ),
             params: RequestParameters(
                 name: "PokemonDetailQuery",
                 operationKind: .query,
@@ -129,31 +131,51 @@ fragment PokemonDetailTypesSection_pokemon on Pokemon {
   resistant
   weaknesses
 }
-"""))
+"""
+            )
+        )
     }
 }
 
-
 extension PokemonDetailQuery {
-    struct Variables: VariableDataConvertible {
-        var id: String?
+    public struct Variables: VariableDataConvertible {
+        public var id: String?
 
-        var variableData: VariableData {
+        public init(id: String? = nil) {
+            self.id = id
+        }
+
+        public var variableData: VariableData {
             [
-                "id": id,
+                "id": id
             ]
         }
     }
+
+    public init(id: String? = nil) {
+        self.init(variables: .init(id: id))
+    }
 }
 
-extension PokemonDetailQuery {
-    struct Data: Decodable {
-        var pokemon: Pokemon_pokemon?
+#if swift(>=5.3) && canImport(RelaySwiftUI)
+import RelaySwiftUI
 
-        struct Pokemon_pokemon: Decodable, PokemonDetailInfoSection_pokemon_Key, PokemonDetailTypesSection_pokemon_Key {
-            var id: String
-            var fragment_PokemonDetailInfoSection_pokemon: FragmentPointer
-            var fragment_PokemonDetailTypesSection_pokemon: FragmentPointer
+@available(iOS 14.0, macOS 10.16, tvOS 14.0, watchOS 7.0, *)
+extension RelaySwiftUI.QueryNext.WrappedValue where O == PokemonDetailQuery {
+    public func get(id: String? = nil, fetchKey: Any? = nil) -> RelaySwiftUI.QueryNext<PokemonDetailQuery>.Result {
+        self.get(.init(id: id), fetchKey: fetchKey)
+    }
+}
+#endif
+
+extension PokemonDetailQuery {
+    public struct Data: Decodable {
+        public var pokemon: Pokemon_pokemon?
+
+        public struct Pokemon_pokemon: Decodable, Identifiable, PokemonDetailInfoSection_pokemon_Key, PokemonDetailTypesSection_pokemon_Key {
+            public var id: String
+            public var fragment_PokemonDetailInfoSection_pokemon: FragmentPointer
+            public var fragment_PokemonDetailTypesSection_pokemon: FragmentPointer
         }
     }
 }

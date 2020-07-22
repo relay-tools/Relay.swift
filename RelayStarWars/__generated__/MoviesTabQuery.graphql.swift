@@ -135,9 +135,11 @@ extension MoviesTabQuery {
     public typealias Variables = EmptyVariables
 }
 
+
 extension MoviesTabQuery {
     public struct Data: Decodable, MoviesList_films_Key {
         public var fragment_MoviesList_films: FragmentPointer
     }
 }
+
 extension MoviesTabQuery: Relay.Operation {}

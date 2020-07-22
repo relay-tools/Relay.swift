@@ -88,7 +88,9 @@ extension MoviesList_films {
 public protocol MoviesList_films_Key {
     var fragment_MoviesList_films: FragmentPointer { get }
 }
+
 extension MoviesList_films: Relay.Fragment {}
+
 extension MoviesList_films: Relay.PaginationFragment {
     public typealias Operation = MoviesListPaginationQuery
     public static var metadata: Metadata {
@@ -105,6 +107,7 @@ extension MoviesList_films: Relay.PaginationFragment {
 
 #if swift(>=5.3) && canImport(RelaySwiftUI)
 import RelaySwiftUI
+
 extension MoviesList_films_Key {
     @available(iOS 14.0, macOS 10.16, tvOS 14.0, watchOS 7.0, *)
     public func asFragment() -> RelaySwiftUI.FragmentNext<MoviesList_films> {

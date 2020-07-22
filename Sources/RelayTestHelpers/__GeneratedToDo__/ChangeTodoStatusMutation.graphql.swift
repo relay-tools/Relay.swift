@@ -111,7 +111,8 @@ extension ChangeTodoStatusMutation {
 #if swift(>=5.3) && canImport(RelaySwiftUI)
 import RelaySwiftUI
 
-@available(iOS 14.0, macOS 10.16, tvOS 14.0, watchOS 7.0, *)extension RelaySwiftUI.QueryNext.WrappedValue where O == ChangeTodoStatusMutation {
+@available(iOS 14.0, macOS 10.16, tvOS 14.0, watchOS 7.0, *)
+extension RelaySwiftUI.QueryNext.WrappedValue where O == ChangeTodoStatusMutation {
     public func get(input: ChangeTodoStatusInput, fetchKey: Any? = nil) -> RelaySwiftUI.QueryNext<ChangeTodoStatusMutation>.Result {
         self.get(.init(input: input), fetchKey: fetchKey)
     }
@@ -141,6 +142,7 @@ public struct ChangeTodoStatusInput: VariableDataConvertible {
     }
 }
 
+
 extension ChangeTodoStatusMutation {
     public struct Data: Decodable {
         public var changeTodoStatus: ChangeTodoStatusPayload_changeTodoStatus?
@@ -155,4 +157,5 @@ extension ChangeTodoStatusMutation {
         }
     }
 }
+
 extension ChangeTodoStatusMutation: Relay.Operation {}

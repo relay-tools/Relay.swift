@@ -124,6 +124,7 @@ extension CurrentUserToDoListQuery {
     public typealias Variables = EmptyVariables
 }
 
+
 extension CurrentUserToDoListQuery {
     public struct Data: Decodable {
         public var user: User_user?
@@ -134,4 +135,5 @@ extension CurrentUserToDoListQuery {
         }
     }
 }
+
 extension CurrentUserToDoListQuery: Relay.Operation {}

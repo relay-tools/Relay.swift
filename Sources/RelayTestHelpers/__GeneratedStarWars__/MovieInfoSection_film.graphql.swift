@@ -47,7 +47,9 @@ extension MovieInfoSection_film {
 public protocol MovieInfoSection_film_Key {
     var fragment_MovieInfoSection_film: FragmentPointer { get }
 }
+
 extension MovieInfoSection_film: Relay.Fragment {}
+
 extension MovieInfoSection_film: Relay.RefetchFragment {
     public typealias Operation = MovieInfoSectionRefetchQuery
     public static var metadata: Metadata {
@@ -61,6 +63,7 @@ extension MovieInfoSection_film: Relay.RefetchFragment {
 
 #if swift(>=5.3) && canImport(RelaySwiftUI)
 import RelaySwiftUI
+
 extension MovieInfoSection_film_Key {
     @available(iOS 14.0, macOS 10.16, tvOS 14.0, watchOS 7.0, *)
     public func asFragment() -> RelaySwiftUI.FragmentNext<MovieInfoSection_film> {

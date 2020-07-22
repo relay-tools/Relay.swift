@@ -165,15 +165,18 @@ extension MoviesListPaginationQuery {
 #if swift(>=5.3) && canImport(RelaySwiftUI)
 import RelaySwiftUI
 
-@available(iOS 14.0, macOS 10.16, tvOS 14.0, watchOS 7.0, *)extension RelaySwiftUI.QueryNext.WrappedValue where O == MoviesListPaginationQuery {
+@available(iOS 14.0, macOS 10.16, tvOS 14.0, watchOS 7.0, *)
+extension RelaySwiftUI.QueryNext.WrappedValue where O == MoviesListPaginationQuery {
     public func get(count: Int? = nil, cursor: String? = nil, fetchKey: Any? = nil) -> RelaySwiftUI.QueryNext<MoviesListPaginationQuery>.Result {
         self.get(.init(count: count, cursor: cursor), fetchKey: fetchKey)
     }
 }
 #endif
+
 extension MoviesListPaginationQuery {
     public struct Data: Decodable, MoviesList_films_Key {
         public var fragment_MoviesList_films: FragmentPointer
     }
 }
+
 extension MoviesListPaginationQuery: Relay.Operation {}

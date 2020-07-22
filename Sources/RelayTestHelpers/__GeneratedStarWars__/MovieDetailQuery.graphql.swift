@@ -109,12 +109,14 @@ extension MovieDetailQuery {
 #if swift(>=5.3) && canImport(RelaySwiftUI)
 import RelaySwiftUI
 
-@available(iOS 14.0, macOS 10.16, tvOS 14.0, watchOS 7.0, *)extension RelaySwiftUI.QueryNext.WrappedValue where O == MovieDetailQuery {
+@available(iOS 14.0, macOS 10.16, tvOS 14.0, watchOS 7.0, *)
+extension RelaySwiftUI.QueryNext.WrappedValue where O == MovieDetailQuery {
     public func get(id: String, fetchKey: Any? = nil) -> RelaySwiftUI.QueryNext<MovieDetailQuery>.Result {
         self.get(.init(id: id), fetchKey: fetchKey)
     }
 }
 #endif
+
 extension MovieDetailQuery {
     public struct Data: Decodable {
         public var film: Film_film?
@@ -124,4 +126,5 @@ extension MovieDetailQuery {
         }
     }
 }
+
 extension MovieDetailQuery: Relay.Operation {}

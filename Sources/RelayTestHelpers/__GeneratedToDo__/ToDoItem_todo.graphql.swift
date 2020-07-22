@@ -39,10 +39,12 @@ extension ToDoItem_todo {
 public protocol ToDoItem_todo_Key {
     var fragment_ToDoItem_todo: FragmentPointer { get }
 }
+
 extension ToDoItem_todo: Relay.Fragment {}
 
 #if swift(>=5.3) && canImport(RelaySwiftUI)
 import RelaySwiftUI
+
 extension ToDoItem_todo_Key {
     @available(iOS 14.0, macOS 10.16, tvOS 14.0, watchOS 7.0, *)
     public func asFragment() -> RelaySwiftUI.FragmentNext<ToDoItem_todo> {

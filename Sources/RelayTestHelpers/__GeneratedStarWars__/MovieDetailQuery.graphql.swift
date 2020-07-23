@@ -117,6 +117,17 @@ extension RelaySwiftUI.QueryNext.WrappedValue where O == MovieDetailQuery {
 }
 #endif
 
+#if swift(>=5.3) && canImport(RelaySwiftUI)
+import RelaySwiftUI
+
+@available(iOS 14.0, macOS 10.16, tvOS 14.0, watchOS 7.0, *)
+extension RelaySwiftUI.RefetchableFragment.Wrapper where F.Operation == MovieDetailQuery {
+    public func refetch(id: String) {
+        self.refetch(.init(id: id))
+    }
+}
+#endif
+
 extension MovieDetailQuery {
     public struct Data: Decodable {
         public var film: Film_film?

@@ -119,6 +119,17 @@ extension RelaySwiftUI.QueryNext.WrappedValue where O == ChangeTodoStatusMutatio
 }
 #endif
 
+#if swift(>=5.3) && canImport(RelaySwiftUI)
+import RelaySwiftUI
+
+@available(iOS 14.0, macOS 10.16, tvOS 14.0, watchOS 7.0, *)
+extension RelaySwiftUI.RefetchableFragment.Wrapper where F.Operation == ChangeTodoStatusMutation {
+    public func refetch(input: ChangeTodoStatusInput) {
+        self.refetch(.init(input: input))
+    }
+}
+#endif
+
 public struct ChangeTodoStatusInput: VariableDataConvertible {
     public var complete: Bool
     public var id: String

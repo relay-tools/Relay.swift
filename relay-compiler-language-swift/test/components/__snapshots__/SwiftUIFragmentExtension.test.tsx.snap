@@ -22,10 +22,12 @@ extension TweetList_tweets_Key {
     func asFragment() -> RelaySwiftUI.FragmentNext<TweetList_tweets> {
         RelaySwiftUI.FragmentNext<TweetList_tweets>(self)
     }
+
     @available(iOS 14.0, macOS 10.16, tvOS 14.0, watchOS 7.0, *)
     func asFragment() -> RelaySwiftUI.RefetchableFragment<TweetList_tweets> {
         RelaySwiftUI.RefetchableFragment<TweetList_tweets>(self)
     }
+
     @available(iOS 14.0, macOS 10.16, tvOS 14.0, watchOS 7.0, *)
     func asFragment() -> RelaySwiftUI.PaginationFragmentNext<TweetList_tweets> {
         RelaySwiftUI.PaginationFragmentNext<TweetList_tweets>(self)
@@ -43,6 +45,7 @@ extension TweetDetail_tweet_Key {
     func asFragment() -> RelaySwiftUI.FragmentNext<TweetDetail_tweet> {
         RelaySwiftUI.FragmentNext<TweetDetail_tweet>(self)
     }
+
     @available(iOS 14.0, macOS 10.16, tvOS 14.0, watchOS 7.0, *)
     func asFragment() -> RelaySwiftUI.RefetchableFragment<TweetDetail_tweet> {
         RelaySwiftUI.RefetchableFragment<TweetDetail_tweet>(self)

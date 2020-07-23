@@ -16,6 +16,7 @@ export const InputType = ({ node }: { node: InputStructNode }) => {
           <InputType node={{ ...node, name: childType }} />
         </extension>
         <QueryGetConvenienceExtension node={node} />
+        <RefetchConvenienceExtension node={node} />
       </DeclarationGroup>
     );
   }
@@ -95,6 +96,57 @@ const QueryGetConvenienceExtension = ({ node }: { node: InputStructNode }) => {
                     />
                   </param>,
                   <param label="fetchKey">fetchKey</param>,
+                ]}
+              />
+            </function>
+          </extension>
+        </AvailableOnNewPlatforms>
+      </DeclarationGroup>
+    </SwiftUICheck>
+  );
+};
+
+const RefetchConvenienceExtension = ({ node }: { node: InputStructNode }) => {
+  if (!node.isRootVariables || node.fields.length === 0) {
+    return null;
+  }
+
+  const [parentType] = node.name.split('.');
+
+  return (
+    <SwiftUICheck>
+      <DeclarationGroup>
+        <import module="RelaySwiftUI" />
+        <AvailableOnNewPlatforms>
+          <extension
+            name="RelaySwiftUI.RefetchableFragment.Wrapper"
+            where={[`F.Operation == ${parentType}`]}
+          >
+            <function
+              name="refetch"
+              parameters={node.fields.map(field => (
+                <paramdecl
+                  name={field.fieldName}
+                  type={field.typeName}
+                  defaultValue={
+                    field.typeName.endsWith('?') ? 'nil' : undefined
+                  }
+                />
+              ))}
+            >
+              <call
+                receiver="self"
+                name="refetch"
+                parameters={[
+                  <param>
+                    <call
+                      receiver=""
+                      name="init"
+                      parameters={node.fields.map(field => (
+                        <param label={field.fieldName}>{field.fieldName}</param>
+                      ))}
+                    />
+                  </param>,
                 ]}
               />
             </function>

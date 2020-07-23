@@ -96,6 +96,7 @@ extension PokemonListQuery {
 }
 
 
+
 extension PokemonListQuery {
     public struct Data: Decodable {
         public var pokemons: [Pokemon_pokemons?]?

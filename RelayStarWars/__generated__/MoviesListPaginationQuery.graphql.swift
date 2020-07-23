@@ -173,6 +173,17 @@ extension RelaySwiftUI.QueryNext.WrappedValue where O == MoviesListPaginationQue
 }
 #endif
 
+#if swift(>=5.3) && canImport(RelaySwiftUI)
+import RelaySwiftUI
+
+@available(iOS 14.0, macOS 10.16, tvOS 14.0, watchOS 7.0, *)
+extension RelaySwiftUI.RefetchableFragment.Wrapper where F.Operation == MoviesListPaginationQuery {
+    public func refetch(count: Int? = nil, cursor: String? = nil) {
+        self.refetch(.init(count: count, cursor: cursor))
+    }
+}
+#endif
+
 extension MoviesListPaginationQuery {
     public struct Data: Decodable, MoviesList_films_Key {
         public var fragment_MoviesList_films: FragmentPointer

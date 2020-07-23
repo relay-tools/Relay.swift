@@ -113,10 +113,12 @@ extension MoviesList_films_Key {
     public func asFragment() -> RelaySwiftUI.FragmentNext<MoviesList_films> {
         RelaySwiftUI.FragmentNext<MoviesList_films>(self)
     }
+
     @available(iOS 14.0, macOS 10.16, tvOS 14.0, watchOS 7.0, *)
     public func asFragment() -> RelaySwiftUI.RefetchableFragment<MoviesList_films> {
         RelaySwiftUI.RefetchableFragment<MoviesList_films>(self)
     }
+
     @available(iOS 14.0, macOS 10.16, tvOS 14.0, watchOS 7.0, *)
     public func asFragment() -> RelaySwiftUI.PaginationFragmentNext<MoviesList_films> {
         RelaySwiftUI.PaginationFragmentNext<MoviesList_films>(self)

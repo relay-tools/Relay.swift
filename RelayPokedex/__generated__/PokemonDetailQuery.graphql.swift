@@ -168,6 +168,17 @@ extension RelaySwiftUI.QueryNext.WrappedValue where O == PokemonDetailQuery {
 }
 #endif
 
+#if swift(>=5.3) && canImport(RelaySwiftUI)
+import RelaySwiftUI
+
+@available(iOS 14.0, macOS 10.16, tvOS 14.0, watchOS 7.0, *)
+extension RelaySwiftUI.RefetchableFragment.Wrapper where F.Operation == PokemonDetailQuery {
+    public func refetch(id: String? = nil) {
+        self.refetch(.init(id: id))
+    }
+}
+#endif
+
 extension PokemonDetailQuery {
     public struct Data: Decodable {
         public var pokemon: Pokemon_pokemon?

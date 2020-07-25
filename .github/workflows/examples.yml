@@ -8,6 +8,7 @@ on:
 
 jobs:
   check_generated_code:
+    name: Check generated code
     runs-on: macos-latest
     steps:
     - uses: actions/checkout@v2
@@ -50,6 +51,7 @@ jobs:
           exit 1
         fi
   build:
+    name: Build ${{ matrix.scheme }} (Xcode ${{ matrix.xcode }})
     strategy:
       matrix:
         scheme:

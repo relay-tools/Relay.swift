@@ -8,6 +8,7 @@ on:
 
 jobs:
   build:
+    name: "Build and test Swift (Xcode ${{ matrix.xcode }})"
     strategy:
       matrix:
         xcode:

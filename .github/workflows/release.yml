@@ -40,7 +40,7 @@ jobs:
 
     - name: Update language plugin package version
       run: |
-        sed -i '' -e 's/"version": ".*",$/"version": "${{ github.event.inputs.version }}",/' relay-compiler-language-swift/package.json
+        sed -i '' -e 's/"version": ".*",$/"version": "${{ github.event.inputs.version }}",/' package.json
       working-directory: relay-compiler-language-swift
 
     - name: Commit version bump

@@ -1,0 +1,58 @@
+name: Release
+
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: Release version number
+        required: true
+
+jobs:
+  release:
+    runs-on: macos-latest
+    env:
+      DEVELOPER_DIR: /Applications/Xcode_11.4.app/Contents/Developer
+    steps:
+    - uses: actions/checkout@v2
+    - name: Get Swift version
+      id: swift-version
+      run: echo "::set-output name=version::$(swift -version | shasum | cut -d' ' -f 1)"
+      shell: bash
+    - name: Cache SwiftPM dependencies
+      uses: actions/cache@v2
+      with:
+        path: .build
+        key: generated-${{ runner.os }}-spm-${{ steps.swift-version.outputs.version }}-${{ hashFiles('**/Package.resolved') }}
+        restore-keys: |
+          generated-${{ runner.os }}-spm-${{ steps.swift-version.outputs.version }}-
+    - name: Cache npm dependencies
+      uses: actions/cache@v2
+      with:
+        path: ~/.npm
+        key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+        restore-keys: |
+          ${{ runner.os }}-node-
+
+    - name: Install node modules
+      run: npm ci
+      working-directory: relay-compiler-language-swift
+
+    - name: Update language plugin package version
+      run: |
+        sed -i '' -e 's/"version": ".*",$/"version": "${{ github.event.inputs.version }}",/' relay-compiler-language-swift/package.json
+      working-directory: relay-compiler-language-swift
+
+    - name: Commit version bump
+      name: git -c user.name="GitHub Actions" -c user.email "actions@github.com" commit -am "Update version to ${{ github.event.inputs.version }}"
+
+    - name: Tag commit
+      run: git tag "${{ github.event.inputs.version }}"
+
+    - name: Publish package
+      run: npm publish
+      working-directory: relay-compiler-language-swift
+      env:
+        NODE_AUTH_TOKEN: ${{ secrets.NODE_AUTH_TOKEN }}
+
+    - name: Push commit and tags
+      run: git push --tags origin master

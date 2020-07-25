@@ -3,53 +3,24 @@ name: Examples
 on:
   push:
     branches: [ main ]
+    paths:
+    - 'RelayPokedex/**'
+    - 'RelayStarWars/**'
+    - 'RelayTodo/**'
+    - 'Sources/Relay/**'
+    - 'Sources/RelaySwiftUI/**'
+    - 'Package.*'
   pull_request:
     branches: [ main ]
+    paths:
+    - 'RelayPokedex/**'
+    - 'RelayStarWars/**'
+    - 'RelayTodo/**'
+    - 'Sources/Relay/**'
+    - 'Sources/RelaySwiftUI/**'
+    - 'Package.*'
 
 jobs:
-  check_generated_code:
-    name: Check generated code
-    runs-on: macos-latest
-    steps:
-    - uses: actions/checkout@v2
-    - name: Get Swift version
-      id: swift-version
-      run: |
-        echo "::set-output name=version::$(swift -version | shasum | cut -d' ' -f 1)"
-      shell: bash
-    - name: Cache SwiftPM dependencies
-      uses: actions/cache@v2
-      with:
-        path: .build
-        key: generated-${{ runner.os }}-spm-${{ steps.swift-version.outputs.version }}-${{ hashFiles('**/Package.resolved') }}
-        restore-keys: |
-          generated-${{ runner.os }}-spm-${{ steps.swift-version.outputs.version }}-
-    - name: Cache npm dependencies
-      uses: actions/cache@v2
-      with:
-        path: ~/.npm
-        key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
-        restore-keys: |
-          ${{ runner.os }}-node-
-    - name: Build relay-compiler language plugin
-      run: |
-        npm ci
-        npm run prepublishOnly
-      working-directory: relay-compiler-language-swift
-    - name: Install node modules
-      run: npm ci
-    - name: Run relay-compiler
-      run: npm run relay
-    - name: Check for changes
-      run: |
-        changes=$(git diff)
-        if [[ "$changes" = "" ]]; then
-          echo "No changes to generated code."
-        else
-          echo "error: There are uncommitted changes to generated code in one or more examples."
-          echo "$changes"
-          exit 1
-        fi
   build:
     name: Build ${{ matrix.scheme }} (Xcode ${{ matrix.xcode }})
     strategy:

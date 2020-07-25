@@ -44,7 +44,7 @@ jobs:
       working-directory: relay-compiler-language-swift
 
     - name: Commit version bump
-      run: git -c user.name="GitHub Actions" -c user.email "actions@github.com" commit -am "Update version to ${{ github.event.inputs.version }}"
+      run: git -c user.name="GitHub Actions" -c user.email="actions@github.com" commit -am "Update version to ${{ github.event.inputs.version }}"
 
     - name: Tag commit
       run: git tag "${{ github.event.inputs.version }}"

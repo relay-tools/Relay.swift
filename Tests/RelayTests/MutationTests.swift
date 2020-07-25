@@ -171,6 +171,7 @@ class MutationTests: XCTestCase {
         "edges": [
           {
             "node": {
+              "__typename": "Todo",
               "id": "VG9kbzow",
               "complete": true,
               "text": "Taste JavaScript"
@@ -179,6 +180,7 @@ class MutationTests: XCTestCase {
           },
           {
             "node": {
+              "__typename": "Todo",
               "id": "VG9kbzox",
               "complete": false,
               "text": "Buy a unicorn"

@@ -223,6 +223,7 @@ private let myTodosPayload = """
         "edges": [
           {
             "node": {
+              "__typename": "Todo",
               "id": "VG9kbzow",
               "complete": true,
               "text": "Taste JavaScript"
@@ -231,6 +232,7 @@ private let myTodosPayload = """
           },
           {
             "node": {
+              "__typename": "Todo",
               "id": "VG9kbzox",
               "complete": false,
               "text": "Buy a unicorn"

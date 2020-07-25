@@ -76,12 +76,40 @@ public struct CurrentUserToDoListQuery {
                                                     )),
                                                     .field(NormalizationScalarField(
                                                         name: "complete"
+                                                    )),
+                                                    .field(NormalizationScalarField(
+                                                        name: "__typename"
                                                     ))
                                                 ]
+                                            )),
+                                            .field(NormalizationScalarField(
+                                                name: "cursor"
+                                            ))
+                                        ]
+                                    )),
+                                    .field(NormalizationLinkedField(
+                                        name: "pageInfo",
+                                        concreteType: "PageInfo",
+                                        plural: false,
+                                        selections: [
+                                            .field(NormalizationScalarField(
+                                                name: "endCursor"
+                                            )),
+                                            .field(NormalizationScalarField(
+                                                name: "hasNextPage"
                                             ))
                                         ]
                                     ))
                                 ]
+                            )),
+                            .handle(NormalizationHandle(
+                                kind: .linked,
+                                name: "todos",
+                                args: [
+                                    LiteralArgument(name: "first", value: 100)
+                                ],
+                                handle: "connection",
+                                key: "ToDoList_todos"
                             ))
                         ]
                     ))
@@ -110,9 +138,16 @@ fragment ToDoList_user on User {
       node {
         id
         ...ToDoItem_todo
+        __typename
       }
+      cursor
+    }
+    pageInfo {
+      endCursor
+      hasNextPage
     }
   }
+  id
 }
 """
             )

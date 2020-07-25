@@ -54,6 +54,7 @@ private let initialPayload = """
 "edges": [
   {
     "node": {
+      "__typename": "Todo",
       "id": "VG9kbzow",
       "complete": true,
       "text": "Taste JavaScript"
@@ -62,6 +63,7 @@ private let initialPayload = """
   },
   {
     "node": {
+      "__typename": "Todo",
       "id": "VG9kbzox",
       "complete": false,
       "text": "Buy a unicorn"

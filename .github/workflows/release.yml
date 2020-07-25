@@ -60,4 +60,4 @@ jobs:
         NODE_AUTH_TOKEN: ${{ secrets.NODE_AUTH_TOKEN }}
 
     - name: Push commit and tags
-      run: git push --tags origin master
+      run: git push --tags origin main

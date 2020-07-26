@@ -22,6 +22,7 @@ class ReaderTests: XCTestCase {
 
         expect(snapshot.data).notTo(beNil())
         assertSnapshot(matching: snapshot.data, as: .dump)
+        expect(snapshot.isMissingData).to(beFalse())
     }
 
     func testReadStarWarsFilmsList() throws {
@@ -39,6 +40,7 @@ class ReaderTests: XCTestCase {
         expect(snapshot2.data).notTo(beNil())
 
         assertSnapshot(matching: snapshot2.data, as: .dump)
+        expect(snapshot2.isMissingData).to(beFalse())
     }
 
     func testReadStarWarsFilmRow() throws {
@@ -60,6 +62,59 @@ class ReaderTests: XCTestCase {
         expect(snapshot3.data).notTo(beNil())
 
         assertSnapshot(matching: snapshot3.data, as: .dump)
+        expect(snapshot3.isMissingData).to(beFalse())
+    }
+
+    func testReadStarWarsFilmRowNullScalar() throws {
+        let op = MoviesTabQuery()
+        try environment.cachePayload(op, allFilmsPayload)
+
+        var source = environment.store.source
+        var record = source["ZmlsbXM6MQ=="]!
+        record["title"] = NSNull()
+        source[record.dataID] = record
+
+        var selector = op.createDescriptor().fragment
+
+        let snapshot = Reader.read(MoviesTabQuery.Data.self, source: source, selector: selector)
+        expect(snapshot.data).notTo(beNil())
+
+        selector = MoviesList_films(key: snapshot.data!).selector
+        let snapshot2 = Reader.read(MoviesList_films.Data.self, source: source, selector: selector)
+        expect(snapshot2.data).notTo(beNil())
+
+        selector = MoviesListRow_film(key: snapshot2.data!.allFilms![0]!).selector
+        let snapshot3 = Reader.read(MoviesListRow_film.Data.self, source: source, selector: selector)
+        expect(snapshot3.data).notTo(beNil())
+
+        assertSnapshot(matching: snapshot3.data, as: .dump)
+        expect(snapshot3.isMissingData).to(beFalse())
+    }
+
+    func testReadStarWarsFilmRowMissingScalar() throws {
+        let op = MoviesTabQuery()
+        try environment.cachePayload(op, allFilmsPayload)
+
+        var source = environment.store.source
+        var record = source["ZmlsbXM6MQ=="]!
+        record["title"] = nil
+        source[record.dataID] = record
+
+        var selector = op.createDescriptor().fragment
+
+        let snapshot = Reader.read(MoviesTabQuery.Data.self, source: source, selector: selector)
+        expect(snapshot.data).notTo(beNil())
+
+        selector = MoviesList_films(key: snapshot.data!).selector
+        let snapshot2 = Reader.read(MoviesList_films.Data.self, source: source, selector: selector)
+        expect(snapshot2.data).notTo(beNil())
+
+        selector = MoviesListRow_film(key: snapshot2.data!.allFilms![0]!).selector
+        let snapshot3 = Reader.read(MoviesListRow_film.Data.self, source: source, selector: selector)
+        expect(snapshot3.data).notTo(beNil())
+
+        assertSnapshot(matching: snapshot3.data, as: .dump)
+        expect(snapshot3.isMissingData).to(beTrue())
     }
 }
 

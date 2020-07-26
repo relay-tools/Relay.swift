@@ -1,0 +1,10 @@
+▿ Optional<Data>
+  ▿ some: Data
+    ▿ director: Optional<String>
+      - some: "George Lucas"
+    ▿ episodeID: Optional<Int>
+      - some: 4
+    - id: "ZmlsbXM6MQ=="
+    ▿ releaseDate: Optional<String>
+      - some: "1977-05-25"
+    - title: Optional<String>.none

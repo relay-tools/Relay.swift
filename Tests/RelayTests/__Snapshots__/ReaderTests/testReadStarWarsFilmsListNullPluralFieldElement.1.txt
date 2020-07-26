@@ -1,0 +1,19 @@
+▿ Optional<Data>
+  ▿ some: Data
+    ▿ allFilms: Optional<FilmsConnection_allFilms>
+      ▿ some: FilmsConnection_allFilms
+        ▿ edges: Optional<Array<Optional<FilmsEdge_edges>>>
+          ▿ some: 3 elements
+            - Optional<FilmsEdge_edges>.none
+            ▿ Optional<FilmsEdge_edges>
+              ▿ some: FilmsEdge_edges
+                ▿ node: Optional<Film_node>
+                  ▿ some: Film_node
+                    - fragment_MoviesListRow_film: FragmentPointer(variables: , id: Relay.DataID(rawValue: "ZmlsbXM6Mg=="), ownerIdentifier: "query MoviesTabQuery {\n  ...MoviesList_films\n}\n\nfragment MoviesListRow_film on Film {\n  id\n  episodeID\n  title\n  director\n  releaseDate\n}\n\nfragment MoviesList_films on Root {\n  allFilms(first: 3) {\n    edges {\n      node {\n        id\n        ...MoviesListRow_film\n        __typename\n      }\n      cursor\n    }\n    pageInfo {\n      endCursor\n      hasNextPage\n    }\n  }\n}", ownerVariables: )
+                    - id: "ZmlsbXM6Mg=="
+            ▿ Optional<FilmsEdge_edges>
+              ▿ some: FilmsEdge_edges
+                ▿ node: Optional<Film_node>
+                  ▿ some: Film_node
+                    - fragment_MoviesListRow_film: FragmentPointer(variables: , id: Relay.DataID(rawValue: "ZmlsbXM6Mw=="), ownerIdentifier: "query MoviesTabQuery {\n  ...MoviesList_films\n}\n\nfragment MoviesListRow_film on Film {\n  id\n  episodeID\n  title\n  director\n  releaseDate\n}\n\nfragment MoviesList_films on Root {\n  allFilms(first: 3) {\n    edges {\n      node {\n        id\n        ...MoviesListRow_film\n        __typename\n      }\n      cursor\n    }\n    pageInfo {\n      endCursor\n      hasNextPage\n    }\n  }\n}", ownerVariables: )
+                    - id: "ZmlsbXM6Mw=="

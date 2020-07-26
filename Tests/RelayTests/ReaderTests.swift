@@ -246,6 +246,51 @@ class ReaderTests: XCTestCase {
         assertSnapshot(matching: snapshot2.data, as: .dump)
         expect(snapshot2.isMissingData).to(beFalse())
     }
+
+    func testReadMissingRequiredField() throws {
+        let op = MoviesTabQuery()
+        try environment.cachePayload(op, allFilmsPayload)
+
+        var source = environment.store.source
+        var record = source["ZmlsbXM6MQ=="]!
+        record["id"] = nil
+        source[record.dataID] = record
+
+        var selector = op.createDescriptor().fragment
+
+        let snapshot = Reader.read(MoviesTabQuery.Data.self, source: source, selector: selector)
+        expect(snapshot.data).notTo(beNil())
+
+        selector = MoviesList_films(key: snapshot.data!).selector
+        let snapshot2 = Reader.read(MoviesList_films.Data.self, source: source, selector: selector)
+        expect(snapshot2.data).to(beNil())
+    }
+
+    func testReadInlineFragmentExpectedType() throws {
+        let op = MovieDetailNodeQuery(id: "ZmlsbXM6MQ==")
+        try environment.cachePayload(op, filmNodePayload)
+
+        let source = environment.store.source
+        let selector = op.createDescriptor().fragment
+
+        let snapshot = Reader.read(MovieDetailNodeQuery.Data.self, source: source, selector: selector)
+        expect(snapshot.data).notTo(beNil())
+
+        assertSnapshot(matching: snapshot.data, as: .dump)
+    }
+
+    func testReadInlineFragmentOtherType() throws {
+        let op = MovieDetailNodeQuery(id: "cGVvcGxlOjE=")
+        try environment.cachePayload(op, personNodePayload)
+
+        let source = environment.store.source
+        let selector = op.createDescriptor().fragment
+
+        let snapshot = Reader.read(MovieDetailNodeQuery.Data.self, source: source, selector: selector)
+        expect(snapshot.data).notTo(beNil())
+
+        assertSnapshot(matching: snapshot.data, as: .dump)
+    }
 }
 
 private let allFilmsPayload = """
@@ -291,6 +336,32 @@ private let allFilmsPayload = """
         "endCursor": "YXJyYXljb25uZWN0aW9uOjI=",
         "hasNextPage": true
       }
+    }
+  }
+}
+"""
+
+private let filmNodePayload = """
+{
+  "data": {
+    "node": {
+      "__typename": "Film",
+      "id": "ZmlsbXM6MQ==",
+      "episodeID": 4,
+      "title": "A New Hope",
+      "director": "George Lucas",
+      "releaseDate": "1977-05-25"
+    }
+  }
+}
+"""
+
+private let personNodePayload = """
+{
+  "data": {
+    "node": {
+      "__typename": "Person",
+      "id": "cGVvcGxlOjE="
     }
   }
 }

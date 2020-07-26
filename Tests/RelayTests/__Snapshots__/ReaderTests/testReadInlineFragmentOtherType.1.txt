@@ -1,0 +1,6 @@
+▿ Optional<Data>
+  ▿ some: Data
+    ▿ node: Optional<Node_node>
+      ▿ some: Node_node
+        ▿ node: Node
+          - id: "cGVvcGxlOjE="

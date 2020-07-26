@@ -4,14 +4,14 @@ on:
   push:
     branches: [ main ]
     paths:
-    - 'Sources/**.swift'
-    - 'Tests/**.swift'
+    - 'Sources/**'
+    - 'Tests/**'
     - 'Package.*'
   pull_request:
     branches: [ main ]
     paths:
-    - 'Sources/**.swift'
-    - 'Tests/**.swift'
+    - 'Sources/**'
+    - 'Tests/**'
     - 'Package.*'
 
 jobs:

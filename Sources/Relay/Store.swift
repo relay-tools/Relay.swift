@@ -18,11 +18,14 @@ public class Store {
         writeEpochLock.sync { _currentWriteEpoch }
     }
 
-    public init(source: RecordSource = DefaultRecordSource()) {
+    public init(
+        source: RecordSource = DefaultRecordSource(),
+        gcScheduler: DispatchQueue = DispatchQueue(label: "relay-garbage-collector")
+    ) {
         recordSource = source
 
         initializeRecordSource()
-        gc = GarbageCollector(store: self)
+        gc = GarbageCollector(store: self, scheduler: gcScheduler)
     }
 
     public var source: RecordSource {

@@ -11,7 +11,7 @@ private let logger = Logger(log)
 
 class GarbageCollector {
     let store: Store
-    let gcReleaseBufferSize: Int
+    let releaseBufferSize: Int
 
     private let scheduler: DispatchQueue
     private var shouldSchedule = false
@@ -20,10 +20,14 @@ class GarbageCollector {
     private(set) var roots: [String: Entry] = [:]
     private var releaseBuffer: [String] = []
 
-    init(store: Store, gcReleaseBufferSize: Int = 0) {
+    init(
+        store: Store,
+        releaseBufferSize: Int = 0,
+        scheduler: DispatchQueue = DispatchQueue(label: "relay-garbage-collector")
+    ) {
         self.store = store
-        self.gcReleaseBufferSize = gcReleaseBufferSize
-        self.scheduler = DispatchQueue(label: "relay-garbage-collector")
+        self.releaseBufferSize = releaseBufferSize
+        self.scheduler = scheduler
     }
 
     struct Entry {
@@ -60,7 +64,7 @@ class GarbageCollector {
             if let root = self.roots[id], root.refCount == 0 {
                 // TODO query cache expiration time
                 self.releaseBuffer.append(id)
-                if self.releaseBuffer.count > self.gcReleaseBufferSize {
+                if self.releaseBuffer.count > self.releaseBufferSize {
                     self.roots.removeValue(forKey: self.releaseBuffer.removeFirst())
                     self.schedule()
                 }
@@ -99,7 +103,7 @@ class GarbageCollector {
             return
         }
 
-        if operation.request.node.params.operationKind == .query && gcReleaseBufferSize > 0 && releaseBuffer.count < gcReleaseBufferSize {
+        if operation.request.node.params.operationKind == .query && releaseBufferSize > 0 && releaseBuffer.count < releaseBufferSize {
             releaseBuffer.append(id)
             roots[id] = Entry(operation: operation, refCount: 0, epoch: store.currentWriteEpoch, fetchTime: Date())
         }

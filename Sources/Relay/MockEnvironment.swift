@@ -8,6 +8,10 @@ public class MockEnvironment: Environment {
         super.init(network: mockNetwork, store: Store(), handlerProvider: handlerProvider)
     }
 
+    init(handlerProvider: HandlerProvider = DefaultHandlerProvider(), gcScheduler: DispatchQueue) {
+        super.init(network: mockNetwork, store: Store(gcScheduler: gcScheduler), handlerProvider: handlerProvider)
+    }
+
     public func cachePayload<O: Operation>(_ op: O, _ payload: [String: Any]) {
         let response = try! GraphQLResponse(dictionary: payload)
         let operation = op.createDescriptor()

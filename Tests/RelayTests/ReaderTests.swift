@@ -1,107 +1,112 @@
 import XCTest
 import SnapshotTesting
 import Nimble
+import RelayTestHelpers
 @testable import Relay
 
 class ReaderTests: XCTestCase {
-    func testReaderFromRoot() throws {
-        let operation = PokemonListQuery().createDescriptor()
-        let selector = operation.fragment
+    var environment: MockEnvironment!
 
-        var source = DefaultRecordSource()
-        source[.rootID] = Record(dataID: .rootID, typename: "__Root", linkedPluralRecordIDs: [
-            "pokemons(first:50)":[
-                "UG9rZW1vbjowMDE=",
-                "UG9rZW1vbjowMDI=",
-                "UG9rZW1vbjowMDM=",
-            ]
-        ])
-        source["UG9rZW1vbjowMDE="] = Record(
-            dataID: DataID("UG9rZW1vbjowMDE="),
-            typename: "Pokemon",
-            values: [
-                "id": "UG9rZW1vbjowMDE=",
-                "__typename": "Pokemon",
-                "number": "001",
-                "name": "Bulbasaur",
-                "classification": "Seed Pokémon"
-        ])
-        source["UG9rZW1vbjowMDI="] = Record(
-            dataID: DataID("UG9rZW1vbjowMDI="),
-            typename: "Pokemon",
-            values: [
-                "id": "UG9rZW1vbjowMDI=",
-                "__typename": "Pokemon",
-                "number": "002",
-                "name": "Ivysaur",
-                "classification": "Seed Pokémon"
-        ])
-        source["UG9rZW1vbjowMDM="] = Record(
-            dataID: DataID("UG9rZW1vbjowMDM="),
-            typename: "Pokemon",
-            values: [
-                "id": "UG9rZW1vbjowMDM=",
-                "__typename": "Pokemon",
-                "number": "003",
-                "name": "Venusaur",
-                "classification": "Seed Pokémon"
-        ])
+    override func setUpWithError() throws {
+        environment = MockEnvironment()
+    }
 
-        let snapshot = Reader.read(PokemonListQuery.Data.self, source: source, selector: selector)
+    func testReadStarWarsFilms() throws {
+        let op = MoviesTabQuery()
+        try environment.cachePayload(op, allFilmsPayload)
+
+        let source = environment.store.source
+        let selector = op.createDescriptor().fragment
+
+        let snapshot = Reader.read(MoviesTabQuery.Data.self, source: source, selector: selector)
 
         expect(snapshot.data).notTo(beNil())
         assertSnapshot(matching: snapshot.data, as: .dump)
     }
 
-    func testReaderFromFragmentPointer() {
-        let operation = PokemonListQuery().createDescriptor()
+    func testReadStarWarsFilmsList() throws {
+        let op = MoviesTabQuery()
+        try environment.cachePayload(op, allFilmsPayload)
 
-        var source = DefaultRecordSource()
-        source[.rootID] = Record(dataID: .rootID, typename: "__Root", linkedPluralRecordIDs: [
-            "pokemons(first:50)":[
-                "UG9rZW1vbjowMDE=",
-                "UG9rZW1vbjowMDI=",
-                "UG9rZW1vbjowMDM=",
-            ]
-        ])
-        source["UG9rZW1vbjowMDE="] = Record(
-            dataID: DataID("UG9rZW1vbjowMDE="),
-            typename: "Pokemon",
-            values: [
-                "id": "UG9rZW1vbjowMDE=",
-                "__typename": "Pokemon",
-                "number": "001",
-                "name": "Bulbasaur",
-                "classification": "Seed Pokémon"
-        ])
-        source["UG9rZW1vbjowMDI="] = Record(
-            dataID: DataID("UG9rZW1vbjowMDI="),
-            typename: "Pokemon",
-            values: [
-                "id": "UG9rZW1vbjowMDI=",
-                "__typename": "Pokemon",
-                "number": "002",
-                "name": "Ivysaur",
-                "classification": "Seed Pokémon"
-        ])
-        source["UG9rZW1vbjowMDM="] = Record(
-            dataID: DataID("UG9rZW1vbjowMDM="),
-            typename: "Pokemon",
-            values: [
-                "id": "UG9rZW1vbjowMDM=",
-                "__typename": "Pokemon",
-                "number": "003",
-                "name": "Venusaur",
-                "classification": "Seed Pokémon"
-        ])
+        let source = environment.store.source
+        var selector = op.createDescriptor().fragment
 
-        let opSnapshot = Reader.read(PokemonListQuery.Data.self, source: source, selector: operation.fragment)
-        let pointer = opSnapshot.data!.pokemons![1]!.fragment_PokemonListRow_pokemon
-
-        let selector = SingularReaderSelector(fragment: PokemonListRow_pokemon.node, pointer: pointer)
-        let snapshot = Reader.read(PokemonListRow_pokemon.Data.self, source: source, selector: selector)
-
+        let snapshot = Reader.read(MoviesTabQuery.Data.self, source: source, selector: selector)
         expect(snapshot.data).notTo(beNil())
-        assertSnapshot(matching: snapshot.data!, as: .dump)
+
+        selector = MoviesList_films(key: snapshot.data!).selector
+        let snapshot2 = Reader.read(MoviesList_films.Data.self, source: source, selector: selector)
+        expect(snapshot2.data).notTo(beNil())
+
+        assertSnapshot(matching: snapshot2.data, as: .dump)
+    }
+
+    func testReadStarWarsFilmRow() throws {
+        let op = MoviesTabQuery()
+        try environment.cachePayload(op, allFilmsPayload)
+
+        let source = environment.store.source
+        var selector = op.createDescriptor().fragment
+
+        let snapshot = Reader.read(MoviesTabQuery.Data.self, source: source, selector: selector)
+        expect(snapshot.data).notTo(beNil())
+
+        selector = MoviesList_films(key: snapshot.data!).selector
+        let snapshot2 = Reader.read(MoviesList_films.Data.self, source: source, selector: selector)
+        expect(snapshot2.data).notTo(beNil())
+
+        selector = MoviesListRow_film(key: snapshot2.data!.allFilms![0]!).selector
+        let snapshot3 = Reader.read(MoviesListRow_film.Data.self, source: source, selector: selector)
+        expect(snapshot3.data).notTo(beNil())
+
+        assertSnapshot(matching: snapshot3.data, as: .dump)
     }
 }
+
+private let allFilmsPayload = """
+{
+  "data": {
+    "allFilms": {
+      "edges": [
+        {
+          "node": {
+            "id": "ZmlsbXM6MQ==",
+            "episodeID": 4,
+            "title": "A New Hope",
+            "director": "George Lucas",
+            "releaseDate": "1977-05-25",
+            "__typename": "Film"
+          },
+          "cursor": "YXJyYXljb25uZWN0aW9uOjA="
+        },
+        {
+          "node": {
+            "id": "ZmlsbXM6Mg==",
+            "episodeID": 5,
+            "title": "The Empire Strikes Back",
+            "director": "Irvin Kershner",
+            "releaseDate": "1980-05-17",
+            "__typename": "Film"
+          },
+          "cursor": "YXJyYXljb25uZWN0aW9uOjE="
+        },
+        {
+          "node": {
+            "id": "ZmlsbXM6Mw==",
+            "episodeID": 6,
+            "title": "Return of the Jedi",
+            "director": "Richard Marquand",
+            "releaseDate": "1983-05-25",
+            "__typename": "Film"
+          },
+          "cursor": "YXJyYXljb25uZWN0aW9uOjI="
+        }
+      ],
+      "pageInfo": {
+        "endCursor": "YXJyYXljb25uZWN0aW9uOjI=",
+        "hasNextPage": true
+      }
+    }
+  }
+}
+"""

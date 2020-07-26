@@ -116,6 +116,136 @@ class ReaderTests: XCTestCase {
         assertSnapshot(matching: snapshot3.data, as: .dump)
         expect(snapshot3.isMissingData).to(beTrue())
     }
+
+    func testReadStarWarsFilmsListNullField() throws {
+        let op = MoviesTabQuery()
+        try environment.cachePayload(op, allFilmsPayload)
+
+        let mutator = RecordSourceMutator(base: environment.store.recordSource, sink: DefaultRecordSource())
+        let store = DefaultRecordSourceProxy(mutator: mutator, handlerProvider: DefaultHandlerProvider())
+
+        let allFilms = ConnectionHandler.default.getConnection(store.root, key: "MoviesList_allFilms")!
+        let edges = allFilms.getLinkedRecords("edges")!
+        var firstEdge = edges[0]!
+        firstEdge["node"] = NSNull()
+
+        environment.store.publish(source: mutator.sink)
+
+        let source = environment.store.source
+        var selector = op.createDescriptor().fragment
+
+        let snapshot = Reader.read(MoviesTabQuery.Data.self, source: source, selector: selector)
+        expect(snapshot.data).notTo(beNil())
+
+        selector = MoviesList_films(key: snapshot.data!).selector
+        let snapshot2 = Reader.read(MoviesList_films.Data.self, source: source, selector: selector)
+        expect(snapshot2.data).notTo(beNil())
+
+        assertSnapshot(matching: snapshot2.data, as: .dump)
+        expect(snapshot2.isMissingData).to(beFalse())
+    }
+
+    func testReadStarWarsFilmsListMissingField() throws {
+        let op = MoviesTabQuery()
+        try environment.cachePayload(op, allFilmsPayload)
+
+        let mutator = RecordSourceMutator(base: environment.store.recordSource, sink: DefaultRecordSource())
+        let store = DefaultRecordSourceProxy(mutator: mutator, handlerProvider: DefaultHandlerProvider())
+
+        let allFilms = ConnectionHandler.default.getConnection(store.root, key: "MoviesList_allFilms")!
+        let edges = allFilms.getLinkedRecords("edges")!
+        let firstEdge = edges[0]!
+
+        environment.store.source[firstEdge.dataID]!["node"] = nil
+
+        let source = environment.store.source
+        var selector = op.createDescriptor().fragment
+
+        let snapshot = Reader.read(MoviesTabQuery.Data.self, source: source, selector: selector)
+        expect(snapshot.data).notTo(beNil())
+
+        selector = MoviesList_films(key: snapshot.data!).selector
+        let snapshot2 = Reader.read(MoviesList_films.Data.self, source: source, selector: selector)
+        expect(snapshot2.data).notTo(beNil())
+
+        assertSnapshot(matching: snapshot2.data, as: .dump)
+        expect(snapshot2.isMissingData).to(beTrue())
+    }
+
+    func testReadStarWarsFilmsListNullPluralField() throws {
+        let op = MoviesTabQuery()
+        try environment.cachePayload(op, allFilmsPayload)
+
+        let mutator = RecordSourceMutator(base: environment.store.recordSource, sink: DefaultRecordSource())
+        let store = DefaultRecordSourceProxy(mutator: mutator, handlerProvider: DefaultHandlerProvider())
+
+        var allFilms = ConnectionHandler.default.getConnection(store.root, key: "MoviesList_allFilms")!
+        allFilms["edges"] = NSNull()
+
+        environment.store.publish(source: mutator.sink)
+
+        let source = environment.store.source
+        var selector = op.createDescriptor().fragment
+
+        let snapshot = Reader.read(MoviesTabQuery.Data.self, source: source, selector: selector)
+        expect(snapshot.data).notTo(beNil())
+
+        selector = MoviesList_films(key: snapshot.data!).selector
+        let snapshot2 = Reader.read(MoviesList_films.Data.self, source: source, selector: selector)
+        expect(snapshot2.data).notTo(beNil())
+
+        assertSnapshot(matching: snapshot2.data, as: .dump)
+        expect(snapshot2.isMissingData).to(beFalse())
+    }
+
+    func testReadStarWarsFilmsListMissingPluralField() throws {
+        let op = MoviesTabQuery()
+        try environment.cachePayload(op, allFilmsPayload)
+
+        let connID = environment.store.source[.rootID]!.getLinkedRecordID("__MoviesList_allFilms_connection")!!
+        environment.store.source[connID]!["edges"] = nil
+
+        let source = environment.store.source
+        var selector = op.createDescriptor().fragment
+
+        let snapshot = Reader.read(MoviesTabQuery.Data.self, source: source, selector: selector)
+        expect(snapshot.data).notTo(beNil())
+
+        selector = MoviesList_films(key: snapshot.data!).selector
+        let snapshot2 = Reader.read(MoviesList_films.Data.self, source: source, selector: selector)
+        expect(snapshot2.data).notTo(beNil())
+
+        assertSnapshot(matching: snapshot2.data, as: .dump)
+        expect(snapshot2.isMissingData).to(beTrue())
+    }
+
+    func testReadStarWarsFilmsListNullPluralFieldElement() throws {
+        let op = MoviesTabQuery()
+        try environment.cachePayload(op, allFilmsPayload)
+
+        let mutator = RecordSourceMutator(base: environment.store.recordSource, sink: DefaultRecordSource())
+        let store = DefaultRecordSourceProxy(mutator: mutator, handlerProvider: DefaultHandlerProvider())
+
+        var allFilms = ConnectionHandler.default.getConnection(store.root, key: "MoviesList_allFilms")!
+        var edges = allFilms.getLinkedRecords("edges")!
+        edges[0] = nil
+        allFilms.setLinkedRecords("edges", records: edges)
+
+        environment.store.publish(source: mutator.sink)
+
+        let source = environment.store.source
+        var selector = op.createDescriptor().fragment
+
+        let snapshot = Reader.read(MoviesTabQuery.Data.self, source: source, selector: selector)
+        expect(snapshot.data).notTo(beNil())
+
+        selector = MoviesList_films(key: snapshot.data!).selector
+        let snapshot2 = Reader.read(MoviesList_films.Data.self, source: source, selector: selector)
+        expect(snapshot2.data).notTo(beNil())
+
+        assertSnapshot(matching: snapshot2.data, as: .dump)
+        expect(snapshot2.isMissingData).to(beFalse())
+    }
 }
 
 private let allFilmsPayload = """

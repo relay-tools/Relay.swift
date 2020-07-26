@@ -1,0 +1,5 @@
+▿ Optional<Data>
+  ▿ some: Data
+    ▿ allFilms: Optional<FilmsConnection_allFilms>
+      ▿ some: FilmsConnection_allFilms
+        - edges: Optional<Array<Optional<FilmsEdge_edges>>>.none

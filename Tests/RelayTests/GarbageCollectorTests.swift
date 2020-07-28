@@ -16,13 +16,7 @@ class GarbageCollectorTests: XCTestCase {
     func testClearsEntireStoreWhenNoOperationsAreRetained() throws {
         expect(self.environment.store.source.recordIDs).to(haveCount(1))
 
-        let op = MoviesTabQuery()
-        let operation = op.createDescriptor()
-
-        let cancellable = environment.retain(operation: operation)
-
-        try environment.mockResponse(op, allFilmsPayload)
-        waitUntilComplete(environment.fetchQuery(op))
+        let cancellable = try fetchAndRetain(MoviesTabQuery(), allFilmsPayload)
         expect(self.environment.store.source.recordIDs).to(haveCount(22))
 
         cancellable.cancel()
@@ -35,19 +29,8 @@ class GarbageCollectorTests: XCTestCase {
     func testDeletesUnreferencedRecordsWhenReleased() throws {
         expect(self.environment.store.source.recordIDs).to(haveCount(1))
 
-        let op = MoviesTabQuery()
-        let operation = op.createDescriptor()
-
-        let cancellable = environment.retain(operation: operation)
-        try environment.mockResponse(op, allFilmsPayload)
-        waitUntilComplete(environment.fetchQuery(op))
-
-        let op2 = MovieDetailQuery(id: "ZmlsbXM6MQ==")
-        let operation2 = op2.createDescriptor()
-
-        let cancellable2 = environment.retain(operation: operation2)
-        try environment.mockResponse(op2, filmPayload)
-        waitUntilComplete(environment.fetchQuery(op2))
+        let cancellable = try fetchAndRetain(MoviesTabQuery(), allFilmsPayload)
+        let cancellable2 = try fetchAndRetain(MovieDetailQuery(id: "ZmlsbXM6MQ=="), filmPayload)
 
         expect(self.environment.store.source.recordIDs).to(haveCount(22))
 
@@ -64,19 +47,8 @@ class GarbageCollectorTests: XCTestCase {
     func testCleansUpExcessRecordsFromConnectionAfterFirstRelease() throws {
         expect(self.environment.store.source.recordIDs).to(haveCount(1))
 
-        let op = MoviesTabQuery()
-        let operation = op.createDescriptor()
-
-        let cancellable = environment.retain(operation: operation)
-        try environment.mockResponse(op, allFilmsPayload)
-        waitUntilComplete(environment.fetchQuery(op))
-
-        let op2 = MovieDetailQuery(id: "ZmlsbXM6MQ==")
-        let operation2 = op2.createDescriptor()
-
-        let cancellable2 = environment.retain(operation: operation2)
-        try environment.mockResponse(op2, filmPayload)
-        waitUntilComplete(environment.fetchQuery(op2))
+        let cancellable = try fetchAndRetain(MoviesTabQuery(), allFilmsPayload)
+        let cancellable2 = try fetchAndRetain(MovieDetailQuery(id: "ZmlsbXM6MQ=="), filmPayload)
 
         expect(self.environment.store.source.recordIDs).to(haveCount(22))
 
@@ -93,27 +65,15 @@ class GarbageCollectorTests: XCTestCase {
     func testDeletesNoRecordsOnReleaseWhenTheyAreStillReferenced() throws {
         expect(self.environment.store.source.recordIDs).to(haveCount(1))
 
-        let op = MoviesTabQuery()
-        let operation = op.createDescriptor()
-
-        let cancellable = environment.retain(operation: operation)
-        try environment.mockResponse(op, allFilmsPayload)
-        waitUntilComplete(environment.fetchQuery(op))
-
-        let op2 = MovieDetailQuery(id: "ZmlsbXM6MQ==")
-        let operation2 = op2.createDescriptor()
-
-        let cancellable2 = environment.retain(operation: operation2)
-        try environment.mockResponse(op2, filmPayload)
-        waitUntilComplete(environment.fetchQuery(op2))
+        let cancellable = try fetchAndRetain(MoviesTabQuery(), allFilmsPayload)
+        let cancellable2 = try fetchAndRetain(MovieDetailQuery(id: "ZmlsbXM6MQ=="), filmPayload)
 
         cancellable2.cancel()
         RunLoop.main.run(until: Date(timeIntervalSinceNow: 0.2))
         expect(self.environment.store.source.recordIDs).to(haveCount(14))
 
         // Now do it again, to get an actual case where no records are deleted
-        let cancellable3 = environment.retain(operation: operation2)
-        waitUntilComplete(environment.fetchQuery(op2))
+        let cancellable3 = try fetchAndRetain(MovieDetailQuery(id: "ZmlsbXM6MQ=="), filmPayload)
         expect(self.environment.store.source.recordIDs).to(haveCount(14))
 
         cancellable3.cancel()
@@ -125,6 +85,67 @@ class GarbageCollectorTests: XCTestCase {
         // it's unclear to me that it's desirable that we delete the root record, but
         // as far as i can tell, that's what JS Relay does
         expect(self.environment.store.source.recordIDs).toEventually(haveCount(0))
+    }
+
+    func testPauseCollection() throws {
+        expect(self.environment.store.source.recordIDs).to(haveCount(1))
+
+        let cancellable = try fetchAndRetain(MoviesTabQuery(), allFilmsPayload)
+        let cancellable2 = try fetchAndRetain(MovieDetailQuery(id: "ZmlsbXM6MQ=="), filmPayload)
+
+        expect(self.environment.store.source.recordIDs).to(haveCount(22))
+
+        let paused = environment.store.pauseGarbageCollection()
+
+        cancellable2.cancel()
+
+        RunLoop.main.run(until: Date(timeIntervalSinceNow: 0.2))
+        expect(self.environment.store.source.recordIDs).to(haveCount(22))
+
+        paused.cancel()
+
+        RunLoop.main.run(until: Date(timeIntervalSinceNow: 0.2))
+        expect(self.environment.store.source.recordIDs).to(haveCount(14))
+
+        cancellable.cancel()
+    }
+
+    func testNestedPauseCollection() throws {
+        expect(self.environment.store.source.recordIDs).to(haveCount(1))
+
+        let cancellable = try fetchAndRetain(MoviesTabQuery(), allFilmsPayload)
+        let cancellable2 = try fetchAndRetain(MovieDetailQuery(id: "ZmlsbXM6MQ=="), filmPayload)
+
+        expect(self.environment.store.source.recordIDs).to(haveCount(22))
+
+        let paused = environment.store.pauseGarbageCollection()
+
+        cancellable2.cancel()
+
+        RunLoop.main.run(until: Date(timeIntervalSinceNow: 0.2))
+        expect(self.environment.store.source.recordIDs).to(haveCount(22))
+
+        let paused2 = environment.store.pauseGarbageCollection()
+
+        paused.cancel()
+
+        RunLoop.main.run(until: Date(timeIntervalSinceNow: 0.2))
+        expect(self.environment.store.source.recordIDs).to(haveCount(22))
+
+        paused2.cancel()
+
+        RunLoop.main.run(until: Date(timeIntervalSinceNow: 0.2))
+        expect(self.environment.store.source.recordIDs).to(haveCount(14))
+
+        cancellable.cancel()
+    }
+
+    private func fetchAndRetain<Op: Relay.Operation>(_ op: Op, _ payload: String) throws -> AnyCancellable {
+        let operation = op.createDescriptor()
+        let cancellable = environment.retain(operation: operation)
+        try environment.mockResponse(op, payload)
+        waitUntilComplete(environment.fetchQuery(op))
+        return cancellable
     }
 }
 

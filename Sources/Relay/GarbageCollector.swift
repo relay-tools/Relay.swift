@@ -118,7 +118,7 @@ class GarbageCollector {
         #if swift(>=5.3)
         if #available(iOS 14.0, macOS 10.16, tvOS 14.0, watchOS 7.0, *) {
             let holdCounter = self.holdCounter
-            logger.info("GC Pause   (hold counter: \(holdCounter)")
+            logger.info("GC Pause   (hold counter: \(holdCounter))")
         }
         #endif
         os_signpost(.event, log: log, name: "pause")
@@ -130,7 +130,7 @@ class GarbageCollector {
                 #if swift(>=5.3)
                 if #available(iOS 14.0, macOS 10.16, tvOS 14.0, watchOS 7.0, *) {
                     let holdCounter = self.holdCounter
-                    logger.info("GC Unpause (hold counter: \(holdCounter)")
+                    logger.info("GC Unpause (hold counter: \(holdCounter))")
                 }
                 #endif
                 os_signpost(.event, log: log, name: "unpause")

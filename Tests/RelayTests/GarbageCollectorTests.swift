@@ -87,6 +87,24 @@ class GarbageCollectorTests: XCTestCase {
         expect(self.environment.store.source.recordIDs).toEventually(haveCount(0))
     }
 
+    func testOnlyCollectOnFinalRelease() throws {
+        expect(self.environment.store.source.recordIDs).to(haveCount(1))
+
+        let cancellable = try fetchAndRetain(MoviesTabQuery(), allFilmsPayload)
+        let cancellable2 = try fetchAndRetain(MoviesTabQuery(), allFilmsPayload)
+
+        expect(self.environment.store.source.recordIDs).to(haveCount(38))
+
+        cancellable2.cancel()
+        expect(self.environment.store.source.recordIDs).toEventually(haveCount(38))
+
+        cancellable.cancel()
+
+        // it's unclear to me that it's desirable that we delete the root record, but
+        // as far as i can tell, that's what JS Relay does
+        expect(self.environment.store.source.recordIDs).toEventually(haveCount(0))
+    }
+
     func testPauseCollection() throws {
         expect(self.environment.store.source.recordIDs).to(haveCount(1))
 

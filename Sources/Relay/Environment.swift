@@ -11,7 +11,8 @@ public class Environment {
     public init(
         network: Network,
         store: Store,
-        handlerProvider: HandlerProvider = DefaultHandlerProvider()) {
+        handlerProvider: HandlerProvider = DefaultHandlerProvider()
+    ) {
         self.network = network
         self.store = store
         self.handlerProvider = handlerProvider
@@ -19,17 +20,20 @@ public class Environment {
         publishQueue = PublishQueue(store: store, handlerProvider: handlerProvider)
     }
     
-    public func fetchQuery<Op: Operation>(_ op: Op) -> AnyPublisher<Op.Data?, Error> {
+    public func fetchQuery<Op: Operation>(
+        _ op: Op,
+        cacheConfig: CacheConfig = .init()
+    ) -> AnyPublisher<Op.Data?, Error> {
         precondition(op.node.params.operationKind == .query, "fetchQuery: Expected query operation")
         let operation = op.createDescriptor()
-        return execute(operation: operation, cacheConfig: CacheConfig())
+        return execute(operation: operation, cacheConfig: cacheConfig)
             .map { _ in self.lookup(selector: operation.fragment).data }
             .eraseToAnyPublisher()
     }
 
     public func execute(
         operation: OperationDescriptor,
-        cacheConfig: CacheConfig
+        cacheConfig: CacheConfig = .init()
     ) -> AnyPublisher<GraphQLResponse, Error> {
         let source = network.execute(request: operation.request.node.params,
                                      variables: operation.request.variables,
@@ -44,14 +48,17 @@ public class Environment {
 
     public func executeMutation(
         operation: OperationDescriptor,
-        cacheConfig: CacheConfig,
+        cacheConfig: CacheConfig = .init(),
         optimisticResponse: [String: Any]? = nil,
         optimisticUpdater: SelectorStoreUpdater? = nil,
         updater: SelectorStoreUpdater? = nil
     ) -> AnyPublisher<GraphQLResponse, Error> {
+        var realCacheConfig = cacheConfig
+        realCacheConfig.force = true // mutations should always skip a response cache
+
         let source = network.execute(request: operation.request.node.params,
                                      variables: operation.request.variables,
-                                     cacheConfig: cacheConfig)
+                                     cacheConfig: realCacheConfig)
         return Executor(
             operation: operation,
             operationTracker: operationTracker,

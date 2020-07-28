@@ -5,6 +5,7 @@ public typealias SelectorStoreUpdater = (inout RecordSourceSelectorProxy, Select
 extension Environment {
     public func commitMutation<Op: Operation>(
         _ operation: Op,
+        cacheConfig: CacheConfig = .init(),
         optimisticResponse: [String: Any]? = nil,
         optimisticUpdater: SelectorStoreUpdater? = nil,
         updater: SelectorStoreUpdater? = nil
@@ -18,7 +19,7 @@ extension Environment {
 
         return executeMutation(
             operation: operationDesc,
-            cacheConfig: CacheConfig(),
+            cacheConfig: cacheConfig,
             optimisticResponse: optimisticResponse,
             optimisticUpdater: optimisticUpdater,
             updater: updater

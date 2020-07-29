@@ -2,5 +2,5 @@
   ▿ some: Data
     ▿ user: Optional<User_user>
       ▿ some: User_user
-        - fragment_ToDoList_user: FragmentPointer(variables: , id: Relay.DataID(rawValue: "VXNlcjptZQ=="), ownerIdentifier: "query CurrentUserToDoListQuery {\n  user(id: \"me\") {\n    id\n    ...ToDoList_user\n  }\n}\n\nfragment ToDoItem_todo on Todo {\n  id\n  text\n  complete\n}\n\nfragment ToDoList_user on User {\n  todos(first: 100) {\n    edges {\n      node {\n        id\n        ...ToDoItem_todo\n        __typename\n      }\n      cursor\n    }\n    pageInfo {\n      endCursor\n      hasNextPage\n    }\n  }\n  id\n}", ownerVariables: )
+        - fragment_ToDoList_user: FragmentPointer(variables: , id: VXNlcjptZQ==, ownerIdentifier: "query CurrentUserToDoListQuery {\n  user(id: \"me\") {\n    id\n    ...ToDoList_user\n  }\n}\n\nfragment ToDoItem_todo on Todo {\n  id\n  text\n  complete\n}\n\nfragment ToDoList_user on User {\n  todos(first: 100) {\n    edges {\n      node {\n        id\n        ...ToDoItem_todo\n        __typename\n      }\n      cursor\n    }\n    pageInfo {\n      endCursor\n      hasNextPage\n    }\n  }\n  id\n}", ownerVariables: )
         - id: "VXNlcjptZQ=="

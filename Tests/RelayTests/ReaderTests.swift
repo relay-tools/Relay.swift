@@ -266,6 +266,26 @@ class ReaderTests: XCTestCase {
         expect(snapshot2.data).to(beNil())
     }
 
+    func testReadStarWarsFilmsListMissingRecord() throws {
+        let op = MoviesTabQuery()
+        try environment.cachePayload(op, allFilmsPayload)
+
+        environment.store.source.remove("ZmlsbXM6MQ==")
+
+        let source = environment.store.source
+        var selector = op.createDescriptor().fragment
+
+        let snapshot = Reader.read(MoviesTabQuery.Data.self, source: source, selector: selector)
+        expect(snapshot.data).notTo(beNil())
+
+        selector = MoviesList_films(key: snapshot.data!).selector
+        let snapshot2 = Reader.read(MoviesList_films.Data.self, source: source, selector: selector)
+        expect(snapshot2.data).notTo(beNil())
+
+        assertSnapshot(matching: snapshot2.data, as: .dump)
+        expect(snapshot2.isMissingData).to(beTrue())
+    }
+
     func testReadInlineFragmentExpectedType() throws {
         let op = MovieDetailNodeQuery(id: "ZmlsbXM6MQ==")
         try environment.cachePayload(op, filmNodePayload)

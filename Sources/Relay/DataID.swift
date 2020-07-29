@@ -2,7 +2,7 @@ import Foundation
 
 private let clientIDPrefix = "client:"
 
-public struct DataID: RawRepresentable, ExpressibleByStringLiteral, Hashable, Comparable {
+public struct DataID: RawRepresentable, ExpressibleByStringLiteral, CustomStringConvertible, Hashable, Comparable {
     public var rawValue: String
 
     public init(_ value: String) {
@@ -23,6 +23,10 @@ public struct DataID: RawRepresentable, ExpressibleByStringLiteral, Hashable, Co
 
     var isClientGenerated: Bool {
         rawValue.hasPrefix("client:local:")
+    }
+
+    public var description: String {
+        rawValue
     }
 
     public static let rootID: DataID = "client:root"

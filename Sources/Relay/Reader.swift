@@ -53,6 +53,11 @@ class Reader {
     private func traverse(node: ReaderNode, dataID: DataID, previousData: SelectorData? = nil) -> SelectorData? {
         guard let record = recordSource[dataID] else {
             if !recordSource.has(dataID) {
+                #if swift(>=5.3)
+                if #available(iOS 14.0, macOS 10.16, tvOS 14.0, watchOS 7.0, *) {
+                    logger.notice("Found missing data for fragment \(self.selector.node.name, privacy: .public): a record referenced a record with ID \(dataID, privacy: .public) but that record is missing")
+                }
+                #endif
                 isMissingData = true
             }
             return nil
@@ -94,6 +99,11 @@ class Reader {
         let storageKey = field.storageKey(from: variables)
         var value = record[storageKey]
         if value == nil {
+            #if swift(>=5.3)
+            if #available(iOS 14.0, macOS 10.16, tvOS 14.0, watchOS 7.0, *) {
+                logger.notice("Found missing data for fragment \(self.selector.node.name, privacy: .public): record \(record.dataID, privacy: .public) has no scalar field under key `\(storageKey, privacy: .public)`")
+            }
+            #endif
             isMissingData = true
         } else if value is NSNull {
             value = nil
@@ -106,6 +116,11 @@ class Reader {
         let storageKey = field.storageKey(from: variables)
         guard let linkedID = record.getLinkedRecordID(storageKey) else {
             data.set(field.applicationName, object: nil)
+            #if swift(>=5.3)
+            if #available(iOS 14.0, macOS 10.16, tvOS 14.0, watchOS 7.0, *) {
+                logger.notice("Found missing data for fragment \(self.selector.node.name, privacy: .public): record \(record.dataID, privacy: .public) has no linked record ID under key `\(storageKey, privacy: .public)`")
+            }
+            #endif
             isMissingData = true
             return
         }
@@ -123,6 +138,11 @@ class Reader {
         let storageKey = field.storageKey(from: variables)
         guard let linkedIDs = record.getLinkedRecordIDs(storageKey) else {
             data.set(field.applicationName, objects: nil)
+            #if swift(>=5.3)
+            if #available(iOS 14.0, macOS 10.16, tvOS 14.0, watchOS 7.0, *) {
+                logger.notice("Found missing data for fragment \(self.selector.node.name, privacy: .public): record \(record.dataID, privacy: .public) has no list of linked record IDs under key `\(storageKey, privacy: .public)`")
+            }
+            #endif
             isMissingData = true
             return
         }

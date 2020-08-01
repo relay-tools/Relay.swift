@@ -1,21 +1,17 @@
 import SwiftUI
 import Relay
 
-public enum QueryFetchPolicy {
-    case storeOnly
-    case networkOnly
-    case storeAndNetwork
-    case storeOrNetwork
-}
+public typealias QueryFetchPolicy = Relay.FetchPolicy
 
 @propertyWrapper
 public struct Query<O: Relay.Operation>: DynamicProperty {
-    @SwiftUI.Environment(\.relayEnvironment) var environment
+    @SwiftUI.Environment(\.queryResource) var queryResource
     @ObservedObject var loader: QueryLoader<O>
+    let fetchPolicy: QueryFetchPolicy
 
     public init(_ type: O.Type, fetchPolicy: QueryFetchPolicy = .networkOnly) {
+        self.fetchPolicy = fetchPolicy
         loader = QueryLoader()
-        loader.fetchPolicy = fetchPolicy
         loader.variables = EmptyVariables() as? O.Variables
     }
 
@@ -29,7 +25,7 @@ public struct Query<O: Relay.Operation>: DynamicProperty {
 
     public var wrappedValue: Result {
         get {
-            switch loader.loadIfNeeded(environment: environment) {
+            switch loader.loadIfNeeded(resource: queryResource, fetchPolicy: fetchPolicy) {
             case nil:
                 return .loading
             case .failure(let error):
@@ -76,7 +72,7 @@ public struct Query<O: Relay.Operation>: DynamicProperty {
 @available(iOS 14.0, macOS 10.16, tvOS 14.0, watchOS 7.0, *)
 @propertyWrapper
 public struct QueryNext<O: Relay.Operation>: DynamicProperty {
-    @SwiftUI.Environment(\.relayEnvironment) var environment
+    @SwiftUI.Environment(\.queryResource) var queryResource
     @StateObject var loader = QueryLoader<O>()
 
     let fetchPolicy: QueryFetchPolicy
@@ -98,7 +94,7 @@ public struct QueryNext<O: Relay.Operation>: DynamicProperty {
 
         public func get(_ variables: O.Variables, fetchKey: Any? = nil) -> Result {
             switch query.loader.loadIfNeeded(
-                environment: query.environment,
+                resource: query.queryResource,
                 variables: variables,
                 fetchPolicy: query.fetchPolicy,
                 fetchKey: fetchKey

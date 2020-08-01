@@ -5,10 +5,19 @@ struct RelayEnvironmentKey: EnvironmentKey {
     static var defaultValue: Relay.Environment? { nil }
 }
 
-public extension EnvironmentValues {
-    var relayEnvironment: Relay.Environment? {
+struct QueryResourceKey: EnvironmentKey {
+    static var defaultValue: QueryResource? { nil }
+}
+
+extension EnvironmentValues {
+    public var relayEnvironment: Relay.Environment? {
         get { self[RelayEnvironmentKey.self] }
         set { self[RelayEnvironmentKey.self] = newValue }
+    }
+
+    var queryResource: QueryResource? {
+        get { self[QueryResourceKey.self] }
+        set { self[QueryResourceKey.self] = newValue }
     }
 }
 
@@ -16,7 +25,9 @@ public struct WithRelayEnvironment: ViewModifier {
     let environment: Relay.Environment
 
     public func body(content: Content) -> some View {
-        content.environment(\.relayEnvironment, environment)
+        content
+            .environment(\.relayEnvironment, environment)
+            .environment(\.queryResource, QueryResource(environment: environment))
     }
 }
 

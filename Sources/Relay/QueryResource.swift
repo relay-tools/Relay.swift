@@ -122,7 +122,7 @@ public class QueryResource {
             var subscription: AnyCancellable?
             subscription = environment.execute(operation: operation, cacheConfig: cacheConfig)
                 .receive(on: DispatchQueue.main)
-                .sink { [weak self] completion in
+                .sink(receiveCompletion: { [weak self] completion in
                     guard let self = self else { return }
 
                     switch completion {
@@ -143,7 +143,7 @@ public class QueryResource {
                         cacheEntry.subscription = nil
                         cacheEntry.result = .failure(error)
                     }
-                } receiveValue: { [weak self] _ in
+                }, receiveValue: { [weak self] _ in
                     guard let self = self else { return }
                     let cacheEntry = self.getOrCreateCacheEntry(
                         cacheKey: cacheKey,
@@ -153,7 +153,7 @@ public class QueryResource {
                     )
 
                     cacheEntry.result = .success(result)
-                }
+                })
 
             if cache[cacheKey] == nil {
                 cache[cacheKey] = CacheEntry(

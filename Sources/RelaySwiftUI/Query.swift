@@ -6,6 +6,7 @@ public typealias QueryFetchPolicy = Relay.FetchPolicy
 @propertyWrapper
 public struct Query<O: Relay.Operation>: DynamicProperty {
     @SwiftUI.Environment(\.queryResource) var queryResource
+    @SwiftUI.Environment(\.fragmentResource) var fragmentResource
     @ObservedObject var loader: QueryLoader<O>
     let fetchPolicy: QueryFetchPolicy
 
@@ -25,7 +26,11 @@ public struct Query<O: Relay.Operation>: DynamicProperty {
 
     public var wrappedValue: Result {
         get {
-            switch loader.loadIfNeeded(resource: queryResource, fetchPolicy: fetchPolicy) {
+            switch loader.loadIfNeeded(
+                resource: queryResource!,
+                fragmentResource: fragmentResource!,
+                fetchPolicy: fetchPolicy
+            ) {
             case nil:
                 return .loading
             case .failure(let error):
@@ -73,6 +78,7 @@ public struct Query<O: Relay.Operation>: DynamicProperty {
 @propertyWrapper
 public struct QueryNext<O: Relay.Operation>: DynamicProperty {
     @SwiftUI.Environment(\.queryResource) var queryResource
+    @SwiftUI.Environment(\.fragmentResource) var fragmentResource
     @StateObject var loader = QueryLoader<O>()
 
     let fetchPolicy: QueryFetchPolicy
@@ -94,7 +100,8 @@ public struct QueryNext<O: Relay.Operation>: DynamicProperty {
 
         public func get(_ variables: O.Variables, fetchKey: Any? = nil) -> Result {
             switch query.loader.loadIfNeeded(
-                resource: query.queryResource,
+                resource: query.queryResource!,
+                fragmentResource: query.fragmentResource!,
                 variables: variables,
                 fetchPolicy: query.fetchPolicy,
                 fetchKey: fetchKey

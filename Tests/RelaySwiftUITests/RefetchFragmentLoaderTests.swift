@@ -8,11 +8,13 @@ import Relay
 
 class RefetchFragmentLoaderTests: XCTestCase {
     private var environment: MockEnvironment!
+    private var resource: FragmentResource!
     private var cancellables: Set<AnyCancellable>!
     
     override func setUpWithError() throws {
         environment = MockEnvironment()
         environment.forceFetchFromStore = false
+        resource = FragmentResource(environment: environment)
         cancellables = Set<AnyCancellable>()
     }
     
@@ -25,7 +27,7 @@ class RefetchFragmentLoaderTests: XCTestCase {
         let loader = RefetchFragmentLoader<MovieInfoSection_film>()
         let selector = try load(filmPayload)
         let key = getMovieKey(selector)
-        loader.load(from: environment, key: key)
+        loader.load(from: resource, key: key)
         expect(loader.data).notTo(beNil())
         assertSnapshot(matching: loader.data, as: .dump)
     }
@@ -34,7 +36,7 @@ class RefetchFragmentLoaderTests: XCTestCase {
         let loader = RefetchFragmentLoader<MovieInfoSection_film>()
         let selector = try load(filmPayload)
         let key = getMovieKey(selector)
-        loader.load(from: environment, key: key)
+        loader.load(from: resource, key: key)
         expect(loader.data).notTo(beNil())
         assertSnapshot(matching: loader.data, as: .dump)
 
@@ -53,7 +55,7 @@ class RefetchFragmentLoaderTests: XCTestCase {
         let loader = RefetchFragmentLoader<MovieInfoSection_film>()
         let selector = try load(filmPayload)
         let key = getMovieKey(selector)
-        loader.load(from: environment, key: key)
+        loader.load(from: resource, key: key)
         expect(loader.data).notTo(beNil())
         assertSnapshot(matching: loader.data, as: .dump)
         
@@ -71,14 +73,14 @@ class RefetchFragmentLoaderTests: XCTestCase {
         let loader = RefetchFragmentLoader<MovieInfoSection_film>()
         let selector = try load(filmPayload)
         let key = getMovieKey(selector)
-        loader.load(from: environment, key: key)
+        loader.load(from: resource, key: key)
         expect(loader.data).notTo(beNil())
         assertSnapshot(matching: loader.data, as: .dump)
         
         var snapshots: [Snapshot<MovieInfoSection_film.Data?>?] = []
         loader.$snapshot.dropFirst().sink { snapshots.append($0) }.store(in: &cancellables)
         
-        loader.load(from: environment, key: key)
+        loader.load(from: resource, key: key)
         
         RunLoop.main.run(until: Date(timeIntervalSinceNow: 0.2))
         expect(snapshots).to(beEmpty())
@@ -88,7 +90,7 @@ class RefetchFragmentLoaderTests: XCTestCase {
         let loader = RefetchFragmentLoader<MovieInfoSection_film>()
         let selector = try load(filmPayload)
         let key = getMovieKey(selector)
-        loader.load(from: environment, key: key)
+        loader.load(from: resource, key: key)
         expect(loader.data).notTo(beNil())
         assertSnapshot(matching: loader.data, as: .dump)
 

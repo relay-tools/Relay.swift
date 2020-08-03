@@ -39,6 +39,37 @@ public struct MovieDetailNodeQuery {
                                     )),
                                     .field(ReaderScalarField(
                                         name: "releaseDate"
+                                    )),
+                                    .field(ReaderLinkedField(
+                                        name: "characterConnection",
+                                        storageKey: "characterConnection(first:3)",
+                                        args: [
+                                            LiteralArgument(name: "first", value: 3)
+                                        ],
+                                        concreteType: "FilmCharactersConnection",
+                                        plural: false,
+                                        selections: [
+                                            .field(ReaderLinkedField(
+                                                name: "edges",
+                                                concreteType: "FilmCharactersEdge",
+                                                plural: true,
+                                                selections: [
+                                                    .field(ReaderLinkedField(
+                                                        name: "node",
+                                                        concreteType: "Person",
+                                                        plural: false,
+                                                        selections: [
+                                                            .field(ReaderScalarField(
+                                                                name: "id"
+                                                            )),
+                                                            .field(ReaderScalarField(
+                                                                name: "name"
+                                                            ))
+                                                        ]
+                                                    ))
+                                                ]
+                                            ))
+                                        ]
                                     ))
                                 ]
                             ))
@@ -76,6 +107,37 @@ public struct MovieDetailNodeQuery {
                                     )),
                                     .field(NormalizationScalarField(
                                         name: "releaseDate"
+                                    )),
+                                    .field(NormalizationLinkedField(
+                                        name: "characterConnection",
+                                        args: [
+                                            LiteralArgument(name: "first", value: 3)
+                                        ],
+                                        storageKey: "characterConnection(first:3)",
+                                        concreteType: "FilmCharactersConnection",
+                                        plural: false,
+                                        selections: [
+                                            .field(NormalizationLinkedField(
+                                                name: "edges",
+                                                concreteType: "FilmCharactersEdge",
+                                                plural: true,
+                                                selections: [
+                                                    .field(NormalizationLinkedField(
+                                                        name: "node",
+                                                        concreteType: "Person",
+                                                        plural: false,
+                                                        selections: [
+                                                            .field(NormalizationScalarField(
+                                                                name: "id"
+                                                            )),
+                                                            .field(NormalizationScalarField(
+                                                                name: "name"
+                                                            ))
+                                                        ]
+                                                    ))
+                                                ]
+                                            ))
+                                        ]
                                     ))
                                 ]
                             ))
@@ -98,6 +160,14 @@ query MovieDetailNodeQuery(
       title
       director
       releaseDate
+      characterConnection(first: 3) {
+        edges {
+          node {
+            id
+            name
+          }
+        }
+      }
     }
   }
 }
@@ -201,6 +271,20 @@ extension MovieDetailNodeQuery {
                 public var title: String?
                 public var director: String?
                 public var releaseDate: String?
+                public var characterConnection: FilmCharactersConnection_characterConnection?
+
+                public struct FilmCharactersConnection_characterConnection: Decodable {
+                    public var edges: [FilmCharactersEdge_edges?]?
+
+                    public struct FilmCharactersEdge_edges: Decodable {
+                        public var node: Person_node?
+
+                        public struct Person_node: Decodable, Identifiable {
+                            public var id: String
+                            public var name: String?
+                        }
+                    }
+                }
             }
 
             public struct Node: Decodable, Identifiable {

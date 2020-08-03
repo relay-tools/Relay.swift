@@ -338,6 +338,10 @@ fileprivate class ReferenceMarker {
                 if handle.kind == .linked {
                     traverseLinkedHandle(handle, selections, record)
                 }
+            case .inlineFragment(let fragment):
+                if fragment.type == record.typename {
+                    traverse(fragment.selections, record)
+                }
             default:
                 break
             }

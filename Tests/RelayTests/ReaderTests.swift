@@ -370,7 +370,29 @@ private let filmNodePayload = """
       "episodeID": 4,
       "title": "A New Hope",
       "director": "George Lucas",
-      "releaseDate": "1977-05-25"
+      "releaseDate": "1977-05-25",
+      "characterConnection": {
+        "edges": [
+          {
+            "node": {
+              "id": "cGVvcGxlOjE=",
+              "name": "Luke Skywalker"
+            }
+          },
+          {
+            "node": {
+              "id": "cGVvcGxlOjI=",
+              "name": "C-3PO"
+            }
+          },
+          {
+            "node": {
+              "id": "cGVvcGxlOjM=",
+              "name": "R2-D2"
+            }
+          }
+        ]
+      }
     }
   }
 }

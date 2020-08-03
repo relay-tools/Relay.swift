@@ -15,6 +15,7 @@ class RefetchFragmentLoader<Fragment: Relay.RefetchFragment>: ObservableObject, 
 
     private var fragmentLoaderCancellable: AnyCancellable?
     private var refetchCancellable: AnyCancellable?
+    private var retainCancellable: AnyCancellable?
 
     init() {
         self.metadata = Fragment.metadata
@@ -48,6 +49,8 @@ class RefetchFragmentLoader<Fragment: Relay.RefetchFragment>: ObservableObject, 
                 case nil, .failure:
                     self.snapshot = nil
                 case .success(let queryResult):
+                    self.retainCancellable = queryResource.retain(queryResult)
+
                     let identifier = queryResult.fragmentNode.identifier(for: queryResult.fragmentRef)
                     let fragmentResult: FragmentResource.FragmentResult<SelectorData> =
                         resource.read(node: queryResult.fragmentNode, ref: queryResult.fragmentRef, identifier: identifier)

@@ -165,11 +165,51 @@ class RefetchFragmentLoaderTests: XCTestCase {
         loader.load(from: resource, queryResource: queryResource, key: key)
         expect(snapshots).to(haveCount(1))
     }
+
+    func testRetainsDataFromRefetchQuery() throws {
+        let loader = RefetchFragmentLoader<MovieInfoSection_film>()
+        let selector = try load(filmPayload)
+        let key = getMovieKey(selector)
+        loader.load(from: resource, queryResource: queryResource, key: key)
+        expect(loader.data).notTo(beNil())
+
+        var refetchKeys: [UUID] = []
+        loader.$refetchKey.dropFirst().sink { refetchKeys.append($0) }.store(in: &cancellables)
+        expect(refetchKeys).to(beEmpty())
+
+        // refetch with a different ID
+        let advance = try environment.delayMockedResponse(MovieInfoSectionRefetchQuery(id: "ZmlsbXM6Mg=="), empireFilmPayload)
+        loader.refetch(.init(id: "ZmlsbXM6Mg=="))
+
+        expect { refetchKeys }.toEventually(haveCount(1))
+        loader.load(from: resource, queryResource: queryResource, key: key)
+
+        var snapshots: [Snapshot<MovieInfoSection_film.Data?>?] = []
+        loader.$snapshot.dropFirst().sink { snapshots.append($0) }.store(in: &cancellables)
+        expect(snapshots).to(beEmpty())
+
+        advance()
+
+        expect { snapshots }.toEventually(haveCount(1))
+        expect(loader.data!.title) == "The Empire Strikes Back"
+
+        // force a GC by retaining and releasing an unrelated query
+        let otherQuery = environment.retain(operation: MoviesTabQuery().createDescriptor())
+        otherQuery.cancel()
+        RunLoop.main.run(until: Date(timeIntervalSinceNow: 0.2))
+
+        assertSnapshot(matching: environment.store.source, as: .recordSource)
+    }
     
     private func load(_ payload: String) throws -> SingularReaderSelector {
         let op = MovieDetailQuery(id: "ZmlsbXM6MQ==")
         try environment.cachePayload(op, payload)
-        return op.createDescriptor().fragment
+        let operation = op.createDescriptor()
+
+        // simulate the retain that the QueryLoader would be doing.
+        environment.retain(operation: operation).store(in: &cancellables)
+
+        return operation.fragment
     }
     
     private func getMovieKey(_ querySelector: SingularReaderSelector, index: Int = 0) -> MovieInfoSection_film.Key {

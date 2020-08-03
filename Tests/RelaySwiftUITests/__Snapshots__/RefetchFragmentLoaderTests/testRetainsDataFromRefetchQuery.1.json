@@ -1,0 +1,77 @@
+{
+  "deletedRecordIDs" : [
+
+  ],
+  "records" : {
+    "client:root" : {
+      "dataID" : "client:root",
+      "fields" : {
+        "film(id:\"ZmlsbXM6MQ==\")" : {
+          "__type" : "linkedRecord",
+          "value" : "ZmlsbXM6MQ=="
+        },
+        "node(id:\"ZmlsbXM6Mg==\")" : {
+          "__type" : "linkedRecord",
+          "value" : "ZmlsbXM6Mg=="
+        }
+      },
+      "typename" : "__Root"
+    },
+    "ZmlsbXM6Mg==" : {
+      "dataID" : "ZmlsbXM6Mg==",
+      "fields" : {
+        "__typename" : {
+          "__type" : "string",
+          "value" : "Film"
+        },
+        "director" : {
+          "__type" : "string",
+          "value" : "Irvin Kershner"
+        },
+        "episodeID" : {
+          "__type" : "int",
+          "value" : 5
+        },
+        "id" : {
+          "__type" : "string",
+          "value" : "ZmlsbXM6Mg=="
+        },
+        "releaseDate" : {
+          "__type" : "string",
+          "value" : "1980-05-17"
+        },
+        "title" : {
+          "__type" : "string",
+          "value" : "The Empire Strikes Back"
+        }
+      },
+      "typename" : "Film"
+    },
+    "ZmlsbXM6MQ==" : {
+      "dataID" : "ZmlsbXM6MQ==",
+      "fields" : {
+        "director" : {
+          "__type" : "string",
+          "value" : "George Lucas"
+        },
+        "episodeID" : {
+          "__type" : "int",
+          "value" : 4
+        },
+        "id" : {
+          "__type" : "string",
+          "value" : "ZmlsbXM6MQ=="
+        },
+        "releaseDate" : {
+          "__type" : "string",
+          "value" : "1977-05-25"
+        },
+        "title" : {
+          "__type" : "string",
+          "value" : "A New Hope"
+        }
+      },
+      "typename" : "Film"
+    }
+  }
+}

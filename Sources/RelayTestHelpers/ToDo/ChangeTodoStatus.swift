@@ -10,3 +10,24 @@ mutation ChangeTodoStatusMutation($input: ChangeTodoStatusInput!) {
     }
 }
 """)
+
+public enum ChangeTodoStatus {
+    public static let completeBuyHorse = """
+{
+  "data": {
+    "changeTodoStatus": {
+      "todo": {
+        "id": "VG9kbzox",
+        "complete": true
+      }
+    }
+  }
+}
+"""
+
+    public static let error = """
+{
+    "errors": [{"message": "This is an error that occurred in the mutation."}],
+}
+"""
+}

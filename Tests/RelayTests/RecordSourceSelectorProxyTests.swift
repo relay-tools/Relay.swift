@@ -11,12 +11,12 @@ class RecordSourceSelectorProxyTests: XCTestCase {
 
     override func setUpWithError() throws {
         environment = MockEnvironment()
-        try environment.cachePayload(CurrentUserToDoListQuery(), initialPayload)
+        try environment.cachePayload(CurrentUserToDoListQuery(), CurrentUserToDoList.myTodos)
 
         // this is a lot of set up to simulate a mutation up to the point where we have the
         // RecordSourceSelectorProxy
         let mutation = ChangeTodoStatusMutation(input: .init(complete: true, id: "VG9kbzox", userId: "me"))
-        let responseDict = try JSONSerialization.jsonObject(with: mutationResponse.data(using: .utf8)!, options: []) as! [String: Any]
+        let responseDict = try JSONSerialization.jsonObject(with: ChangeTodoStatus.completeBuyHorse.data(using: .utf8)!, options: []) as! [String: Any]
         let response = try! GraphQLResponse(dictionary: responseDict)
         let operation = mutation.createDescriptor(dataID: .generateClientID())
         let selector = operation.root
@@ -44,52 +44,3 @@ class RecordSourceSelectorProxyTests: XCTestCase {
         expect(todo!["complete"] as? Int) == 1
     }
 }
-
-private let initialPayload = """
-{
-"data": {
-"user": {
-"id": "VXNlcjptZQ==",
-"todos": {
-"edges": [
-  {
-    "node": {
-      "__typename": "Todo",
-      "id": "VG9kbzow",
-      "complete": true,
-      "text": "Taste JavaScript"
-    },
-    "cursor": "YXJyYXljb25uZWN0aW9uOjA="
-  },
-  {
-    "node": {
-      "__typename": "Todo",
-      "id": "VG9kbzox",
-      "complete": false,
-      "text": "Buy a unicorn"
-    },
-    "cursor": "YXJyYXljb25uZWN0aW9uOjE="
-  }
-],
-"pageInfo": {
-  "endCursor": "YXJyYXljb25uZWN0aW9uOjE=",
-  "hasNextPage": false
-}
-}
-}
-}
-}
-"""
-
-private let mutationResponse = """
-{
-  "data": {
-    "changeTodoStatus": {
-      "todo": {
-        "id": "VG9kbzox",
-        "complete": true
-      }
-    }
-  }
-}
-"""

@@ -288,7 +288,7 @@ class QueryLoaderTests: XCTestCase {
     }
     
     func testUpdatesResultForRelevantStoreChanges() throws {
-        try environment.mockResponse(CurrentUserToDoListQuery(), myTodosPayload)
+        try environment.mockResponse(CurrentUserToDoListQuery(), CurrentUserToDoList.myTodos)
         let loader = QueryLoader<CurrentUserToDoListQuery>()
         let result = loader.loadIfNeeded(
             resource: resource,
@@ -302,13 +302,13 @@ class QueryLoaderTests: XCTestCase {
         let snapshot = try loader.result!.get()
         assertSnapshot(matching: snapshot.data, as: .dump)
         
-        try environment.cachePayload(CurrentUserToDoListQuery(), myTodosRelevantUpdatePayload)
+        try environment.cachePayload(CurrentUserToDoListQuery(), CurrentUserToDoList.differentUser)
         expect { loader.data?.user?.id }.toEventually(equal("a_new_user_id"))
         assertSnapshot(matching: loader.data, as: .dump)
     }
 
     func testDoesNotUpdateResultForIrrelevantStoreChanges() throws {
-        try environment.mockResponse(CurrentUserToDoListQuery(), myTodosPayload)
+        try environment.mockResponse(CurrentUserToDoListQuery(), CurrentUserToDoList.myTodos)
         let loader = QueryLoader<CurrentUserToDoListQuery>()
         let result = loader.loadIfNeeded(
             resource: resource,
@@ -325,7 +325,7 @@ class QueryLoaderTests: XCTestCase {
         var resultWasSet = false
         loader.$result.dropFirst().sink { _ in resultWasSet = true }.store(in: &cancellables)
 
-        try environment.cachePayload(CurrentUserToDoListQuery(), myTodosIrrelevantUpdatePayload)
+        try environment.cachePayload(CurrentUserToDoListQuery(), CurrentUserToDoList.otherTodos)
         RunLoop.main.run(until: Date(timeIntervalSinceNow: 0.2))
         expect(resultWasSet).to(beFalse())
         assertSnapshot(matching: loader.data, as: .dump)
@@ -402,100 +402,3 @@ class QueryLoaderTests: XCTestCase {
         assertSnapshot(matching: snapshot.data, as: .dump)
     }
 }
-
-private let myTodosPayload = """
-{
-  "data": {
-    "user": {
-      "id": "VXNlcjptZQ==",
-      "todos": {
-        "edges": [
-          {
-            "node": {
-              "__typename": "Todo",
-              "id": "VG9kbzow",
-              "complete": true,
-              "text": "Taste JavaScript"
-            },
-            "cursor": "YXJyYXljb25uZWN0aW9uOjA="
-          },
-          {
-            "node": {
-              "__typename": "Todo",
-              "id": "VG9kbzox",
-              "complete": false,
-              "text": "Buy a unicorn"
-            },
-            "cursor": "YXJyYXljb25uZWN0aW9uOjE="
-          }
-        ],
-        "pageInfo": {
-          "endCursor": "YXJyYXljb25uZWN0aW9uOjE=",
-          "hasNextPage": false
-        }
-      }
-    }
-  }
-}
-"""
-
-// includes a change of the user ID, which is part of the query's read selector
-// and should trigger an update in the query loader.
-private let myTodosRelevantUpdatePayload = """
-{
-  "data": {
-    "user": {
-      "id": "a_new_user_id",
-      "todos": {
-        "edges": [
-          {
-            "node": {
-              "id": "VG9kbzow",
-              "text": "Taste JavaScript",
-              "complete": true
-            }
-          },
-          {
-            "node": {
-              "id": "VG9kbzox",
-              "text": "Buy a unicorn",
-              "complete": false
-            }
-          }
-        ]
-      }
-    }
-  }
-}
-"""
-
-// includes changes in the actual edge nodes, which is in a fragment lower down the tree
-// and should not cause an update to the query because those fields aren't part of its
-// read selector.
-private let myTodosIrrelevantUpdatePayload = """
-{
-  "data": {
-    "user": {
-      "id": "VXNlcjptZQ==",
-      "todos": {
-        "edges": [
-          {
-            "node": {
-              "id": "VG9kbzow",
-              "text": "Taste Swift",
-              "complete": true
-            }
-          },
-          {
-            "node": {
-              "id": "VG9kbzox",
-              "text": "Buy a horse",
-              "complete": false
-            }
-          }
-        ]
-      }
-    }
-  }
-}
-"""

@@ -65,25 +65,13 @@ class DataCheckerTests: XCTestCase {
         let operation = op.createDescriptor()
         environment.retain(operation: operation).store(in: &cancellables)
 
-        try environment.mockResponse(op, myTodosPayload)
+        try environment.mockResponse(op, CurrentUserToDoList.myTodos)
         waitUntilComplete(environment.fetchQuery(op))
 
         let input = ChangeTodoStatusInput(
             complete: true, id: "VG9kbzox", userId: "me")
         let mutation = ChangeTodoStatusMutation(variables: .init(input: input))
-        let payload = """
-{
-  "data": {
-    "changeTodoStatus": {
-      "todo": {
-        "id": "VG9kbzox",
-        "complete": true
-      }
-    }
-  }
-}
-"""
-        try environment.mockResponse(mutation, payload)
+        try environment.mockResponse(mutation, ChangeTodoStatus.completeBuyHorse)
         waitUntilComplete(environment.commitMutation(mutation) { (store, _) in
             store.invalidateStore()
         })
@@ -96,25 +84,13 @@ class DataCheckerTests: XCTestCase {
         let operation = op.createDescriptor()
         environment.retain(operation: operation).store(in: &cancellables)
 
-        try environment.mockResponse(op, myTodosPayload)
+        try environment.mockResponse(op, CurrentUserToDoList.myTodos)
         waitUntilComplete(environment.fetchQuery(op))
 
         let input = ChangeTodoStatusInput(
             complete: true, id: "VG9kbzox", userId: "me")
         let mutation = ChangeTodoStatusMutation(variables: .init(input: input))
-        let payload = """
-{
-  "data": {
-    "changeTodoStatus": {
-      "todo": {
-        "id": "VG9kbzox",
-        "complete": true
-      }
-    }
-  }
-}
-"""
-        try environment.mockResponse(mutation, payload)
+        try environment.mockResponse(mutation, ChangeTodoStatus.completeBuyHorse)
         waitUntilComplete(environment.commitMutation(mutation) { (store, _) in
             var record = store["VG9kbzox"]!
             record.invalidateRecord()
@@ -128,7 +104,7 @@ class DataCheckerTests: XCTestCase {
         let operation = op.createDescriptor()
         environment.retain(operation: operation).store(in: &cancellables)
 
-        try environment.mockResponse(op, myTodosPayload)
+        try environment.mockResponse(op, CurrentUserToDoList.myTodos)
         waitUntilComplete(environment.fetchQuery(op))
 
         var record = Record(dataID: "foobar", typename: "Todo")
@@ -138,19 +114,7 @@ class DataCheckerTests: XCTestCase {
         let input = ChangeTodoStatusInput(
             complete: true, id: "VG9kbzox", userId: "me")
         let mutation = ChangeTodoStatusMutation(variables: .init(input: input))
-        let payload = """
-{
-  "data": {
-    "changeTodoStatus": {
-      "todo": {
-        "id": "VG9kbzox",
-        "complete": true
-      }
-    }
-  }
-}
-"""
-        try environment.mockResponse(mutation, payload)
+        try environment.mockResponse(mutation, ChangeTodoStatus.completeBuyHorse)
         waitUntilComplete(environment.commitMutation(mutation) { (store, _) in
             var record = store["foobar"]!
             record.invalidateRecord()
@@ -165,39 +129,3 @@ class DataCheckerTests: XCTestCase {
         expect(date).notTo(beNil())
     }
 }
-
-private let myTodosPayload = """
-{
-  "data": {
-    "user": {
-      "id": "VXNlcjptZQ==",
-      "todos": {
-        "edges": [
-          {
-            "node": {
-              "__typename": "Todo",
-              "id": "VG9kbzow",
-              "complete": true,
-              "text": "Taste JavaScript"
-            },
-            "cursor": "YXJyYXljb25uZWN0aW9uOjA="
-          },
-          {
-            "node": {
-              "__typename": "Todo",
-              "id": "VG9kbzox",
-              "complete": false,
-              "text": "Buy a unicorn"
-            },
-            "cursor": "YXJyYXljb25uZWN0aW9uOjE="
-          }
-        ],
-        "pageInfo": {
-          "endCursor": "YXJyYXljb25uZWN0aW9uOjE=",
-          "hasNextPage": false
-        }
-      }
-    }
-  }
-}
-"""

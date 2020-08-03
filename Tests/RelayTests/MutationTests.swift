@@ -13,26 +13,13 @@ class MutationTests: XCTestCase {
     }
 
     func testBasicNodeUpdate() throws {
-        try loadInitialData()
+        try environment.cachePayload(CurrentUserToDoListQuery(), CurrentUserToDoList.myTodos)
         assertSnapshot(matching: environment.store.source, as: .recordSource)
 
         let input = ChangeTodoStatusInput(
             complete: true, id: "VG9kbzox", userId: "me")
         let op = ChangeTodoStatusMutation(variables: .init(input: input))
-        let payload = """
-{
-  "data": {
-    "changeTodoStatus": {
-      "todo": {
-        "id": "VG9kbzox",
-        "complete": true
-      }
-    }
-  }
-}
-"""
-        let parsedPayload = try JSONSerialization.jsonObject(with: payload.data(using: .utf8)!, options: []) as! [String: Any]
-        environment.mockResponse(op, parsedPayload)
+        try environment.mockResponse(op, ChangeTodoStatus.completeBuyHorse)
 
         waitUntilComplete(environment.commitMutation(op))
 
@@ -40,7 +27,7 @@ class MutationTests: XCTestCase {
     }
 
     func testBasicNodeUpdateOptimistic() throws {
-        try loadInitialData()
+        try environment.cachePayload(CurrentUserToDoListQuery(), CurrentUserToDoList.myTodos)
         assertSnapshot(matching: environment.store.source, as: .recordSource)
 
         let input = ChangeTodoStatusInput(
@@ -55,13 +42,7 @@ class MutationTests: XCTestCase {
             ],
         ]
 
-        let payload = """
-{
-  "errors": [{"message": "This is an error that occurred in the mutation."}],
-}
-"""
-        let parsedPayload = try JSONSerialization.jsonObject(with: payload.data(using: .utf8)!, options: []) as! [String: Any]
-        let advance = environment.delayMockedResponse(op, parsedPayload)
+        let advance = try environment.delayMockedResponse(op, ChangeTodoStatus.error)
 
         let publisher = environment.commitMutation(op, optimisticResponse: optimisticPayload)
         expect(self.environment.store.source["VG9kbzox"]!["complete"] as? Bool).toEventually(beTrue())
@@ -84,26 +65,13 @@ class MutationTests: XCTestCase {
     }
 
     func testDeleteFromListInUpdater() throws {
-        try loadInitialData()
+        try environment.cachePayload(CurrentUserToDoListQuery(), CurrentUserToDoList.myTodos)
         assertSnapshot(matching: environment.store.source, as: .recordSource)
 
         let input = ChangeTodoStatusInput(
             complete: true, id: "VG9kbzox", userId: "me")
         let op = ChangeTodoStatusMutation(variables: .init(input: input))
-        let payload = """
-{
-  "data": {
-    "changeTodoStatus": {
-      "todo": {
-        "id": "VG9kbzox",
-        "complete": true
-      }
-    }
-  }
-}
-"""
-        let parsedPayload = try JSONSerialization.jsonObject(with: payload.data(using: .utf8)!, options: []) as! [String: Any]
-        environment.mockResponse(op, parsedPayload)
+        try environment.mockResponse(op, ChangeTodoStatus.completeBuyHorse)
 
         waitUntilComplete(environment.commitMutation(op, updater: { store, data in
             let user = store.root.getLinkedRecord("user", args: ["id": "me"])!
@@ -117,19 +85,13 @@ class MutationTests: XCTestCase {
     }
 
     func testDeleteFromListWithOptimisticUpdater() throws {
-        try loadInitialData()
+        try environment.cachePayload(CurrentUserToDoListQuery(), CurrentUserToDoList.myTodos)
         assertSnapshot(matching: environment.store.source, as: .recordSource)
 
         let input = ChangeTodoStatusInput(
             complete: true, id: "VG9kbzox", userId: "me")
         let op = ChangeTodoStatusMutation(variables: .init(input: input))
-        let payload = """
-{
-  "errors": [{"message": "This is an error that occurred in the mutation."}],
-}
-"""
-        let parsedPayload = try JSONSerialization.jsonObject(with: payload.data(using: .utf8)!, options: []) as! [String: Any]
-        let advance = environment.delayMockedResponse(op, parsedPayload)
+        let advance = try environment.delayMockedResponse(op, ChangeTodoStatus.error)
 
         var todosID: DataID?
         let updater: SelectorStoreUpdater = { store, data in
@@ -159,45 +121,5 @@ class MutationTests: XCTestCase {
         expect(error).to(beAKindOf(NetworkError.self))
 
         assertSnapshot(matching: environment.store.source, as: .recordSource)
-    }
-
-    private func loadInitialData() throws {
-        let payload = """
-{
-  "data": {
-    "user": {
-      "id": "VXNlcjptZQ==",
-      "todos": {
-        "edges": [
-          {
-            "node": {
-              "__typename": "Todo",
-              "id": "VG9kbzow",
-              "complete": true,
-              "text": "Taste JavaScript"
-            },
-            "cursor": "YXJyYXljb25uZWN0aW9uOjA="
-          },
-          {
-            "node": {
-              "__typename": "Todo",
-              "id": "VG9kbzox",
-              "complete": false,
-              "text": "Buy a unicorn"
-            },
-            "cursor": "YXJyYXljb25uZWN0aW9uOjE="
-          }
-        ],
-        "pageInfo": {
-          "endCursor": "YXJyYXljb25uZWN0aW9uOjE=",
-          "hasNextPage": false
-        }
-      }
-    }
-  }
-}
-"""
-        let parsedPayload = try JSONSerialization.jsonObject(with: payload.data(using: .utf8)!, options: []) as! [String: Any]
-        environment.cachePayload(CurrentUserToDoListQuery(), parsedPayload)
     }
 }

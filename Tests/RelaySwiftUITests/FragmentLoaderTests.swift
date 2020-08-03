@@ -25,7 +25,7 @@ class FragmentLoaderTests: XCTestCase {
     
     func testLoadsDataFromTheStore() throws {
         let loader = FragmentLoader<MoviesListRow_film>()
-        let selector = try load(allFilmsPayload)
+        let selector = try load(MoviesTab.allFilms)
         let key = getMovieKey(selector)
         loader.load(from: resource, key: key)
         expect(loader.data).notTo(beNil())
@@ -34,14 +34,14 @@ class FragmentLoaderTests: XCTestCase {
     
     func testReloadsOnRelevantStoreChanges() throws {
         let loader = FragmentLoader<MoviesListRow_film>()
-        let selector = try load(allFilmsPayload)
+        let selector = try load(MoviesTab.allFilms)
         let key = getMovieKey(selector)
         loader.load(from: resource, key: key)
         expect(loader.data).notTo(beNil())
         assertSnapshot(matching: loader.data, as: .dump)
         
         // update the store with changes
-        try environment.cachePayload(MoviesTabQuery(), allFilmsRelevantUpdatePayload)
+        try environment.cachePayload(MoviesTabQuery(), MoviesTab.evenNewerHope)
         
         expect { loader.data!.title }.toEventually(equal("An Even Newer Hope"))
         assertSnapshot(matching: loader.data, as: .dump)
@@ -49,7 +49,7 @@ class FragmentLoaderTests: XCTestCase {
     
     func testDoesNotReloadOnIrrelevantStoreChanges() throws {
         let loader = FragmentLoader<MoviesListRow_film>()
-        let selector = try load(allFilmsPayload)
+        let selector = try load(MoviesTab.allFilms)
         let key = getMovieKey(selector)
         loader.load(from: resource, key: key)
         expect(loader.data).notTo(beNil())
@@ -59,7 +59,7 @@ class FragmentLoaderTests: XCTestCase {
         loader.$snapshot.dropFirst().sink { snapshots.append($0) }.store(in: &cancellables)
         
         // update the store with changes
-        try environment.cachePayload(MoviesTabQuery(), allFilmsIrrelevantUpdatePayload)
+        try environment.cachePayload(MoviesTabQuery(), MoviesTab.empireStrikesAgain)
         
         RunLoop.main.run(until: Date(timeIntervalSinceNow: 0.2))
         expect(snapshots).to(beEmpty())
@@ -67,7 +67,7 @@ class FragmentLoaderTests: XCTestCase {
     
     func testReloadsWhenKeyChanges() throws {
         let loader = FragmentLoader<MoviesListRow_film>()
-        let selector = try load(allFilmsPayload)
+        let selector = try load(MoviesTab.allFilms)
         let key = getMovieKey(selector)
         loader.load(from: resource, key: key)
         expect(loader.data).notTo(beNil())
@@ -83,7 +83,7 @@ class FragmentLoaderTests: XCTestCase {
     
     func testDoesNotReloadWhenLoadingTheSameData() throws {
         let loader = FragmentLoader<MoviesListRow_film>()
-        let selector = try load(allFilmsPayload)
+        let selector = try load(MoviesTab.allFilms)
         let key = getMovieKey(selector)
         loader.load(from: resource, key: key)
         expect(loader.data).notTo(beNil())
@@ -111,150 +111,3 @@ class FragmentLoaderTests: XCTestCase {
         return snapshot2.data!.allFilms![index]!
     }
 }
-
-private let allFilmsPayload = """
-{
-  "data": {
-    "allFilms": {
-      "edges": [
-        {
-          "node": {
-            "id": "ZmlsbXM6MQ==",
-            "episodeID": 4,
-            "title": "A New Hope",
-            "director": "George Lucas",
-            "releaseDate": "1977-05-25",
-            "__typename": "Film"
-          },
-          "cursor": "YXJyYXljb25uZWN0aW9uOjA="
-        },
-        {
-          "node": {
-            "id": "ZmlsbXM6Mg==",
-            "episodeID": 5,
-            "title": "The Empire Strikes Back",
-            "director": "Irvin Kershner",
-            "releaseDate": "1980-05-17",
-            "__typename": "Film"
-          },
-          "cursor": "YXJyYXljb25uZWN0aW9uOjE="
-        },
-        {
-          "node": {
-            "id": "ZmlsbXM6Mw==",
-            "episodeID": 6,
-            "title": "Return of the Jedi",
-            "director": "Richard Marquand",
-            "releaseDate": "1983-05-25",
-            "__typename": "Film"
-          },
-          "cursor": "YXJyYXljb25uZWN0aW9uOjI="
-        }
-      ],
-      "pageInfo": {
-        "endCursor": "YXJyYXljb25uZWN0aW9uOjI=",
-        "hasNextPage": true
-      }
-    }
-  }
-}
-"""
-
-// this payload includes a change to episode 4, so that should cause the fragment to update
-private let allFilmsRelevantUpdatePayload = """
-{
-  "data": {
-    "allFilms": {
-      "edges": [
-        {
-          "node": {
-            "id": "ZmlsbXM6MQ==",
-            "episodeID": 4,
-            "title": "An Even Newer Hope",
-            "director": "George Lucas",
-            "releaseDate": "1977-05-25",
-            "__typename": "Film"
-          },
-          "cursor": "YXJyYXljb25uZWN0aW9uOjA="
-        },
-        {
-          "node": {
-            "id": "ZmlsbXM6Mg==",
-            "episodeID": 5,
-            "title": "The Empire Strikes Back",
-            "director": "Irvin Kershner",
-            "releaseDate": "1980-05-17",
-            "__typename": "Film"
-          },
-          "cursor": "YXJyYXljb25uZWN0aW9uOjE="
-        },
-        {
-          "node": {
-            "id": "ZmlsbXM6Mw==",
-            "episodeID": 6,
-            "title": "Return of the Jedi",
-            "director": "Richard Marquand",
-            "releaseDate": "1983-05-25",
-            "__typename": "Film"
-          },
-          "cursor": "YXJyYXljb25uZWN0aW9uOjI="
-        }
-      ],
-      "pageInfo": {
-        "endCursor": "YXJyYXljb25uZWN0aW9uOjI=",
-        "hasNextPage": true
-      }
-    }
-  }
-}
-"""
-
-// this payload includes a change to a different film, so it shouldn't cause any
-// updates for this fragment.
-private let allFilmsIrrelevantUpdatePayload = """
-{
-  "data": {
-    "allFilms": {
-      "edges": [
-        {
-          "node": {
-            "id": "ZmlsbXM6MQ==",
-            "episodeID": 4,
-            "title": "A New Hope",
-            "director": "George Lucas",
-            "releaseDate": "1977-05-25",
-            "__typename": "Film"
-          },
-          "cursor": "YXJyYXljb25uZWN0aW9uOjA="
-        },
-        {
-          "node": {
-            "id": "ZmlsbXM6Mg==",
-            "episodeID": 5,
-            "title": "The Empire Strikes Again",
-            "director": "Irvin Kershner",
-            "releaseDate": "1980-05-17",
-            "__typename": "Film"
-          },
-          "cursor": "YXJyYXljb25uZWN0aW9uOjE="
-        },
-        {
-          "node": {
-            "id": "ZmlsbXM6Mw==",
-            "episodeID": 6,
-            "title": "Return of the Jedi",
-            "director": "Richard Marquand",
-            "releaseDate": "1983-05-25",
-            "__typename": "Film"
-          },
-          "cursor": "YXJyYXljb25uZWN0aW9uOjI="
-        }
-      ],
-      "pageInfo": {
-        "endCursor": "YXJyYXljb25uZWN0aW9uOjI=",
-        "hasNextPage": true
-      }
-    }
-  }
-}
-"""

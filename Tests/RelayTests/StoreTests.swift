@@ -42,7 +42,7 @@ class StoreTests: XCTestCase {
     }
 
     func testLookupSnapshotFromQuery() throws {
-        try loadInitialData()
+        try environment.cachePayload(MoviesTabQuery(), MoviesTab.allFilms)
 
         let operation = MoviesTabQuery().createDescriptor()
         let snapshot: Snapshot<MoviesTabQuery.Data?> = environment.lookup(selector: operation.fragment)
@@ -52,7 +52,7 @@ class StoreTests: XCTestCase {
     }
 
     func testLookupSnapshotFromFragment() throws {
-        try loadInitialData()
+        try environment.cachePayload(MoviesTabQuery(), MoviesTab.allFilms)
 
         let operation = MoviesTabQuery().createDescriptor()
         let snapshot: Snapshot<MoviesTabQuery.Data?> = environment.lookup(selector: operation.fragment)
@@ -63,57 +63,5 @@ class StoreTests: XCTestCase {
         let snapshot2: Snapshot<MoviesList_films.Data?> = environment.lookup(selector: MoviesList_films(key: snapshot.data!).selector)
         expect(snapshot2.isMissingData).to(beFalse())
         assertSnapshot(matching: snapshot2.data, as: .dump)
-    }
-
-    private func loadInitialData() throws {
-        let payload = """
-{
-  "data": {
-    "allFilms": {
-      "edges": [
-        {
-          "node": {
-            "id": "ZmlsbXM6MQ==",
-            "episodeID": 4,
-            "title": "A New Hope",
-            "director": "George Lucas",
-            "releaseDate": "1977-05-25",
-            "__typename": "Film"
-          },
-          "cursor": "YXJyYXljb25uZWN0aW9uOjA="
-        },
-        {
-          "node": {
-            "id": "ZmlsbXM6Mg==",
-            "episodeID": 5,
-            "title": "The Empire Strikes Back",
-            "director": "Irvin Kershner",
-            "releaseDate": "1980-05-17",
-            "__typename": "Film"
-          },
-          "cursor": "YXJyYXljb25uZWN0aW9uOjE="
-        },
-        {
-          "node": {
-            "id": "ZmlsbXM6Mw==",
-            "episodeID": 6,
-            "title": "Return of the Jedi",
-            "director": "Richard Marquand",
-            "releaseDate": "1983-05-25",
-            "__typename": "Film"
-          },
-          "cursor": "YXJyYXljb25uZWN0aW9uOjI="
-        }
-      ],
-      "pageInfo": {
-        "endCursor": "YXJyYXljb25uZWN0aW9uOjI=",
-        "hasNextPage": true
-      }
-    }
-  }
-}
-"""
-        let parsedPayload = try JSONSerialization.jsonObject(with: payload.data(using: .utf8)!, options: []) as! [String: Any]
-        environment.cachePayload(MoviesTabQuery(), parsedPayload)
     }
 }

@@ -13,7 +13,7 @@ class ReaderTests: XCTestCase {
 
     func testReadStarWarsFilms() throws {
         let op = MoviesTabQuery()
-        try environment.cachePayload(op, allFilmsPayload)
+        try environment.cachePayload(op, MoviesTab.allFilms)
 
         let source = environment.store.source
         let selector = op.createDescriptor().fragment
@@ -27,7 +27,7 @@ class ReaderTests: XCTestCase {
 
     func testReadStarWarsFilmsList() throws {
         let op = MoviesTabQuery()
-        try environment.cachePayload(op, allFilmsPayload)
+        try environment.cachePayload(op, MoviesTab.allFilms)
 
         let source = environment.store.source
         var selector = op.createDescriptor().fragment
@@ -45,7 +45,7 @@ class ReaderTests: XCTestCase {
 
     func testReadStarWarsFilmRow() throws {
         let op = MoviesTabQuery()
-        try environment.cachePayload(op, allFilmsPayload)
+        try environment.cachePayload(op, MoviesTab.allFilms)
 
         let source = environment.store.source
         var selector = op.createDescriptor().fragment
@@ -67,7 +67,7 @@ class ReaderTests: XCTestCase {
 
     func testReadStarWarsFilmRowNullScalar() throws {
         let op = MoviesTabQuery()
-        try environment.cachePayload(op, allFilmsPayload)
+        try environment.cachePayload(op, MoviesTab.allFilms)
 
         var source = environment.store.source
         var record = source["ZmlsbXM6MQ=="]!
@@ -93,7 +93,7 @@ class ReaderTests: XCTestCase {
 
     func testReadStarWarsFilmRowMissingScalar() throws {
         let op = MoviesTabQuery()
-        try environment.cachePayload(op, allFilmsPayload)
+        try environment.cachePayload(op, MoviesTab.allFilms)
 
         var source = environment.store.source
         var record = source["ZmlsbXM6MQ=="]!
@@ -119,7 +119,7 @@ class ReaderTests: XCTestCase {
 
     func testReadStarWarsFilmsListNullField() throws {
         let op = MoviesTabQuery()
-        try environment.cachePayload(op, allFilmsPayload)
+        try environment.cachePayload(op, MoviesTab.allFilms)
 
         let mutator = RecordSourceMutator(base: environment.store.recordSource, sink: DefaultRecordSource())
         let store = DefaultRecordSourceProxy(mutator: mutator, handlerProvider: DefaultHandlerProvider())
@@ -147,7 +147,7 @@ class ReaderTests: XCTestCase {
 
     func testReadStarWarsFilmsListMissingField() throws {
         let op = MoviesTabQuery()
-        try environment.cachePayload(op, allFilmsPayload)
+        try environment.cachePayload(op, MoviesTab.allFilms)
 
         let mutator = RecordSourceMutator(base: environment.store.recordSource, sink: DefaultRecordSource())
         let store = DefaultRecordSourceProxy(mutator: mutator, handlerProvider: DefaultHandlerProvider())
@@ -174,7 +174,7 @@ class ReaderTests: XCTestCase {
 
     func testReadStarWarsFilmsListNullPluralField() throws {
         let op = MoviesTabQuery()
-        try environment.cachePayload(op, allFilmsPayload)
+        try environment.cachePayload(op, MoviesTab.allFilms)
 
         let mutator = RecordSourceMutator(base: environment.store.recordSource, sink: DefaultRecordSource())
         let store = DefaultRecordSourceProxy(mutator: mutator, handlerProvider: DefaultHandlerProvider())
@@ -200,7 +200,7 @@ class ReaderTests: XCTestCase {
 
     func testReadStarWarsFilmsListMissingPluralField() throws {
         let op = MoviesTabQuery()
-        try environment.cachePayload(op, allFilmsPayload)
+        try environment.cachePayload(op, MoviesTab.allFilms)
 
         let connID = environment.store.source[.rootID]!.getLinkedRecordID("__MoviesList_allFilms_connection")!!
         environment.store.source[connID]!["edges"] = nil
@@ -221,7 +221,7 @@ class ReaderTests: XCTestCase {
 
     func testReadStarWarsFilmsListNullPluralFieldElement() throws {
         let op = MoviesTabQuery()
-        try environment.cachePayload(op, allFilmsPayload)
+        try environment.cachePayload(op, MoviesTab.allFilms)
 
         let mutator = RecordSourceMutator(base: environment.store.recordSource, sink: DefaultRecordSource())
         let store = DefaultRecordSourceProxy(mutator: mutator, handlerProvider: DefaultHandlerProvider())
@@ -249,7 +249,7 @@ class ReaderTests: XCTestCase {
 
     func testReadMissingRequiredField() throws {
         let op = MoviesTabQuery()
-        try environment.cachePayload(op, allFilmsPayload)
+        try environment.cachePayload(op, MoviesTab.allFilms)
 
         var source = environment.store.source
         var record = source["ZmlsbXM6MQ=="]!
@@ -268,7 +268,7 @@ class ReaderTests: XCTestCase {
 
     func testReadStarWarsFilmsListMissingRecord() throws {
         let op = MoviesTabQuery()
-        try environment.cachePayload(op, allFilmsPayload)
+        try environment.cachePayload(op, MoviesTab.allFilms)
 
         environment.store.source.remove("ZmlsbXM6MQ==")
 
@@ -312,54 +312,6 @@ class ReaderTests: XCTestCase {
         assertSnapshot(matching: snapshot.data, as: .dump)
     }
 }
-
-private let allFilmsPayload = """
-{
-  "data": {
-    "allFilms": {
-      "edges": [
-        {
-          "node": {
-            "id": "ZmlsbXM6MQ==",
-            "episodeID": 4,
-            "title": "A New Hope",
-            "director": "George Lucas",
-            "releaseDate": "1977-05-25",
-            "__typename": "Film"
-          },
-          "cursor": "YXJyYXljb25uZWN0aW9uOjA="
-        },
-        {
-          "node": {
-            "id": "ZmlsbXM6Mg==",
-            "episodeID": 5,
-            "title": "The Empire Strikes Back",
-            "director": "Irvin Kershner",
-            "releaseDate": "1980-05-17",
-            "__typename": "Film"
-          },
-          "cursor": "YXJyYXljb25uZWN0aW9uOjE="
-        },
-        {
-          "node": {
-            "id": "ZmlsbXM6Mw==",
-            "episodeID": 6,
-            "title": "Return of the Jedi",
-            "director": "Richard Marquand",
-            "releaseDate": "1983-05-25",
-            "__typename": "Film"
-          },
-          "cursor": "YXJyYXljb25uZWN0aW9uOjI="
-        }
-      ],
-      "pageInfo": {
-        "endCursor": "YXJyYXljb25uZWN0aW9uOjI=",
-        "hasNextPage": true
-      }
-    }
-  }
-}
-"""
 
 private let filmNodePayload = """
 {

@@ -40,7 +40,7 @@ class QueryLoaderTests: XCTestCase {
     
     func testLoadsInitialDataFromNetwork() throws {
         let loader = QueryLoader<MoviesTabQuery>()
-        let advance = environment.delayMockedResponse(MoviesTabQuery(), allFilmsData)
+        let advance = try environment.delayMockedResponse(MoviesTabQuery(), MoviesTab.allFilms)
         let result = loader.loadIfNeeded(
             resource: resource,
             fragmentResource: fragmentResource,
@@ -61,9 +61,9 @@ class QueryLoaderTests: XCTestCase {
     }
     
     func testSkipsDataInStoreWhenNetworkOnly() throws {
-        environment.cachePayload(MoviesTabQuery(), allFilmsData)
+        try environment.cachePayload(MoviesTabQuery(), MoviesTab.allFilms)
         
-        let advance = environment.delayMockedResponse(MoviesTabQuery(), allFilmsData)
+        let advance = try environment.delayMockedResponse(MoviesTabQuery(), MoviesTab.allFilms)
         let loader = QueryLoader<MoviesTabQuery>()
         let result = loader.loadIfNeeded(
             resource: resource,
@@ -82,9 +82,9 @@ class QueryLoaderTests: XCTestCase {
     }
     
     func testUsesStoreDataWhenStoreAndNetworkPolicy() throws {
-        environment.cachePayload(MoviesTabQuery(), allFilmsData)
+        try environment.cachePayload(MoviesTabQuery(), MoviesTab.allFilms)
         
-        let advance = environment.delayMockedResponse(MoviesTabQuery(), alteredFilmsData)
+        let advance = try environment.delayMockedResponse(MoviesTabQuery(), MoviesTab.onlyNewHope)
         let loader = QueryLoader<MoviesTabQuery>()
         let result = loader.loadIfNeeded(
             resource: resource,
@@ -111,10 +111,10 @@ class QueryLoaderTests: XCTestCase {
     }
 
     func testDoesNotFetchWhenStoreOnlyPolicy() throws {
-        environment.cachePayload(MoviesTabQuery(), allFilmsData)
+        try environment.cachePayload(MoviesTabQuery(), MoviesTab.allFilms)
 
         let loader = QueryLoader<MoviesTabQuery>()
-        let advance = try environment.delayMockedResponse(MoviesTabQuery(), allFilmsErrorPayload)
+        let advance = try environment.delayMockedResponse(MoviesTabQuery(), MoviesTab.error)
         let result = loader.loadIfNeeded(
             resource: resource,
             fragmentResource: fragmentResource,
@@ -137,7 +137,7 @@ class QueryLoaderTests: XCTestCase {
     }
 
     func testFetchesWhenNoDataWhenStoreOrNetworkPolicy() throws {
-        let advance = environment.delayMockedResponse(MoviesTabQuery(), allFilmsData)
+        let advance = try environment.delayMockedResponse(MoviesTabQuery(), MoviesTab.allFilms)
         let loader = QueryLoader<MoviesTabQuery>()
         let result = loader.loadIfNeeded(
             resource: resource,
@@ -156,9 +156,9 @@ class QueryLoaderTests: XCTestCase {
     }
 
     func testUsesStoreDataWhenStoreOrNetworkPolicy() throws {
-        environment.cachePayload(MoviesTabQuery(), allFilmsData)
+        try environment.cachePayload(MoviesTabQuery(), MoviesTab.allFilms)
 
-        let advance = environment.delayMockedResponse(MoviesTabQuery(), alteredFilmsData)
+        let advance = try environment.delayMockedResponse(MoviesTabQuery(), MoviesTab.onlyNewHope)
         let loader = QueryLoader<MoviesTabQuery>()
         let result = loader.loadIfNeeded(
             resource: resource,
@@ -184,7 +184,7 @@ class QueryLoaderTests: XCTestCase {
     }
     
     func testDoesNotReloadIfNothingChanged() throws {
-        let advance = environment.delayMockedResponse(MoviesTabQuery(), allFilmsData)
+        let advance = try environment.delayMockedResponse(MoviesTabQuery(), MoviesTab.allFilms)
         let loader = QueryLoader<MoviesTabQuery>()
         var result = loader.loadIfNeeded(
             resource: resource,
@@ -216,7 +216,7 @@ class QueryLoaderTests: XCTestCase {
     func testDoesNotReloadIfFetchKeyIsUnchanged() throws {
         let fetchKey = UUID()
         
-        let advance = environment.delayMockedResponse(MoviesTabQuery(), allFilmsData)
+        let advance = try environment.delayMockedResponse(MoviesTabQuery(), MoviesTab.allFilms)
         let loader = QueryLoader<MoviesTabQuery>()
         var result = loader.loadIfNeeded(
             resource: resource,
@@ -250,7 +250,7 @@ class QueryLoaderTests: XCTestCase {
     func testReloadsWhenFetchKeyChanges() throws {
         var fetchKey = UUID()
         
-        let advance = environment.delayMockedResponse(MoviesTabQuery(), allFilmsData)
+        let advance = try environment.delayMockedResponse(MoviesTabQuery(), MoviesTab.allFilms)
         let loader = QueryLoader<MoviesTabQuery>()
         var result = loader.loadIfNeeded(
             resource: resource,
@@ -333,7 +333,7 @@ class QueryLoaderTests: XCTestCase {
 
     func testHandlesErrorFromTheServer() throws {
         let loader = QueryLoader<MoviesTabQuery>()
-        let advance = try environment.delayMockedResponse(MoviesTabQuery(), allFilmsErrorPayload)
+        let advance = try environment.delayMockedResponse(MoviesTabQuery(), MoviesTab.error)
         let result = loader.loadIfNeeded(
             resource: resource,
             fragmentResource: fragmentResource,
@@ -353,10 +353,10 @@ class QueryLoaderTests: XCTestCase {
     }
 
     func testShowsErrorWhenThereIsExistingStoreData() throws {
-        environment.cachePayload(MoviesTabQuery(), allFilmsData)
+        try environment.cachePayload(MoviesTabQuery(), MoviesTab.allFilms)
 
         let loader = QueryLoader<MoviesTabQuery>()
-        let advance = try environment.delayMockedResponse(MoviesTabQuery(), allFilmsErrorPayload)
+        let advance = try environment.delayMockedResponse(MoviesTabQuery(), MoviesTab.error)
         let result = loader.loadIfNeeded(
             resource: resource,
             fragmentResource: fragmentResource,
@@ -381,10 +381,10 @@ class QueryLoaderTests: XCTestCase {
     }
 
     func testAvoidsStoreLookupWhenDataIsMissing() throws {
-        environment.cachePayload(MoviesTabQuery(), allFilmsData)
+        try environment.cachePayload(MoviesTabQuery(), MoviesTab.allFilms)
         environment.store.source.remove("ZmlsbXM6Mg==")
 
-        let advance = environment.delayMockedResponse(MoviesTabQuery(), allFilmsData)
+        let advance = try environment.delayMockedResponse(MoviesTabQuery(), MoviesTab.allFilms)
         let loader = QueryLoader<MoviesTabQuery>()
         let result = loader.loadIfNeeded(
             resource: resource,
@@ -402,76 +402,6 @@ class QueryLoaderTests: XCTestCase {
         assertSnapshot(matching: snapshot.data, as: .dump)
     }
 }
-
-private let allFilmsData = [
-    "data": [
-        "allFilms": [
-            "edges": [
-                [
-                    "node": [
-                        "id": "ZmlsbXM6MQ==",
-                        "episodeID": 4,
-                        "title": "A New Hope",
-                        "director": "George Lucas",
-                        "releaseDate": "1977-05-25",
-                        "__typename": "Film"
-                    ],
-                    "cursor": "YXJyYXljb25uZWN0aW9uOjA="
-                ],
-                [
-                    "node": [
-                        "id": "ZmlsbXM6Mg==",
-                        "episodeID": 5,
-                        "title": "The Empire Strikes Back",
-                        "director": "Irvin Kershner",
-                        "releaseDate": "1980-05-17",
-                        "__typename": "Film"
-                    ],
-                    "cursor": "YXJyYXljb25uZWN0aW9uOjE="
-                ],
-                [
-                    "node": [
-                        "id": "ZmlsbXM6Mw==",
-                        "episodeID": 6,
-                        "title": "Return of the Jedi",
-                        "director": "Richard Marquand",
-                        "releaseDate": "1983-05-25",
-                        "__typename": "Film"
-                    ],
-                    "cursor": "YXJyYXljb25uZWN0aW9uOjI="
-                ]
-            ],
-            "pageInfo": [
-                "endCursor": "YXJyYXljb25uZWN0aW9uOjI=",
-                "hasNextPage": true
-            ]
-        ]
-    ]
-]
-
-private let alteredFilmsData = [
-    "data": [
-        "allFilms": [
-            "edges": [
-                [
-                    "node": [
-                        "id": "ZmlsbXM6MQ==",
-                        "episodeID": 4,
-                        "title": "A New Hope",
-                        "director": "George Lucas",
-                        "releaseDate": "1977-05-25",
-                        "__typename": "Film"
-                    ],
-                    "cursor": "YXJyYXljb25uZWN0aW9uOjA="
-                ],
-            ],
-            "pageInfo": [
-                "endCursor": "YXJyYXljb25uZWN0aW9uOjI=",
-                "hasNextPage": true
-            ]
-        ]
-    ]
-]
 
 private let myTodosPayload = """
 {
@@ -567,13 +497,5 @@ private let myTodosIrrelevantUpdatePayload = """
       }
     }
   }
-}
-"""
-
-private let allFilmsErrorPayload = """
-{
-    "errors": [
-        {"message": "This is an error that the server returned."}
-    ]
 }
 """

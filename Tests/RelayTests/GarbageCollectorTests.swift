@@ -16,7 +16,7 @@ class GarbageCollectorTests: XCTestCase {
     func testClearsEntireStoreWhenNoOperationsAreRetained() throws {
         expect(self.environment.store.source.recordIDs).to(haveCount(1))
 
-        let cancellable = try fetchAndRetain(MoviesTabQuery(), allFilmsPayload)
+        let cancellable = try fetchAndRetain(MoviesTabQuery(), MoviesTab.allFilms)
         expect(self.environment.store.source.recordIDs).to(haveCount(22))
 
         cancellable.cancel()
@@ -29,7 +29,7 @@ class GarbageCollectorTests: XCTestCase {
     func testDeletesUnreferencedRecordsWhenReleased() throws {
         expect(self.environment.store.source.recordIDs).to(haveCount(1))
 
-        let cancellable = try fetchAndRetain(MoviesTabQuery(), allFilmsPayload)
+        let cancellable = try fetchAndRetain(MoviesTabQuery(), MoviesTab.allFilms)
         let cancellable2 = try fetchAndRetain(MovieDetailQuery(id: "ZmlsbXM6MQ=="), filmPayload)
 
         expect(self.environment.store.source.recordIDs).to(haveCount(22))
@@ -47,7 +47,7 @@ class GarbageCollectorTests: XCTestCase {
     func testCleansUpExcessRecordsFromConnectionAfterFirstRelease() throws {
         expect(self.environment.store.source.recordIDs).to(haveCount(1))
 
-        let cancellable = try fetchAndRetain(MoviesTabQuery(), allFilmsPayload)
+        let cancellable = try fetchAndRetain(MoviesTabQuery(), MoviesTab.allFilms)
         let cancellable2 = try fetchAndRetain(MovieDetailQuery(id: "ZmlsbXM6MQ=="), filmPayload)
 
         expect(self.environment.store.source.recordIDs).to(haveCount(22))
@@ -65,7 +65,7 @@ class GarbageCollectorTests: XCTestCase {
     func testDeletesNoRecordsOnReleaseWhenTheyAreStillReferenced() throws {
         expect(self.environment.store.source.recordIDs).to(haveCount(1))
 
-        let cancellable = try fetchAndRetain(MoviesTabQuery(), allFilmsPayload)
+        let cancellable = try fetchAndRetain(MoviesTabQuery(), MoviesTab.allFilms)
         let cancellable2 = try fetchAndRetain(MovieDetailQuery(id: "ZmlsbXM6MQ=="), filmPayload)
 
         cancellable2.cancel()
@@ -90,8 +90,8 @@ class GarbageCollectorTests: XCTestCase {
     func testOnlyCollectOnFinalRelease() throws {
         expect(self.environment.store.source.recordIDs).to(haveCount(1))
 
-        let cancellable = try fetchAndRetain(MoviesTabQuery(), allFilmsPayload)
-        let cancellable2 = try fetchAndRetain(MoviesTabQuery(), allFilmsPayload)
+        let cancellable = try fetchAndRetain(MoviesTabQuery(), MoviesTab.allFilms)
+        let cancellable2 = try fetchAndRetain(MoviesTabQuery(), MoviesTab.allFilms)
 
         expect(self.environment.store.source.recordIDs).to(haveCount(38))
 
@@ -108,7 +108,7 @@ class GarbageCollectorTests: XCTestCase {
     func testPauseCollection() throws {
         expect(self.environment.store.source.recordIDs).to(haveCount(1))
 
-        let cancellable = try fetchAndRetain(MoviesTabQuery(), allFilmsPayload)
+        let cancellable = try fetchAndRetain(MoviesTabQuery(), MoviesTab.allFilms)
         let cancellable2 = try fetchAndRetain(MovieDetailQuery(id: "ZmlsbXM6MQ=="), filmPayload)
 
         expect(self.environment.store.source.recordIDs).to(haveCount(22))
@@ -131,7 +131,7 @@ class GarbageCollectorTests: XCTestCase {
     func testNestedPauseCollection() throws {
         expect(self.environment.store.source.recordIDs).to(haveCount(1))
 
-        let cancellable = try fetchAndRetain(MoviesTabQuery(), allFilmsPayload)
+        let cancellable = try fetchAndRetain(MoviesTabQuery(), MoviesTab.allFilms)
         let cancellable2 = try fetchAndRetain(MovieDetailQuery(id: "ZmlsbXM6MQ=="), filmPayload)
 
         expect(self.environment.store.source.recordIDs).to(haveCount(22))
@@ -161,7 +161,7 @@ class GarbageCollectorTests: XCTestCase {
     func testMarksRecordsThroughInlineFragments() throws {
         expect(self.environment.store.source.recordIDs).to(haveCount(1))
 
-        let cancellable = try fetchAndRetain(MoviesTabQuery(), allFilmsPayload)
+        let cancellable = try fetchAndRetain(MoviesTabQuery(), MoviesTab.allFilms)
         let cancellable2 = try fetchAndRetain(MovieDetailNodeQuery(id: "ZmlsbXM6MQ=="), filmNodePayload)
 
         expect(self.environment.store.source.recordIDs).to(haveCount(33))
@@ -184,54 +184,6 @@ class GarbageCollectorTests: XCTestCase {
         return cancellable
     }
 }
-
-private let allFilmsPayload = """
-{
-  "data": {
-    "allFilms": {
-      "edges": [
-        {
-          "node": {
-            "id": "ZmlsbXM6MQ==",
-            "episodeID": 4,
-            "title": "A New Hope",
-            "director": "George Lucas",
-            "releaseDate": "1977-05-25",
-            "__typename": "Film"
-          },
-          "cursor": "YXJyYXljb25uZWN0aW9uOjA="
-        },
-        {
-          "node": {
-            "id": "ZmlsbXM6Mg==",
-            "episodeID": 5,
-            "title": "The Empire Strikes Back",
-            "director": "Irvin Kershner",
-            "releaseDate": "1980-05-17",
-            "__typename": "Film"
-          },
-          "cursor": "YXJyYXljb25uZWN0aW9uOjE="
-        },
-        {
-          "node": {
-            "id": "ZmlsbXM6Mw==",
-            "episodeID": 6,
-            "title": "Return of the Jedi",
-            "director": "Richard Marquand",
-            "releaseDate": "1983-05-25",
-            "__typename": "Film"
-          },
-          "cursor": "YXJyYXljb25uZWN0aW9uOjI="
-        }
-      ],
-      "pageInfo": {
-        "endCursor": "YXJyYXljb25uZWN0aW9uOjI=",
-        "hasNextPage": true
-      }
-    }
-  }
-}
-"""
 
 private let filmPayload = """
 {

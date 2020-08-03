@@ -4,55 +4,6 @@ import SnapshotTesting
 @testable import Relay
 @testable import RelayTestHelpers
 
-private let initialPayload = """
-{
-  "data": {
-    "allFilms": {
-      "edges": [
-        {
-          "node": {
-            "id": "ZmlsbXM6MQ==",
-            "episodeID": 4,
-            "title": "A New Hope",
-            "director": "George Lucas",
-            "releaseDate": "1977-05-25",
-            "__typename": "Film"
-          },
-          "cursor": "YXJyYXljb25uZWN0aW9uOjA="
-        },
-        {
-          "node": {
-            "id": "ZmlsbXM6Mg==",
-            "episodeID": 5,
-            "title": "The Empire Strikes Back",
-            "director": "Irvin Kershner",
-            "releaseDate": "1980-05-17",
-            "__typename": "Film"
-          },
-          "cursor": "YXJyYXljb25uZWN0aW9uOjE="
-        },
-        {
-          "node": {
-            "id": "ZmlsbXM6Mw==",
-            "episodeID": 6,
-            "title": "Return of the Jedi",
-            "director": "Richard Marquand",
-            "releaseDate": "1983-05-25",
-            "__typename": "Film"
-          },
-          "cursor": "YXJyYXljb25uZWN0aW9uOjI="
-        }
-      ],
-      "pageInfo": {
-        "endCursor": "YXJyYXljb25uZWN0aW9uOjI=",
-        "hasNextPage": true
-      }
-    }
-  }
-}
-
-"""
-
 class RecordSourceProxyTests: XCTestCase {
     private var environment: MockEnvironment!
     private var mutator: RecordSourceMutator!
@@ -60,7 +11,7 @@ class RecordSourceProxyTests: XCTestCase {
 
     override func setUpWithError() throws {
         environment = MockEnvironment()
-        try environment.cachePayload(MoviesTabQuery(), initialPayload)
+        try environment.cachePayload(MoviesTabQuery(), MoviesTab.allFilms)
         mutator = RecordSourceMutator(base: environment.store.recordSource, sink: DefaultRecordSource())
         store = DefaultRecordSourceProxy(mutator: mutator, handlerProvider: DefaultHandlerProvider())
     }

@@ -199,6 +199,10 @@ class GarbageCollector {
         for rootEntry in roots.values {
             let selector = rootEntry.operation.root
 
+            #if swift(>=5.3)
+            let referencesBefore = references.count
+            #endif
+
             ReferenceMarker.mark(
                 source: store.recordSource,
                 selector: selector,
@@ -224,6 +228,13 @@ class GarbageCollector {
                 os_signpost(.event, log: log, name: "cancel garbage collection", signpostID: signpostID)
                 return true
             }
+
+            #if swift(>=5.3)
+            if #available(iOS 14.0, macOS 10.16, tvOS 14.0, watchOS 7.0, *) {
+                let referencesAfter = references.count
+                logger.debug("GC Mark Root:  \(rootEntry.operation.request.node.params.name)\(rootEntry.operation.request.variables)  added \(referencesAfter - referencesBefore) new references")
+            }
+            #endif
         }
 
         // hop back onto the main queue while we update the store
@@ -261,15 +272,22 @@ class GarbageCollector {
                 #endif
             } else {
                 var deletedCount = 0
+                var deletedByTypeName: [String: Int] = [:]
+
                 for dataID in store.recordSource.recordIDs {
                     if !references.contains(dataID) {
+                        let typeName = store.recordSource[dataID]!.typename
                         store.recordSource.remove(dataID)
                         deletedCount += 1
+                        deletedByTypeName[typeName] = (deletedByTypeName[typeName] ?? 0) + 1
                     }
                 }
                 #if swift(>=5.3)
                 if #available(iOS 14.0, macOS 10.16, tvOS 14.0, watchOS 7.0, *) {
                     logger.notice("GC Result:  \(references.count) references found, deleted \(deletedCount) records")
+                    for (typeName, count) in deletedByTypeName {
+                        logger.debug("GC Result:  \(count) \(typeName) records deleted")
+                    }
                 }
                 #endif
             }
@@ -319,6 +337,10 @@ fileprivate class ReferenceMarker {
             case .handle(let handle):
                 if handle.kind == .linked {
                     traverseLinkedHandle(handle, selections, record)
+                }
+            case .inlineFragment(let fragment):
+                if fragment.type == record.typename {
+                    traverse(fragment.selections, record)
                 }
             default:
                 break

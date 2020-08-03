@@ -9,6 +9,15 @@ query MovieDetailNodeQuery($id: ID!) {
             title
             director
             releaseDate
+
+            characterConnection(first: 3) {
+                edges {
+                    node {
+                        id
+                        name
+                    }
+                }
+            }
         }
     }
 }

@@ -158,6 +158,24 @@ class GarbageCollectorTests: XCTestCase {
         cancellable.cancel()
     }
 
+    func testMarksRecordsThroughInlineFragments() throws {
+        expect(self.environment.store.source.recordIDs).to(haveCount(1))
+
+        let cancellable = try fetchAndRetain(MoviesTabQuery(), allFilmsPayload)
+        let cancellable2 = try fetchAndRetain(MovieDetailNodeQuery(id: "ZmlsbXM6MQ=="), filmNodePayload)
+
+        expect(self.environment.store.source.recordIDs).to(haveCount(33))
+
+        cancellable.cancel()
+        expect(self.environment.store.source.recordIDs).toEventually(haveCount(9))
+
+        cancellable2.cancel()
+
+        // it's unclear to me that it's desirable that we delete the root record, but
+        // as far as i can tell, that's what JS Relay does
+        expect(self.environment.store.source.recordIDs).toEventually(haveCount(0))
+    }
+
     private func fetchAndRetain<Op: Relay.Operation>(_ op: Op, _ payload: String) throws -> AnyCancellable {
         let operation = op.createDescriptor()
         let cancellable = environment.retain(operation: operation)
@@ -225,6 +243,43 @@ private let filmPayload = """
       "director": "George Lucas",
       "releaseDate": "1977-05-25",
       "__typename": "Film"
+    }
+  }
+}
+"""
+
+private let filmNodePayload = """
+{
+  "data": {
+    "node": {
+      "__typename": "Film",
+      "id": "ZmlsbXM6MQ==",
+      "episodeID": 4,
+      "title": "A New Hope",
+      "director": "George Lucas",
+      "releaseDate": "1977-05-25",
+      "characterConnection": {
+        "edges": [
+          {
+            "node": {
+              "id": "cGVvcGxlOjE=",
+              "name": "Luke Skywalker"
+            }
+          },
+          {
+            "node": {
+              "id": "cGVvcGxlOjI=",
+              "name": "C-3PO"
+            }
+          },
+          {
+            "node": {
+              "id": "cGVvcGxlOjM=",
+              "name": "R2-D2"
+            }
+          }
+        ]
+      }
     }
   }
 }

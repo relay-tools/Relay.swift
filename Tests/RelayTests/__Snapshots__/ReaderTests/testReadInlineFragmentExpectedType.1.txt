@@ -3,6 +3,31 @@
     ▿ node: Optional<Node_node>
       ▿ some: Node_node
         ▿ film: Film
+          ▿ characterConnection: Optional<FilmCharactersConnection_characterConnection>
+            ▿ some: FilmCharactersConnection_characterConnection
+              ▿ edges: Optional<Array<Optional<FilmCharactersEdge_edges>>>
+                ▿ some: 3 elements
+                  ▿ Optional<FilmCharactersEdge_edges>
+                    ▿ some: FilmCharactersEdge_edges
+                      ▿ node: Optional<Person_node>
+                        ▿ some: Person_node
+                          - id: "cGVvcGxlOjE="
+                          ▿ name: Optional<String>
+                            - some: "Luke Skywalker"
+                  ▿ Optional<FilmCharactersEdge_edges>
+                    ▿ some: FilmCharactersEdge_edges
+                      ▿ node: Optional<Person_node>
+                        ▿ some: Person_node
+                          - id: "cGVvcGxlOjI="
+                          ▿ name: Optional<String>
+                            - some: "C-3PO"
+                  ▿ Optional<FilmCharactersEdge_edges>
+                    ▿ some: FilmCharactersEdge_edges
+                      ▿ node: Optional<Person_node>
+                        ▿ some: Person_node
+                          - id: "cGVvcGxlOjM="
+                          ▿ name: Optional<String>
+                            - some: "R2-D2"
           ▿ director: Optional<String>
             - some: "George Lucas"
           ▿ episodeID: Optional<Int>

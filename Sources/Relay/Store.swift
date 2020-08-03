@@ -115,7 +115,7 @@ public class Store {
     ) -> [RequestDescriptor] {
         writeEpochLock.sync {
             let newWriteEpoch = _currentWriteEpoch + 1
-            _currentWriteEpoch += newWriteEpoch
+            _currentWriteEpoch = newWriteEpoch
 
             if invalidateStore {
                 globalInvalidationEpoch = newWriteEpoch

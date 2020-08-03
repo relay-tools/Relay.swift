@@ -17,7 +17,6 @@ class QueryLoader<Op: Relay.Operation>: ObservableObject {
     private var fragmentResource: FragmentResource!
 
     private var resultCancellable: AnyCancellable?
-    private var fetchCancellable: AnyCancellable?
     private var subscribeCancellable: AnyCancellable?
     private var retainCancellable: AnyCancellable?
 

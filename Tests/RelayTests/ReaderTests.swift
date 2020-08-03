@@ -288,7 +288,7 @@ class ReaderTests: XCTestCase {
 
     func testReadInlineFragmentExpectedType() throws {
         let op = MovieDetailNodeQuery(id: "ZmlsbXM6MQ==")
-        try environment.cachePayload(op, filmNodePayload)
+        try environment.cachePayload(op, MovieDetailNode.newHope)
 
         let source = environment.store.source
         let selector = op.createDescriptor().fragment
@@ -301,7 +301,7 @@ class ReaderTests: XCTestCase {
 
     func testReadInlineFragmentOtherType() throws {
         let op = MovieDetailNodeQuery(id: "cGVvcGxlOjE=")
-        try environment.cachePayload(op, personNodePayload)
+        try environment.cachePayload(op, MovieDetailNode.lukeSkywalker)
 
         let source = environment.store.source
         let selector = op.createDescriptor().fragment
@@ -312,51 +312,3 @@ class ReaderTests: XCTestCase {
         assertSnapshot(matching: snapshot.data, as: .dump)
     }
 }
-
-private let filmNodePayload = """
-{
-  "data": {
-    "node": {
-      "__typename": "Film",
-      "id": "ZmlsbXM6MQ==",
-      "episodeID": 4,
-      "title": "A New Hope",
-      "director": "George Lucas",
-      "releaseDate": "1977-05-25",
-      "characterConnection": {
-        "edges": [
-          {
-            "node": {
-              "id": "cGVvcGxlOjE=",
-              "name": "Luke Skywalker"
-            }
-          },
-          {
-            "node": {
-              "id": "cGVvcGxlOjI=",
-              "name": "C-3PO"
-            }
-          },
-          {
-            "node": {
-              "id": "cGVvcGxlOjM=",
-              "name": "R2-D2"
-            }
-          }
-        ]
-      }
-    }
-  }
-}
-"""
-
-private let personNodePayload = """
-{
-  "data": {
-    "node": {
-      "__typename": "Person",
-      "id": "cGVvcGxlOjE="
-    }
-  }
-}
-"""

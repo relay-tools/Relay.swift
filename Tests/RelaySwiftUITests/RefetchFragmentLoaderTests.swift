@@ -27,7 +27,7 @@ class RefetchFragmentLoaderTests: XCTestCase {
     
     func testLoadsDataFromTheStore() throws {
         let loader = RefetchFragmentLoader<MovieInfoSection_film>()
-        let selector = try load(filmPayload)
+        let selector = try load(MovieDetail.newHope)
         let key = getMovieKey(selector)
         loader.load(from: resource, queryResource: queryResource, key: key)
         expect(loader.data).notTo(beNil())
@@ -36,7 +36,7 @@ class RefetchFragmentLoaderTests: XCTestCase {
     
     func testReloadsOnRelevantStoreChanges() throws {
         let loader = RefetchFragmentLoader<MovieInfoSection_film>()
-        let selector = try load(filmPayload)
+        let selector = try load(MovieDetail.newHope)
         let key = getMovieKey(selector)
         loader.load(from: resource, queryResource: queryResource, key: key)
         expect(loader.data).notTo(beNil())
@@ -55,7 +55,7 @@ class RefetchFragmentLoaderTests: XCTestCase {
     
     func testDoesNotReloadOnIrrelevantStoreChanges() throws {
         let loader = RefetchFragmentLoader<MovieInfoSection_film>()
-        let selector = try load(filmPayload)
+        let selector = try load(MovieDetail.newHope)
         let key = getMovieKey(selector)
         loader.load(from: resource, queryResource: queryResource, key: key)
         expect(loader.data).notTo(beNil())
@@ -73,7 +73,7 @@ class RefetchFragmentLoaderTests: XCTestCase {
     
     func testDoesNotReloadWhenLoadingTheSameKey() throws {
         let loader = RefetchFragmentLoader<MovieInfoSection_film>()
-        let selector = try load(filmPayload)
+        let selector = try load(MovieDetail.newHope)
         let key = getMovieKey(selector)
         loader.load(from: resource, queryResource: queryResource, key: key)
         expect(loader.data).notTo(beNil())
@@ -90,7 +90,7 @@ class RefetchFragmentLoaderTests: XCTestCase {
 
     func testRefetchesDataWhenAsked() throws {
         let loader = RefetchFragmentLoader<MovieInfoSection_film>()
-        let selector = try load(filmPayload)
+        let selector = try load(MovieDetail.newHope)
         let key = getMovieKey(selector)
         loader.load(from: resource, queryResource: queryResource, key: key)
         expect(loader.data).notTo(beNil())
@@ -103,7 +103,7 @@ class RefetchFragmentLoaderTests: XCTestCase {
         loader.$refetchKey.dropFirst().sink { refetchKeys.append($0) }.store(in: &cancellables)
         expect(refetchKeys).to(beEmpty())
 
-        let advance = try environment.delayMockedResponse(MovieInfoSectionRefetchQuery(id: "ZmlsbXM6MQ=="), updatedFilmPayload)
+        let advance = try environment.delayMockedResponse(MovieInfoSectionRefetchQuery(id: "ZmlsbXM6MQ=="), MovieInfoSection.refetchEvenNewerHope)
         loader.refetch(nil)
 
         expect { refetchKeys }.toEventually(haveCount(1))
@@ -130,7 +130,7 @@ class RefetchFragmentLoaderTests: XCTestCase {
 
     func testRefetchesDataWithNewVariables() throws {
         let loader = RefetchFragmentLoader<MovieInfoSection_film>()
-        let selector = try load(filmPayload)
+        let selector = try load(MovieDetail.newHope)
         let key = getMovieKey(selector)
         loader.load(from: resource, queryResource: queryResource, key: key)
         expect(loader.data).notTo(beNil())
@@ -144,7 +144,7 @@ class RefetchFragmentLoaderTests: XCTestCase {
         expect(refetchKeys).to(beEmpty())
 
         // refetch with a different ID
-        let advance = try environment.delayMockedResponse(MovieInfoSectionRefetchQuery(id: "ZmlsbXM6Mg=="), empireFilmPayload)
+        let advance = try environment.delayMockedResponse(MovieInfoSectionRefetchQuery(id: "ZmlsbXM6Mg=="), MovieInfoSection.refetchEmpire)
         loader.refetch(.init(id: "ZmlsbXM6Mg=="))
 
         expect { refetchKeys }.toEventually(haveCount(1))
@@ -168,7 +168,7 @@ class RefetchFragmentLoaderTests: XCTestCase {
 
     func testRetainsDataFromRefetchQuery() throws {
         let loader = RefetchFragmentLoader<MovieInfoSection_film>()
-        let selector = try load(filmPayload)
+        let selector = try load(MovieDetail.newHope)
         let key = getMovieKey(selector)
         loader.load(from: resource, queryResource: queryResource, key: key)
         expect(loader.data).notTo(beNil())
@@ -178,7 +178,7 @@ class RefetchFragmentLoaderTests: XCTestCase {
         expect(refetchKeys).to(beEmpty())
 
         // refetch with a different ID
-        let advance = try environment.delayMockedResponse(MovieInfoSectionRefetchQuery(id: "ZmlsbXM6Mg=="), empireFilmPayload)
+        let advance = try environment.delayMockedResponse(MovieInfoSectionRefetchQuery(id: "ZmlsbXM6Mg=="), MovieInfoSection.refetchEmpire)
         loader.refetch(.init(id: "ZmlsbXM6Mg=="))
 
         expect { refetchKeys }.toEventually(haveCount(1))
@@ -217,48 +217,3 @@ class RefetchFragmentLoaderTests: XCTestCase {
         return snapshot.data!.film!
     }
 }
-
-private let filmPayload = """
-{
-  "data": {
-    "film": {
-      "id": "ZmlsbXM6MQ==",
-      "episodeID": 4,
-      "title": "A New Hope",
-      "director": "George Lucas",
-      "releaseDate": "1977-05-25",
-      "__typename": "Film"
-    }
-  }
-}
-"""
-
-private let updatedFilmPayload = """
-{
-  "data": {
-    "node": {
-      "id": "ZmlsbXM6MQ==",
-      "episodeID": 4,
-      "title": "An Even Newer Hope",
-      "director": "George Lucas",
-      "releaseDate": "1977-05-25",
-      "__typename": "Film"
-    }
-  }
-}
-"""
-
-private let empireFilmPayload = """
-{
-  "data": {
-    "node": {
-      "id": "ZmlsbXM6Mg==",
-      "episodeID": 5,
-      "title": "The Empire Strikes Back",
-      "director": "Irvin Kershner",
-      "releaseDate": "1980-05-17",
-      "__typename": "Film"
-    }
-  }
-}
-"""

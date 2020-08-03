@@ -30,7 +30,7 @@ class GarbageCollectorTests: XCTestCase {
         expect(self.environment.store.source.recordIDs).to(haveCount(1))
 
         let cancellable = try fetchAndRetain(MoviesTabQuery(), MoviesTab.allFilms)
-        let cancellable2 = try fetchAndRetain(MovieDetailQuery(id: "ZmlsbXM6MQ=="), filmPayload)
+        let cancellable2 = try fetchAndRetain(MovieDetailQuery(id: "ZmlsbXM6MQ=="), MovieDetail.newHope)
 
         expect(self.environment.store.source.recordIDs).to(haveCount(22))
 
@@ -48,7 +48,7 @@ class GarbageCollectorTests: XCTestCase {
         expect(self.environment.store.source.recordIDs).to(haveCount(1))
 
         let cancellable = try fetchAndRetain(MoviesTabQuery(), MoviesTab.allFilms)
-        let cancellable2 = try fetchAndRetain(MovieDetailQuery(id: "ZmlsbXM6MQ=="), filmPayload)
+        let cancellable2 = try fetchAndRetain(MovieDetailQuery(id: "ZmlsbXM6MQ=="), MovieDetail.newHope)
 
         expect(self.environment.store.source.recordIDs).to(haveCount(22))
 
@@ -66,14 +66,14 @@ class GarbageCollectorTests: XCTestCase {
         expect(self.environment.store.source.recordIDs).to(haveCount(1))
 
         let cancellable = try fetchAndRetain(MoviesTabQuery(), MoviesTab.allFilms)
-        let cancellable2 = try fetchAndRetain(MovieDetailQuery(id: "ZmlsbXM6MQ=="), filmPayload)
+        let cancellable2 = try fetchAndRetain(MovieDetailQuery(id: "ZmlsbXM6MQ=="), MovieDetail.newHope)
 
         cancellable2.cancel()
         RunLoop.main.run(until: Date(timeIntervalSinceNow: 0.2))
         expect(self.environment.store.source.recordIDs).to(haveCount(14))
 
         // Now do it again, to get an actual case where no records are deleted
-        let cancellable3 = try fetchAndRetain(MovieDetailQuery(id: "ZmlsbXM6MQ=="), filmPayload)
+        let cancellable3 = try fetchAndRetain(MovieDetailQuery(id: "ZmlsbXM6MQ=="), MovieDetail.newHope)
         expect(self.environment.store.source.recordIDs).to(haveCount(14))
 
         cancellable3.cancel()
@@ -109,7 +109,7 @@ class GarbageCollectorTests: XCTestCase {
         expect(self.environment.store.source.recordIDs).to(haveCount(1))
 
         let cancellable = try fetchAndRetain(MoviesTabQuery(), MoviesTab.allFilms)
-        let cancellable2 = try fetchAndRetain(MovieDetailQuery(id: "ZmlsbXM6MQ=="), filmPayload)
+        let cancellable2 = try fetchAndRetain(MovieDetailQuery(id: "ZmlsbXM6MQ=="), MovieDetail.newHope)
 
         expect(self.environment.store.source.recordIDs).to(haveCount(22))
 
@@ -132,7 +132,7 @@ class GarbageCollectorTests: XCTestCase {
         expect(self.environment.store.source.recordIDs).to(haveCount(1))
 
         let cancellable = try fetchAndRetain(MoviesTabQuery(), MoviesTab.allFilms)
-        let cancellable2 = try fetchAndRetain(MovieDetailQuery(id: "ZmlsbXM6MQ=="), filmPayload)
+        let cancellable2 = try fetchAndRetain(MovieDetailQuery(id: "ZmlsbXM6MQ=="), MovieDetail.newHope)
 
         expect(self.environment.store.source.recordIDs).to(haveCount(22))
 
@@ -162,7 +162,7 @@ class GarbageCollectorTests: XCTestCase {
         expect(self.environment.store.source.recordIDs).to(haveCount(1))
 
         let cancellable = try fetchAndRetain(MoviesTabQuery(), MoviesTab.allFilms)
-        let cancellable2 = try fetchAndRetain(MovieDetailNodeQuery(id: "ZmlsbXM6MQ=="), filmNodePayload)
+        let cancellable2 = try fetchAndRetain(MovieDetailNodeQuery(id: "ZmlsbXM6MQ=="), MovieDetailNode.newHope)
 
         expect(self.environment.store.source.recordIDs).to(haveCount(33))
 
@@ -184,55 +184,3 @@ class GarbageCollectorTests: XCTestCase {
         return cancellable
     }
 }
-
-private let filmPayload = """
-{
-  "data": {
-    "film": {
-      "id": "ZmlsbXM6MQ==",
-      "episodeID": 4,
-      "title": "A New Hope",
-      "director": "George Lucas",
-      "releaseDate": "1977-05-25",
-      "__typename": "Film"
-    }
-  }
-}
-"""
-
-private let filmNodePayload = """
-{
-  "data": {
-    "node": {
-      "__typename": "Film",
-      "id": "ZmlsbXM6MQ==",
-      "episodeID": 4,
-      "title": "A New Hope",
-      "director": "George Lucas",
-      "releaseDate": "1977-05-25",
-      "characterConnection": {
-        "edges": [
-          {
-            "node": {
-              "id": "cGVvcGxlOjE=",
-              "name": "Luke Skywalker"
-            }
-          },
-          {
-            "node": {
-              "id": "cGVvcGxlOjI=",
-              "name": "C-3PO"
-            }
-          },
-          {
-            "node": {
-              "id": "cGVvcGxlOjM=",
-              "name": "R2-D2"
-            }
-          }
-        ]
-      }
-    }
-  }
-}
-"""

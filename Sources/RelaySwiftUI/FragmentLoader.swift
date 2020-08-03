@@ -3,7 +3,7 @@ import Foundation
 import Relay
 
 class FragmentLoader<Fragment: Relay.Fragment>: ObservableObject {
-    var environment: Environment!
+    var fragmentResource: FragmentResource!
     var selector: SingularReaderSelector?
 
     @Published var snapshot: Snapshot<Fragment.Data?>? {
@@ -16,16 +16,26 @@ class FragmentLoader<Fragment: Relay.Fragment>: ObservableObject {
 
     init() {}
 
-    func load(from environment: Environment, key: Fragment.Key) {
-        let newSelector = Fragment(key: key).selector
-        if newSelector == selector {
+    var environment: Environment {
+        fragmentResource.environment
+    }
+
+    func load(from resource: FragmentResource, key: Fragment.Key) {
+        self.fragmentResource = resource
+        let selector = Fragment(key: key).selector
+        self.selector = selector
+
+        let result: FragmentResource.FragmentResult<Fragment.Data> =
+            resource.read(selector: selector, identifier: selector.identifier)
+        guard result.snapshot != snapshot else {
             return
         }
 
-        self.environment = environment
-        self.selector = newSelector
-        snapshot = environment.lookup(selector: newSelector)
-        subscribe()
+        snapshot = result.snapshot
+        subscribeCancellable = resource.subscribe(result)
+            .sink { [weak self] snapshot in
+                self?.snapshot = snapshot
+            }
     }
 
     var data: Fragment.Data? {
@@ -40,15 +50,5 @@ class FragmentLoader<Fragment: Relay.Fragment>: ObservableObject {
         }
 
         return snapshot.data
-    }
-
-    func subscribe() {
-        guard let snapshot = snapshot else { return }
-        
-        subscribeCancellable = environment.subscribe(snapshot: snapshot)
-            .receive(on: DispatchQueue.main)
-            .sink { [weak self] snapshot in
-                self?.snapshot = snapshot
-            }
     }
 }

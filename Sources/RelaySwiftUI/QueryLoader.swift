@@ -13,12 +13,19 @@ class QueryLoader<Op: Relay.Operation>: ObservableObject {
     var fetchPolicy: QueryFetchPolicy?
     var fetchKey: String?
 
-    private var environment: Environment!
+    private var queryResource: QueryResource!
+    private var fragmentResource: FragmentResource!
+
+    private var resultCancellable: AnyCancellable?
     private var fetchCancellable: AnyCancellable?
     private var subscribeCancellable: AnyCancellable?
     private var retainCancellable: AnyCancellable?
 
     init() {}
+
+    private var environment: Environment! {
+        queryResource?.environment
+    }
 
     var isLoading: Bool {
         if result == nil {
@@ -54,33 +61,33 @@ class QueryLoader<Op: Relay.Operation>: ObservableObject {
         isLoaded = false
         result = nil
 
-        if self.environment != nil {
-            _ = loadIfNeeded(environment: self.environment)
+        if let resource = self.queryResource,
+           let fragmentResource = self.fragmentResource,
+           let fetchPolicy = fetchPolicy
+        {
+            _ = loadIfNeeded(resource: resource, fragmentResource: fragmentResource, fetchPolicy: fetchPolicy)
         }
     }
 
     func loadIfNeeded(
-        environment: Environment?,
+        resource: QueryResource,
+        fragmentResource: FragmentResource,
         variables: Op.Variables? = nil,
-        fetchPolicy: QueryFetchPolicy? = nil,
+        fetchPolicy: QueryFetchPolicy,
         fetchKey: Any? = nil
     ) -> Result<Snapshot<Op.Data?>, Error>? {
         guard !isLoaded ||
-                environment !== self.environment ||
-                (fetchPolicy != nil && fetchPolicy != self.fetchPolicy) ||
+                resource !== self.queryResource ||
+                fetchPolicy != self.fetchPolicy ||
                 (variables != nil && variables?.variableData != self.variables?.variableData) ||
                 (fetchKey != nil && String(describing: fetchKey!) != self.fetchKey)
         else {
             return result
         }
 
-        if let environment = environment {
-            self.environment = environment
-        }
-
-        if let fetchPolicy = fetchPolicy {
-            self.fetchPolicy = fetchPolicy
-        }
+        self.queryResource = resource
+        self.fragmentResource = fragmentResource
+        self.fetchPolicy = fetchPolicy
 
         if let variables = variables {
             self.variables = variables
@@ -94,69 +101,40 @@ class QueryLoader<Op: Relay.Operation>: ObservableObject {
             }
         }
 
-        guard let environment = self.environment else {
-            preconditionFailure("Trying to use a Relay Query without setting up an Environment")
-        }
         guard let variables = self.variables else {
             preconditionFailure("Trying to use a Relay Query without setting its variables")
         }
 
         let operation = Op(variables: variables).createDescriptor()
-        let availability = environment.check(operation: operation)
+        resultCancellable = resource.prepare(
+            operation: operation,
+            fetchPolicy: fetchPolicy,
+            cacheKeyBuster: fetchKey
+        ).sink { [weak self] result in
+            guard let self = self else { return }
 
-        lookupIfNeeded(operation, availability)
-        fetchIfNeeded(operation, availability)
+            switch result {
+            case nil:
+                self.result = nil
+            case .failure(let error):
+                self.result = .failure(error)
+            case .success(let queryResult):
+                let identifier = queryResult.fragmentNode.identifier(for: queryResult.fragmentRef)
+                let fragmentResult: FragmentResource.FragmentResult<Op.Data> =
+                    fragmentResource.read(node: queryResult.fragmentNode, ref: queryResult.fragmentRef, identifier: identifier)
 
-        retainCancellable = environment.retain(operation: operation)
+                self.result = .success(fragmentResult.snapshot)
+                self.retainCancellable = resource.retain(queryResult)
+                self.subscribeCancellable = fragmentResource.subscribe(fragmentResult)
+                    .sink { [weak self] newSnapshot in
+                        if !newSnapshot.isMissingData {
+                            self?.result = .success(newSnapshot)
+                        }
+                    }
+            }
+        }
 
         isLoaded = true
         return result
-    }
-
-    func lookupIfNeeded(_ operation: OperationDescriptor, _ availability: OperationAvailability) {
-        guard fetchPolicy != .networkOnly || environment.forceFetchFromStore else { return }
-        guard case .available = environment.check(operation: operation) else {
-            result = nil
-            return
-        }
-
-        let snapshot: Snapshot<Op.Data?> = environment.lookup(selector: operation.fragment)
-        if !snapshot.isMissingData {
-            result = .success(snapshot)
-            subscribe()
-        }
-    }
-
-    func fetchIfNeeded(_ operation: OperationDescriptor, _ availability: OperationAvailability) {
-        guard fetchPolicy != .storeOnly else { return }
-        if case .success = result, fetchPolicy == .storeOrNetwork {
-            return
-        }
-
-        fetchCancellable = environment.execute(operation: operation, cacheConfig: CacheConfig())
-            .receive(on: DispatchQueue.main)
-            .map { [environment] _ -> Snapshot<Op.Data?> in environment!.lookup(selector: operation.fragment) }
-            .sink(receiveCompletion: { [weak self] completion in
-                if case .failure(let error) = completion {
-                    self?.result = .failure(error)
-                }
-            }, receiveValue: { [weak self] response in
-                self?.result = .success(response)
-                self?.subscribe()
-            })
-    }
-
-    func subscribe() {
-        guard case .success(let snapshot) = result else {
-            return
-        }
-
-        subscribeCancellable = environment.subscribe(snapshot: snapshot)
-            .receive(on: DispatchQueue.main)
-            .sink { [weak self] newSnapshot in
-                if !newSnapshot.isMissingData {
-                    self?.result = .success(newSnapshot)
-                }
-            }
     }
 }

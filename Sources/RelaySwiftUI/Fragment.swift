@@ -3,7 +3,7 @@ import Relay
 
 @propertyWrapper
 public struct Fragment<F: Relay.Fragment>: DynamicProperty {
-    @SwiftUI.Environment(\.relayEnvironment) var environment: Relay.Environment?
+    @SwiftUI.Environment(\.fragmentResource) var fragmentResource
     let keyBox = KeyBox()
     @ObservedObject var loader: FragmentLoader<F>
 
@@ -22,7 +22,7 @@ public struct Fragment<F: Relay.Fragment>: DynamicProperty {
         }
 
         // load the data if needed
-        loader.load(from: environment!, key: key)
+        loader.load(from: fragmentResource!, key: key)
 
         return loader.data
     }
@@ -37,7 +37,7 @@ public struct Fragment<F: Relay.Fragment>: DynamicProperty {
 @available(iOS 14.0, macOS 10.16, tvOS 14.0, watchOS 7.0, *)
 @propertyWrapper
 public struct FragmentNext<F: Relay.Fragment>: DynamicProperty {
-    @SwiftUI.Environment(\.relayEnvironment) var environment: Relay.Environment?
+    @SwiftUI.Environment(\.fragmentResource) var fragmentResource
     @StateObject var loader = FragmentLoader<F>()
     
     let key: F.Key?
@@ -56,7 +56,7 @@ public struct FragmentNext<F: Relay.Fragment>: DynamicProperty {
         }
 
         // load the data if needed
-        loader.load(from: environment!, key: key)
+        loader.load(from: fragmentResource!, key: key)
 
         return loader.data
     }

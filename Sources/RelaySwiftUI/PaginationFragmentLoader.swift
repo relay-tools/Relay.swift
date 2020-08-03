@@ -21,8 +21,8 @@ class PaginationFragmentLoader<Fragment: Relay.PaginationFragment>: ObservableOb
 //        }
     }
 
-    func load(from environment: Environment, key: Fragment.Key) {
-        fragmentLoader.load(from: environment, key: key)
+    func load(from resource: FragmentResource, key: Fragment.Key) {
+        fragmentLoader.load(from: resource, key: key)
     }
 
     @Published var snapshot: Snapshot<Fragment.Data?>?

@@ -27,4 +27,8 @@ public struct SingularReaderSelector: Hashable {
         hasher.combine(owner)
         hasher.combine(variables.variableData)
     }
+
+    public var identifier: String {
+        "\(owner.identifier)/\(node.name)/\(variables)/\(dataID)"
+    }
 }

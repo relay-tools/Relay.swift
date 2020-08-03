@@ -18,6 +18,10 @@ public struct ReaderFragment: ReaderNode {
         self.argumentDefinitions = argumentDefinitions
         self.selections = selections
     }
+
+    public func identifier(for ref: FragmentPointer) -> String {
+        SingularReaderSelector(fragment: self, pointer: ref).identifier
+    }
 }
 
 public struct ReaderArgumentDefinition {

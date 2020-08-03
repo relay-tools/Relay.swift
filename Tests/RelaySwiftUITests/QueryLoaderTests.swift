@@ -2,16 +2,21 @@ import XCTest
 import Combine
 import SnapshotTesting
 import Nimble
+import Relay
 @testable import RelayTestHelpers
 @testable import RelaySwiftUI
 
 class QueryLoaderTests: XCTestCase {
     private var environment: MockEnvironment!
+    private var resource: QueryResource!
+    private var fragmentResource: FragmentResource!
     private var cancellables: Set<AnyCancellable>!
     
     override func setUpWithError() throws {
         environment = MockEnvironment()
         environment.forceFetchFromStore = false
+        resource = QueryResource(environment: environment)
+        fragmentResource = FragmentResource(environment: environment)
         cancellables = Set<AnyCancellable>()
     }
     
@@ -22,24 +27,26 @@ class QueryLoaderTests: XCTestCase {
         expect(loader.error).to(beNil())
     }
     
-    func testFailsWhenNotPassedAnEnvironment() throws {
-        let loader = QueryLoader<MoviesTabQuery>()
-        expect {
-            _ = loader.loadIfNeeded(environment: nil, variables: .init())
-        }.to(throwAssertion())
-    }
-    
     func testFailsWhenNotPassedVariables() throws {
         let loader = QueryLoader<MoviesTabQuery>()
         expect {
-            _ = loader.loadIfNeeded(environment: self.environment)
+            _ = loader.loadIfNeeded(
+                resource: self.resource,
+                fragmentResource: self.fragmentResource,
+                fetchPolicy: .storeOrNetwork
+            )
         }.to(throwAssertion())
     }
     
     func testLoadsInitialDataFromNetwork() throws {
         let loader = QueryLoader<MoviesTabQuery>()
         let advance = environment.delayMockedResponse(MoviesTabQuery(), allFilmsData)
-        let result = loader.loadIfNeeded(environment: environment, variables: .init(), fetchPolicy: .networkOnly)
+        let result = loader.loadIfNeeded(
+            resource: resource,
+            fragmentResource: fragmentResource,
+            variables: .init(),
+            fetchPolicy: .networkOnly
+        )
         expect(result).to(beNil())
         
         advance()
@@ -58,7 +65,12 @@ class QueryLoaderTests: XCTestCase {
         
         let advance = environment.delayMockedResponse(MoviesTabQuery(), allFilmsData)
         let loader = QueryLoader<MoviesTabQuery>()
-        let result = loader.loadIfNeeded(environment: environment, variables: .init(), fetchPolicy: .networkOnly)
+        let result = loader.loadIfNeeded(
+            resource: resource,
+            fragmentResource: fragmentResource,
+            variables: .init(),
+            fetchPolicy: .networkOnly
+        )
         expect(result).to(beNil())
         
         advance()
@@ -74,7 +86,12 @@ class QueryLoaderTests: XCTestCase {
         
         let advance = environment.delayMockedResponse(MoviesTabQuery(), alteredFilmsData)
         let loader = QueryLoader<MoviesTabQuery>()
-        let result = loader.loadIfNeeded(environment: environment, variables: .init(), fetchPolicy: .storeAndNetwork)
+        let result = loader.loadIfNeeded(
+            resource: resource,
+            fragmentResource: fragmentResource,
+            variables: .init(),
+            fetchPolicy: .storeAndNetwork
+        )
         expect(result).toNot(beNil())
         
         var snapshot = try loader.result!.get()
@@ -98,7 +115,12 @@ class QueryLoaderTests: XCTestCase {
 
         let loader = QueryLoader<MoviesTabQuery>()
         let advance = try environment.delayMockedResponse(MoviesTabQuery(), allFilmsErrorPayload)
-        let result = loader.loadIfNeeded(environment: environment, variables: .init(), fetchPolicy: .storeOnly)
+        let result = loader.loadIfNeeded(
+            resource: resource,
+            fragmentResource: fragmentResource,
+            variables: .init(),
+            fetchPolicy: .storeOnly
+        )
         expect(result).notTo(beNil())
         expect(loader.data).notTo(beNil())
 
@@ -117,7 +139,12 @@ class QueryLoaderTests: XCTestCase {
     func testFetchesWhenNoDataWhenStoreOrNetworkPolicy() throws {
         let advance = environment.delayMockedResponse(MoviesTabQuery(), allFilmsData)
         let loader = QueryLoader<MoviesTabQuery>()
-        let result = loader.loadIfNeeded(environment: environment, variables: .init(), fetchPolicy: .storeOrNetwork)
+        let result = loader.loadIfNeeded(
+            resource: resource,
+            fragmentResource: fragmentResource,
+            variables: .init(),
+            fetchPolicy: .storeOrNetwork
+        )
         expect(result).to(beNil())
 
         advance()
@@ -133,7 +160,12 @@ class QueryLoaderTests: XCTestCase {
 
         let advance = environment.delayMockedResponse(MoviesTabQuery(), alteredFilmsData)
         let loader = QueryLoader<MoviesTabQuery>()
-        let result = loader.loadIfNeeded(environment: environment, variables: .init(), fetchPolicy: .storeOrNetwork)
+        let result = loader.loadIfNeeded(
+            resource: resource,
+            fragmentResource: fragmentResource,
+            variables: .init(),
+            fetchPolicy: .storeOrNetwork
+        )
         expect(result).toNot(beNil())
 
         let snapshot = try loader.result!.get()
@@ -154,7 +186,12 @@ class QueryLoaderTests: XCTestCase {
     func testDoesNotReloadIfNothingChanged() throws {
         let advance = environment.delayMockedResponse(MoviesTabQuery(), allFilmsData)
         let loader = QueryLoader<MoviesTabQuery>()
-        var result = loader.loadIfNeeded(environment: environment, variables: .init(), fetchPolicy: .networkOnly)
+        var result = loader.loadIfNeeded(
+            resource: resource,
+            fragmentResource: fragmentResource,
+            variables: .init(),
+            fetchPolicy: .networkOnly
+        )
         expect(result).to(beNil())
         
         advance()
@@ -162,7 +199,12 @@ class QueryLoaderTests: XCTestCase {
         let snapshot = try loader.result!.get()
         expect(snapshot.isMissingData).to(beFalse())
         
-        result = loader.loadIfNeeded(environment: environment, variables: .init(), fetchPolicy: .networkOnly)
+        result = loader.loadIfNeeded(
+            resource: resource,
+            fragmentResource: fragmentResource,
+            variables: .init(),
+            fetchPolicy: .networkOnly
+        )
         expect(result).toNot(beNil())
         
         var resultWasSet = false
@@ -176,7 +218,13 @@ class QueryLoaderTests: XCTestCase {
         
         let advance = environment.delayMockedResponse(MoviesTabQuery(), allFilmsData)
         let loader = QueryLoader<MoviesTabQuery>()
-        var result = loader.loadIfNeeded(environment: environment, variables: .init(), fetchPolicy: .networkOnly, fetchKey: fetchKey)
+        var result = loader.loadIfNeeded(
+            resource: resource,
+            fragmentResource: fragmentResource,
+            variables: .init(),
+            fetchPolicy: .networkOnly,
+            fetchKey: fetchKey
+        )
         expect(result).to(beNil())
         
         advance()
@@ -184,7 +232,13 @@ class QueryLoaderTests: XCTestCase {
         let snapshot = try loader.result!.get()
         expect(snapshot.isMissingData).to(beFalse())
         
-        result = loader.loadIfNeeded(environment: environment, variables: .init(), fetchPolicy: .networkOnly, fetchKey: fetchKey)
+        result = loader.loadIfNeeded(
+            resource: resource,
+            fragmentResource: fragmentResource,
+            variables: .init(),
+            fetchPolicy: .networkOnly,
+            fetchKey: fetchKey
+        )
         expect(result).toNot(beNil())
         
         var resultWasSet = false
@@ -198,7 +252,13 @@ class QueryLoaderTests: XCTestCase {
         
         let advance = environment.delayMockedResponse(MoviesTabQuery(), allFilmsData)
         let loader = QueryLoader<MoviesTabQuery>()
-        var result = loader.loadIfNeeded(environment: environment, variables: .init(), fetchPolicy: .networkOnly, fetchKey: fetchKey)
+        var result = loader.loadIfNeeded(
+            resource: resource,
+            fragmentResource: fragmentResource,
+            variables: .init(),
+            fetchPolicy: .networkOnly,
+            fetchKey: fetchKey
+        )
         expect(result).to(beNil())
         
         advance()
@@ -210,7 +270,13 @@ class QueryLoaderTests: XCTestCase {
         loader.$result.dropFirst().sink { _ in resultWasSet = true }.store(in: &cancellables)
 
         fetchKey = UUID()
-        result = loader.loadIfNeeded(environment: environment, variables: .init(), fetchPolicy: .networkOnly, fetchKey: fetchKey)
+        result = loader.loadIfNeeded(
+            resource: resource,
+            fragmentResource: fragmentResource,
+            variables: .init(),
+            fetchPolicy: .networkOnly,
+            fetchKey: fetchKey
+        )
         expect(result).to(beNil())
         expect(resultWasSet).toEventually(beTrue())
         expect(loader.result).toEventuallyNot(beNil())
@@ -224,7 +290,12 @@ class QueryLoaderTests: XCTestCase {
     func testUpdatesResultForRelevantStoreChanges() throws {
         try environment.mockResponse(CurrentUserToDoListQuery(), myTodosPayload)
         let loader = QueryLoader<CurrentUserToDoListQuery>()
-        let result = loader.loadIfNeeded(environment: environment, variables: .init(), fetchPolicy: .networkOnly)
+        let result = loader.loadIfNeeded(
+            resource: resource,
+            fragmentResource: fragmentResource,
+            variables: .init(),
+            fetchPolicy: .networkOnly
+        )
         expect(result).to(beNil())
         expect { loader.result }.toEventuallyNot(beNil())
         
@@ -239,7 +310,12 @@ class QueryLoaderTests: XCTestCase {
     func testDoesNotUpdateResultForIrrelevantStoreChanges() throws {
         try environment.mockResponse(CurrentUserToDoListQuery(), myTodosPayload)
         let loader = QueryLoader<CurrentUserToDoListQuery>()
-        let result = loader.loadIfNeeded(environment: environment, variables: .init(), fetchPolicy: .networkOnly)
+        let result = loader.loadIfNeeded(
+            resource: resource,
+            fragmentResource: fragmentResource,
+            variables: .init(),
+            fetchPolicy: .networkOnly
+        )
         expect(result).to(beNil())
         expect { loader.result }.toEventuallyNot(beNil())
 
@@ -258,7 +334,12 @@ class QueryLoaderTests: XCTestCase {
     func testHandlesErrorFromTheServer() throws {
         let loader = QueryLoader<MoviesTabQuery>()
         let advance = try environment.delayMockedResponse(MoviesTabQuery(), allFilmsErrorPayload)
-        let result = loader.loadIfNeeded(environment: environment, variables: .init(), fetchPolicy: .networkOnly)
+        let result = loader.loadIfNeeded(
+            resource: resource,
+            fragmentResource: fragmentResource,
+            variables: .init(),
+            fetchPolicy: .networkOnly
+        )
         expect(result).to(beNil())
 
         advance()
@@ -276,7 +357,12 @@ class QueryLoaderTests: XCTestCase {
 
         let loader = QueryLoader<MoviesTabQuery>()
         let advance = try environment.delayMockedResponse(MoviesTabQuery(), allFilmsErrorPayload)
-        let result = loader.loadIfNeeded(environment: environment, variables: .init(), fetchPolicy: .storeAndNetwork)
+        let result = loader.loadIfNeeded(
+            resource: resource,
+            fragmentResource: fragmentResource,
+            variables: .init(),
+            fetchPolicy: .storeAndNetwork
+        )
         expect(result).notTo(beNil())
         expect(loader.data).notTo(beNil())
 
@@ -300,7 +386,12 @@ class QueryLoaderTests: XCTestCase {
 
         let advance = environment.delayMockedResponse(MoviesTabQuery(), allFilmsData)
         let loader = QueryLoader<MoviesTabQuery>()
-        let result = loader.loadIfNeeded(environment: environment, variables: .init(), fetchPolicy: .storeAndNetwork)
+        let result = loader.loadIfNeeded(
+            resource: resource,
+            fragmentResource: fragmentResource,
+            variables: .init(),
+            fetchPolicy: .storeAndNetwork
+        )
         expect(result).to(beNil())
 
         advance()
@@ -391,19 +482,27 @@ private let myTodosPayload = """
         "edges": [
           {
             "node": {
+              "__typename": "Todo",
               "id": "VG9kbzow",
-              "text": "Taste JavaScript",
-              "complete": true
-            }
+              "complete": true,
+              "text": "Taste JavaScript"
+            },
+            "cursor": "YXJyYXljb25uZWN0aW9uOjA="
           },
           {
             "node": {
+              "__typename": "Todo",
               "id": "VG9kbzox",
-              "text": "Buy a unicorn",
-              "complete": false
-            }
+              "complete": false,
+              "text": "Buy a unicorn"
+            },
+            "cursor": "YXJyYXljb25uZWN0aW9uOjE="
           }
-        ]
+        ],
+        "pageInfo": {
+          "endCursor": "YXJyYXljb25uZWN0aW9uOjE=",
+          "hasNextPage": false
+        }
       }
     }
   }

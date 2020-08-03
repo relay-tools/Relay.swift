@@ -8,11 +8,13 @@ import Relay
 
 class FragmentLoaderTests: XCTestCase {
     private var environment: MockEnvironment!
+    private var resource: FragmentResource!
     private var cancellables: Set<AnyCancellable>!
     
     override func setUpWithError() throws {
         environment = MockEnvironment()
         environment.forceFetchFromStore = false
+        resource = FragmentResource(environment: environment)
         cancellables = Set<AnyCancellable>()
     }
     
@@ -25,7 +27,7 @@ class FragmentLoaderTests: XCTestCase {
         let loader = FragmentLoader<MoviesListRow_film>()
         let selector = try load(allFilmsPayload)
         let key = getMovieKey(selector)
-        loader.load(from: environment, key: key)
+        loader.load(from: resource, key: key)
         expect(loader.data).notTo(beNil())
         assertSnapshot(matching: loader.data, as: .dump)
     }
@@ -34,7 +36,7 @@ class FragmentLoaderTests: XCTestCase {
         let loader = FragmentLoader<MoviesListRow_film>()
         let selector = try load(allFilmsPayload)
         let key = getMovieKey(selector)
-        loader.load(from: environment, key: key)
+        loader.load(from: resource, key: key)
         expect(loader.data).notTo(beNil())
         assertSnapshot(matching: loader.data, as: .dump)
         
@@ -49,7 +51,7 @@ class FragmentLoaderTests: XCTestCase {
         let loader = FragmentLoader<MoviesListRow_film>()
         let selector = try load(allFilmsPayload)
         let key = getMovieKey(selector)
-        loader.load(from: environment, key: key)
+        loader.load(from: resource, key: key)
         expect(loader.data).notTo(beNil())
         assertSnapshot(matching: loader.data, as: .dump)
         
@@ -67,30 +69,30 @@ class FragmentLoaderTests: XCTestCase {
         let loader = FragmentLoader<MoviesListRow_film>()
         let selector = try load(allFilmsPayload)
         let key = getMovieKey(selector)
-        loader.load(from: environment, key: key)
+        loader.load(from: resource, key: key)
         expect(loader.data).notTo(beNil())
         assertSnapshot(matching: loader.data, as: .dump)
         
         // now get the key for empire strikes back instead
         let key2 = getMovieKey(selector, index: 1)
-        loader.load(from: environment, key: key2)
+        loader.load(from: resource, key: key2)
         
         expect { loader.data!.title }.toEventually(equal("The Empire Strikes Back"))
         assertSnapshot(matching: loader.data, as: .dump)
     }
     
-    func testDoesNotReloadWhenLoadingTheSameKey() throws {
+    func testDoesNotReloadWhenLoadingTheSameData() throws {
         let loader = FragmentLoader<MoviesListRow_film>()
         let selector = try load(allFilmsPayload)
         let key = getMovieKey(selector)
-        loader.load(from: environment, key: key)
+        loader.load(from: resource, key: key)
         expect(loader.data).notTo(beNil())
         assertSnapshot(matching: loader.data, as: .dump)
         
         var snapshots: [Snapshot<MoviesListRow_film.Data?>?] = []
         loader.$snapshot.dropFirst().sink { snapshots.append($0) }.store(in: &cancellables)
         
-        loader.load(from: environment, key: key)
+        loader.load(from: resource, key: key)
         
         RunLoop.main.run(until: Date(timeIntervalSinceNow: 0.2))
         expect(snapshots).to(beEmpty())

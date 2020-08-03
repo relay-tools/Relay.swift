@@ -5,6 +5,7 @@ import Relay
 @propertyWrapper
 public struct PaginationFragment<F: Relay.PaginationFragment>: DynamicProperty {
     @SwiftUI.Environment(\.fragmentResource) var fragmentResource
+    @SwiftUI.Environment(\.queryResource) var queryResource
     let keyBox = KeyBox()
     @ObservedObject var loader: PaginationFragmentLoader<F>
 
@@ -23,7 +24,7 @@ public struct PaginationFragment<F: Relay.PaginationFragment>: DynamicProperty {
         }
 
         // load the data if needed
-        loader.load(from: fragmentResource!, key: key)
+        loader.load(from: fragmentResource!, queryResource: queryResource!, key: key)
 
         guard let data = loader.data else {
             return nil
@@ -70,6 +71,7 @@ public struct PaginationFragment<F: Relay.PaginationFragment>: DynamicProperty {
 @propertyWrapper
 public struct PaginationFragmentNext<F: Relay.PaginationFragment>: DynamicProperty {
     @SwiftUI.Environment(\.fragmentResource) var fragmentResource
+    @SwiftUI.Environment(\.queryResource) var queryResource
     @StateObject var loader = PaginationFragmentLoader<F>()
     
     let key: F.Key?
@@ -88,7 +90,7 @@ public struct PaginationFragmentNext<F: Relay.PaginationFragment>: DynamicProper
         }
 
         // load the data if needed
-        loader.load(from: fragmentResource!, key: key)
+        loader.load(from: fragmentResource!, queryResource: queryResource!, key: key)
 
         guard let data = loader.data else {
             return nil

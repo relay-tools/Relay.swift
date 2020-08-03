@@ -98,6 +98,10 @@ public struct SelectorData: Decodable, Equatable {
         preconditionFailure("Expected key \(key) to contain an array of objects, instead it was \(String(describing: data[key]))")
     }
 
+    public func get(fragment: String) -> FragmentPointer? {
+        return fragments[fragment]
+    }
+
     public func get(path: [Any]) -> Any? {
         var current: Value = .object(self)
         var newPath = path

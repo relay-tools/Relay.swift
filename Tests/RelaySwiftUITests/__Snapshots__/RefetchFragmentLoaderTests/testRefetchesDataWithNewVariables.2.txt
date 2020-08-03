@@ -1,11 +1,11 @@
 ▿ Optional<Data>
   ▿ some: Data
     ▿ director: Optional<String>
-      - some: "George Lucas"
+      - some: "Irvin Kershner"
     ▿ episodeID: Optional<Int>
-      - some: 4
-    - id: "ZmlsbXM6MQ=="
+      - some: 5
+    - id: "ZmlsbXM6Mg=="
     ▿ releaseDate: Optional<String>
-      - some: "1977-05-25"
+      - some: "1980-05-17"
     ▿ title: Optional<String>
-      - some: "An Even Newer Hope"
+      - some: "The Empire Strikes Back"

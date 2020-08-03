@@ -7,6 +7,7 @@ import Relay
 @propertyWrapper
 public struct RefetchableFragment<F: Relay.RefetchFragment>: DynamicProperty {
     @SwiftUI.Environment(\.fragmentResource) var fragmentResource
+    @SwiftUI.Environment(\.queryResource) var queryResource
     @StateObject var loader = RefetchFragmentLoader<F>()
 
     let key: F.Key?
@@ -25,7 +26,7 @@ public struct RefetchableFragment<F: Relay.RefetchFragment>: DynamicProperty {
         }
 
         // load the data if needed
-        loader.load(from: fragmentResource!, key: key)
+        loader.load(from: fragmentResource!, queryResource: queryResource!, key: key)
 
         guard let data = loader.data else {
             return nil

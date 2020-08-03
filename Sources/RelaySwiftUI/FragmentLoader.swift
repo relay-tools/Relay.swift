@@ -21,8 +21,15 @@ class FragmentLoader<Fragment: Relay.Fragment>: ObservableObject {
     }
 
     func load(from resource: FragmentResource, key: Fragment.Key) {
+        load(from: resource, selector: Fragment(key: key).selector)
+    }
+
+    func load(from resource: FragmentResource, node: ReaderFragment, ref: FragmentPointer) {
+        load(from: resource, selector: SingularReaderSelector(fragment: node, pointer: ref))
+    }
+
+    private func load(from resource: FragmentResource, selector: SingularReaderSelector) {
         self.fragmentResource = resource
-        let selector = Fragment(key: key).selector
         self.selector = selector
 
         let result: FragmentResource.FragmentResult<Fragment.Data> =
@@ -34,7 +41,10 @@ class FragmentLoader<Fragment: Relay.Fragment>: ObservableObject {
         snapshot = result.snapshot
         subscribeCancellable = resource.subscribe(result)
             .sink { [weak self] snapshot in
-                self?.snapshot = snapshot
+                guard let self = self else { return }
+                if snapshot != self.snapshot {
+                    self.snapshot = snapshot
+                }
             }
     }
 

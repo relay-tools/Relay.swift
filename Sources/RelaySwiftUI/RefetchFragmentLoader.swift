@@ -8,8 +8,13 @@ class RefetchFragmentLoader<Fragment: Relay.RefetchFragment>: ObservableObject, 
     let metadata: Fragment.Metadata
     let fragmentLoader: FragmentLoader<Fragment>
 
-    var fragmentLoaderCancellable: AnyCancellable?
-    var refetchCancellable: AnyCancellable?
+    @Published var snapshot: Snapshot<Fragment.Data?>?
+    @Published var refetchKey = UUID()
+    var isRefetchLoaded = false
+    var refetchOperation: OperationDescriptor?
+
+    private var fragmentLoaderCancellable: AnyCancellable?
+    private var refetchCancellable: AnyCancellable?
 
     init() {
         self.metadata = Fragment.metadata
@@ -24,11 +29,46 @@ class RefetchFragmentLoader<Fragment: Relay.RefetchFragment>: ObservableObject, 
 //        }
     }
 
-    func load(from resource: FragmentResource, key: Fragment.Key) {
-        fragmentLoader.load(from: resource, key: key)
-    }
+    func load(from resource: FragmentResource, queryResource: QueryResource, key: Fragment.Key) {
+        if let refetchOperation = refetchOperation {
+            // this prevents a cycle where we re-establish this pipeline every time the data updates.
+            // instead we only do it explicitly after a new refetch is initiated.
+            if isRefetchLoaded {
+                return
+            }
 
-    @Published var snapshot: Snapshot<Fragment.Data?>?
+            refetchCancellable = queryResource.prepare(
+                operation: refetchOperation,
+                cacheConfig: CacheConfig(force: true),
+                cacheKeyBuster: refetchKey
+            ).sink { [weak self] result in
+                guard let self = self else { return }
+
+                switch result {
+                case nil, .failure:
+                    self.snapshot = nil
+                case .success(let queryResult):
+                    let identifier = queryResult.fragmentNode.identifier(for: queryResult.fragmentRef)
+                    let fragmentResult: FragmentResource.FragmentResult<SelectorData> =
+                        resource.read(node: queryResult.fragmentNode, ref: queryResult.fragmentRef, identifier: identifier)
+
+                    guard let queryData = fragmentResult.data else {
+                        preconditionFailure("Expected to have valid data from refetch query")
+                    }
+
+                    let fragmentNode = Fragment.node
+                    let fragmentObject = queryData.get(path: self.metadata.fragmentPathInResult) as! SelectorData
+                    let fragmentRef = fragmentObject.get(fragment: fragmentNode.name)!
+
+                    self.fragmentLoader.load(from: resource, node: fragmentNode, ref: fragmentRef)
+                }
+            }
+
+            isRefetchLoaded = true
+        } else {
+            fragmentLoader.load(from: resource, key: key)
+        }
+    }
 
     var data: Fragment.Data? {
         fragmentLoader.data
@@ -56,12 +96,9 @@ class RefetchFragmentLoader<Fragment: Relay.RefetchFragment>: ObservableObject, 
             variables.id = .string(identifierValue)
         }
 
-        let refetchQuery = metadata.operation.createDescriptor(variables: variables)
-
-        refetchCancellable = environment.execute(operation: refetchQuery, cacheConfig: CacheConfig())
-            .receive(on: DispatchQueue.main)
-            .map { _ in () }
-            .sink(receiveCompletion: { _ in }, receiveValue: {})
+        refetchOperation = metadata.operation.createDescriptor(variables: variables)
+        isRefetchLoaded = false
+        refetchKey = UUID()
     }
 }
 

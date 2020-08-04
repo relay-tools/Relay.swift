@@ -233,10 +233,19 @@ public class QueryResource {
             }
 
             return AnyCancellable {
-                self.retainCount -= 1
-                if self.retainCount < 1 {
-                    self.retainCancellable = nil
-                    self.onClear(self)
+                // There's a bug in SwiftUI where it will create two copies of a view when you push onto
+                // a navigation view. The first is thrown away very quickly, and this can cause a race
+                // where we release fetched data too quickly and it goes missing.
+                //
+                // We'll get around this by delaying our actual release by a few seconds, which should be
+                // unnoticeable in practice.
+
+                DispatchQueue.main.asyncAfter(deadline: .now() + .seconds(5)) {
+                    self.retainCount -= 1
+                    if self.retainCount < 1 {
+                        self.retainCancellable = nil
+                        self.onClear(self)
+                    }
                 }
             }
         }

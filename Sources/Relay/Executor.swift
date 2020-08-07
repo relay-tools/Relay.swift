@@ -70,7 +70,7 @@ class Executor {
 //         TODO optimistic responses from module imports
 
         _ = process(response: response)
-        let updatedOwners = publishQueue.run(sourceOperation: operation)
+        _ = publishQueue.run(sourceOperation: operation)
         // TODO update operation tracker
 
         return response

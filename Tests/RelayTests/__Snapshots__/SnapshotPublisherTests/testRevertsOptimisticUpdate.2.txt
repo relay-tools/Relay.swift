@@ -1,0 +1,5 @@
+▿ Optional<Data>
+  ▿ some: Data
+    - complete: false
+    - id: "VG9kbzox"
+    - text: "Buy a unicorn"

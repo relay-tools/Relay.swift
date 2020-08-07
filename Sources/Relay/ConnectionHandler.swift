@@ -174,6 +174,11 @@ public class ConnectionHandler: Handler {
         return edge
     }
 
+    public func createEdge(_ store: inout RecordSourceSelectorProxy, connection: RecordProxy, node: RecordProxy, type edgeType: String) -> RecordProxy {
+        var store2 = store as RecordSourceProxy
+        return createEdge(&store2, connection: connection, node: node, type: edgeType)
+    }
+
     public func insert(connection: inout RecordProxy, edge newEdge: RecordProxy, before cursor: String?) {
         guard let edges = connection.getLinkedRecords(config.edges) else {
             connection.setLinkedRecords(config.edges, records: [newEdge])

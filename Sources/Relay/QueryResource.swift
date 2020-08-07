@@ -57,7 +57,7 @@ public class QueryResource {
 
     public func prepare(
         operation: OperationDescriptor,
-        cacheConfig: CacheConfig = .init(),
+        cacheConfig: CacheConfig = .init(force: true),
         fetchPolicy: FetchPolicy = .storeOrNetwork,
         cacheKeyBuster: Any? = nil
     ) -> AnyPublisher<Result<QueryResult, Error>?, Never> {

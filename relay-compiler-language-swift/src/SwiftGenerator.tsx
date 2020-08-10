@@ -85,7 +85,10 @@ function createVisitor(
           name: `${node.name}.Data`,
           fields,
           childTypes: fields
-            .filter(selection => selection.childType != null)
+            .filter(
+              selection =>
+                selection.kind === 'field' && selection.childType != null
+            )
             .map(selection => selection.childType),
           extends: fields
             .filter(selection => selection.protocolName != null)
@@ -132,7 +135,10 @@ function createVisitor(
           originalTypeName: schema.getTypeString(node.type),
           fields,
           childTypes: fields
-            .filter(selection => selection.childType != null)
+            .filter(
+              selection =>
+                selection.kind === 'field' && selection.childType != null
+            )
             .map(selection => selection.childType),
           extends: fields
             .filter(selection => selection.protocolName != null)
@@ -239,7 +245,7 @@ function createVisitor(
             childTypes: fields
               .filter(
                 (selection): selection is FieldNode =>
-                  selection.childType != null
+                  selection.kind === 'field' && selection.childType != null
               )
               .map(selection => selection.childType),
             extends: fields

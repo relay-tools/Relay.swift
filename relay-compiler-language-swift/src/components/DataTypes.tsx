@@ -80,22 +80,31 @@ const ReadableUnionOrInterface = ({
   const otherTypeFields = node.fields.filter(
     (field): field is FieldNode => field.kind === 'field'
   );
-  const otherChildTypes = otherTypeFields
-    .filter(selection => selection.childType != null)
-    .map(selection => selection.childType!);
   const otherExtends = otherTypeFields
     .filter(selection => selection.protocolName != null)
     .map(selection => selection.protocolName!);
 
-  const childTypes: ReadableTypeNode[] = [
-    ...node.childTypes,
+  const inlineFragmentChildTypes = [
+    ...inlineFragmentFields.map(field => field.childType as ReadableTypeNode),
     {
       kind: 'readableStruct',
       name: node.originalTypeName,
       fields: [],
       childTypes: [],
       extends: [],
-    },
+    } as ReadableStructNode,
+  ];
+
+  const childTypes = [
+    ...node.childTypes,
+    ...inlineFragmentChildTypes.map(
+      childType =>
+        ({
+          ...childType,
+          fields: [...otherTypeFields, ...childType.fields],
+          extends: [...otherExtends, ...childType.extends],
+        } as ReadableTypeNode)
+    ),
   ];
 
   return (
@@ -122,23 +131,18 @@ const ReadableUnionOrInterface = ({
           node={node}
           inlineFragmentFields={inlineFragmentFields}
         />
-        {childTypes.map(childType => (
-          <AsChildTypeProperty node={childType} />
+        {inlineFragmentFields.map(field => (
+          <AsChildTypeProperty node={field.childType} />
         ))}
         {otherTypeFields.map(field => (
-          <CommonFieldProperty field={field} childTypes={childTypes} />
+          <CommonFieldProperty
+            node={node}
+            field={field}
+            inlineFragmentFields={inlineFragmentFields}
+          />
         ))}
         {childTypes.map(childType => (
-          <DataType
-            node={
-              {
-                ...childType,
-                fields: [...otherTypeFields, ...childType.fields],
-                childTypes: [...otherChildTypes, ...childType.childTypes],
-                extends: [...otherExtends, ...childType.extends],
-              } as TypeNode
-            }
-          />
+          <DataType node={childType} />
         ))}
       </DeclarationGroup>
     </enum>
@@ -189,20 +193,27 @@ const AsChildTypeProperty = ({ node }: { node: TypeNode }) => {
 };
 
 const CommonFieldProperty = ({
+  node,
   field,
-  childTypes,
+  inlineFragmentFields,
 }: {
+  node: ReadableUnionNode | ReadableInterfaceNode;
   field: FieldNode;
-  childTypes: readonly TypeNode[];
+  inlineFragmentFields: readonly InlineFragmentNode[];
 }) => {
   return (
     <var name={field.fieldName} type={field.typeName}>
       <switch value="self">
-        {childTypes.map(childType => (
-          <case name={`.${enumTypeCaseName(childType.name)}(let val)`}>
+        {inlineFragmentFields.map(fragmentField => (
+          <case
+            name={`.${enumTypeCaseName(fragmentField.childType.name)}(let val)`}
+          >
             {`return val.${field.fieldName}`}
           </case>
         ))}
+        <case name={`.${enumTypeCaseName(node.originalTypeName)}(let val)`}>
+          {`return val.${field.fieldName}`}
+        </case>
       </switch>
     </var>
   );

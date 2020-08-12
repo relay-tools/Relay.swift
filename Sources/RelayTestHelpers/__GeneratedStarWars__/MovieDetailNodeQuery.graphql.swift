@@ -249,13 +249,6 @@ extension MovieDetailNodeQuery {
                 return nil
             }
 
-            public var asNode: Node? {
-                if case .node(let val) = self {
-                    return val
-                }
-                return nil
-            }
-
             public var id: String {
                 switch self {
                 case .film(let val):

@@ -50,7 +50,6 @@ class Executor {
     private func complete(_ completion: Subscribers.Completion<Error>) {
         isComplete = true
 
-        operationTracker.complete(request: operation.request)
         if !optimisticUpdates.isEmpty {
             for update in optimisticUpdates {
                 publishQueue.revert(update)
@@ -58,8 +57,7 @@ class Executor {
             optimisticUpdates.removeAll()
             _ = publishQueue.run()
         }
-
-        // TODO complete in operation tracker
+        operationTracker.complete(request: operation.request)
     }
 
     private func handle(response: GraphQLResponse) throws -> GraphQLResponse? {
@@ -70,8 +68,8 @@ class Executor {
 //         TODO optimistic responses from module imports
 
         _ = process(response: response)
-        _ = publishQueue.run(sourceOperation: operation)
-        // TODO update operation tracker
+        let updatedOwners = publishQueue.run(sourceOperation: operation)
+        operationTracker.update(pendingOperation: operation.request, affectedOwners: Set(updatedOwners))
 
         return response
     }

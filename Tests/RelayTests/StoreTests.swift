@@ -27,7 +27,7 @@ class StoreTests: XCTestCase {
 
     func testSnapshotFailsIfAlreadySnapshotted() throws {
         store.snapshot()
-        expect { self.store.snapshot() }.to(throwAssertion())
+        expect(self.store.snapshot()).to(throwAssertion())
     }
 
     func testRestoreClearsOptimisticSource() throws {
@@ -38,7 +38,7 @@ class StoreTests: XCTestCase {
     }
 
     func testRestoreFailsIfNotSnapshotted() throws {
-        expect { self.store.restore() }.to(throwAssertion())
+        expect(self.store.restore()).to(throwAssertion())
     }
 
     func testLookupSnapshotFromQuery() throws {

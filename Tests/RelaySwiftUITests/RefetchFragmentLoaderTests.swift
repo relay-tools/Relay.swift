@@ -11,7 +11,7 @@ class RefetchFragmentLoaderTests: XCTestCase {
     private var resource: FragmentResource!
     private var queryResource: QueryResource!
     private var cancellables: Set<AnyCancellable>!
-    
+
     override func setUpWithError() throws {
         environment = MockEnvironment()
         environment.forceFetchFromStore = false
@@ -19,12 +19,12 @@ class RefetchFragmentLoaderTests: XCTestCase {
         queryResource = QueryResource(environment: environment)
         cancellables = Set<AnyCancellable>()
     }
-    
+
     func testStartsWithNoData() throws {
         let loader = RefetchFragmentLoader<MovieInfoSection_film>()
         expect(loader.data).to(beNil())
     }
-    
+
     func testLoadsDataFromTheStore() throws {
         let loader = RefetchFragmentLoader<MovieInfoSection_film>()
         let selector = try load(MovieDetail.newHope)
@@ -33,7 +33,7 @@ class RefetchFragmentLoaderTests: XCTestCase {
         expect(loader.data).notTo(beNil())
         assertSnapshot(matching: loader.data, as: .dump)
     }
-    
+
     func testReloadsOnRelevantStoreChanges() throws {
         let loader = RefetchFragmentLoader<MovieInfoSection_film>()
         let selector = try load(MovieDetail.newHope)
@@ -44,15 +44,15 @@ class RefetchFragmentLoaderTests: XCTestCase {
 
         var snapshots: [Snapshot<MovieInfoSection_film.Data?>?] = []
         loader.$snapshot.dropFirst().sink { snapshots.append($0) }.store(in: &cancellables)
-        
+
         // update the store with changes
         try environment.cachePayload(MoviesTabQuery(), MoviesTab.evenNewerHope)
 
-        expect { snapshots }.toEventually(haveCount(1))
+        expect(snapshots).toEventually(haveCount(1))
         expect(loader.data!.title) == "An Even Newer Hope"
         assertSnapshot(matching: loader.data, as: .dump)
     }
-    
+
     func testDoesNotReloadOnIrrelevantStoreChanges() throws {
         let loader = RefetchFragmentLoader<MovieInfoSection_film>()
         let selector = try load(MovieDetail.newHope)
@@ -60,17 +60,17 @@ class RefetchFragmentLoaderTests: XCTestCase {
         loader.load(from: resource, queryResource: queryResource, key: key)
         expect(loader.data).notTo(beNil())
         assertSnapshot(matching: loader.data, as: .dump)
-        
+
         var snapshots: [Snapshot<MovieInfoSection_film.Data?>?] = []
         loader.$snapshot.dropFirst().sink { snapshots.append($0) }.store(in: &cancellables)
-        
+
         // update the store with changes
         try environment.cachePayload(MoviesTabQuery(), MoviesTab.empireStrikesAgain)
-        
+
         RunLoop.main.run(until: Date(timeIntervalSinceNow: 0.2))
         expect(snapshots).to(beEmpty())
     }
-    
+
     func testDoesNotReloadWhenLoadingTheSameKey() throws {
         let loader = RefetchFragmentLoader<MovieInfoSection_film>()
         let selector = try load(MovieDetail.newHope)
@@ -78,12 +78,12 @@ class RefetchFragmentLoaderTests: XCTestCase {
         loader.load(from: resource, queryResource: queryResource, key: key)
         expect(loader.data).notTo(beNil())
         assertSnapshot(matching: loader.data, as: .dump)
-        
+
         var snapshots: [Snapshot<MovieInfoSection_film.Data?>?] = []
         loader.$snapshot.dropFirst().sink { snapshots.append($0) }.store(in: &cancellables)
-        
+
         loader.load(from: resource, queryResource: queryResource, key: key)
-        
+
         RunLoop.main.run(until: Date(timeIntervalSinceNow: 0.2))
         expect(snapshots).to(beEmpty())
     }
@@ -106,7 +106,7 @@ class RefetchFragmentLoaderTests: XCTestCase {
         let advance = try environment.delayMockedResponse(MovieInfoSectionRefetchQuery(id: "ZmlsbXM6MQ=="), MovieInfoSection.refetchEvenNewerHope)
         loader.refetch(nil)
 
-        expect { refetchKeys }.toEventually(haveCount(1))
+        expect(refetchKeys).toEventually(haveCount(1))
         loader.load(from: resource, queryResource: queryResource, key: key)
 
         var snapshots: [Snapshot<MovieInfoSection_film.Data?>?] = []
@@ -118,7 +118,7 @@ class RefetchFragmentLoaderTests: XCTestCase {
         // this has two snapshots because the previous subscription isn't broken until there is data from the new query, but they
         // update the same record. so we get one update with a snapshot from the original owner, and then another from the refetch
         // query. this is fine.
-        expect { snapshots }.toEventually(haveCount(2))
+        expect(snapshots).toEventually(haveCount(2))
         expect(loader.data!.title) == "An Even Newer Hope"
         assertSnapshot(matching: loader.data, as: .dump)
 
@@ -147,7 +147,7 @@ class RefetchFragmentLoaderTests: XCTestCase {
         let advance = try environment.delayMockedResponse(MovieInfoSectionRefetchQuery(id: "ZmlsbXM6Mg=="), MovieInfoSection.refetchEmpire)
         loader.refetch(.init(id: "ZmlsbXM6Mg=="))
 
-        expect { refetchKeys }.toEventually(haveCount(1))
+        expect(refetchKeys).toEventually(haveCount(1))
         loader.load(from: resource, queryResource: queryResource, key: key)
 
         var snapshots: [Snapshot<MovieInfoSection_film.Data?>?] = []
@@ -156,7 +156,7 @@ class RefetchFragmentLoaderTests: XCTestCase {
 
         advance()
 
-        expect { snapshots }.toEventually(haveCount(1))
+        expect(snapshots).toEventually(haveCount(1))
         expect(loader.data!.title) == "The Empire Strikes Back"
         assertSnapshot(matching: loader.data, as: .dump)
 
@@ -181,7 +181,7 @@ class RefetchFragmentLoaderTests: XCTestCase {
         let advance = try environment.delayMockedResponse(MovieInfoSectionRefetchQuery(id: "ZmlsbXM6Mg=="), MovieInfoSection.refetchEmpire)
         loader.refetch(.init(id: "ZmlsbXM6Mg=="))
 
-        expect { refetchKeys }.toEventually(haveCount(1))
+        expect(refetchKeys).toEventually(haveCount(1))
         loader.load(from: resource, queryResource: queryResource, key: key)
 
         var snapshots: [Snapshot<MovieInfoSection_film.Data?>?] = []
@@ -190,7 +190,7 @@ class RefetchFragmentLoaderTests: XCTestCase {
 
         advance()
 
-        expect { snapshots }.toEventually(haveCount(1))
+        expect(snapshots).toEventually(haveCount(1))
         expect(loader.data!.title) == "The Empire Strikes Back"
 
         // force a GC by retaining and releasing an unrelated query
@@ -200,7 +200,7 @@ class RefetchFragmentLoaderTests: XCTestCase {
 
         assertSnapshot(matching: environment.store.source, as: .recordSource)
     }
-    
+
     private func load(_ payload: String) throws -> SingularReaderSelector {
         let op = MovieDetailQuery(id: "ZmlsbXM6MQ==")
         try environment.cachePayload(op, payload)
@@ -211,7 +211,7 @@ class RefetchFragmentLoaderTests: XCTestCase {
 
         return operation.fragment
     }
-    
+
     private func getMovieKey(_ querySelector: SingularReaderSelector, index: Int = 0) -> MovieInfoSection_film.Key {
         let snapshot: Snapshot<MovieDetailQuery.Data?> = environment.lookup(selector: querySelector)
         return snapshot.data!.film!

@@ -1,52 +1,46 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`basic fragment 1`] = `
-"#if swift(>=5.3) && canImport(RelaySwiftUI)
+"#if canImport(RelaySwiftUI)
 import RelaySwiftUI
 
 extension TweetDetail_tweet_Key {
-    @available(iOS 14.0, macOS 10.16, tvOS 14.0, watchOS 7.0, *)
-    func asFragment() -> RelaySwiftUI.FragmentNext<TweetDetail_tweet> {
-        RelaySwiftUI.FragmentNext<TweetDetail_tweet>(self)
+    func asFragment() -> RelaySwiftUI.Fragment<TweetDetail_tweet> {
+        RelaySwiftUI.Fragment<TweetDetail_tweet>(self)
     }
 }
 #endif"
 `;
 
 exports[`pagination fragment 1`] = `
-"#if swift(>=5.3) && canImport(RelaySwiftUI)
+"#if canImport(RelaySwiftUI)
 import RelaySwiftUI
 
 extension TweetList_tweets_Key {
-    @available(iOS 14.0, macOS 10.16, tvOS 14.0, watchOS 7.0, *)
-    func asFragment() -> RelaySwiftUI.FragmentNext<TweetList_tweets> {
-        RelaySwiftUI.FragmentNext<TweetList_tweets>(self)
+    func asFragment() -> RelaySwiftUI.Fragment<TweetList_tweets> {
+        RelaySwiftUI.Fragment<TweetList_tweets>(self)
     }
 
-    @available(iOS 14.0, macOS 10.16, tvOS 14.0, watchOS 7.0, *)
     func asFragment() -> RelaySwiftUI.RefetchableFragment<TweetList_tweets> {
         RelaySwiftUI.RefetchableFragment<TweetList_tweets>(self)
     }
 
-    @available(iOS 14.0, macOS 10.16, tvOS 14.0, watchOS 7.0, *)
-    func asFragment() -> RelaySwiftUI.PaginationFragmentNext<TweetList_tweets> {
-        RelaySwiftUI.PaginationFragmentNext<TweetList_tweets>(self)
+    func asFragment() -> RelaySwiftUI.PaginationFragment<TweetList_tweets> {
+        RelaySwiftUI.PaginationFragment<TweetList_tweets>(self)
     }
 }
 #endif"
 `;
 
 exports[`refetchable fragment 1`] = `
-"#if swift(>=5.3) && canImport(RelaySwiftUI)
+"#if canImport(RelaySwiftUI)
 import RelaySwiftUI
 
 extension TweetDetail_tweet_Key {
-    @available(iOS 14.0, macOS 10.16, tvOS 14.0, watchOS 7.0, *)
-    func asFragment() -> RelaySwiftUI.FragmentNext<TweetDetail_tweet> {
-        RelaySwiftUI.FragmentNext<TweetDetail_tweet>(self)
+    func asFragment() -> RelaySwiftUI.Fragment<TweetDetail_tweet> {
+        RelaySwiftUI.Fragment<TweetDetail_tweet>(self)
     }
 
-    @available(iOS 14.0, macOS 10.16, tvOS 14.0, watchOS 7.0, *)
     func asFragment() -> RelaySwiftUI.RefetchableFragment<TweetDetail_tweet> {
         RelaySwiftUI.RefetchableFragment<TweetDetail_tweet>(self)
     }

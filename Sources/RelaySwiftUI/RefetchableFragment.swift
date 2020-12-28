@@ -2,8 +2,6 @@ import Combine
 import SwiftUI
 import Relay
 
-#if swift(>=5.3)
-@available(iOS 14.0, macOS 10.16, tvOS 14.0, watchOS 7.0, *)
 @propertyWrapper
 public struct RefetchableFragment<F: Relay.RefetchFragment>: DynamicProperty {
     @SwiftUI.Environment(\.fragmentResource) var fragmentResource
@@ -49,4 +47,3 @@ public struct RefetchableFragment<F: Relay.RefetchFragment>: DynamicProperty {
         }
     }
 }
-#endif

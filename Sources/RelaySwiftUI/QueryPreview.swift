@@ -4,23 +4,25 @@ import Relay
 public struct QueryPreview<Operation: Relay.Operation, Content: View>: View {
     @Query(Operation.self, fetchPolicy: .storeAndNetwork) var query
 
+    let variables: Operation.Variables
     let content: (Operation.Data) -> Content
 
     public init(_ operation: Operation, _ content: @escaping (Operation.Data) -> Content) {
+        self.variables = operation.variables
         self.content = content
-        $query = operation.variables
     }
 
     public var body: some View {
-        Group {
-            if query.isLoading {
-                Text("Loading query data (did you cache a response for this query?)")
-            } else if query.error != nil {
-                Text("Error in query: \(query.error!.localizedDescription)")
-            } else if query.data == nil {
-                Text("Query is done loading, but has no data.")
+        switch query.get(variables) {
+        case .loading:
+            Text("Loading query data (did you cache a response for this query?)")
+        case .failure(let error):
+            Text("Error in query: \(error.localizedDescription)")
+        case .success(let data):
+            if let data = data {
+                content(data)
             } else {
-                content(query.data!)
+                Text("Query is done loading, but has no data.")
             }
         }
     }

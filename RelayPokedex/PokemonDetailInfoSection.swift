@@ -22,32 +22,32 @@ struct PokemonDetailInfoSection: View {
 
     var body: some View {
         Group {
-            if pokemon != nil {
+            if let pokemon = pokemon {
                 Section(header: Text("Details")) {
                     HStack {
                         Text("Name")
                         Spacer()
-                        Text(pokemon!.name ?? "(unknown)")
+                        Text(pokemon.name ?? "(unknown)")
                     }
                     HStack {
                         Text("Number")
                         Spacer()
-                        Text(pokemon!.number ?? "(unknown)")
+                        Text(pokemon.number ?? "(unknown)")
                     }
                     HStack {
                         Text("Classification")
                         Spacer()
-                        Text(pokemon!.classification ?? "(unknown)")
+                        Text(pokemon.classification ?? "(unknown)")
                     }
                     HStack {
                         Text("Height")
                         Spacer()
-                        Text("\(pokemon!.height?.minimum ?? "(unknown)") - \(pokemon!.height?.maximum ?? "(unknown)")")
+                        Text("\(pokemon.height?.minimum ?? "(unknown)") - \(pokemon.height?.maximum ?? "(unknown)")")
                     }
                     HStack {
                         Text("Weight")
                         Spacer()
-                        Text("\(pokemon!.weight?.minimum ?? "(unknown)") - \(pokemon!.weight?.maximum ?? "(unknown)")")
+                        Text("\(pokemon.weight?.minimum ?? "(unknown)") - \(pokemon.weight?.maximum ?? "(unknown)")")
                     }
                 }
             }

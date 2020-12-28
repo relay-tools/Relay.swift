@@ -4,7 +4,7 @@ import Relay
 
 private let url = URL(string: "https://graphql-pokemon.now.sh/")!
 
-let store = Store(source: DefaultRecordSource())
+let store = Store()
 
 let environment = Environment(
     network: MyNetwork(),

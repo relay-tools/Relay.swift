@@ -14,34 +14,34 @@ struct PokemonDetailTypesSection: View {
 
     var body: some View {
         Group {
-            if pokemon != nil {
+            if let pokemon = pokemon {
                 Section(header: Text("Types")) {
                     HStack {
                         Text("Types")
                         Spacer()
-                        if pokemon!.types == nil {
-                            Text("(unknown)")
+                        if let types = pokemon.types {
+                            Text(types.map { $0 ?? "(unknown)" }.joined(separator: ", "))
                         } else {
-                            Text(pokemon!.types!.map { $0 ?? "(unknown)" }.joined(separator: ", "))
+                            Text("(unknown)")
                         }
                     }
                     HStack {
                         Text("Resistant To")
                         Spacer()
-                        if pokemon!.resistant == nil {
-                            Text("(unknown)")
-                        } else {
-                            Text(pokemon!.resistant!.map { $0 ?? "(unknown)" }.joined(separator: ", "))
+                        if let resistant = pokemon.resistant {
+                            Text(resistant.map { $0 ?? "(unknown)" }.joined(separator: ", "))
                                 .multilineTextAlignment(.trailing)
+                        } else {
+                            Text("(unknown)")
                         }
                     }
                     HStack {
                         Text("Weak To")
                         Spacer()
-                        if pokemon!.weaknesses == nil {
-                            Text("(unknown)")
+                        if let weaknesses = pokemon.weaknesses {
+                            Text(weaknesses.map { $0 ?? "(unknown)" }.joined(separator: ", "))
                         } else {
-                            Text(pokemon!.weaknesses!.map { $0 ?? "(unknown)" }.joined(separator: ", "))
+                            Text("(unknown)")
                         }
                     }
                 }

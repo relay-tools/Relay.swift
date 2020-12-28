@@ -13,11 +13,11 @@ struct PokemonListRow: View {
 
     var body: some View {
         HStack {
-            if pokemon != nil {
-                Text(pokemon!.name ?? "(unknown)")
+            if let pokemon = pokemon {
+                Text(pokemon.name ?? "(unknown)")
                     .font(.body)
                 Spacer()
-                Text(pokemon!.number ?? "")
+                Text(pokemon.number ?? "")
                     .font(.body)
                     .foregroundColor(.secondary)
             }

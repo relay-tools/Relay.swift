@@ -12,7 +12,7 @@ jobs:
     name: Publish new version
     runs-on: macos-latest
     env:
-      DEVELOPER_DIR: /Applications/Xcode_11.4.app/Contents/Developer
+      DEVELOPER_DIR: /Applications/Xcode_12.2.app/Contents/Developer
     steps:
     - uses: actions/checkout@v2
       with:

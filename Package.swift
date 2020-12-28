@@ -30,16 +30,19 @@ let package = Package(
             dependencies: []),
         .testTarget(
             name: "RelayTests",
-            dependencies: ["Relay", "RelayTestHelpers", "SnapshotTesting", "Nimble"]),
+            dependencies: ["Relay", "RelayTestHelpers", "SnapshotTesting", "Nimble"],
+            exclude: ["__Snapshots__"]),
         .target(
             name: "RelaySwiftUI",
             dependencies: ["Relay"]),
         .testTarget(
             name: "RelaySwiftUITests",
-            dependencies: ["RelaySwiftUI", "RelayTestHelpers", "SnapshotTesting", "Nimble"]),
+            dependencies: ["RelaySwiftUI", "RelayTestHelpers", "SnapshotTesting", "Nimble"],
+            exclude: ["__Snapshots__"]),
         .target(
             name: "RelayTestHelpers",
-            dependencies: ["Relay", "RelaySwiftUI", "SnapshotTesting"]),
+            dependencies: ["Relay", "RelaySwiftUI", "SnapshotTesting"],
+            exclude: ["StarWars/schema.graphql", "ToDo/schema.graphql"]),
         .target(
             name: "find-graphql-tags",
             dependencies: ["SwiftSyntax"]),

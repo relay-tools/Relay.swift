@@ -25,7 +25,7 @@ struct PokemonList: View {
                     ErrorView(error: error)
                 case .success(let data):
                     if let pokemons = (data?.pokemons ?? []).compactMap { $0 } {
-                        List(pokemons, id: \.id) { pokemon in
+                        List(pokemons) { pokemon in
                             NavigationLink(destination: PokemonDetail(id: pokemon.id, name: pokemon.name ?? "")) {
                                 PokemonListRow(pokemon: pokemon.asFragment())
                             }

@@ -17,32 +17,30 @@ struct ToDoItem: View {
     @State private var error: Error?
 
     var body: some View {
-        Group {
-            if todo != nil {
-                HStack {
-                    Button(action: {
-                        changeStatus.commit(
-                            id: self.todo!.id,
-                            complete: !self.todo!.complete,
-                            onError: { self.error = $0 }
-                        )
-                    }) {
-                        Image(systemName: todo!.complete ? "checkmark.square" : "square")
-                    }
-                        .buttonStyle(BorderlessButtonStyle())
-                        .disabled(changeStatus.isInFlight)
-                        .alert(isPresented: .constant(error != nil)) {
-                            Alert(
-                                title: Text("Could Not Toggle Todo"),
-                                message: Text(error?.localizedDescription ?? ""),
-                                dismissButton: .cancel(Text("Dismiss")) {
-                                    self.error = nil
-                                }
-                            )
-                        }
-
-                    Text(verbatim: todo!.text)
+        if let todo = todo {
+            HStack {
+                Button(action: {
+                    changeStatus.commit(
+                        id: todo.id,
+                        complete: !todo.complete,
+                        onError: { error = $0 }
+                    )
+                }) {
+                    Image(systemName: todo.complete ? "checkmark.square" : "square")
                 }
+                .buttonStyle(BorderlessButtonStyle())
+                .disabled(changeStatus.isInFlight)
+                .alert(isPresented: .constant(error != nil)) {
+                    Alert(
+                        title: Text("Could Not Toggle Todo"),
+                        message: Text(error?.localizedDescription ?? ""),
+                        dismissButton: .cancel(Text("Dismiss")) {
+                            error = nil
+                        }
+                    )
+                }
+
+                Text(verbatim: todo.text)
             }
         }
     }
@@ -68,7 +66,7 @@ struct ToDoItem_Previews: PreviewProvider {
 
     static var previews: some View {
         QueryPreview(op) { data in
-            List(data.user!.todos!.edges!.map { $0!.node! }, id: \.id) { todoItem in
+            List(data.user!.todos!.edges!.map { $0!.node! }) { todoItem in
                 ToDoItem(todo: todoItem.asFragment())
             }
         }

@@ -25,12 +25,8 @@ struct ToDoList: View {
     }
 
     var body: some View {
-        Group {
-            if user != nil {
-                List(itemNodes, id: \.id) { todo in
-                    ToDoItem(todo: todo.asFragment())
-                }
-            }
+        List(itemNodes) { todo in
+            ToDoItem(todo: todo.asFragment())
         }
     }
 }

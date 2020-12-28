@@ -80,13 +80,12 @@ public protocol PokemonDetailInfoSection_pokemon_Key {
 
 extension PokemonDetailInfoSection_pokemon: Relay.Fragment {}
 
-#if swift(>=5.3) && canImport(RelaySwiftUI)
+#if canImport(RelaySwiftUI)
 import RelaySwiftUI
 
 extension PokemonDetailInfoSection_pokemon_Key {
-    @available(iOS 14.0, macOS 10.16, tvOS 14.0, watchOS 7.0, *)
-    public func asFragment() -> RelaySwiftUI.FragmentNext<PokemonDetailInfoSection_pokemon> {
-        RelaySwiftUI.FragmentNext<PokemonDetailInfoSection_pokemon>(self)
+    public func asFragment() -> RelaySwiftUI.Fragment<PokemonDetailInfoSection_pokemon> {
+        RelaySwiftUI.Fragment<PokemonDetailInfoSection_pokemon>(self)
     }
 }
 #endif

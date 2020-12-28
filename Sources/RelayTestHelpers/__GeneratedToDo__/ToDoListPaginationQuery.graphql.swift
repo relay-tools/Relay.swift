@@ -192,21 +192,19 @@ extension ToDoListPaginationQuery {
     }
 }
 
-#if swift(>=5.3) && canImport(RelaySwiftUI)
+#if canImport(RelaySwiftUI)
 import RelaySwiftUI
 
-@available(iOS 14.0, macOS 10.16, tvOS 14.0, watchOS 7.0, *)
-extension RelaySwiftUI.QueryNext.WrappedValue where O == ToDoListPaginationQuery {
-    public func get(count: Int? = nil, cursor: String? = nil, id: String, fetchKey: Any? = nil) -> RelaySwiftUI.QueryNext<ToDoListPaginationQuery>.Result {
+extension RelaySwiftUI.Query.WrappedValue where O == ToDoListPaginationQuery {
+    public func get(count: Int? = nil, cursor: String? = nil, id: String, fetchKey: Any? = nil) -> RelaySwiftUI.Query<ToDoListPaginationQuery>.Result {
         self.get(.init(count: count, cursor: cursor, id: id), fetchKey: fetchKey)
     }
 }
 #endif
 
-#if swift(>=5.3) && canImport(RelaySwiftUI)
+#if canImport(RelaySwiftUI)
 import RelaySwiftUI
 
-@available(iOS 14.0, macOS 10.16, tvOS 14.0, watchOS 7.0, *)
 extension RelaySwiftUI.RefetchableFragment.Wrapper where F.Operation == ToDoListPaginationQuery {
     public func refetch(count: Int? = nil, cursor: String? = nil, id: String) {
         self.refetch(.init(count: count, cursor: cursor, id: id))

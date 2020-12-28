@@ -108,21 +108,19 @@ extension ChangeTodoStatusMutation {
     }
 }
 
-#if swift(>=5.3) && canImport(RelaySwiftUI)
+#if canImport(RelaySwiftUI)
 import RelaySwiftUI
 
-@available(iOS 14.0, macOS 10.16, tvOS 14.0, watchOS 7.0, *)
-extension RelaySwiftUI.QueryNext.WrappedValue where O == ChangeTodoStatusMutation {
-    public func get(input: ChangeTodoStatusInput, fetchKey: Any? = nil) -> RelaySwiftUI.QueryNext<ChangeTodoStatusMutation>.Result {
+extension RelaySwiftUI.Query.WrappedValue where O == ChangeTodoStatusMutation {
+    public func get(input: ChangeTodoStatusInput, fetchKey: Any? = nil) -> RelaySwiftUI.Query<ChangeTodoStatusMutation>.Result {
         self.get(.init(input: input), fetchKey: fetchKey)
     }
 }
 #endif
 
-#if swift(>=5.3) && canImport(RelaySwiftUI)
+#if canImport(RelaySwiftUI)
 import RelaySwiftUI
 
-@available(iOS 14.0, macOS 10.16, tvOS 14.0, watchOS 7.0, *)
 extension RelaySwiftUI.RefetchableFragment.Wrapper where F.Operation == ChangeTodoStatusMutation {
     public func refetch(input: ChangeTodoStatusInput) {
         self.refetch(.init(input: input))

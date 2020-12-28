@@ -3,7 +3,6 @@
 import { swiftJSX, DeclarationGroup } from '../swiftJSX';
 import { ReaderFragment } from 'relay-runtime';
 import { SwiftUICheck } from './SwiftUICheck';
-import { AvailableOnNewPlatforms } from './AvailableOnNewPlatforms';
 
 export const SwiftUIFragmentExtension = ({
   node,
@@ -16,7 +15,7 @@ export const SwiftUIFragmentExtension = ({
         <import module="RelaySwiftUI" />
         <extension name={`${node.name}_Key`}>
           <DeclarationGroup>
-            <AsFragmentFunction fragmentName={node.name} type="FragmentNext" />
+            <AsFragmentFunction fragmentName={node.name} type="Fragment" />
             {node.metadata?.refetch ? (
               <DeclarationGroup>
                 <AsFragmentFunction
@@ -26,7 +25,7 @@ export const SwiftUIFragmentExtension = ({
                 {node.metadata.refetch.connection ? (
                   <AsFragmentFunction
                     fragmentName={node.name}
-                    type="PaginationFragmentNext"
+                    type="PaginationFragment"
                   />
                 ) : null}
               </DeclarationGroup>
@@ -46,13 +45,11 @@ const AsFragmentFunction = ({
   type: string;
 }) => {
   return (
-    <AvailableOnNewPlatforms>
-      <function
-        name="asFragment"
-        returns={`RelaySwiftUI.${type}<${fragmentName}>`}
-      >
-        {`RelaySwiftUI.${type}<${fragmentName}>(self)`}
-      </function>
-    </AvailableOnNewPlatforms>
+    <function
+      name="asFragment"
+      returns={`RelaySwiftUI.${type}<${fragmentName}>`}
+    >
+      {`RelaySwiftUI.${type}<${fragmentName}>(self)`}
+    </function>
   );
 };

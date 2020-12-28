@@ -10,22 +10,18 @@ fragment ToDoItem_todo on Todo {
 """)
 
 struct ToDoItem: View {
-    @Fragment(ToDoItem_todo.self) var todo
+    @Fragment<ToDoItem_todo> var todo
 
-    @Mutation(ChangeTodoStatusMutation.self) var changeStatus
+    @Mutation<ChangeTodoStatusMutation> var changeStatus
 
     @State private var error: Error?
-
-    init(todo: ToDoItem_todo_Key) {
-        $todo = todo
-    }
 
     var body: some View {
         Group {
             if todo != nil {
                 HStack {
                     Button(action: {
-                        self.changeStatus.commit(
+                        changeStatus.commit(
                             id: self.todo!.id,
                             complete: !self.todo!.complete,
                             onError: { self.error = $0 }
@@ -73,7 +69,7 @@ struct ToDoItem_Previews: PreviewProvider {
     static var previews: some View {
         QueryPreview(op) { data in
             List(data.user!.todos!.edges!.map { $0!.node! }, id: \.id) { todoItem in
-                ToDoItem(todo: todoItem)
+                ToDoItem(todo: todoItem.asFragment())
             }
         }
         .previewPayload(op, resource: "ToDoItemPreview")

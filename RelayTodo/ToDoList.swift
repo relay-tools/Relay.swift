@@ -15,11 +15,7 @@ fragment ToDoList_user on User {
 """)
 
 struct ToDoList: View {
-    @Fragment(ToDoList_user.self) var user
-
-    init(user: ToDoList_user_Key) {
-        $user = user
-    }
+    @Fragment<ToDoList_user> var user
 
     // Nesting data causes nested types.
     // The names are based on the schema type name and the field name, to avoid
@@ -32,7 +28,7 @@ struct ToDoList: View {
         Group {
             if user != nil {
                 List(itemNodes, id: \.id) { todo in
-                    ToDoItem(todo: todo)
+                    ToDoItem(todo: todo.asFragment())
                 }
             }
         }

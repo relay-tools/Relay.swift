@@ -13,7 +13,7 @@ fragment MoviesListRow_film on Film {
 """)
 
 struct MoviesListRow: View {
-    @FragmentNext<MoviesListRow_film> var film
+    @Fragment<MoviesListRow_film> var film
 
     @ViewBuilder var body: some View {
         if let film = film {

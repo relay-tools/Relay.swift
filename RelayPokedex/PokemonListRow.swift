@@ -9,11 +9,7 @@ fragment PokemonListRow_pokemon on Pokemon {
 """)
 
 struct PokemonListRow: View {
-    @Fragment(PokemonListRow_pokemon.self) var pokemon
-
-    init(pokemon: PokemonListRow_pokemon_Key) {
-        $pokemon = pokemon
-    }
+    @Fragment<PokemonListRow_pokemon> var pokemon
 
     var body: some View {
         HStack {

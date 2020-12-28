@@ -10,11 +10,7 @@ fragment PokemonDetailTypesSection_pokemon on Pokemon {
 """)
 
 struct PokemonDetailTypesSection: View {
-    @Fragment(PokemonDetailTypesSection_pokemon.self) var pokemon
-
-    init(pokemon: PokemonDetailTypesSection_pokemon_Key) {
-        $pokemon = pokemon
-    }
+    @Fragment<PokemonDetailTypesSection_pokemon> var pokemon
 
     var body: some View {
         Group {

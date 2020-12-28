@@ -18,11 +18,7 @@ fragment PokemonDetailInfoSection_pokemon on Pokemon {
 """)
 
 struct PokemonDetailInfoSection: View {
-    @Fragment(PokemonDetailInfoSection_pokemon.self) var pokemon
-
-    init(pokemon: PokemonDetailInfoSection_pokemon_Key) {
-        $pokemon = pokemon
-    }
+    @Fragment<PokemonDetailInfoSection_pokemon> var pokemon
 
     var body: some View {
         Group {

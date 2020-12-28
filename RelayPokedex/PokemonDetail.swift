@@ -12,25 +12,24 @@ query PokemonDetailQuery($id: String) {
 """)
 
 struct PokemonDetail: View {
-    @Query(PokemonDetailQuery.self) var query
+    @Query<PokemonDetailQuery> var query
+    let id: String
     let name: String
-
-    init(id: String, name: String) {
-        self.name = name
-        $query = .init(id: id)
-    }
 
     var body: some View {
         Group {
-            if query.isLoading {
+            switch query.get(id: id) {
+            case .loading:
                 Text("Loading…")
-            } else if query.error != nil {
-                ErrorView(error: query.error!)
-            } else if query.data?.pokemon != nil {
-                List {
-                    PokemonDetailInfoSection(pokemon: query.data!.pokemon!)
-                    PokemonDetailTypesSection(pokemon: query.data!.pokemon!)
-                }.listStyle(GroupedListStyle())
+            case .failure(let error):
+                ErrorView(error: error)
+            case .success(let data):
+                if let pokemon = data?.pokemon {
+                    List {
+                        PokemonDetailInfoSection(pokemon: pokemon.asFragment())
+                        PokemonDetailTypesSection(pokemon: pokemon.asFragment())
+                    }.listStyle(GroupedListStyle())
+                }
             }
         }.navigationBarTitle(name)
     }

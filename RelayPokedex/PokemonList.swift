@@ -13,28 +13,27 @@ query PokemonListQuery {
 """)
 
 struct PokemonList: View {
-    @Query(PokemonListQuery.self) var query
+    @Query<PokemonListQuery> var query
 
     var body: some View {
         NavigationView {
             Group {
-                if query.isLoading {
+                switch query.get() {
+                case .loading:
                     Text("Loading…")
-                } else if query.error != nil {
-                    ErrorView(error: query.error!)
-                } else {
-                    List(pokemons, id: \.id) { pokemon in
-                        NavigationLink(destination: PokemonDetail(id: pokemon.id, name: pokemon.name ?? "")) {
-                            PokemonListRow(pokemon: pokemon)
+                case .failure(let error):
+                    ErrorView(error: error)
+                case .success(let data):
+                    if let pokemons = (data?.pokemons ?? []).compactMap { $0 } {
+                        List(pokemons, id: \.id) { pokemon in
+                            NavigationLink(destination: PokemonDetail(id: pokemon.id, name: pokemon.name ?? "")) {
+                                PokemonListRow(pokemon: pokemon.asFragment())
+                            }
                         }
                     }
                 }
             }.navigationBarTitle("Pokédex")
         }
-    }
-
-    private var pokemons: [PokemonListQuery.Data.Pokemon_pokemons] {
-        (query.data?.pokemons ?? []).compactMap { $0 }
     }
 }
 

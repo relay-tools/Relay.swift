@@ -61,16 +61,14 @@ extension MovieInfoSection_film: Relay.RefetchFragment {
     }
 }
 
-#if swift(>=5.3) && canImport(RelaySwiftUI)
+#if canImport(RelaySwiftUI)
 import RelaySwiftUI
 
 extension MovieInfoSection_film_Key {
-    @available(iOS 14.0, macOS 10.16, tvOS 14.0, watchOS 7.0, *)
-    public func asFragment() -> RelaySwiftUI.FragmentNext<MovieInfoSection_film> {
-        RelaySwiftUI.FragmentNext<MovieInfoSection_film>(self)
+    public func asFragment() -> RelaySwiftUI.Fragment<MovieInfoSection_film> {
+        RelaySwiftUI.Fragment<MovieInfoSection_film>(self)
     }
 
-    @available(iOS 14.0, macOS 10.16, tvOS 14.0, watchOS 7.0, *)
     public func asFragment() -> RelaySwiftUI.RefetchableFragment<MovieInfoSection_film> {
         RelaySwiftUI.RefetchableFragment<MovieInfoSection_film>(self)
     }

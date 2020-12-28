@@ -105,23 +105,20 @@ extension MoviesList_films: Relay.PaginationFragment {
     }
 }
 
-#if swift(>=5.3) && canImport(RelaySwiftUI)
+#if canImport(RelaySwiftUI)
 import RelaySwiftUI
 
 extension MoviesList_films_Key {
-    @available(iOS 14.0, macOS 10.16, tvOS 14.0, watchOS 7.0, *)
-    public func asFragment() -> RelaySwiftUI.FragmentNext<MoviesList_films> {
-        RelaySwiftUI.FragmentNext<MoviesList_films>(self)
+    public func asFragment() -> RelaySwiftUI.Fragment<MoviesList_films> {
+        RelaySwiftUI.Fragment<MoviesList_films>(self)
     }
 
-    @available(iOS 14.0, macOS 10.16, tvOS 14.0, watchOS 7.0, *)
     public func asFragment() -> RelaySwiftUI.RefetchableFragment<MoviesList_films> {
         RelaySwiftUI.RefetchableFragment<MoviesList_films>(self)
     }
 
-    @available(iOS 14.0, macOS 10.16, tvOS 14.0, watchOS 7.0, *)
-    public func asFragment() -> RelaySwiftUI.PaginationFragmentNext<MoviesList_films> {
-        RelaySwiftUI.PaginationFragmentNext<MoviesList_films>(self)
+    public func asFragment() -> RelaySwiftUI.PaginationFragment<MoviesList_films> {
+        RelaySwiftUI.PaginationFragment<MoviesList_films>(self)
     }
 }
 #endif

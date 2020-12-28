@@ -3,7 +3,6 @@
 import { swiftJSX, DeclarationGroup } from '../swiftJSX';
 import { InputStructNode } from '../SwiftGeneratorDataTypes';
 import { SwiftUICheck } from './SwiftUICheck';
-import { AvailableOnNewPlatforms } from './AvailableOnNewPlatforms';
 import { MemberwiseInitializer } from './MemberwiseInitializer';
 
 export const InputType = ({ node }: { node: InputStructNode }) => {
@@ -61,46 +60,44 @@ const QueryGetConvenienceExtension = ({ node }: { node: InputStructNode }) => {
     <SwiftUICheck>
       <DeclarationGroup>
         <import module="RelaySwiftUI" />
-        <AvailableOnNewPlatforms>
-          <extension
-            name="RelaySwiftUI.QueryNext.WrappedValue"
-            where={[`O == ${parentType}`]}
+        <extension
+          name="RelaySwiftUI.Query.WrappedValue"
+          where={[`O == ${parentType}`]}
+        >
+          <function
+            name="get"
+            parameters={[
+              ...node.fields.map(field => (
+                <paramdecl
+                  name={field.fieldName}
+                  type={field.typeName}
+                  defaultValue={
+                    field.typeName.endsWith('?') ? 'nil' : undefined
+                  }
+                />
+              )),
+              <paramdecl name="fetchKey" type="Any?" defaultValue="nil" />,
+            ]}
+            returns={`RelaySwiftUI.Query<${parentType}>.Result`}
           >
-            <function
+            <call
+              receiver="self"
               name="get"
               parameters={[
-                ...node.fields.map(field => (
-                  <paramdecl
-                    name={field.fieldName}
-                    type={field.typeName}
-                    defaultValue={
-                      field.typeName.endsWith('?') ? 'nil' : undefined
-                    }
+                <param>
+                  <call
+                    receiver=""
+                    name="init"
+                    parameters={node.fields.map(field => (
+                      <param label={field.fieldName}>{field.fieldName}</param>
+                    ))}
                   />
-                )),
-                <paramdecl name="fetchKey" type="Any?" defaultValue="nil" />,
+                </param>,
+                <param label="fetchKey">fetchKey</param>,
               ]}
-              returns={`RelaySwiftUI.QueryNext<${parentType}>.Result`}
-            >
-              <call
-                receiver="self"
-                name="get"
-                parameters={[
-                  <param>
-                    <call
-                      receiver=""
-                      name="init"
-                      parameters={node.fields.map(field => (
-                        <param label={field.fieldName}>{field.fieldName}</param>
-                      ))}
-                    />
-                  </param>,
-                  <param label="fetchKey">fetchKey</param>,
-                ]}
-              />
-            </function>
-          </extension>
-        </AvailableOnNewPlatforms>
+            />
+          </function>
+        </extension>
       </DeclarationGroup>
     </SwiftUICheck>
   );
@@ -117,41 +114,37 @@ const RefetchConvenienceExtension = ({ node }: { node: InputStructNode }) => {
     <SwiftUICheck>
       <DeclarationGroup>
         <import module="RelaySwiftUI" />
-        <AvailableOnNewPlatforms>
-          <extension
-            name="RelaySwiftUI.RefetchableFragment.Wrapper"
-            where={[`F.Operation == ${parentType}`]}
-          >
-            <function
-              name="refetch"
-              parameters={node.fields.map(field => (
-                <paramdecl
-                  name={field.fieldName}
-                  type={field.typeName}
-                  defaultValue={
-                    field.typeName.endsWith('?') ? 'nil' : undefined
-                  }
-                />
-              ))}
-            >
-              <call
-                receiver="self"
-                name="refetch"
-                parameters={[
-                  <param>
-                    <call
-                      receiver=""
-                      name="init"
-                      parameters={node.fields.map(field => (
-                        <param label={field.fieldName}>{field.fieldName}</param>
-                      ))}
-                    />
-                  </param>,
-                ]}
+        <extension
+          name="RelaySwiftUI.RefetchableFragment.Wrapper"
+          where={[`F.Operation == ${parentType}`]}
+        >
+          <function
+            name="refetch"
+            parameters={node.fields.map(field => (
+              <paramdecl
+                name={field.fieldName}
+                type={field.typeName}
+                defaultValue={field.typeName.endsWith('?') ? 'nil' : undefined}
               />
-            </function>
-          </extension>
-        </AvailableOnNewPlatforms>
+            ))}
+          >
+            <call
+              receiver="self"
+              name="refetch"
+              parameters={[
+                <param>
+                  <call
+                    receiver=""
+                    name="init"
+                    parameters={node.fields.map(field => (
+                      <param label={field.fieldName}>{field.fieldName}</param>
+                    ))}
+                  />
+                </param>,
+              ]}
+            />
+          </function>
+        </extension>
       </DeclarationGroup>
     </SwiftUICheck>
   );

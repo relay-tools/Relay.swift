@@ -11,17 +11,18 @@ query CurrentUserToDoListQuery {
 """)
 
 struct CurrentUserToDoList: View {
-    @Query(CurrentUserToDoListQuery.self) var query
+    @Query<CurrentUserToDoListQuery> var query
 
     var body: some View {
-        Group {
-            if query.isLoading {
-                Text("Loading...")
-            } else if query.error != nil {
-                Text("Error: \(query.error!.localizedDescription)")
-            } else if query.data?.user != nil {
-                ToDoList(user: query.data!.user!)
-                    .navigationBarTitle("To-do List for \(query.data!.user!.id)")
+        switch query.get() {
+        case .loading:
+            Text("Loading...")
+        case .failure(let error):
+            Text("Error: \(error.localizedDescription)")
+        case .success(let data):
+            if let user = data?.user {
+                ToDoList(user: user.asFragment())
+                    .navigationBarTitle("To-do List for \(user.id)")
             }
         }
     }

@@ -72,9 +72,9 @@ class DataCheckerTests: XCTestCase {
             complete: true, id: "VG9kbzox", userId: "me")
         let mutation = ChangeTodoStatusMutation(variables: .init(input: input))
         try environment.mockResponse(mutation, ChangeTodoStatus.completeBuyHorse)
-        waitUntilComplete(environment.commitMutation(mutation) { (store, _) in
+        waitUntilComplete(environment.commitMutation(mutation, updater: { (store, _) in
             store.invalidateStore()
-        })
+        }))
 
         expect(self.environment.check(operation: operation)) == .stale
     }
@@ -91,10 +91,10 @@ class DataCheckerTests: XCTestCase {
             complete: true, id: "VG9kbzox", userId: "me")
         let mutation = ChangeTodoStatusMutation(variables: .init(input: input))
         try environment.mockResponse(mutation, ChangeTodoStatus.completeBuyHorse)
-        waitUntilComplete(environment.commitMutation(mutation) { (store, _) in
+        waitUntilComplete(environment.commitMutation(mutation, updater: { (store, _) in
             var record = store["VG9kbzox"]!
             record.invalidateRecord()
-        })
+        }))
 
         expect(self.environment.check(operation: operation)) == .stale
     }
@@ -115,10 +115,10 @@ class DataCheckerTests: XCTestCase {
             complete: true, id: "VG9kbzox", userId: "me")
         let mutation = ChangeTodoStatusMutation(variables: .init(input: input))
         try environment.mockResponse(mutation, ChangeTodoStatus.completeBuyHorse)
-        waitUntilComplete(environment.commitMutation(mutation) { (store, _) in
+        waitUntilComplete(environment.commitMutation(mutation, updater: { (store, _) in
             var record = store["foobar"]!
             record.invalidateRecord()
-        })
+        }))
 
         let availability = environment.check(operation: operation)
         guard case .available(let date) = availability else {

@@ -8,7 +8,7 @@ query MoviesTabQuery {
 """)
 
 struct MoviesTab: View {
-    @QueryNext<MoviesTabQuery> var movies
+    @Query<MoviesTabQuery> var movies
     @State var fetchKey = UUID()
     
     var body: some View {

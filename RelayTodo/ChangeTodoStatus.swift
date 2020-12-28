@@ -27,11 +27,12 @@ extension Mutation.Mutator where Operation == ChangeTodoStatusMutation {
                         "complete": complete,
                     ]
                 ]
-            ]
-        ) { result in
-            if case .failure(let error) = result {
-                onError(error)
+            ],
+            completion: { result in
+                if case .failure(let error) = result {
+                    onError(error)
+                }
             }
-        }
+        )
     }
 }

@@ -20,9 +20,11 @@ jobs:
     strategy:
       matrix:
         xcode:
-          - "11.5"
-          - "12_beta"
-    runs-on: macos-latest
+          - "12.2"
+          - "12.3"
+    # Relay.swift builds fine on macOS 10.15, but the tests won't run on it, because RelaySwiftUI
+    # links StateObject which isn't present in SwiftUI on macOS 10.15.
+    runs-on: macos-11.0
     env:
       DEVELOPER_DIR: /Applications/Xcode_${{ matrix.xcode }}.app/Contents/Developer
     steps:

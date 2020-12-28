@@ -9,19 +9,15 @@ fragment PokemonListRow_pokemon on Pokemon {
 """)
 
 struct PokemonListRow: View {
-    @Fragment(PokemonListRow_pokemon.self) var pokemon
-
-    init(pokemon: PokemonListRow_pokemon_Key) {
-        $pokemon = pokemon
-    }
+    @Fragment<PokemonListRow_pokemon> var pokemon
 
     var body: some View {
         HStack {
-            if pokemon != nil {
-                Text(pokemon!.name ?? "(unknown)")
+            if let pokemon = pokemon {
+                Text(pokemon.name ?? "(unknown)")
                     .font(.body)
                 Spacer()
-                Text(pokemon!.number ?? "")
+                Text(pokemon.number ?? "")
                     .font(.body)
                     .foregroundColor(.secondary)
             }

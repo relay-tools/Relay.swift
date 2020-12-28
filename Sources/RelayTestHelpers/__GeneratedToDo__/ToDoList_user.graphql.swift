@@ -110,23 +110,20 @@ extension ToDoList_user: Relay.PaginationFragment {
     }
 }
 
-#if swift(>=5.3) && canImport(RelaySwiftUI)
+#if canImport(RelaySwiftUI)
 import RelaySwiftUI
 
 extension ToDoList_user_Key {
-    @available(iOS 14.0, macOS 10.16, tvOS 14.0, watchOS 7.0, *)
-    public func asFragment() -> RelaySwiftUI.FragmentNext<ToDoList_user> {
-        RelaySwiftUI.FragmentNext<ToDoList_user>(self)
+    public func asFragment() -> RelaySwiftUI.Fragment<ToDoList_user> {
+        RelaySwiftUI.Fragment<ToDoList_user>(self)
     }
 
-    @available(iOS 14.0, macOS 10.16, tvOS 14.0, watchOS 7.0, *)
     public func asFragment() -> RelaySwiftUI.RefetchableFragment<ToDoList_user> {
         RelaySwiftUI.RefetchableFragment<ToDoList_user>(self)
     }
 
-    @available(iOS 14.0, macOS 10.16, tvOS 14.0, watchOS 7.0, *)
-    public func asFragment() -> RelaySwiftUI.PaginationFragmentNext<ToDoList_user> {
-        RelaySwiftUI.PaginationFragmentNext<ToDoList_user>(self)
+    public func asFragment() -> RelaySwiftUI.PaginationFragment<ToDoList_user> {
+        RelaySwiftUI.PaginationFragment<ToDoList_user>(self)
     }
 }
 #endif

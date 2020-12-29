@@ -12,7 +12,7 @@ public class ConnectionHandler: Handler {
     }
 
     public func update(store: inout RecordSourceProxy, fieldPayload payload: HandleFieldPayload) {
-        guard var record = store[payload.dataID] else {
+        guard let record = store[payload.dataID] else {
             return
         }
 
@@ -37,7 +37,7 @@ public class ConnectionHandler: Handler {
 
             record.setLinkedRecord(payload.handleKey, record: connection)
 
-            var clientPageInfo = store.create(dataID: connection.dataID.clientID(storageKey: config.pageInfo), typeName: config.pageInfoType)
+            let clientPageInfo = store.create(dataID: connection.dataID.clientID(storageKey: config.pageInfo), typeName: config.pageInfoType)
             clientPageInfo[config.hasNextPage] = false
             clientPageInfo[config.hasPreviousPage] = false
             clientPageInfo[config.endCursor] = nil
@@ -109,7 +109,7 @@ public class ConnectionHandler: Handler {
             connection.setLinkedRecords(config.edges, records: nextEdges)
         }
 
-        if var clientPageInfo = clientPageInfo, let serverPageInfo = serverPageInfo {
+        if let clientPageInfo = clientPageInfo, let serverPageInfo = serverPageInfo {
             let after = args.after
             let hasAfter = after != nil && after != .null
             let before = args.before
@@ -139,7 +139,7 @@ public class ConnectionHandler: Handler {
         }
 
         let edgeID = connection.dataID.clientID(storageKey: config.edges, index: edgeIndex)
-        var connectionEdge = store.create(dataID: edgeID, typeName: edge.typeName)
+        let connectionEdge = store.create(dataID: edgeID, typeName: edge.typeName)
         connectionEdge.copyFields(from: edge)
         connection[nextEdgeIndex] = edgeIndex + 1
         return connectionEdge
@@ -169,7 +169,7 @@ public class ConnectionHandler: Handler {
 
     public func createEdge(_ store: inout RecordSourceProxy, connection: RecordProxy, node: RecordProxy, type edgeType: String) -> RecordProxy {
         let edgeID = connection.dataID.clientID(storageKey: node.dataID.rawValue)
-        var edge = store[edgeID] ?? store.create(dataID: edgeID, typeName: edgeType)
+        let edge = store[edgeID] ?? store.create(dataID: edgeID, typeName: edgeType)
         edge.setLinkedRecord(config.node, record: node)
         return edge
     }

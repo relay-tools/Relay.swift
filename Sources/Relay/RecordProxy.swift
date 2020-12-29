@@ -1,16 +1,16 @@
-public protocol RecordProxy {
+public protocol RecordProxy: class {
     var dataID: DataID { get }
     var typeName: String { get }
     subscript(_ name: String, args args: VariableDataConvertible?) -> Any? { get set }
     func getLinkedRecord(_ name: String, args: VariableDataConvertible?) -> RecordProxy?
     func getLinkedRecords(_ name: String, args: VariableDataConvertible?) -> [RecordProxy?]?
 
-    mutating func getOrCreateLinkedRecord(_ name: String, typeName: String, args: VariableDataConvertible?) -> RecordProxy
-    mutating func setLinkedRecord(_ name: String, args: VariableDataConvertible?, record: RecordProxy)
-    mutating func setLinkedRecords(_ name: String, args: VariableDataConvertible?, records: [RecordProxy?])
+    func getOrCreateLinkedRecord(_ name: String, typeName: String, args: VariableDataConvertible?) -> RecordProxy
+    func setLinkedRecord(_ name: String, args: VariableDataConvertible?, record: RecordProxy)
+    func setLinkedRecords(_ name: String, args: VariableDataConvertible?, records: [RecordProxy?])
 
-    mutating func copyFields(from record: RecordProxy)
-    mutating func invalidateRecord()
+    func copyFields(from record: RecordProxy)
+    func invalidateRecord()
 }
 
 public extension RecordProxy {
@@ -27,15 +27,15 @@ public extension RecordProxy {
         getLinkedRecords(name, args: nil)
     }
 
-    mutating func getOrCreateLinkedRecord(_ name: String, typeName: String) -> RecordProxy {
+    func getOrCreateLinkedRecord(_ name: String, typeName: String) -> RecordProxy {
         getOrCreateLinkedRecord(name, typeName: typeName, args: nil)
     }
 
-    mutating func setLinkedRecord(_ name: String, record: RecordProxy) {
+    func setLinkedRecord(_ name: String, record: RecordProxy) {
         setLinkedRecord(name, args: nil, record: record)
     }
 
-    mutating func setLinkedRecords(_ name: String, records: [RecordProxy?]) {
+    func setLinkedRecords(_ name: String, records: [RecordProxy?]) {
         setLinkedRecords(name, args: nil, records: records)
     }
 }

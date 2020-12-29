@@ -22,7 +22,7 @@ let package = Package(
     dependencies: [
         .package(name: "SwiftSyntax", url: "https://github.com/apple/swift-syntax.git", .exact("0.50300.0")),
         .package(name: "SnapshotTesting", url: "https://github.com/pointfreeco/swift-snapshot-testing.git", from: "1.8.0"),
-        .package(name: "Nimble", url: "https://github.com/Quick/Nimble.git", .upToNextMajor(from: "8.0.1")),
+        .package(name: "Nimble", url: "https://github.com/Quick/Nimble.git", .upToNextMajor(from: "9.0.0")),
     ],
     targets: [
         .target(

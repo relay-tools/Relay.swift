@@ -48,7 +48,7 @@ class RecordSourceProxyTests: XCTestCase {
     }
 
     func testUpdateRecordField() throws {
-        var record = store["ZmlsbXM6Mg=="]
+        let record = store["ZmlsbXM6Mg=="]
         expect(record).notTo(beNil())
         record!["director"] = "Some Other Guy"
         expect(record!["director"] as? String) == "Some Other Guy"
@@ -62,16 +62,16 @@ class RecordSourceProxyTests: XCTestCase {
     }
 
     func testCreateRecord() throws {
-        var record = store.create(dataID: "record_123", typeName: "Film")
+        let record = store.create(dataID: "record_123", typeName: "Film")
         record["title"] = "The Force Awakens"
         record["episodeID"] = 7
         assertSnapshot(matching: mutator.sink, as: .recordSource)
     }
 
     func testGetOrCreateLinkedRecord() throws {
-        var record = store.create(dataID: "char_Leia", typeName: "Person")
+        let record = store.create(dataID: "char_Leia", typeName: "Person")
         record["name"] = "Leia Organa"
-        var planet = record.getOrCreateLinkedRecord("homeworld", typeName: "Planet")
+        let planet = record.getOrCreateLinkedRecord("homeworld", typeName: "Planet")
         planet["name"] = "Alderaan"
         assertSnapshot(matching: mutator.sink, as: .recordSource)
 

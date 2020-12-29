@@ -42,7 +42,7 @@ class ConnectionHandlerTests: XCTestCase {
         createStoreProxy()
 
         // create a new node to create the edge for
-        var node = store.create(dataID: "film_TFA", typeName: "Film")
+        let node = store.create(dataID: "film_TFA", typeName: "Film")
         node["title"] = "The Force Awakens"
 
         let connection = ConnectionHandler.default.getConnection(store.root, key: "MoviesList_allFilms")!
@@ -58,7 +58,7 @@ class ConnectionHandlerTests: XCTestCase {
         try loadInitialPage()
         createStoreProxy()
 
-        var node = store.create(dataID: "film_TFA", typeName: "Film")
+        let node = store.create(dataID: "film_TFA", typeName: "Film")
         node["title"] = "The Force Awakens"
         var connection = ConnectionHandler.default.getConnection(store.root, key: "MoviesList_allFilms")!
         let edge = ConnectionHandler.default.createEdge(&store, connection: connection, node: node, type: "FilmsEdge")
@@ -75,7 +75,7 @@ class ConnectionHandlerTests: XCTestCase {
         try loadInitialPage()
         createStoreProxy()
 
-        var node = store.create(dataID: "film_TFA", typeName: "Film")
+        let node = store.create(dataID: "film_TFA", typeName: "Film")
         node["title"] = "The Force Awakens"
         var connection = ConnectionHandler.default.getConnection(store.root, key: "MoviesList_allFilms")!
         let edge = ConnectionHandler.default.createEdge(&store, connection: connection, node: node, type: "FilmsEdge")
@@ -92,7 +92,7 @@ class ConnectionHandlerTests: XCTestCase {
         try loadInitialPage()
         createStoreProxy()
 
-        var node = store.create(dataID: "film_TFA", typeName: "Film")
+        let node = store.create(dataID: "film_TFA", typeName: "Film")
         node["title"] = "The Force Awakens"
         var connection = ConnectionHandler.default.getConnection(store.root, key: "MoviesList_allFilms")!
         let edge = ConnectionHandler.default.createEdge(&store, connection: connection, node: node, type: "FilmsEdge")
@@ -109,7 +109,7 @@ class ConnectionHandlerTests: XCTestCase {
         try loadInitialPage()
         createStoreProxy()
 
-        var node = store.create(dataID: "film_TFA", typeName: "Film")
+        let node = store.create(dataID: "film_TFA", typeName: "Film")
         node["title"] = "The Force Awakens"
         var connection = ConnectionHandler.default.getConnection(store.root, key: "MoviesList_allFilms")!
         let edge = ConnectionHandler.default.createEdge(&store, connection: connection, node: node, type: "FilmsEdge")

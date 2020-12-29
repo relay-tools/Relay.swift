@@ -125,9 +125,7 @@ class ReaderTests: XCTestCase {
         let store = DefaultRecordSourceProxy(mutator: mutator, handlerProvider: DefaultHandlerProvider())
 
         let allFilms = ConnectionHandler.default.getConnection(store.root, key: "MoviesList_allFilms")!
-        let edges = allFilms.getLinkedRecords("edges")!
-        var firstEdge = edges[0]!
-        firstEdge["node"] = NSNull()
+        allFilms.getLinkedRecords("edges")![0]!["node"] = NSNull()
 
         environment.store.publish(source: mutator.sink)
 
@@ -179,8 +177,7 @@ class ReaderTests: XCTestCase {
         let mutator = RecordSourceMutator(base: environment.store.recordSource, sink: DefaultRecordSource())
         let store = DefaultRecordSourceProxy(mutator: mutator, handlerProvider: DefaultHandlerProvider())
 
-        var allFilms = ConnectionHandler.default.getConnection(store.root, key: "MoviesList_allFilms")!
-        allFilms["edges"] = NSNull()
+        ConnectionHandler.default.getConnection(store.root, key: "MoviesList_allFilms")!["edges"] = NSNull()
 
         environment.store.publish(source: mutator.sink)
 
@@ -226,7 +223,7 @@ class ReaderTests: XCTestCase {
         let mutator = RecordSourceMutator(base: environment.store.recordSource, sink: DefaultRecordSource())
         let store = DefaultRecordSourceProxy(mutator: mutator, handlerProvider: DefaultHandlerProvider())
 
-        var allFilms = ConnectionHandler.default.getConnection(store.root, key: "MoviesList_allFilms")!
+        let allFilms = ConnectionHandler.default.getConnection(store.root, key: "MoviesList_allFilms")!
         var edges = allFilms.getLinkedRecords("edges")!
         edges[0] = nil
         allFilms.setLinkedRecords("edges", records: edges)

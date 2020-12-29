@@ -29,13 +29,13 @@ class QueryLoaderTests: XCTestCase {
 
     func testFailsWhenNotPassedVariables() throws {
         let loader = QueryLoader<MoviesTabQuery>()
-        expect(expression: {
+        expect {
             _ = loader.loadIfNeeded(
                 resource: self.resource,
                 fragmentResource: self.fragmentResource,
                 fetchPolicy: .storeOrNetwork
             )
-        }).to(throwAssertion())
+        }.to(throwAssertion())
     }
 
     func testLoadsInitialDataFromNetwork() throws {
@@ -344,7 +344,7 @@ class QueryLoaderTests: XCTestCase {
 
         advance()
         expect { loader.result }.toEventuallyNot(beNil())
-        expect(expression: { try loader.result!.get() }).to(throwError {
+        expect { try loader.result!.get() }.to(throwError {
             assertSnapshot(matching: $0, as: .dump)
         })
         expect(loader.error).notTo(beNil())
@@ -372,7 +372,7 @@ class QueryLoaderTests: XCTestCase {
         advance()
         expect(resultWasSet).toEventually(beTrue())
 
-        expect(expression: { try loader.result!.get() }).to(throwError {
+        expect { try loader.result!.get() }.to(throwError {
             assertSnapshot(matching: $0, as: .dump)
         })
         expect(loader.error).notTo(beNil())

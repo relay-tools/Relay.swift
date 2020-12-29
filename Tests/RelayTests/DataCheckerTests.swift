@@ -92,8 +92,7 @@ class DataCheckerTests: XCTestCase {
         let mutation = ChangeTodoStatusMutation(variables: .init(input: input))
         try environment.mockResponse(mutation, ChangeTodoStatus.completeBuyHorse)
         waitUntilComplete(environment.commitMutation(mutation, updater: { (store, _) in
-            var record = store["VG9kbzox"]!
-            record.invalidateRecord()
+            store["VG9kbzox"]!.invalidateRecord()
         }))
 
         expect(self.environment.check(operation: operation)) == .stale
@@ -116,8 +115,7 @@ class DataCheckerTests: XCTestCase {
         let mutation = ChangeTodoStatusMutation(variables: .init(input: input))
         try environment.mockResponse(mutation, ChangeTodoStatus.completeBuyHorse)
         waitUntilComplete(environment.commitMutation(mutation, updater: { (store, _) in
-            var record = store["foobar"]!
-            record.invalidateRecord()
+            store["foobar"]!.invalidateRecord()
         }))
 
         let availability = environment.check(operation: operation)

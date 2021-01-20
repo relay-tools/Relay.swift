@@ -1,0 +1,11 @@
+alias(
+    name = "Relay",
+    actual = "//Sources/Relay",
+    visibility = ["//visibility:public"],
+)
+
+alias(
+    name = "RelaySwiftUI",
+    actual = "//Sources/RelaySwiftUI",
+    visibility = ["//visibility:public"],
+)

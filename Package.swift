@@ -27,14 +27,16 @@ let package = Package(
     targets: [
         .target(
             name: "Relay",
-            dependencies: []),
+            dependencies: [],
+            exclude: ["BUILD.bazel"]),
         .testTarget(
             name: "RelayTests",
             dependencies: ["Relay", "RelayTestHelpers", "SnapshotTesting", "Nimble"],
             exclude: ["__Snapshots__"]),
         .target(
             name: "RelaySwiftUI",
-            dependencies: ["Relay"]),
+            dependencies: ["Relay"],
+            exclude: ["BUILD.bazel"]),
         .testTarget(
             name: "RelaySwiftUITests",
             dependencies: ["RelaySwiftUI", "RelayTestHelpers", "SnapshotTesting", "Nimble"],

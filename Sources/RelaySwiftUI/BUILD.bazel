@@ -1,0 +1,11 @@
+load("@build_bazel_rules_swift//swift:swift.bzl", "swift_library")
+
+swift_library(
+    name = "RelaySwiftUI",
+    srcs = glob(["*.swift"]),
+    deps = [
+        "//Sources/Relay",
+    ],
+    module_name = "RelaySwiftUI",
+    visibility = ["//visibility:public"],
+)

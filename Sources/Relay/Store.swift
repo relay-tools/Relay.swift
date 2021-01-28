@@ -2,10 +2,7 @@ import Combine
 import Foundation
 import os
 
-#if swift(>=5.3)
-@available(iOS 14.0, macOS 10.16, tvOS 14.0, watchOS 7.0, *)
 private let logger = Logger(subsystem: "io.github.mjm.Relay", category: "store")
-#endif
 
 public class Store {
     var recordSource: RecordSource
@@ -98,15 +95,11 @@ public class Store {
                            updatedRecordIDs: &updatedRecordIDs,
                            invalidatedRecordIDs: &invalidatedRecordIDs)
 
-        #if swift(>=5.3)
-        if #available(iOS 14.0, macOS 10.16, tvOS 14.0, watchOS 7.0, *) {
-            if optimisticSource != nil {
-                logger.debug("Publish: \(source.count) records (optimistic)")
-            } else {
-                logger.debug("Publish: \(source.count) records")
-            }
+        if optimisticSource != nil {
+            logger.debug("Publish: \(source.count) records (optimistic)")
+        } else {
+            logger.debug("Publish: \(source.count) records")
         }
-        #endif
     }
 
     public func notify(
@@ -121,13 +114,9 @@ public class Store {
                 globalInvalidationEpoch = newWriteEpoch
             }
 
-            #if swift(>=5.3)
-            if #available(iOS 14.0, macOS 10.16, tvOS 14.0, watchOS 7.0, *) {
-                if let op = sourceOperation {
-                    logger.debug("Notify: \(op.request.node.params.name, privacy: .public)\(op.request.variables) [\(newWriteEpoch)]")
-                }
+            if let op = sourceOperation {
+                logger.debug("Notify: \(op.request.node.params.name, privacy: .public)\(op.request.variables) [\(newWriteEpoch)]")
             }
-            #endif
         }
 
         var updatedOwners: [RequestDescriptor] = []
@@ -155,11 +144,7 @@ public class Store {
     public func snapshot() {
         precondition(optimisticSource == nil, "Unexpected call to snapshot() while a previous snapshot exists")
 
-        #if swift(>=5.3)
-        if #available(iOS 14.0, macOS 10.16, tvOS 14.0, watchOS 7.0, *) {
-            logger.debug("Snapshot")
-        }
-        #endif
+        logger.debug("Snapshot")
 
         for subscription in subscriptions {
             subscription.storeDidSnapshot(source: recordSource)
@@ -172,11 +157,7 @@ public class Store {
     public func restore() {
         precondition(optimisticSource != nil, "Unexpected call to restore() without a snapshot")
 
-        #if swift(>=5.3)
-        if #available(iOS 14.0, macOS 10.16, tvOS 14.0, watchOS 7.0, *) {
-            logger.debug("Restore")
-        }
-        #endif
+        logger.debug("Restore")
 
         optimisticSource = nil
         gc.scheduleIfNeeded()

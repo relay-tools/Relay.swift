@@ -2,10 +2,7 @@ import Combine
 import Foundation
 import os
 
-#if swift(>=5.3)
-@available(iOS 14.0, macOS 10.16, tvOS 14.0, watchOS 7.0, *)
 private let logger = Logger(subsystem: "io.github.mjm.Relay", category: "environment")
-#endif
 
 public class Environment {
     public private(set) var network: Network
@@ -112,31 +109,19 @@ public class Environment {
 
 private extension Publisher where Output == Data, Failure == Error {
     func logExecution(params: RequestParameters, variables: VariableData) -> AnyPublisher<Data, Error> {
-        #if swift(>=5.3)
         return handleEvents { subscription in
-            if #available(iOS 14.0, macOS 10.16, tvOS 14.0, watchOS 7.0, *) {
-                logger.debug("Execution Start:   \(params.name, privacy: .public)\(variables)")
-            }
+            logger.debug("Execution Start:   \(params.name, privacy: .public)\(variables)")
         } receiveOutput: { data in
-            if #available(iOS 14.0, macOS 10.16, tvOS 14.0, watchOS 7.0, *) {
-                logger.debug("Execution Data:    \(params.name, privacy: .public)\(variables)  (\(data.count) bytes)")
-            }
+            logger.debug("Execution Data:    \(params.name, privacy: .public)\(variables)  (\(data.count) bytes)")
         } receiveCompletion: { completion in
-            if #available(iOS 14.0, macOS 10.16, tvOS 14.0, watchOS 7.0, *) {
-                switch completion {
-                case .finished:
-                    logger.debug("Execution Success: \(params.name, privacy: .public)\(variables)")
-                case .failure(let error):
-                    logger.error("Execution Failure: \(params.name, privacy: .public)\(variables)  \(error as NSError)")
-                }
+            switch completion {
+            case .finished:
+                logger.debug("Execution Success: \(params.name, privacy: .public)\(variables)")
+            case .failure(let error):
+                logger.error("Execution Failure: \(params.name, privacy: .public)\(variables)  \(error as NSError)")
             }
         } receiveCancel: {
-            if #available(iOS 14.0, macOS 10.16, tvOS 14.0, watchOS 7.0, *) {
-                logger.debug("Execution Cancel:  \(params.name, privacy: .public)\(variables)")
-            }
+            logger.debug("Execution Cancel:  \(params.name, privacy: .public)\(variables)")
         }.eraseToAnyPublisher()
-        #else
-        return self.eraseToAnyPublisher()
-        #endif
     }
 }

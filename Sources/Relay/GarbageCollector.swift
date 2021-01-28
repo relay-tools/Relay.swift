@@ -3,11 +3,7 @@ import Foundation
 import os
 
 private let log = OSLog(subsystem: "io.github.mjm.Relay", category: "garbage-collection")
-
-#if swift(>=5.3)
-@available(iOS 14.0, macOS 10.16, tvOS 14.0, watchOS 7.0, *)
 private let logger = Logger(log)
-#endif
 
 class GarbageCollector {
     let store: Store
@@ -52,12 +48,8 @@ class GarbageCollector {
                 return
             }
 
-            #if swift(>=5.3)
-            if #available(iOS 14.0, macOS 10.16, tvOS 14.0, watchOS 7.0, *) {
-                let previousRefCount = self.roots[id]?.refCount ?? 0
-                logger.info("GC Release: \(operation.request.node.params.name, privacy: .public)\(operation.request.variables)  [\(previousRefCount) -> \(previousRefCount - 1)]")
-            }
-            #endif
+            let previousRefCount = self.roots[id]?.refCount ?? 0
+            logger.info("GC Release: \(operation.request.node.params.name, privacy: .public)\(operation.request.variables)  [\(previousRefCount) -> \(previousRefCount - 1)]")
             os_signpost(.event, log: log, name: "release operation", signpostID: signpostID)
             self.roots[id]?.refCount -= 1
 
@@ -71,12 +63,8 @@ class GarbageCollector {
             }
         }
 
-        #if swift(>=5.3)
-        if #available(iOS 14.0, macOS 10.16, tvOS 14.0, watchOS 7.0, *) {
-            let previousRefCount = self.roots[id]?.refCount ?? 0
-            logger.info("GC Retain:  \(operation.request.node.params.name, privacy: .public)\(operation.request.variables)  [\(previousRefCount) -> \(previousRefCount + 1)]")
-        }
-        #endif
+        let previousRefCount = self.roots[id]?.refCount ?? 0
+        logger.info("GC Retain:  \(operation.request.node.params.name, privacy: .public)\(operation.request.variables)  [\(previousRefCount) -> \(previousRefCount + 1)]")
         os_signpost(.event, log: log, name: "retain operation", signpostID: signpostID)
 
         guard let rootEntry = roots[id] else {
@@ -115,24 +103,16 @@ class GarbageCollector {
         }
         holdCounter += 1
 
-        #if swift(>=5.3)
-        if #available(iOS 14.0, macOS 10.16, tvOS 14.0, watchOS 7.0, *) {
-            let holdCounter = self.holdCounter
-            logger.info("GC Pause   (hold counter: \(holdCounter))")
-        }
-        #endif
+        let holdCounter = self.holdCounter
+        logger.info("GC Pause   (hold counter: \(holdCounter))")
         os_signpost(.event, log: log, name: "pause")
 
         return AnyCancellable {
             if self.holdCounter > 0 {
                 self.holdCounter -= 1
 
-                #if swift(>=5.3)
-                if #available(iOS 14.0, macOS 10.16, tvOS 14.0, watchOS 7.0, *) {
-                    let holdCounter = self.holdCounter
-                    logger.info("GC Unpause (hold counter: \(holdCounter))")
-                }
-                #endif
+                let holdCounter = self.holdCounter
+                logger.info("GC Unpause (hold counter: \(holdCounter))")
                 os_signpost(.event, log: log, name: "unpause")
 
                 if self.holdCounter == 0 && self.shouldSchedule {
@@ -140,11 +120,7 @@ class GarbageCollector {
                     self.shouldSchedule = false
                 }
             } else {
-                #if swift(>=5.3)
-                if #available(iOS 14.0, macOS 10.16, tvOS 14.0, watchOS 7.0, *) {
-                    logger.error("GC Unpause when hold counter is already 0")
-                }
-                #endif
+                logger.error("GC Unpause when hold counter is already 0")
             }
         }
     }
@@ -171,11 +147,7 @@ class GarbageCollector {
             return
         }
 
-        #if swift(>=5.3)
-        if #available(iOS 14.0, macOS 10.16, tvOS 14.0, watchOS 7.0, *) {
-            logger.notice("GC Schedule")
-        }
-        #endif
+        logger.notice("GC Schedule")
         let id = OSSignpostID(log: log)
         os_signpost(.event, log: log, name: "schedule", signpostID: id)
 
@@ -198,10 +170,7 @@ class GarbageCollector {
 
         for rootEntry in roots.values {
             let selector = rootEntry.operation.root
-
-            #if swift(>=5.3)
             let referencesBefore = references.count
-            #endif
 
             ReferenceMarker.mark(
                 source: store.recordSource,
@@ -210,31 +179,19 @@ class GarbageCollector {
 
             let currentEpoch = store.currentWriteEpoch
             if startEpoch != currentEpoch {
-                #if swift(>=5.3)
-                if #available(iOS 14.0, macOS 10.16, tvOS 14.0, watchOS 7.0, *) {
-                    logger.info("GC Restart: store updated while collecting (start epoch: \(startEpoch), current epoch: \(currentEpoch))")
-                }
-                #endif
+                logger.info("GC Restart: store updated while collecting (start epoch: \(startEpoch), current epoch: \(currentEpoch))")
                 os_signpost(.event, log: log, name: "restart garbage collection", signpostID: signpostID)
                 return false
             }
 
             if shouldSchedule {
-                #if swift(>=5.3)
-                if #available(iOS 14.0, macOS 10.16, tvOS 14.0, watchOS 7.0, *) {
-                    logger.info("GC Cancel: paused while collecting")
-                }
-                #endif
+                logger.info("GC Cancel: paused while collecting")
                 os_signpost(.event, log: log, name: "cancel garbage collection", signpostID: signpostID)
                 return true
             }
 
-            #if swift(>=5.3)
-            if #available(iOS 14.0, macOS 10.16, tvOS 14.0, watchOS 7.0, *) {
-                let referencesAfter = references.count
-                logger.debug("GC Mark Root:  \(rootEntry.operation.request.node.params.name)\(rootEntry.operation.request.variables)  added \(referencesAfter - referencesBefore) new references")
-            }
-            #endif
+            let referencesAfter = references.count
+            logger.debug("GC Mark Root:  \(rootEntry.operation.request.node.params.name)\(rootEntry.operation.request.variables)  added \(referencesAfter - referencesBefore) new references")
         }
 
         // hop back onto the main queue while we update the store
@@ -244,32 +201,20 @@ class GarbageCollector {
             // to the store should all happen on the main queue.
             let currentEpoch = store.currentWriteEpoch
             if startEpoch != currentEpoch {
-                #if swift(>=5.3)
-                if #available(iOS 14.0, macOS 10.16, tvOS 14.0, watchOS 7.0, *) {
-                    logger.info("GC Restart: store updated while collecting (start epoch: \(startEpoch), current epoch: \(currentEpoch))")
-                }
-                #endif
+                logger.info("GC Restart: store updated while collecting (start epoch: \(startEpoch), current epoch: \(currentEpoch))")
                 os_signpost(.event, log: log, name: "restart garbage collection", signpostID: signpostID)
                 return false
             }
 
             if shouldSchedule {
-                #if swift(>=5.3)
-                if #available(iOS 14.0, macOS 10.16, tvOS 14.0, watchOS 7.0, *) {
-                    logger.info("GC Cancel: paused while collecting")
-                }
-                #endif
+                logger.info("GC Cancel: paused while collecting")
                 os_signpost(.event, log: log, name: "cancel garbage collection", signpostID: signpostID)
                 return true
             }
 
             if references.isEmpty {
                 store.recordSource.clear()
-                #if swift(>=5.3)
-                if #available(iOS 14.0, macOS 10.16, tvOS 14.0, watchOS 7.0, *) {
-                    logger.notice("GC Result:  0 references found, cleared entire store")
-                }
-                #endif
+                logger.notice("GC Result:  0 references found, cleared entire store")
             } else {
                 var deletedCount = 0
                 var deletedByTypeName: [String: Int] = [:]
@@ -282,14 +227,11 @@ class GarbageCollector {
                         deletedByTypeName[typeName] = (deletedByTypeName[typeName] ?? 0) + 1
                     }
                 }
-                #if swift(>=5.3)
-                if #available(iOS 14.0, macOS 10.16, tvOS 14.0, watchOS 7.0, *) {
-                    logger.notice("GC Result:  \(references.count) references found, deleted \(deletedCount) records")
-                    for (typeName, count) in deletedByTypeName {
-                        logger.debug("GC Result:  \(count) \(typeName) records deleted")
-                    }
+
+                logger.notice("GC Result:  \(references.count) references found, deleted \(deletedCount) records")
+                for (typeName, count) in deletedByTypeName {
+                    logger.debug("GC Result:  \(count) \(typeName) records deleted")
                 }
-                #endif
             }
 
             return true

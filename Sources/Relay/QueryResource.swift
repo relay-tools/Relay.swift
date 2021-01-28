@@ -2,10 +2,7 @@ import Foundation
 import Combine
 import os
 
-#if swift(>=5.3)
-@available(iOS 14.0, macOS 10.16, tvOS 14.0, watchOS 7.0, *)
 private let logger = Logger(subsystem: "io.github.mjm.Relay", category: "query-resource")
-#endif
 
 public enum FetchPolicy: CustomStringConvertible {
     case storeOnly
@@ -87,13 +84,7 @@ public class QueryResource {
         )
 
         let cancellable = cacheEntry.retain(environment)
-
-        #if swift(>=5.3)
-        if #available(iOS 14.0, macOS 10.16, tvOS 14.0, watchOS 7.0, *) {
-            logger.debug("Retain:  \(queryResult.operation.request.node.params.name)\(queryResult.operation.request.variables) [\(cacheEntry.id)]")
-        }
-        #endif
-
+        logger.debug("Retain:  \(queryResult.operation.request.node.params.name)\(queryResult.operation.request.variables) [\(cacheEntry.id)]")
         return cancellable
     }
 
@@ -168,13 +159,7 @@ public class QueryResource {
         }
 
         let cacheEntry = cache[cacheKey]!
-
-        #if swift(>=5.3)
-        if #available(iOS 14.0, macOS 10.16, tvOS 14.0, watchOS 7.0, *) {
-            logger.debug("Fetch:  \(operation.request.node.params.name)\(operation.request.variables) [\(fetchPolicy), \(availability), \(cacheEntry.id)]")
-        }
-        #endif
-
+        logger.debug("Fetch:  \(operation.request.node.params.name)\(operation.request.variables) [\(fetchPolicy), \(availability), \(cacheEntry.id)]")
         return cacheEntry
     }
 

@@ -9,6 +9,7 @@ import {
 } from 'relay-runtime';
 import { ArgumentsExpr } from './ArgumentsExpr';
 import {
+  ReaderClientExtension,
   ReaderFragmentSpread,
   ReaderInlineFragment,
 } from 'relay-runtime/lib/util/ReaderNode';
@@ -58,6 +59,8 @@ const ReaderSelectionExpr = ({ selection }: { selection: ReaderSelection }) => {
       return <ReaderFragmentSpreadExpr field={selection as any} />;
     case 'InlineFragment':
       return <ReaderInlineFragmentExpr field={selection as any} />;
+    case 'ClientExtension':
+      return <ReaderClientExtensionExpr field={selection as any} />;
   }
 
   throw new Error(`Unsupported reader selection kind '${selection.kind}'`);
@@ -196,6 +199,32 @@ const ReaderInlineFragmentExpr = ({
               <param label="type">
                 <literal string={field.type} />
               </param>,
+              <param label="selections">
+                <ReaderSelections selections={field.selections} />
+              </param>,
+            ]}
+            expanded
+          />
+        </param>,
+      ]}
+    />
+  );
+};
+
+const ReaderClientExtensionExpr = ({
+  field,
+}: {
+  field: ReaderClientExtension;
+}) => {
+  return (
+    <call
+      receiver=""
+      name="clientExtension"
+      parameters={[
+        <param>
+          <call
+            name="ReaderClientExtension"
+            parameters={[
               <param label="selections">
                 <ReaderSelections selections={field.selections} />
               </param>,

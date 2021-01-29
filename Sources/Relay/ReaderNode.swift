@@ -31,6 +31,7 @@ public enum ReaderSelection {
     case field(ReaderField)
     case fragmentSpread(ReaderFragmentSpread)
     case inlineFragment(ReaderInlineFragment)
+    case clientExtension(ReaderClientExtension)
 }
 
 public protocol ReaderField: Storable {
@@ -91,8 +92,8 @@ public struct ReaderScalarField: ReaderField {
 }
 
 public struct ReaderFragmentSpread {
-    var name: String
-    var args: [Argument]?
+    public var name: String
+    public var args: [Argument]?
 
     public init(name: String,
                 args: [Argument]? = nil) {
@@ -102,15 +103,23 @@ public struct ReaderFragmentSpread {
 }
 
 public struct ReaderInlineFragment {
-    var type: String
-    var abstractKey: String?
-    var selections: [ReaderSelection]
+    public var type: String
+    public var abstractKey: String?
+    public var selections: [ReaderSelection]
 
     public init(type: String,
                 abstractKey: String? = nil,
                 selections: [ReaderSelection] = []) {
         self.type = type
         self.abstractKey = abstractKey
+        self.selections = selections
+    }
+}
+
+public struct ReaderClientExtension: ReaderNode {
+    public var selections: [ReaderSelection]
+
+    public init(selections: [ReaderSelection] = []) {
         self.selections = selections
     }
 }

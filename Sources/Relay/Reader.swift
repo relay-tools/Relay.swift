@@ -54,11 +54,14 @@ class Reader {
         seenRecords[dataID] = record
 
         var data = previousData ?? SelectorData()
-        traverse(selections: node.selections, record: record, data: &data)
-        return data
+        if traverse(selections: node.selections, record: record, data: &data) {
+            return data
+        }
+
+        return nil
     }
 
-    private func traverse(selections: [ReaderSelection], record: Record, data: inout SelectorData) {
+    private func traverse(selections: [ReaderSelection], record: Record, data: inout SelectorData) -> Bool {
         for selection in selections {
             switch selection {
             case .field(let field):
@@ -78,10 +81,17 @@ class Reader {
             case .inlineFragment(let inlineFragment):
                 data.set("__typename", scalar: record.typename)
                 if record.typename == inlineFragment.type {
-                    traverse(selections: inlineFragment.selections, record: record, data: &data)
+                    _ = traverse(selections: inlineFragment.selections, record: record, data: &data)
                 }
+            case .clientExtension(let clientExtension):
+                let isMissingData = self.isMissingData
+                let hasExpectedData = traverse(selections: clientExtension.selections, record: record, data: &data)
+                self.isMissingData = isMissingData
+                return hasExpectedData
             }
         }
+
+        return true
     }
 
     private func readScalar(for field: ReaderScalarField, from record: Record, into data: inout SelectorData) {

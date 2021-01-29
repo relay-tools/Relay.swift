@@ -11,6 +11,7 @@ import { ArgumentsExpr } from './ArgumentsExpr';
 import {
   NormalizationInlineFragment,
   NormalizationHandle,
+  NormalizationClientExtension,
 } from 'relay-runtime/lib/util/NormalizationNode';
 
 export const NormalizationOperationExpr = ({
@@ -64,6 +65,8 @@ const NormalizationSelectionExpr = ({
       return <NormalizationHandleExpr field={selection as any} />;
     case 'InlineFragment':
       return <NormalizationInlineFragmentExpr field={selection as any} />;
+    case 'ClientExtension':
+      return <NormalizationClientExtensionExpr field={selection as any} />;
   }
 
   throw new Error(
@@ -231,6 +234,32 @@ const NormalizationInlineFragmentExpr = ({
               <param label="type">
                 <literal string={field.type} />
               </param>,
+              <param label="selections">
+                <NormalizationSelections selections={field.selections} />
+              </param>,
+            ]}
+            expanded
+          />
+        </param>,
+      ]}
+    />
+  );
+};
+
+const NormalizationClientExtensionExpr = ({
+  field,
+}: {
+  field: NormalizationClientExtension;
+}) => {
+  return (
+    <call
+      receiver=""
+      name="clientExtension"
+      parameters={[
+        <param>
+          <call
+            name="NormalizationClientExtension"
+            parameters={[
               <param label="selections">
                 <NormalizationSelections selections={field.selections} />
               </param>,

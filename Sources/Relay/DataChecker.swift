@@ -83,6 +83,10 @@ class DataChecker {
                 } else {
                     check(link: field, dataID: dataID)
                 }
+            case .clientExtension(let clientExtension):
+                let recordWasMissing = self.recordWasMissing
+                traverse(selections: clientExtension.selections, dataID: dataID)
+                self.recordWasMissing = recordWasMissing
             default:
                 preconditionFailure("not implemented")
             }

@@ -7,6 +7,7 @@ class ResponseNormalizer {
 
     private var path: [String] = []
     private var handleFieldPayloads: [HandleFieldPayload] = []
+    private var isClientExtension = false
 
     init(source: RecordSource, variables: VariableData, request: RequestDescriptor) {
         self.recordSource = source
@@ -54,6 +55,11 @@ class ResponseNormalizer {
                     handle: handle.handle,
                     handleKey: handle.handleKey(from: variables)
                 ))
+            case .clientExtension(let clientExtension):
+                let isClientExtension = self.isClientExtension
+                self.isClientExtension = true
+                traverseSelections(node: clientExtension, record: &record, data: data)
+                self.isClientExtension = isClientExtension
             default:
                 preconditionFailure("not implemented")
             }

@@ -20,7 +20,7 @@ public struct NormalizationLocalArgumentDefinition {
 
 public enum NormalizationSelection {
     case condition(NormalizationCondition)
-    case clientExtension
+    case clientExtension(NormalizationClientExtension)
     case `defer`
     case field(NormalizationField)
     case handle(NormalizationHandle)
@@ -183,6 +183,14 @@ public struct NormalizationInlineFragment: NormalizationNode {
                 selections: [NormalizationSelection] = []) {
         self.type = type
         self.abstractKey = abstractKey
+        self.selections = selections
+    }
+}
+
+public struct NormalizationClientExtension: NormalizationNode {
+    public var selections: [NormalizationSelection]
+
+    public init(selections: [NormalizationSelection] = []) {
         self.selections = selections
     }
 }

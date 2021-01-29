@@ -19,7 +19,7 @@ class PublishQueue {
     enum PendingCommit {
         case payload(OperationDescriptor, ResponsePayload, SelectorStoreUpdater?)
         case recordSource(RecordSource)
-        // TODO updater
+        case updater(StoreUpdater)
     }
 
     func apply(_ update: OptimisticUpdate) {
@@ -40,6 +40,11 @@ class PublishQueue {
     func commit(payload: ResponsePayload, operation: OperationDescriptor, updater: SelectorStoreUpdater? = nil) {
         pendingBackupRebase = true
         pendingData.append(.payload(operation, payload, updater))
+    }
+
+    func commit(updater: @escaping StoreUpdater) {
+        pendingBackupRebase = true
+        pendingData.append(.updater(updater))
     }
 
     func run(sourceOperation: OperationDescriptor? = nil) -> [RequestDescriptor] {
@@ -79,7 +84,13 @@ class PublishQueue {
                 invalidatedStore = invalidatedStore || publishSource(from: payload, operation: operation, updater: updater)
             case .recordSource(let source):
                 store.publish(source: source)
-            // TODO updater
+            case .updater(let updater):
+                let mutator = RecordSourceMutator(base: store.source, sink: DefaultRecordSource())
+                var recordSourceProxy: RecordSourceProxy = DefaultRecordSourceProxy(mutator: mutator)
+                updater(&recordSourceProxy)
+                let proxy = recordSourceProxy as! DefaultRecordSourceProxy
+                invalidatedStore = invalidatedStore || proxy.invalidatedStore
+                store.publish(source: mutator.sink, idsMarkedForInvalidation: proxy.idsMarkedForInvalidation)
             }
         }
         pendingData.removeAll()

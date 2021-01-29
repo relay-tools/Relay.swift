@@ -60,7 +60,7 @@ class DataCheckerTests: XCTestCase {
         expect(self.environment.check(operation: operation)) == .missing
     }
 
-    func testStaleWhenEntireStoreIsInvalidated() throws {
+    func testStaleWhenEntireStoreIsInvalidatedByMutation() throws {
         let op = CurrentUserToDoListQuery()
         let operation = op.createDescriptor()
         environment.retain(operation: operation).store(in: &cancellables)
@@ -75,6 +75,21 @@ class DataCheckerTests: XCTestCase {
         waitUntilComplete(environment.commitMutation(mutation, updater: { (store, _) in
             store.invalidateStore()
         }))
+
+        expect(self.environment.check(operation: operation)) == .stale
+    }
+
+    func testStaleWhenEntireStoreIsInvalidatedLocally() throws {
+        let op = CurrentUserToDoListQuery()
+        let operation = op.createDescriptor()
+        environment.retain(operation: operation).store(in: &cancellables)
+
+        try environment.mockResponse(op, CurrentUserToDoList.myTodos)
+        waitUntilComplete(environment.fetchQuery(op))
+
+        environment.commitUpdate { store in
+            store.invalidateStore()
+        }
 
         expect(self.environment.check(operation: operation)) == .stale
     }

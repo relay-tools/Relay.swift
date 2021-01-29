@@ -4,6 +4,9 @@ import os
 
 private let logger = Logger(subsystem: "io.github.mjm.Relay", category: "environment")
 
+public typealias SelectorStoreUpdater = (inout RecordSourceSelectorProxy, SelectorData?) -> Void
+public typealias StoreUpdater = (inout RecordSourceProxy) -> Void
+
 public class Environment {
     public private(set) var network: Network
     public private(set) var store: Store
@@ -78,6 +81,11 @@ public class Environment {
             source: source,
             updater: updater
         ).execute()
+    }
+
+    public func commitUpdate(_ updater: @escaping StoreUpdater) {
+        publishQueue.commit(updater: updater)
+        _ = publishQueue.run()
     }
 
     public func lookup<T: Decodable>(

@@ -1,7 +1,5 @@
 import Combine
 
-public typealias SelectorStoreUpdater = (inout RecordSourceSelectorProxy, SelectorData?) -> Void
-
 extension Environment {
     public func commitMutation<Op: Operation>(
         _ operation: Op,

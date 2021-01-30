@@ -136,6 +136,7 @@
                   - value: 3
             - filters: Optional<Array<String>>.none
             - handle: "connection"
+            - handleArgs: Optional<Array<Argument>>.none
             - key: "MoviesList_allFilms"
             - kind: Kind.linked
             - name: "allFilms"

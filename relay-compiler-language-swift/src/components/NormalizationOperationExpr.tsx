@@ -208,6 +208,12 @@ const NormalizationHandleExpr = ({ field }: { field: NormalizationHandle }) => {
                   />
                 </param>
               ),
+              // @ts-ignore
+              field.handleArgs && (
+                <param label="handleArgs">
+                  <ArgumentsExpr args={(field as any).handleArgs} />
+                </param>
+              ),
             ]}
             expanded
           />

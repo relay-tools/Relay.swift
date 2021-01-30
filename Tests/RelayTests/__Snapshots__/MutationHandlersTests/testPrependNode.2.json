@@ -1,0 +1,234 @@
+{
+  "deletedRecordIDs" : [
+
+  ],
+  "records" : {
+    "client:local:0" : {
+      "dataID" : "client:local:0",
+      "fields" : {
+        "edges" : {
+          "__type" : "linkedRecords",
+          "value" : [
+            "client:local:1",
+            "client:local:2"
+          ]
+        },
+        "pageInfo" : {
+          "__type" : "linkedRecord",
+          "value" : "client:local:3"
+        }
+      },
+      "typename" : "TodoConnection"
+    },
+    "client:local:1" : {
+      "dataID" : "client:local:1",
+      "fields" : {
+        "cursor" : {
+          "__type" : "string",
+          "value" : "YXJyYXljb25uZWN0aW9uOjA="
+        },
+        "node" : {
+          "__type" : "linkedRecord",
+          "value" : "VG9kbzow"
+        }
+      },
+      "typename" : "TodoEdge"
+    },
+    "client:local:2" : {
+      "dataID" : "client:local:2",
+      "fields" : {
+        "cursor" : {
+          "__type" : "string",
+          "value" : "YXJyYXljb25uZWN0aW9uOjE="
+        },
+        "node" : {
+          "__type" : "linkedRecord",
+          "value" : "VG9kbzox"
+        }
+      },
+      "typename" : "TodoEdge"
+    },
+    "client:local:3" : {
+      "dataID" : "client:local:3",
+      "fields" : {
+        "endCursor" : {
+          "__type" : "string",
+          "value" : "YXJyYXljb25uZWN0aW9uOjE="
+        },
+        "hasNextPage" : {
+          "__type" : "int",
+          "value" : 0
+        }
+      },
+      "typename" : "PageInfo"
+    },
+    "client:root" : {
+      "dataID" : "client:root",
+      "fields" : {
+        "user(id:\"me\")" : {
+          "__type" : "linkedRecord",
+          "value" : "VXNlcjptZQ=="
+        }
+      },
+      "typename" : "__Root"
+    },
+    "client:VXNlcjptZQ==:__ToDoList_todos_connection" : {
+      "dataID" : "client:VXNlcjptZQ==:__ToDoList_todos_connection",
+      "fields" : {
+        "__connection_next_edge_index" : {
+          "__type" : "int",
+          "value" : 2
+        },
+        "edges" : {
+          "__type" : "linkedRecords",
+          "value" : [
+            "client:VXNlcjptZQ==:__ToDoList_todos_connection:VG9kbzox2",
+            "client:VXNlcjptZQ==:__ToDoList_todos_connection:edges:0",
+            "client:VXNlcjptZQ==:__ToDoList_todos_connection:edges:1"
+          ]
+        },
+        "pageInfo" : {
+          "__type" : "linkedRecord",
+          "value" : "client:VXNlcjptZQ==:__ToDoList_todos_connection:pageInfo"
+        }
+      },
+      "typename" : "TodoConnection"
+    },
+    "client:VXNlcjptZQ==:__ToDoList_todos_connection:edges:0" : {
+      "dataID" : "client:VXNlcjptZQ==:__ToDoList_todos_connection:edges:0",
+      "fields" : {
+        "cursor" : {
+          "__type" : "string",
+          "value" : "YXJyYXljb25uZWN0aW9uOjA="
+        },
+        "node" : {
+          "__type" : "linkedRecord",
+          "value" : "VG9kbzow"
+        }
+      },
+      "typename" : "TodoEdge"
+    },
+    "client:VXNlcjptZQ==:__ToDoList_todos_connection:edges:1" : {
+      "dataID" : "client:VXNlcjptZQ==:__ToDoList_todos_connection:edges:1",
+      "fields" : {
+        "cursor" : {
+          "__type" : "string",
+          "value" : "YXJyYXljb25uZWN0aW9uOjE="
+        },
+        "node" : {
+          "__type" : "linkedRecord",
+          "value" : "VG9kbzox"
+        }
+      },
+      "typename" : "TodoEdge"
+    },
+    "client:VXNlcjptZQ==:__ToDoList_todos_connection:pageInfo" : {
+      "dataID" : "client:VXNlcjptZQ==:__ToDoList_todos_connection:pageInfo",
+      "fields" : {
+        "endCursor" : {
+          "__type" : "string",
+          "value" : "YXJyYXljb25uZWN0aW9uOjE="
+        },
+        "hasNextPage" : {
+          "__type" : "int",
+          "value" : 0
+        },
+        "hasPreviousPage" : {
+          "__type" : "bool",
+          "value" : false
+        }
+      },
+      "typename" : "PageInfo"
+    },
+    "client:VXNlcjptZQ==:__ToDoList_todos_connection:VG9kbzox2" : {
+      "dataID" : "client:VXNlcjptZQ==:__ToDoList_todos_connection:VG9kbzox2",
+      "fields" : {
+        "node" : {
+          "__type" : "linkedRecord",
+          "value" : "VG9kbzox2"
+        }
+      },
+      "typename" : "TodoEdge"
+    },
+    "VG9kbzow" : {
+      "dataID" : "VG9kbzow",
+      "fields" : {
+        "__typename" : {
+          "__type" : "string",
+          "value" : "Todo"
+        },
+        "complete" : {
+          "__type" : "int",
+          "value" : 1
+        },
+        "id" : {
+          "__type" : "string",
+          "value" : "VG9kbzow"
+        },
+        "text" : {
+          "__type" : "string",
+          "value" : "Taste JavaScript"
+        }
+      },
+      "typename" : "Todo"
+    },
+    "VG9kbzox" : {
+      "dataID" : "VG9kbzox",
+      "fields" : {
+        "__typename" : {
+          "__type" : "string",
+          "value" : "Todo"
+        },
+        "complete" : {
+          "__type" : "int",
+          "value" : 0
+        },
+        "id" : {
+          "__type" : "string",
+          "value" : "VG9kbzox"
+        },
+        "text" : {
+          "__type" : "string",
+          "value" : "Buy a unicorn"
+        }
+      },
+      "typename" : "Todo"
+    },
+    "VG9kbzox2" : {
+      "dataID" : "VG9kbzox2",
+      "fields" : {
+        "complete" : {
+          "__type" : "int",
+          "value" : 0
+        },
+        "id" : {
+          "__type" : "string",
+          "value" : "VG9kbzox2"
+        },
+        "text" : {
+          "__type" : "string",
+          "value" : "Buy GME"
+        }
+      },
+      "typename" : "Todo"
+    },
+    "VXNlcjptZQ==" : {
+      "dataID" : "VXNlcjptZQ==",
+      "fields" : {
+        "__ToDoList_todos_connection" : {
+          "__type" : "linkedRecord",
+          "value" : "client:VXNlcjptZQ==:__ToDoList_todos_connection"
+        },
+        "id" : {
+          "__type" : "string",
+          "value" : "VXNlcjptZQ=="
+        },
+        "todos(first:100)" : {
+          "__type" : "linkedRecord",
+          "value" : "client:local:0"
+        }
+      },
+      "typename" : "User"
+    }
+  }
+}

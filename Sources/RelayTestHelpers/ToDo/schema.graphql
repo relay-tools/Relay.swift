@@ -5,7 +5,8 @@ input AddTodoInput {
 }
 
 type AddTodoPayload {
-  todoEdge: TodoEdge!
+  # TODO change this back to `TodoEdge!` after https://github.com/facebook/relay/pull/3340 is available in a packaged version
+  todoEdge: TodoEdge
   user: User!
   clientMutationId: String
 }

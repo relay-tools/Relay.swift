@@ -12,4 +12,5 @@ public struct HandleFieldPayload {
     var fieldKey: String
     var handle: String
     var handleKey: String
+    var handleArgs: VariableData
 }

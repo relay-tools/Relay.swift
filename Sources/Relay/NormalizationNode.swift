@@ -112,6 +112,7 @@ public struct NormalizationHandle: Storable {
     public var key: String
     // TODO dynamicKey? Not sure what this does
     public var filters: [String]?
+    public var handleArgs: [Argument]?
 
     public init(
         kind: Kind,
@@ -120,7 +121,8 @@ public struct NormalizationHandle: Storable {
         args: [Argument]? = nil,
         handle: String,
         key: String,
-        filters: [String]? = nil) {
+        filters: [String]? = nil,
+        handleArgs: [Argument]? = nil) {
         self.kind = kind
         self.name = name
         self.alias = alias
@@ -128,6 +130,7 @@ public struct NormalizationHandle: Storable {
         self.handle = handle
         self.key = key
         self.filters = filters
+        self.handleArgs = handleArgs
     }
 
     public var storageKey: String? { nil }

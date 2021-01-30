@@ -53,7 +53,8 @@ class ResponseNormalizer {
                     dataID: record.dataID,
                     fieldKey: handle.storageKey(from: variables),
                     handle: handle.handle,
-                    handleKey: handle.handleKey(from: variables)
+                    handleKey: handle.handleKey(from: variables),
+                    handleArgs: handle.handleArgs.map { getArgumentValues($0, variables) } ?? VariableData()
                 ))
             case .clientExtension(let clientExtension):
                 let isClientExtension = self.isClientExtension

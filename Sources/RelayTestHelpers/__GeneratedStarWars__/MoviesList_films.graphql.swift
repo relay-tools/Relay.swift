@@ -58,6 +58,13 @@ public struct MoviesList_films {
                                     name: "hasNextPage"
                                 ))
                             ]
+                        )),
+                        .clientExtension(ReaderClientExtension(
+                            selections: [
+                                .field(ReaderScalarField(
+                                    name: "__id"
+                                ))
+                            ]
                         ))
                     ]
                 ))
@@ -71,6 +78,7 @@ extension MoviesList_films {
         public var allFilms: FilmsConnection_allFilms?
 
         public struct FilmsConnection_allFilms: Decodable, ConnectionCollection {
+            public var __id: String
             public var edges: [FilmsEdge_edges?]?
 
             public struct FilmsEdge_edges: Decodable, ConnectionEdge {

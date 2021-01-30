@@ -93,6 +93,10 @@ public struct Record: Equatable {
 
     public subscript(_ storageKey: String) -> Any? {
         get {
+            if storageKey == "__id" {
+                return dataID.rawValue
+            }
+
             if let value = fields[storageKey] {
                 if let s = value.scalar {
                     return s

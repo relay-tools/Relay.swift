@@ -58,6 +58,13 @@ public struct ToDoList_user {
                                     name: "hasNextPage"
                                 ))
                             ]
+                        )),
+                        .clientExtension(ReaderClientExtension(
+                            selections: [
+                                .field(ReaderScalarField(
+                                    name: "__id"
+                                ))
+                            ]
                         ))
                     ]
                 )),
@@ -75,6 +82,7 @@ extension ToDoList_user {
         public var id: String?
 
         public struct TodoConnection_todos: Decodable, ConnectionCollection {
+            public var __id: String
             public var edges: [TodoEdge_edges?]?
 
             public struct TodoEdge_edges: Decodable, ConnectionEdge {

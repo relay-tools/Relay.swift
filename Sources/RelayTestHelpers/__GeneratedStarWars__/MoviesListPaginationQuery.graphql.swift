@@ -83,6 +83,13 @@ public struct MoviesListPaginationQuery {
                                         name: "hasNextPage"
                                     ))
                                 ]
+                            )),
+                            .clientExtension(NormalizationClientExtension(
+                                selections: [
+                                    .field(NormalizationScalarField(
+                                        name: "__id"
+                                    ))
+                                ]
                             ))
                         ]
                     )),

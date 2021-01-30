@@ -29,7 +29,7 @@
               - some: "FilmsConnection"
             - name: "allFilms"
             - plural: false
-            ▿ selections: 2 elements
+            ▿ selections: 3 elements
               ▿ NormalizationSelection
                 ▿ field: NormalizationLinkedField
                   - alias: Optional<String>.none
@@ -114,6 +114,15 @@
                         - name: "hasNextPage"
                         - storageKey: Optional<String>.none
                   - storageKey: Optional<String>.none
+              ▿ NormalizationSelection
+                ▿ clientExtension: NormalizationClientExtension
+                  ▿ selections: 1 element
+                    ▿ NormalizationSelection
+                      ▿ field: NormalizationScalarField
+                        - alias: Optional<String>.none
+                        - args: Optional<Array<Argument>>.none
+                        - name: "__id"
+                        - storageKey: Optional<String>.none
             ▿ storageKey: Optional<String>
               - some: "allFilms(first:3)"
         ▿ NormalizationSelection

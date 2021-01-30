@@ -2,4 +2,5 @@
   ▿ some: Data
     ▿ allFilms: Optional<FilmsConnection_allFilms>
       ▿ some: FilmsConnection_allFilms
+        - __id: "client:root:__MoviesList_allFilms_connection"
         - edges: Optional<Array<Optional<FilmsEdge_edges>>>.none

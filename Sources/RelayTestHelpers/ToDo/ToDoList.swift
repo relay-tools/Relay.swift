@@ -9,6 +9,7 @@ fragment ToDoList_user on User
     ) {
     todos(first: $count, after: $cursor)
         @connection(key: "ToDoList_todos") {
+        __id
         edges {
             node {
                 id

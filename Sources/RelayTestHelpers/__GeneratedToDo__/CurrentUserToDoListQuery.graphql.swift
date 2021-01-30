@@ -99,6 +99,13 @@ public struct CurrentUserToDoListQuery {
                                                 name: "hasNextPage"
                                             ))
                                         ]
+                                    )),
+                                    .clientExtension(NormalizationClientExtension(
+                                        selections: [
+                                            .field(NormalizationScalarField(
+                                                name: "__id"
+                                            ))
+                                        ]
                                     ))
                                 ]
                             )),

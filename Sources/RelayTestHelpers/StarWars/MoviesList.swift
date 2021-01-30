@@ -9,6 +9,7 @@ fragment MoviesList_films on Root
 @refetchable(queryName: "MoviesListPaginationQuery") {
   allFilms(first: $count, after: $cursor)
   @connection(key: "MoviesList_allFilms") {
+    __id
     edges {
       node {
         id

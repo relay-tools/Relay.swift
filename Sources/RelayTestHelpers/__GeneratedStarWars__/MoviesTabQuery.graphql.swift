@@ -79,6 +79,13 @@ public struct MoviesTabQuery {
                                         name: "hasNextPage"
                                     ))
                                 ]
+                            )),
+                            .clientExtension(NormalizationClientExtension(
+                                selections: [
+                                    .field(NormalizationScalarField(
+                                        name: "__id"
+                                    ))
+                                ]
                             ))
                         ]
                     )),

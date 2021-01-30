@@ -77,9 +77,9 @@ public struct ToDoList_user {
 }
 
 extension ToDoList_user {
-    public struct Data: Decodable {
+    public struct Data: Decodable, Identifiable {
         public var todos: TodoConnection_todos?
-        public var id: String?
+        public var id: String
 
         public struct TodoConnection_todos: Decodable, ConnectionCollection {
             public var __id: String

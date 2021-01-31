@@ -1,0 +1,16 @@
+{
+  "deletedRecordIDs" : [
+
+  ],
+  "records" : {
+    "client:root" : {
+      "dataID" : "client:root",
+      "fields" : {
+        "currentTrip" : {
+          "__type" : "null"
+        }
+      },
+      "typename" : "__Root"
+    }
+  }
+}

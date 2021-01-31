@@ -103,6 +103,8 @@ public struct Record: Equatable {
                 } else {
                     preconditionFailure("Expected a scalar (non-link) value for key \(storageKey)")
                 }
+            } else if storageKey == "__typename" {
+                return typename
             } else {
                 return nil
             }

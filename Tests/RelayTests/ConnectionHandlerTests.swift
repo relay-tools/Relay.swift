@@ -136,6 +136,15 @@ class ConnectionHandlerTests: XCTestCase {
         assertSnapshot(matching: mutator.sink, as: .recordSource)
     }
 
+    func testGetConnectionID() throws {
+        try loadInitialPage()
+        createStoreProxy()
+
+        let connection = ConnectionHandler.default.getConnection(store.root, key: "MoviesList_allFilms")!
+        let connectionID = ConnectionHandler.default.getConnectionID(parentID: Record.root.dataID, key: "MoviesList_allFilms")
+        expect(connection.dataID) == connectionID
+    }
+
     private func createStoreProxy() {
         mutator = RecordSourceMutator(base: environment.store.recordSource, sink: DefaultRecordSource())
         store = DefaultRecordSourceProxy(mutator: mutator, handlerProvider: DefaultHandlerProvider())

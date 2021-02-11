@@ -1,13 +1,13 @@
 module.exports = {
   title: "Relay.swift",
-  tagline: "The tagline of my site",
-  url: "https://your-docusaurus-test-site.com",
-  baseUrl: "/",
+  tagline: "",
+  url: "https://relay-tools.github.io",
+  baseUrl: "/Relay.swift/",
   onBrokenLinks: "throw",
   onBrokenMarkdownLinks: "warn",
   favicon: "img/favicon.ico",
-  organizationName: "facebook", // Usually your GitHub org/user name.
-  projectName: "docusaurus", // Usually your repo name.
+  organizationName: "relay-tools",
+  projectName: "Relay.swift",
   themeConfig: {
     prism: {
       additionalLanguages: ["swift"],
@@ -21,7 +21,12 @@ module.exports = {
           label: "Docs",
           position: "left",
         },
-        { to: "blog", label: "Blog", position: "left" },
+        {
+          to: "releases/",
+          activeBasePath: "releases",
+          label: "Releases",
+          position: "left",
+        },
         {
           href: "https://github.com/relay-tools/Relay.swift",
           label: "GitHub",
@@ -66,12 +71,8 @@ module.exports = {
           title: "More",
           items: [
             {
-              label: "Blog",
-              to: "blog",
-            },
-            {
               label: "GitHub",
-              href: "https://github.com/facebook/docusaurus",
+              href: "https://github.com/relay-tools/Relay.swift",
             },
           ],
         },
@@ -89,15 +90,24 @@ module.exports = {
           editUrl:
             "https://github.com/relay-tools/Relay.swift/edit/main/website/",
         },
-        blog: {
-          showReadingTime: true,
-          // Please change this to your repo.
-          editUrl:
-            "https://github.com/facebook/docusaurus/edit/master/website/blog/",
-        },
+        blog: false,
         theme: {
           customCss: require.resolve("./src/css/custom.css"),
         },
+      },
+    ],
+  ],
+  plugins: [
+    [
+      "@docusaurus/plugin-content-blog",
+      {
+        id: "release-notes",
+        routeBasePath: "releases",
+        path: "./release-notes",
+        blogTitle: "Release notes",
+        blogSidebarCount: 10,
+        blogSidebarTitle: "Recent releases",
+        showReadingTime: false,
       },
     ],
   ],

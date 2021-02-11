@@ -48,5 +48,10 @@ module.exports = {
         },
       ],
     },
+    {
+      type: "category",
+      label: "Development",
+      items: ["development/contributing"],
+    },
   ],
 };

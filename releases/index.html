@@ -7,19 +7,20 @@
 <link rel="alternate" type="application/rss+xml" href="/Relay.swift/releases/rss.xml" title="Relay.swift Blog RSS Feed">
 <link rel="alternate" type="application/atom+xml" href="/Relay.swift/releases/atom.xml" title="Relay.swift Blog Atom Feed"><title data-react-helmet="true">Release notes | Relay.swift</title><meta data-react-helmet="true" property="og:title" content="Release notes | Relay.swift"><meta data-react-helmet="true" name="description" content="Blog"><meta data-react-helmet="true" property="og:description" content="Blog"><meta data-react-helmet="true" name="twitter:card" content="summary_large_image"><meta data-react-helmet="true" name="docusaurus_locale" content="en"><meta data-react-helmet="true" name="docusaurus_tag" content="default"><link data-react-helmet="true" rel="shortcut icon" href="/Relay.swift/img/favicon.ico"><link rel="stylesheet" href="/Relay.swift/styles.62dfcd7f.css">
 <link rel="preload" href="/Relay.swift/styles.d07b0fc4.js" as="script">
-<link rel="preload" href="/Relay.swift/runtime~main.a771f272.js" as="script">
-<link rel="preload" href="/Relay.swift/main.363275a7.js" as="script">
-<link rel="preload" href="/Relay.swift/1.b36227a4.js" as="script">
-<link rel="preload" href="/Relay.swift/2.e2824f9c.js" as="script">
-<link rel="preload" href="/Relay.swift/a6aa9e1f.8d11a905.js" as="script">
-<link rel="preload" href="/Relay.swift/f48efbea.8dc82bea.js" as="script">
-<link rel="preload" href="/Relay.swift/11407590.11d41c41.js" as="script">
-<link rel="preload" href="/Relay.swift/34367abb.c5bcf200.js" as="script">
-<link rel="preload" href="/Relay.swift/a8241e79.681a3ae9.js" as="script">
-<link rel="preload" href="/Relay.swift/359ae8c1.7a67a878.js" as="script">
-<link rel="preload" href="/Relay.swift/ee3c1410.57bf50af.js" as="script">
-<link rel="preload" href="/Relay.swift/6fe9d200.9ae23a03.js" as="script">
-<link rel="preload" href="/Relay.swift/0e7eab93.e4a211bc.js" as="script">
+<link rel="preload" href="/Relay.swift/runtime~main.84bef420.js" as="script">
+<link rel="preload" href="/Relay.swift/main.45f4000f.js" as="script">
+<link rel="preload" href="/Relay.swift/1.29235cbc.js" as="script">
+<link rel="preload" href="/Relay.swift/2.770a7ae4.js" as="script">
+<link rel="preload" href="/Relay.swift/3.3db0bc1e.js" as="script">
+<link rel="preload" href="/Relay.swift/a6aa9e1f.be332bce.js" as="script">
+<link rel="preload" href="/Relay.swift/fdeac7df.2553a9ce.js" as="script">
+<link rel="preload" href="/Relay.swift/11407590.0a592ca2.js" as="script">
+<link rel="preload" href="/Relay.swift/34367abb.6c2f6013.js" as="script">
+<link rel="preload" href="/Relay.swift/a8241e79.9fd2cb57.js" as="script">
+<link rel="preload" href="/Relay.swift/359ae8c1.228a8483.js" as="script">
+<link rel="preload" href="/Relay.swift/ee3c1410.0dababe3.js" as="script">
+<link rel="preload" href="/Relay.swift/6fe9d200.e8784c47.js" as="script">
+<link rel="preload" href="/Relay.swift/0e7eab93.96b949ee.js" as="script">
 </head>
 <body>
 <script>!function(){function t(t){document.documentElement.setAttribute("data-theme",t)}var e=function(){var t=null;try{t=localStorage.getItem("theme")}catch(t){}return t}();t(null!==e?e:"light")}()</script><div id="__docusaurus">
@@ -37,18 +38,19 @@
 </span></div><div class="token-line" style="color:#393A34"><span class="token plain">    var body: some View { /* ... */ }</span></div><div class="token-line" style="color:#393A34"><span class="token plain">}</span></div></div></div><button type="button" aria-label="Copy code to clipboard" class="copyButton_2GIj">Copy</button></div></div><h3><a aria-hidden="true" tabindex="-1" class="anchor enhancedAnchor_prK2" id="fixed"></a>Fixed<a class="hash-link" href="#fixed" title="Direct link to heading">#</a></h3><ul><li>The garbage collector will now only collect records on the final release of a query (instead of on every release).</li><li>A retain cycle between RecordSourceProxy and its RecordProxy instances has been fixed.</li></ul></section></article><article class="margin-bottom--xl"><header><h2 class="margin-bottom--sm blogPostTitle_3-lP"><a href="/Relay.swift/releases/2020/06/28/0.3.0">0.3.0</a></h2><div class="margin-vert--md"><time datetime="2020-06-28T00:00:00.000Z" class="blogPostDate_Ta7i">June 28, 2020 </time></div><div class="avatar margin-vert--md"><div class="avatar__intro"></div></div></header><section class="markdown"><h3><a aria-hidden="true" tabindex="-1" class="anchor enhancedAnchor_prK2" id="added"></a>Added<a class="hash-link" href="#added" title="Direct link to heading">#</a></h3><ul><li><p>A <a href="/Relay.swift/docs/api/mock-environment">MockEnvironment</a> is now available to allow for writing tests or SwiftUI previews</p></li><li><p>The default <code>ConnectionHandler</code> has new methods that can be used to update paged result sets in an <code>updater</code> function of a mutation. See the <a href="/Relay.swift/docs/api/connection-handler">ConnectionHandler</a> docs to learn more.</p></li><li><p>Records in the Relay store that are no longer referenced by a visible view will be garbage-collected to free up memory</p></li><li><p><a href="/Relay.swift/docs/api/mutation">@Mutation</a>&#x27;s <code>commit</code> function now takes an <code>onComplete</code> block that will be called once the network has completed the mutation</p></li><li><p>All four SwiftUI property wrappers now have an experimental <code>Next</code> variant (e.g. <code>QueryNext</code>) that&#x27;s only available on iOS 14 or later (and equivalent versions of other Apple platforms). These versions use the new <code>@StateObject</code> wrapper to let SwiftUI manage the storage of their internal state and tie it to the lifetime of the view. This is more correct than the existing property wrappers, which can sometimes get recreated unnecessarily when other view state changes.</p><p>The API for these new wrappers is experimental and may change. In some future release after these platform versions are no longer in beta, support for iOS 13 will be dropped and these new wrappers will replace the existing ones.</p><p>If you&#x27;re targeting a minimum of iOS 14 (or equivalent), you can use the new wrappers in your app. You may find it handy to make type aliases to the existing names (which will override the names imported from <code>RelaySwiftUI</code>):</p></li></ul><div class="mdxCodeBlock_1zKU"><div class="codeBlockContent_actS"><div tabindex="0" class="prism-code language-swift codeBlock_tuNs thin-scrollbar"><div class="codeBlockLines_3uvA" style="color:#393A34;background-color:#f6f8fa"><div class="token-line" style="color:#393A34"><span class="token plain">import RelaySwiftUI</span></div><div class="token-line" style="color:#393A34"><span class="token plain" style="display:inline-block">
 </span></div><div class="token-line" style="color:#393A34"><span class="token plain">typealias Fragment = RelaySwiftUI.FragmentNext</span></div><div class="token-line" style="color:#393A34"><span class="token plain">typealias PaginationFragment = RelaySwiftUI.PaginationFragmentNext</span></div><div class="token-line" style="color:#393A34"><span class="token plain">typealias Query = RelaySwiftUI.QueryNext</span></div><div class="token-line" style="color:#393A34"><span class="token plain">typealias Mutation = RelaySwiftUI.MutationNext</span></div></div></div><button type="button" aria-label="Copy code to clipboard" class="copyButton_2GIj">Copy</button></div></div><h3><a aria-hidden="true" tabindex="-1" class="anchor enhancedAnchor_prK2" id="changed"></a>Changed<a class="hash-link" href="#changed" title="Direct link to heading">#</a></h3><ul><li>The Swift types generated for reading fragment data now implement Swift&#x27;s <code>Decodable</code> protocol rather than a custom <code>Readable</code> protocol. The Relay compiler no longer needs to generate <code>init(from: SelectorData)</code> methods for all of these types, and in many cases can rely on Swift itself to synthesize an implementation for <code>init(from: Decoder)</code>.</li></ul><h3><a aria-hidden="true" tabindex="-1" class="anchor enhancedAnchor_prK2" id="fixed"></a>Fixed<a class="hash-link" href="#fixed" title="Direct link to heading">#</a></h3><ul><li>Union and interface types can be used and will generate appropriate Swift types</li><li><code>optimisticUpdater</code> and <code>updater</code> functions are now supported in mutations. Previously, they could be passed in but they did nothing.</li><li>The <code>errors</code> in a GraphQL response payload are processed and handled correctly.</li></ul></section></article><article class="margin-bottom--xl"><header><h2 class="margin-bottom--sm blogPostTitle_3-lP"><a href="/Relay.swift/releases/2020/05/20/0.2.0">0.2.0</a></h2><div class="margin-vert--md"><time datetime="2020-05-20T00:00:00.000Z" class="blogPostDate_Ta7i">May 20, 2020 </time></div><div class="avatar margin-vert--md"><div class="avatar__intro"></div></div></header><section class="markdown"><h3><a aria-hidden="true" tabindex="-1" class="anchor enhancedAnchor_prK2" id="added"></a>Added<a class="hash-link" href="#added" title="Direct link to heading">#</a></h3><ul><li><code>environment.fetchQuery</code> method for loading query data without presenting it in a view</li><li>ToDo list example app</li></ul><h3><a aria-hidden="true" tabindex="-1" class="anchor enhancedAnchor_prK2" id="changed"></a>Changed<a class="hash-link" href="#changed" title="Direct link to heading">#</a></h3><ul><li>Changed generic type in <code>Mutator</code> from <code>O</code> to <code>Operation</code> to make extensions clearer</li><li>Generated <code>Operation</code> and <code>Fragment</code> types now keep variables or keys on instances of the types</li><li>Cleaned up generating request identifiers</li></ul><h3><a aria-hidden="true" tabindex="-1" class="anchor enhancedAnchor_prK2" id="fixed"></a>Fixed<a class="hash-link" href="#fixed" title="Direct link to heading">#</a></h3><ul><li>Updated the Pokedex and Star Wars example apps to work with the current APIs</li></ul><h3><a aria-hidden="true" tabindex="-1" class="anchor enhancedAnchor_prK2" id="removed"></a>Removed<a class="hash-link" href="#removed" title="Direct link to heading">#</a></h3><ul><li>Removed unused <code>AnyEncodable</code> struct</li></ul></section></article><article class="margin-bottom--xl"><header><h2 class="margin-bottom--sm blogPostTitle_3-lP"><a href="/Relay.swift/releases/2020/05/17/0.1.0">0.1.0</a></h2><div class="margin-vert--md"><time datetime="2020-05-17T00:00:00.000Z" class="blogPostDate_Ta7i">May 17, 2020 </time></div><div class="avatar margin-vert--md"><div class="avatar__intro"></div></div></header><section class="markdown"><p>Initial release!</p></section></article><nav class="pagination-nav" aria-label="Blog list page navigation"><div class="pagination-nav__item"></div><div class="pagination-nav__item pagination-nav__item--next"></div></nav></main></div></div></div><footer class="footer footer--dark"><div class="container"><div class="footer__bottom text--center"><div class="footer__copyright">Copyright © 2021 Matt Moriarity.</div></div></div></footer></div>
 <script src="/Relay.swift/styles.d07b0fc4.js"></script>
-<script src="/Relay.swift/runtime~main.a771f272.js"></script>
-<script src="/Relay.swift/main.363275a7.js"></script>
-<script src="/Relay.swift/1.b36227a4.js"></script>
-<script src="/Relay.swift/2.e2824f9c.js"></script>
-<script src="/Relay.swift/a6aa9e1f.8d11a905.js"></script>
-<script src="/Relay.swift/f48efbea.8dc82bea.js"></script>
-<script src="/Relay.swift/11407590.11d41c41.js"></script>
-<script src="/Relay.swift/34367abb.c5bcf200.js"></script>
-<script src="/Relay.swift/a8241e79.681a3ae9.js"></script>
-<script src="/Relay.swift/359ae8c1.7a67a878.js"></script>
-<script src="/Relay.swift/ee3c1410.57bf50af.js"></script>
-<script src="/Relay.swift/6fe9d200.9ae23a03.js"></script>
-<script src="/Relay.swift/0e7eab93.e4a211bc.js"></script>
+<script src="/Relay.swift/runtime~main.84bef420.js"></script>
+<script src="/Relay.swift/main.45f4000f.js"></script>
+<script src="/Relay.swift/1.29235cbc.js"></script>
+<script src="/Relay.swift/2.770a7ae4.js"></script>
+<script src="/Relay.swift/3.3db0bc1e.js"></script>
+<script src="/Relay.swift/a6aa9e1f.be332bce.js"></script>
+<script src="/Relay.swift/fdeac7df.2553a9ce.js"></script>
+<script src="/Relay.swift/11407590.0a592ca2.js"></script>
+<script src="/Relay.swift/34367abb.6c2f6013.js"></script>
+<script src="/Relay.swift/a8241e79.9fd2cb57.js"></script>
+<script src="/Relay.swift/359ae8c1.228a8483.js"></script>
+<script src="/Relay.swift/ee3c1410.0dababe3.js"></script>
+<script src="/Relay.swift/6fe9d200.e8784c47.js"></script>
+<script src="/Relay.swift/0e7eab93.96b949ee.js"></script>
 </body>
 </html>

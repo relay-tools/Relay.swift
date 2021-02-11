@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<rss version="2.0">
+    <channel>
+        <title>Relay.swift Blog</title>
+        <link>https://relay-tools.github.io/releases</link>
+        <description>Relay.swift Blog</description>
+        <lastBuildDate>Tue, 29 Dec 2020 00:00:00 GMT</lastBuildDate>
+        <docs>https://validator.w3.org/feed/docs/rss2.html</docs>
+        <generator>https://github.com/jpmonette/feed</generator>
+        <item>
+            <title><![CDATA[1.0.0]]></title>
+            <link>https://relay-tools.github.io/Relay.swift/releases/2020/12/29/1.0.0</link>
+            <guid>1.0.0</guid>
+            <pubDate>Tue, 29 Dec 2020 00:00:00 GMT</pubDate>
+            <description><![CDATA[Changed]]></description>
+        </item>
+        <item>
+            <title><![CDATA[0.5.0]]></title>
+            <link>https://relay-tools.github.io/Relay.swift/releases/2020/08/08/0.5.0</link>
+            <guid>0.5.0</guid>
+            <pubDate>Sat, 08 Aug 2020 00:00:00 GMT</pubDate>
+            <description><![CDATA[Added]]></description>
+        </item>
+        <item>
+            <title><![CDATA[0.4.0]]></title>
+            <link>https://relay-tools.github.io/Relay.swift/releases/2020/07/25/0.4.0</link>
+            <guid>0.4.0</guid>
+            <pubDate>Sat, 25 Jul 2020 00:00:00 GMT</pubDate>
+            <description><![CDATA[Added]]></description>
+        </item>
+        <item>
+            <title><![CDATA[0.3.0]]></title>
+            <link>https://relay-tools.github.io/Relay.swift/releases/2020/06/28/0.3.0</link>
+            <guid>0.3.0</guid>
+            <pubDate>Sun, 28 Jun 2020 00:00:00 GMT</pubDate>
+            <description><![CDATA[Added]]></description>
+        </item>
+        <item>
+            <title><![CDATA[0.2.0]]></title>
+            <link>https://relay-tools.github.io/Relay.swift/releases/2020/05/20/0.2.0</link>
+            <guid>0.2.0</guid>
+            <pubDate>Wed, 20 May 2020 00:00:00 GMT</pubDate>
+            <description><![CDATA[Added]]></description>
+        </item>
+        <item>
+            <title><![CDATA[0.1.0]]></title>
+            <link>https://relay-tools.github.io/Relay.swift/releases/2020/05/17/0.1.0</link>
+            <guid>0.1.0</guid>
+            <pubDate>Sun, 17 May 2020 00:00:00 GMT</pubDate>
+            <description><![CDATA[Initial release!]]></description>
+        </item>
+    </channel>
+</rss>

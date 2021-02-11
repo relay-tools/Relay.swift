@@ -1,0 +1,1 @@
+(window.webpackJsonp=window.webpackJsonp||[]).push([[5],{69:function(e){e.exports=JSON.parse('{"permalink":"/Relay.swift/releases","page":1,"postsPerPage":10,"totalPages":1,"totalCount":6,"previousPage":null,"nextPage":null,"blogDescription":"Blog","blogTitle":"Release notes"}')}}]);

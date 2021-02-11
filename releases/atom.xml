@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+    <id>https://relay-tools.github.io/releases</id>
+    <title>Relay.swift Blog</title>
+    <updated>2020-12-29T00:00:00.000Z</updated>
+    <generator>https://github.com/jpmonette/feed</generator>
+    <link rel="alternate" href="https://relay-tools.github.io/releases"/>
+    <subtitle>Relay.swift Blog</subtitle>
+    <icon>https://relay-tools.github.io/img/favicon.ico</icon>
+    <entry>
+        <title type="html"><![CDATA[1.0.0]]></title>
+        <id>1.0.0</id>
+        <link href="https://relay-tools.github.io/Relay.swift/releases/2020/12/29/1.0.0"/>
+        <updated>2020-12-29T00:00:00.000Z</updated>
+        <summary type="html"><![CDATA[Changed]]></summary>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[0.5.0]]></title>
+        <id>0.5.0</id>
+        <link href="https://relay-tools.github.io/Relay.swift/releases/2020/08/08/0.5.0"/>
+        <updated>2020-08-08T00:00:00.000Z</updated>
+        <summary type="html"><![CDATA[Added]]></summary>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[0.4.0]]></title>
+        <id>0.4.0</id>
+        <link href="https://relay-tools.github.io/Relay.swift/releases/2020/07/25/0.4.0"/>
+        <updated>2020-07-25T00:00:00.000Z</updated>
+        <summary type="html"><![CDATA[Added]]></summary>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[0.3.0]]></title>
+        <id>0.3.0</id>
+        <link href="https://relay-tools.github.io/Relay.swift/releases/2020/06/28/0.3.0"/>
+        <updated>2020-06-28T00:00:00.000Z</updated>
+        <summary type="html"><![CDATA[Added]]></summary>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[0.2.0]]></title>
+        <id>0.2.0</id>
+        <link href="https://relay-tools.github.io/Relay.swift/releases/2020/05/20/0.2.0"/>
+        <updated>2020-05-20T00:00:00.000Z</updated>
+        <summary type="html"><![CDATA[Added]]></summary>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[0.1.0]]></title>
+        <id>0.1.0</id>
+        <link href="https://relay-tools.github.io/Relay.swift/releases/2020/05/17/0.1.0"/>
+        <updated>2020-05-17T00:00:00.000Z</updated>
+        <summary type="html"><![CDATA[Initial release!]]></summary>
+    </entry>
+</feed>

@@ -6,7 +6,7 @@ title: ConnectionHandler
 class ConnectionHandler: Handler
 ```
 
-The `ConnectionHandler` implements the special logic to handle storing fields tagged with the `@connection` directive. These fields are most commonly used with [@PaginationFragment](../API%20Reference%20Relay%20in%20SwiftUI%20e8c792bb5a824ec5a4e988ea6fd2cd88/@PaginationFragment%2004afaa5ab57b4346a7efd4223ec49873.md)s. The default `HandlerProvider` for an environment already includes the `ConnectionHandler`, so for the most part, this works out-of-the-box. 
+The `ConnectionHandler` implements the special logic to handle storing fields tagged with the `@connection` directive. These fields are most commonly used with [@PaginationFragment](pagination-fragment.md)s. The default `HandlerProvider` for an environment already includes the `ConnectionHandler`, so for the most part, this works out-of-the-box. 
 
 If you have mutations that want to use `updater` functions to change the lists of edges for your connections, `ConnectionHandler` exposes some methods that will make those operations much easier.
 

@@ -25,9 +25,9 @@ struct ToDoItem: View {
 }
 ```
 
-This is a pretty simple view, but it's already showing one of the challenges we face when building UIs with many small views. The `text` and `complete` data this view needs are available on the `Todo` type in our GraphQL schema, but how do we get them into this view? If we use a [@Query](../API%20Reference%20Relay%20in%20SwiftUI%20e8c792bb5a824ec5a4e988ea6fd2cd88/@Query%20c64f4da9e8c944889e40a2f6c5ddb248.md), then every single to-do item in the list will make a separate network request to the server to load its data, so we probably don't want to do that.
+This is a pretty simple view, but it's already showing one of the challenges we face when building UIs with many small views. The `text` and `complete` data this view needs are available on the `Todo` type in our GraphQL schema, but how do we get them into this view? If we use a [@Query](../api/query.md), then every single to-do item in the list will make a separate network request to the server to load its data, so we probably don't want to do that.
 
-We could just make sure to include these fields in a [@Query](../API%20Reference%20Relay%20in%20SwiftUI%20e8c792bb5a824ec5a4e988ea6fd2cd88/@Query%20c64f4da9e8c944889e40a2f6c5ddb248.md) on a component higher-up in the tree and then pass that data down into the `ToDoItem` view. But this makes it harder to re-use the view elsewhere in the app, since those fields will need to be included in those queries as well. Even if this is the only screen where we use this view, this approach has problems. Other views that render a `ToDoItem` shouldn't have to care exactly what data it needs, and if we combine fields from many views into a single query, it's unclear which views are using a given piece of data.
+We could just make sure to include these fields in a [@Query](../api/query.md) on a component higher-up in the tree and then pass that data down into the `ToDoItem` view. But this makes it harder to re-use the view elsewhere in the app, since those fields will need to be included in those queries as well. Even if this is the only screen where we use this view, this approach has problems. Other views that render a `ToDoItem` shouldn't have to care exactly what data it needs, and if we combine fields from many views into a single query, it's unclear which views are using a given piece of data.
 
 Relay and Relay.swift are designed to help with this problem by making it easy to compose not just views but also the data they require. To do this, we use GraphQL fragments, which let us define a named selection of fields on a GraphQL type. Let's define one for `ToDoItem`:
 
@@ -72,7 +72,7 @@ struct ToDoItem: View {
 }
 ```
 
-We're using the [@Fragment](../API%20Reference%20Relay%20in%20SwiftUI%20e8c792bb5a824ec5a4e988ea6fd2cd88/@Fragment%205bb478751b8a403e90dd8e16d3929031.md) property wrapper this time instead of [@Query](../API%20Reference%20Relay%20in%20SwiftUI%20e8c792bb5a824ec5a4e988ea6fd2cd88/@Query%20c64f4da9e8c944889e40a2f6c5ddb248.md). [@Fragment](../API%20Reference%20Relay%20in%20SwiftUI%20e8c792bb5a824ec5a4e988ea6fd2cd88/@Fragment%205bb478751b8a403e90dd8e16d3929031.md) doesn't load new data over the network; instead, it lets us read data that's already been loaded by another fragment or query.
+We're using the [@Fragment](../api/fragment.md) property wrapper this time instead of [@Query](../api/query.md). [@Fragment](../api/fragment.md) doesn't load new data over the network; instead, it lets us read data that's already been loaded by another fragment or query.
 
 Now that we've wrapped up the data that `ToDoItem` needs in a fragment, we can't pass in the values for `text` and `complete` directly anymore. So how do we create a `ToDoItem` and tell it which to-do item to render? Let's see how to use this fragment view inside another view.
 
@@ -116,13 +116,13 @@ You might be surprised to find that if you tried to access the `text` or `comple
 
 Because we included the `...ToDoItem_todo` in our fragment, the generated `Todo_node` type has the `asFragment()` method, which converts it to a `@Fragment` value that can be passed directly to `ToDoItem`'s default initializer. The fragment it creates doesn't actually include the data that `ToDoItem` needs: it just has a pointer to where in Relay's store it can find that data. When the `todo` property is used in `ToDoItem`, it will look up that information itself.
 
-By using `asFragment()`, we can easily pass data between components using [@Fragment](../API%20Reference%20Relay%20in%20SwiftUI%20e8c792bb5a824ec5a4e988ea6fd2cd88/@Fragment%205bb478751b8a403e90dd8e16d3929031.md)s while ensuring each individual component is explicitly asking for exactly the data it needs.
+By using `asFragment()`, we can easily pass data between components using [@Fragment](../api/fragment.md)s while ensuring each individual component is explicitly asking for exactly the data it needs.
 
 ## Fetching fragment data
 
 Now we've seen how we can pass data from one fragment to another, but our `ToDoList` still takes in a fragment, which we can't construct ourselves. How we do complete the chain of fragments and actually load all the data required for them?
 
-We've already seen how to load data using a [@Query](../API%20Reference%20Relay%20in%20SwiftUI%20e8c792bb5a824ec5a4e988ea6fd2cd88/@Query%20c64f4da9e8c944889e40a2f6c5ddb248.md) property. That's exactly what we'll use to load our fragment data. We can include our fragments in queries just as well as other fragments. So to present a screen that shows the to-do list for the current user, we can create a view for that:
+We've already seen how to load data using a [@Query](../api/query.md) property. That's exactly what we'll use to load our fragment data. We can include our fragments in queries just as well as other fragments. So to present a screen that shows the to-do list for the current user, we can create a view for that:
 
 ```swift
 import SwiftUI

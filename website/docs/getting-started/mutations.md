@@ -67,9 +67,9 @@ struct ToDoItem: View {
 }
 ```
 
-To use our new mutation in a SwiftUI view, we add a [@Mutation](../API%20Reference%20Relay%20in%20SwiftUI%20e8c792bb5a824ec5a4e988ea6fd2cd88/@Mutation%20e058205564504b06a3e35bcc85d89f72.md) property for it. This property has a `commit` function and an `isInFlight` property. We use the `commit` function in the action of our new Button to perform the mutation. Until the server responds to us, the `isInFlight` property will be `true`. We use that to disable the button, both to indicate to the user that something is happening and to prevent redundant requests to the server.
+To use our new mutation in a SwiftUI view, we add a [@Mutation](../api/mutation.md) property for it. This property has a `commit` function and an `isInFlight` property. We use the `commit` function in the action of our new Button to perform the mutation. Until the server responds to us, the `isInFlight` property will be `true`. We use that to disable the button, both to indicate to the user that something is happening and to prevent redundant requests to the server.
 
-Once the server performs our mutation and responds to our request, Relay.swift will use the `id` and `complete` fields in the response to update the data in its local store. When this happens, we'll see the checkbox for our to-do item toggle automatically without us having to trigger an update. This works because [@Query](../API%20Reference%20Relay%20in%20SwiftUI%20e8c792bb5a824ec5a4e988ea6fd2cd88/@Query%20c64f4da9e8c944889e40a2f6c5ddb248.md) and [@Fragment](../API%20Reference%20Relay%20in%20SwiftUI%20e8c792bb5a824ec5a4e988ea6fd2cd88/@Fragment%205bb478751b8a403e90dd8e16d3929031.md) properties automatically subscribe to changes to their data, so whenever some data they're responsible for displaying changes in the store, they will re-render their view.
+Once the server performs our mutation and responds to our request, Relay.swift will use the `id` and `complete` fields in the response to update the data in its local store. When this happens, we'll see the checkbox for our to-do item toggle automatically without us having to trigger an update. This works because [@Query](../api/query.md) and [@Fragment](../api/fragment.md) properties automatically subscribe to changes to their data, so whenever some data they're responsible for displaying changes in the store, they will re-render their view.
 
 Because of how our input types are structured, our button's action callback is a little noisy. We can hide some of this complexity outside our view code behind a cleaner API. Let's add an extension to `ChangeTodoStatus.swift` to provide a cleaner commit function for this mutation:
 
@@ -101,7 +101,7 @@ extension Mutation.Mutator where Operation == ChangeTodoStatusMutation {
 }
 ```
 
-`Mutation.Mutator` is the type returned by a [@Mutation](../API%20Reference%20Relay%20in%20SwiftUI%20e8c792bb5a824ec5a4e988ea6fd2cd88/@Mutation%20e058205564504b06a3e35bcc85d89f72.md) property. We're adding a special `commit` function to this type specifically when the operation is a `ChangeTodoStatusMutation`. Now we can make our button action easier to read.
+`Mutation.Mutator` is the type returned by a [@Mutation](../api/mutation.md) property. We're adding a special `commit` function to this type specifically when the operation is a `ChangeTodoStatusMutation`. Now we can make our button action easier to read.
 
 ```swift
 Button {
@@ -172,6 +172,5 @@ Now when we tap our checkbox button, our UI will update immediately, and as long
 
 That's all for this guide. We've covered the basics of using Relay.swift to build SwiftUI apps, which will get you pretty far. You can find more detailed information in our API docs:
 
-[API Reference: Relay.swift](../API%20Reference%20Relay%20swift%205994b083207443c7ad3a286db6b0a2c8.md)
-
-[API Reference: Relay in SwiftUI](../API%20Reference%20Relay%20in%20SwiftUI%20e8c792bb5a824ec5a4e988ea6fd2cd88.md)
+- [API Reference: Relay.swift](../api/intro-relay.md)
+- [API Reference: Relay in SwiftUI](../api/intro-relay-swift-ui.md)

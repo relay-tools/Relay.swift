@@ -17,7 +17,7 @@ Relay automatically uses the responses to your mutations to update records in th
 
 One way to handle these would be to refetch any affected queries. But doing so would make your app less responsive by needing to wait for at least one extra network call, and it may get complicated keeping track of which queries will be affected. Updaters are fast, because they don't perform any extra network calls (you can even do them optimistically before the mutation has responded), and they keep the logic for how to update the state in one place with the mutation itself.
 
-If you're using `@connection` fields for pagination, see [ConnectionHandler](ConnectionHandler%2082c7b13210b6402ba32cdfb5dd297da7.md) for some convenient methods for manipulating those fields.
+If you're using `@connection` fields for pagination, see [ConnectionHandler](connection-handler.md) for some convenient methods for manipulating those fields.
 
 ## Getting records from the store
 
@@ -25,13 +25,13 @@ If you're using `@connection` fields for pagination, see [ConnectionHandler](Con
 var root: RecordProxy { get }
 ```
 
-The `root` property gives you a [RecordProxy](RecordProxy%2090d2cf8934fb41adaf36d0bd2b2f0b2f.md) for the root type in your schema (usually `Query` or `Root`). You can use the record proxy to traverse to the parts of your schema that you want to update.
+The `root` property gives you a [RecordProxy](record-proxy.md) for the root type in your schema (usually `Query` or `Root`). You can use the record proxy to traverse to the parts of your schema that you want to update.
 
 ```swift
 subscript(_ dataID: DataID) -> RecordProxy? { get }
 ```
 
-You can provide a specific ID of a record as a subscript to the record source proxy to get a [RecordProxy](RecordProxy%2090d2cf8934fb41adaf36d0bd2b2f0b2f.md) for that record. If the record is not in the store, this will be `nil`.
+You can provide a specific ID of a record as a subscript to the record source proxy to get a [RecordProxy](record-proxy.md) for that record. If the record is not in the store, this will be `nil`.
 
 ```swift
 func getRootField(_ fieldName: String) -> RecordProxy?
@@ -59,7 +59,7 @@ func updater(store: inout RecordSourceSelectorProxy, data: SelectorData?) {
 	guard
 		let changeTodoStatus = store.getRootField("changeTodoStatus"),
 		let todo = changeTodoStatus.getLinkedField("todo")
-  else {
+    else {
 		return
 	}
 
@@ -112,4 +112,4 @@ func invalidateStore()
 
 Marks the entire Relay store as invalid and needing to be refetched.
 
-If the store is invalidated, all of records currently present in the store will still exist, but when a [@Query](../API%20Reference%20Relay%20in%20SwiftUI%20e8c792bb5a824ec5a4e988ea6fd2cd88/@Query%20c64f4da9e8c944889e40a2f6c5ddb248.md) is rendered with a `.storeOrNetwork` or `.storeAndNetwork` fetch policy, those records will not be considered valid and will be ignored, requiring a network request to get the latest data. You can use this to ensure your UI doesn't display data that is known to be stale.
+If the store is invalidated, all of records currently present in the store will still exist, but when a [@Query](query.md) is rendered with a `.storeOrNetwork` or `.storeAndNetwork` fetch policy, those records will not be considered valid and will be ignored, requiring a network request to get the latest data. You can use this to ensure your UI doesn't display data that is known to be stale.

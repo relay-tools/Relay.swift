@@ -129,4 +129,4 @@ mutating func invalidateRecord()
 
 Marks the record as having invalid data that needs to be refreshed.
 
-If a record is invalidated, it will still exist in the store, but when a [@Query](../API%20Reference%20Relay%20in%20SwiftUI%20e8c792bb5a824ec5a4e988ea6fd2cd88/@Query%20c64f4da9e8c944889e40a2f6c5ddb248.md) is rendered with a `.storeOrNetwork` or `.storeAndNetwork` fetch policy, those records will not be considered valid and will be ignored, requiring a network request to get the latest data. You can use this to ensure your UI doesn't display data that is known to be stale.
+If a record is invalidated, it will still exist in the store, but when a [@Query](query.md) is rendered with a `.storeOrNetwork` or `.storeAndNetwork` fetch policy, those records will not be considered valid and will be ignored, requiring a network request to get the latest data. You can use this to ensure your UI doesn't display data that is known to be stale.

@@ -16,9 +16,15 @@ module.exports = {
       title: "Relay.swift",
       items: [
         {
-          to: "docs/",
-          activeBasePath: "docs",
+          type: "doc",
+          docId: "index",
           label: "Docs",
+          position: "left",
+        },
+        {
+          to: "docs/knowledge-base",
+          activeBasePath: "docs/knowledge-base",
+          label: "Knowledge base",
           position: "left",
         },
         {

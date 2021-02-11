@@ -8,7 +8,7 @@ func graphql(_ query: String) -> TaggedGraphQLQuery
 
 The `graphql` function is used to tag GraphQL strings in your application.
 
-When you run the Relay compiler, it will scan your source code for multiline string literals wrapped in the `graphql` function, and it will use those queries and fragments to perform [How code generation works](../Knowledge%20Base%20472752960b6b4afe854e4b3a814bbb54/How%20code%20generation%20works%2001f4b2f7a83343739312db8313abe53c.md).
+When you run the Relay compiler, it will scan your source code for multiline string literals wrapped in the `graphql` function, and it will use those queries and fragments to perform [How code generation works](../knowledge-base/updater-functions.md).
 
 Your GraphQL strings should be assigned to private constants (`private let foo = ...`) in the source file that uses the query or fragment. There are some conventions for naming the constant:
 

@@ -46,7 +46,7 @@ This section needs to updated based on the new Docusaurus-based website.
 
 This isn't currently something that other contributors besides Matt can do, but it's documented here anyway for completeness.
 
-Before releasing a new version, prepare a new page for it under [Release Notes](Release%20Notes%206e46962ce5e845c8ba4c76750d48f2ad.csv) that is tagged as "Unreleased". You can take your time preparing the notes.
+Before releasing a new version, prepare a new page for it under [Release Notes](#) that is tagged as "Unreleased". You can take your time preparing the notes.
 
 Once the notes are ready, the process for releasing a new version is largely automated:
 
@@ -60,5 +60,5 @@ Once the notes are ready, the process for releasing a new version is largely aut
 - Remove the "Unreleased" tag from the version's release notes page
 - Set the "Release date" for the page to the current date
 - Lock the page so it can't be changed
-- Update the "Latest version:" on  [Relay.swift](../Relay%20swift%20e6e1c35b170a4149940ff9c18c0b6875.md) to point to the new version's page
+- Update the "Latest version:" on  [Relay.swift](#) to point to the new version's page
 - Announce it!

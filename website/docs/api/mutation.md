@@ -85,7 +85,7 @@ The `commit` function takes several possible parameters, most of them optional:
 - `updater: (RecordSourceSelectorProxy, SelectorData?) -> Void`: *(optional)* An updater function that updates the Relay store once the mutation has succeeded and the response from the server has been committed to the Relay store. You can use this to make updates to the store that go beyond updating the fields of existing records (which will already be handled by Relay).
 - `completion: (Result<Operation.Data?, Error>) -> Void`: *(optional)* A function that will be called once the mutation has completed. You can use this to make imperative actions when the mutation completes or to update state that exists outside of Relay's store and therefore won't be updated automatically.
 
-See [Updater functions](../Knowledge%20Base%20472752960b6b4afe854e4b3a814bbb54/Updater%20functions%20b03f4d7d45d044e393b01545c4746079.md) for more information about how to use the `optimisticUpdater` and `updater` parameters.
+See [Updater functions](../knowledge-base/updater-functions.md) for more information about how to use the `optimisticUpdater` and `updater` parameters.
 
 ## Providing a convenience API
 

@@ -61,4 +61,4 @@ Note that you need to subscribe to the publisher that is returned (using `sink` 
 
 If you want to run a mutation in response to input from a SwiftUI view, use the [@Mutation](mutation.md) property wrapper, which manages this for you and makes it easy to show progress state in your UI while the mutation is running.
 
-For more information about how to use the `updater` and `optimisticUpdater` parameters, see [Updater functions](../Knowledge%20Base%20472752960b6b4afe854e4b3a814bbb54/Updater%20functions%20b03f4d7d45d044e393b01545c4746079.md).
+For more information about how to use the `updater` and `optimisticUpdater` parameters, see [Updater functions](../knowledge-base/updater-functions.md).

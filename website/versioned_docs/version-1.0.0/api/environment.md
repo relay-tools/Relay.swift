@@ -62,21 +62,3 @@ Note that you need to subscribe to the publisher that is returned (using `sink` 
 If you want to run a mutation in response to input from a SwiftUI view, use the [@Mutation](mutation.md) property wrapper, which manages this for you and makes it easy to show progress state in your UI while the mutation is running.
 
 For more information about how to use the `updater` and `optimisticUpdater` parameters, see [Updater functions](../knowledge-base/updater-functions.md).
-
-## Updating the store manually
-
-### `commitUpdate(_:)`
-
-```swift
-func commitUpdate(
-	_ updater: @escaping StoreUpdater
-)
-```
-
-The `commitUpdate` method allows you to perform updates to Relay's store outside the context of a mutation.
-
-The main reason to do this is to add client-only data to the store. The `StoreUpdater` function you pass in is similar to the `SelectorStoreUpdater` used for mutations, but without the methods and arguments for information provided by the mutation's response.
-
-:::note
-We may document `Environment`'s other public methods at some point, but they're largely there to implement higher-level APIs like `RelaySwiftUI`.
-:::

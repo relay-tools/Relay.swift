@@ -18,9 +18,7 @@ module.exports = {
       title: "Relay.swift",
       items: [
         {
-          type: "doc",
-          docId: "index",
-          label: "Docs",
+          type: "docsVersionDropdown",
           position: "left",
         },
         {

@@ -20,6 +20,4 @@ You can create a new store by providing a record source. Usually the default emp
 
 You'll usually create a store as part of creating your app's [Environment](environment.md).
 
-:::note
 We may document `Store`'s public methods at some point, but they're largely there to implement higher-level APIs like `RelaySwiftUI`. Most applications don't have to interact with a store directly beyond creating it.
-:::

@@ -1,0 +1,184 @@
+---
+title: Composing views with fragments
+hide_table_of_contents: true
+---
+
+import useBaseUrl from '@docusaurus/useBaseUrl';
+
+Let's start building a real app. We're going to show a to-do list using a table view, with each row being a single to-do item in the list.
+
+SwiftUI lets you build small, focused views that you can compose together to create your UI, so let's start really small and build the view for showing a single to-do item in the list.
+
+```swift
+import SwiftUI
+
+struct ToDoItem: View {
+	let text: String
+	let complete: Bool
+
+	var body: some View {
+		HStack {
+			Image(systemName: complete ? "checkmark.square" : "square")
+			Text(verbatim: text)
+		}
+	}
+}
+```
+
+This is a pretty simple view, but it's already showing one of the challenges we face when building UIs with many small views. The `text` and `complete` data this view needs are available on the `Todo` type in our GraphQL schema, but how do we get them into this view? If we use a [@Query](../api/query.md), then every single to-do item in the list will make a separate network request to the server to load its data, so we probably don't want to do that.
+
+We could just make sure to include these fields in a [@Query](../api/query.md) on a component higher-up in the tree and then pass that data down into the `ToDoItem` view. But this makes it harder to re-use the view elsewhere in the app, since those fields will need to be included in those queries as well. Even if this is the only screen where we use this view, this approach has problems. Other views that render a `ToDoItem` shouldn't have to care exactly what data it needs, and if we combine fields from many views into a single query, it's unclear which views are using a given piece of data.
+
+Relay and Relay.swift are designed to help with this problem by making it easy to compose not just views but also the data they require. To do this, we use GraphQL fragments, which let us define a named selection of fields on a GraphQL type. Let's define one for `ToDoItem`:
+
+```swift
+import SwiftUI
+import RelaySwiftUI
+
+private let todoFragment = graphql("""
+fragment ToDoItem_todo on Todo {
+	text
+	complete
+}
+""")
+```
+
+This fragment expresses exactly the data we need to render this view. Run `npx relay-compiler` to generate a new file `__generated__/ToDoItem_todo.graphql.swift` that includes some additional types we can use to work with this fragment. Be sure to add the new file to the project.
+
+Now we can update our view to take in data using the fragment instead of individual parameters:
+
+```swift
+import SwiftUI
+import RelaySwiftUI
+
+private let todoFragment = graphql("""
+fragment ToDoItem_todo on Todo {
+	text
+	complete
+}
+""")
+
+struct ToDoItem: View {
+	@Fragment<ToDoItem_todo> var todo
+
+	var body: some View {
+		if let todo = todo {
+			HStack {
+				Image(systemName: todo.complete ? "checkmark.square" : "square")
+				Text(verbatim: todo.text)
+			}
+		}
+	}
+}
+```
+
+We're using the [@Fragment](../api/fragment.md) property wrapper this time instead of [@Query](../api/query.md). [@Fragment](../api/fragment.md) doesn't load new data over the network; instead, it lets us read data that's already been loaded by another fragment or query.
+
+Now that we've wrapped up the data that `ToDoItem` needs in a fragment, we can't pass in the values for `text` and `complete` directly anymore. So how do we create a `ToDoItem` and tell it which to-do item to render? Let's see how to use this fragment view inside another view.
+
+## Composition with fragments
+
+Fragments are composable just like SwiftUI views. Let's create a new view for a showing the to-do list for a user. This view will also use a fragment to express the data it needs, and it will use the `ToDoItem` view we already defined to show each item.
+
+```swift
+import SwiftUI
+import RelaySwiftUI
+
+private let userFragment = graphql("""
+fragment ToDoList_user on User {
+  todos(first: 100) {
+		edges {
+			node {
+				id
+				...ToDoItem_todo
+			}
+		}
+	}
+}
+""")
+
+struct ToDoList: View {
+	@Fragment<ToDoList_user> var user
+
+	var body: some View {
+		if let user = user {
+			List(user.todos ?? []) { todo in
+				ToDoItem(todo: todo.asFragment())
+			}
+		}
+	}
+}
+```
+
+This view asks for the first 100 todos for a user and shows them in a list. The only information it asks for from each item is the ID, which it needs to provide to the `List` view for diffing. Otherwise, it delegates displaying the to-do item to the `ToDoItem` view, and uses the `ToDoItem_todo` fragment to load that data. If we forgot to include the `...ToDoItem_todo` in our fragment, we may not have the necessary data to create the `ToDoItem` view, and thanks to the type system, we would catch that at build time.
+
+You might be surprised to find that if you tried to access the `text` or `complete` fields on a to-do item from this view, you wouldn't be able to. The `ToDoList` view only has access to the fields explicitly listed in the `ToDoList_user` fragment. This prevents `ToDoList` from accidentally depending on data it didn't ask for. But if we can't access those fields, how are we able to pass the to-do item on to the `ToDoItem` view?
+
+Because we included the `...ToDoItem_todo` in our fragment, the generated `Todo_node` type has the `asFragment()` method, which converts it to a `@Fragment` value that can be passed directly to `ToDoItem`'s default initializer. The fragment it creates doesn't actually include the data that `ToDoItem` needs: it just has a pointer to where in Relay's store it can find that data. When the `todo` property is used in `ToDoItem`, it will look up that information itself.
+
+By using `asFragment()`, we can easily pass data between components using [@Fragment](../api/fragment.md)s while ensuring each individual component is explicitly asking for exactly the data it needs.
+
+## Fetching fragment data
+
+Now we've seen how we can pass data from one fragment to another, but our `ToDoList` still takes in a fragment, which we can't construct ourselves. How we do complete the chain of fragments and actually load all the data required for them?
+
+We've already seen how to load data using a [@Query](../api/query.md) property. That's exactly what we'll use to load our fragment data. We can include our fragments in queries just as well as other fragments. So to present a screen that shows the to-do list for the current user, we can create a view for that:
+
+```swift
+import SwiftUI
+import RelaySwiftUI
+
+private let query = graphql("""
+query CurrentUserToDoListQuery {
+	user("me") {
+		id
+		...ToDoList_user
+	}
+}
+""")
+
+struct CurrentUserToDoList: View {
+	@Query<CurrentUserToDoListQuery> var query
+
+	var body: some View {
+		switch query.get() {
+			case .loading:
+				Text("Loading...")
+			case .failure(let error):
+				Text("Error: \(error.localizedDescription)")
+			case .success(let data):
+				if let user = data?.user {
+					ToDoList(user: user.asFragment())
+						.navigationBarTitle("To-do List for \(user.id)")
+				}
+		}
+	}
+}
+```
+
+Here we spread (`...`) the `ToDoList_user` fragment on the `user` field, so we're able to pass that user to the `ToDoList` view using `asFragment()`. The Relay compiler will ensure that the query fetches all of the fields that the `ToDoList` view and any of its children require, and the Swift compiler will ensure that we pass that data between each view correctly.
+
+Stitching our views together using fragments gives us some really cool benefits. The entire to-do list screen loads with a single request to the server, but each individual view only knows:
+
+- What data it requires to be able to render itself
+- Which child views it is responsible for rendering
+
+Views that are structured this way are much easier to both refactor and reuse. For instance, if the `ToDoItem` view suddenly needs to use another field from `Todo`, we only have to update `ToDoItem.swift` to include the new field in the fragment, run the Relay compiler, and then we can start using that field in the view. We don't have to update any other views up the chain to ensure that the new field gets passed down, because those other views never knew what fields we needed to begin with!
+
+<img alt="To-do list app running in the iOS simulator" src={useBaseUrl('img/getting-started/todo-list-sim.png')} style={{float: 'right', width: 300}} />
+
+Let's update our app's `ContentView` to use this new view so we can see how our app looks.
+
+```swift
+import SwiftUI
+
+struct ContentView: View {
+    var body: some View {
+        NavigationView {
+            CurrentUserToDoList()
+        }
+    }
+}
+```
+
+We should be able to run our app now and see it working in the iPhone Simulator.

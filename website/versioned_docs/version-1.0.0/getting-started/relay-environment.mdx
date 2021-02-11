@@ -1,0 +1,101 @@
+---
+title: The Relay environment
+hide_table_of_contents: true
+---
+
+import useBaseUrl from '@docusaurus/useBaseUrl';
+
+Before we can start performing queries to fetch data, we need to create a Relay Environment. At a minimum, the environment is responsible for performing network requests and caching fetched data in a client-side store.
+
+Relay.swift leaves the specifics of how to connect to your GraphQL API up to you. When you create a new environment, you must provide a network layer by implementing the `Network` protocol. Relay will ask your `Network` to execute a query against your server and return the resulting JSON data. Here's the network layer for our to-do list app.
+
+```swift
+import Combine
+import Foundation
+import Relay
+
+private let graphqlURL = URL(string: "http://localhost:3000/graphql")!
+
+struct RequestPayload: Encodable {
+    var query: String
+    var operationName: String
+    var variables: VariableData
+}
+
+class Network: Relay.Network {
+    func execute(
+        request: RequestParameters,
+        variables: VariableData,
+        cacheConfig: CacheConfig
+    ) -> AnyPublisher<Data, Error> {
+        var req = URLRequest(url: graphqlURL)
+        req.setValue("application/json", forHTTPHeaderField: "Content-Type")
+        req.httpMethod = "POST"
+
+        do {
+            let payload = RequestPayload(
+                query: request.text!,
+                operationName: request.name,
+                variables: variables)
+            req.httpBody = try JSONEncoder().encode(payload)
+        } catch {
+            return Fail(error: error).eraseToAnyPublisher()
+        }
+
+        return URLSession.shared.dataTaskPublisher(for: req)
+            .map { $0.data }
+            .mapError { $0 as Error }
+            .eraseToAnyPublisher()
+    }
+}
+```
+
+The `execute` method on a `Network` returns an `AnyPublisher<Data, Error>`, so there's a lot of options for how you get data from your API into Relay.
+
+Our network layer for this example will use a GraphQL server we run on our Mac, so it'll only work on the simulator, but that's okay. In order for this to work, though, we need to allow local connections in our app's Info.plist.
+
+<img alt="Allowing local networking in Info.plist" src={useBaseUrl('img/getting-started/allow-local-networking.png')} />
+
+To get our server running, we need to clone Relay's todo example and start it:
+
+```
+$ git clone https://github.com/relayjs/relay-examples
+$ cd relay-examples/todo
+$ yarn
+$ yarn start
+```
+
+Once you've defined the network layer, you can create an environment with that network layer and an empty store for cached data:
+
+```swift
+import Relay
+
+let environment = Environment(
+	network: Network(),
+	store: Store()
+)
+```
+
+You'll want to reuse the same environment across the various views in your app. For a SwiftUI app, you should include it in the SwiftUI environment near the top of your view hierarchy. We'll add our environment to the `ContentView` that is created in our `App`.
+
+```swift
+import SwiftUI
+import RelaySwiftUI
+
+let environment = Environment(
+	network: Network(),
+	store: Store()
+)
+
+@main
+struct ToDoApp: App {
+	var body: some Scene {
+		WindowGroup {
+			ContentView()
+				.relayEnvironment(environment)
+		}
+	}
+}
+```
+
+Now child views of `ContentView` will be able to use the environment to perform queries and load data.

@@ -4,9 +4,16 @@
         <title>Relay.swift Blog</title>
         <link>https://relay-tools.github.io/releases</link>
         <description>Relay.swift Blog</description>
-        <lastBuildDate>Tue, 29 Dec 2020 00:00:00 GMT</lastBuildDate>
+        <lastBuildDate>Sun, 23 May 2021 00:00:00 GMT</lastBuildDate>
         <docs>https://validator.w3.org/feed/docs/rss2.html</docs>
         <generator>https://github.com/jpmonette/feed</generator>
+        <item>
+            <title><![CDATA[1.1.0]]></title>
+            <link>https://relay-tools.github.io/Relay.swift/releases/1.1.0</link>
+            <guid>1.1.0</guid>
+            <pubDate>Sun, 23 May 2021 00:00:00 GMT</pubDate>
+            <description><![CDATA[Added]]></description>
+        </item>
         <item>
             <title><![CDATA[1.0.0]]></title>
             <link>https://relay-tools.github.io/Relay.swift/releases/1.0.0</link>

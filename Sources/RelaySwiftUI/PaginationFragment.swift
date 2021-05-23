@@ -42,6 +42,10 @@ public struct PaginationFragment<F: Relay.PaginationFragment>: DynamicProperty {
             return data[keyPath: keyPath]
         }
 
+        public func refetch(_ variables: F.Operation.Variables? = nil) {
+            paging.refetch(variables)
+        }
+
         public func loadNext(_ count: Int) {
             paging.loadNext(count)
         }

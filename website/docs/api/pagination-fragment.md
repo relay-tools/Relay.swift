@@ -69,7 +69,7 @@ There are a few special requirements for the fragment in order for it to be vali
 
 The `@PaginationFragment` property will be a read-only optional value with the fields the fragment requests. This value will automatically update and re-render the view when more items are loaded or when the Relay store updates any relevant records.
 
-The value will also include some additional properties related to paging:
+The value will also include some additional properties related to paging and refetching:
 
 - `isLoadingNext: Bool`: Indicates if there is an in-flight request to load more items from the end of the list.
 - `isLoadingPrevious: Bool`: Indicates if there is an in-flight request to load more items from the beginning of the list.
@@ -77,6 +77,7 @@ The value will also include some additional properties related to paging:
 - `hasPrevious: Bool`: Indicates if there are more items that can be fetched from the beginning of the list.
 - `loadNext(_ count: Int)`: Function that can be called to fetch the next `count` items from the end of the list.
 - `loadPrevious(_ count: Int)`: Function that can be called to fetch the previous `count` items from the beginning of the list.
+- `refetch(_ variables: Variables? = nil)`: Function that can be called to trigger a refetch of the fragment's data. `variables` will be the variables for the refetch query that Relay generates for you. This may change which node the fragment is targetting from then on. That's okay: Relay will keep track of that for you, but be aware that it may not match the original fragment your view is passing in.
 
 ## Using `@connection` fields as Collections
 

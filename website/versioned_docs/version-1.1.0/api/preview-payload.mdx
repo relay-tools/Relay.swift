@@ -1,0 +1,104 @@
+---
+title: previewPayload()
+---
+
+import useBaseUrl from '@docusaurus/useBaseUrl';
+
+```swift
+extension View {
+    func previewPayload<Operation: Relay.Operation>(
+        _ operation: Operation,
+        resource: String,
+        extension: String = "json",
+        bundle: Bundle = .main
+    ) -> some View
+}
+```
+
+The `previewPayload` view modifier is intended to be used when defining previews for your SwiftUI views. It's a quick way to set up a mock environment for your preview with a store that already has the results of a query cached.
+
+## Example
+
+`ToDoItemPreview.json`
+
+```json
+{
+    "data": {
+        "user": {
+            "todos": {
+                "edges": [
+                    {
+                        "node": {
+                            "id": "VG9kbzow",
+                            "text": "Taste JavaScript",
+                            "complete": true
+                        }
+                    },
+                    {
+                        "node": {
+                            "id": "VG9kbzox",
+                            "text": "Buy a unicorn",
+                            "complete": false
+                        }
+                    }
+                ]
+            }
+        }
+    }
+}
+```
+
+`ToDoItem.swift`
+
+```swift
+// view implementation omitted
+
+private let previewQuery = graphql("""
+query ToDoItemPreviewQuery {
+    user(id: "me") {
+        todos(first: 3) {
+            edges {
+                node {
+                    id
+                    ...ToDoItem_todo
+                }
+            }
+        }
+    }
+}
+""")
+
+struct ToDoItem_Previews: PreviewProvider {
+    static let op = ToDoItemPreviewQuery()
+
+    static var previews: some View {
+        QueryPreview(op) { data in
+            List(data.user!.todos!) { todoItem in
+                ToDoItem(todo: todoItem)
+            }
+        }
+        .previewPayload(op, resource: "ToDoItemPreview")
+    }
+}
+```
+
+This example creates a preview of the `ToDoItem` view, which uses a [@Fragment](fragment.md) to get its data from a Relay query.
+
+Fragments define how to read a selection of data from the Relay store, but they don't know how to store data in it in the first place. To get data into the store, we need a query. So we define one here that is specifically for our preview. The preview query doesn't need to match up to any real query in our application: it's just a shell to give us a valid place in our GraphQL schema to provide the data for our fragment.
+
+The `ToDoItemPreview.json` file contains the JSON payload of our fake response to this query. You could generate preview payload by running an actual query against your server and copying the response you get into a file in your project. You can keep your preview payloads in the "Preview Content" directory for your SwiftUI app so they don't get included when you archive your app for distribution.
+
+We need to render a view that uses [@Query](query.md) to load this query data from Relay, but we don't already have one in our app because this query is specifically for our preview. Rather than require you to define a new `View` struct just for your preview query, Relay provides a generic [QueryPreview](query-preview.md) view that loads your query data and passes it to the closure you provide. `QueryPreview` handles loading and error states automatically in a way that is appropriate for previews, since they aren't expected to happen in general.
+
+Finally, we need to set up the Relay environment for our previews and ensure that it already has the data present for our fragment. The `previewPayload` view modifier does this. We pass in the query operation that we are planning to load from and the name of the file where the fake payload is stored. Our view will have its own [MockEnvironment](mock-environment.md) with the results of this query preloaded.
+
+Now when we run our preview in the canvas in Xcode, we should see a list of items. Now we can make changes to our code or in the inspector and see those update live in the preview.
+
+<img alt="A SwiftUI preview of a list of to-do items" src={useBaseUrl('img/todo-preview.png')} style={{width: 300, display: 'block', margin: '0 auto'}} />
+
+#### Parameters
+
+- `operation`: The query that the provided payload is for. This affects the structure of how the data is stored in Relay. It should be equal to the operation that will be fetched by the view, or you may see a loading state for your query.
+- `resource`: The filename (without an extension) of the file that contains the mock JSON payload for the query response. The file should be added to your app target. Ideally, it should be included under your development assets folder so that it isn't included when your app is distributed.
+- `extension`: The extension of the file containing the mock payload. This defaults to `"json"`, so you don't usually need to specify it.
+- `bundle`: The bundle to load the payload from. This defaults to the main app bundle, but you may need to pass a different bundle if your view is in a framework instead of in your app.

@@ -1,4 +1,4 @@
-// swift-tools-version:5.3
+// swift-tools-version:5.5
 // The swift-tools-version declares the minimum version of Swift required to build this package.
 
 import PackageDescription
@@ -6,10 +6,11 @@ import PackageDescription
 let package = Package(
     name: "Relay.swift",
     platforms: [
-        .macOS(.v11),
-        .iOS(.v14),
-        .tvOS(.v14),
-        .watchOS(.v7),
+        .macOS("12.0"),
+        .macCatalyst("15.0"),
+        .iOS("15.0"),
+        .tvOS("15.0"),
+        .watchOS("8.0"),
     ],
     products: [
         .library(
@@ -45,7 +46,7 @@ let package = Package(
             name: "RelayTestHelpers",
             dependencies: ["Relay", "RelaySwiftUI", "SnapshotTesting"],
             exclude: ["StarWars/schema.graphql", "ToDo/schema.graphql"]),
-        .target(
+        .executableTarget(
             name: "find-graphql-tags",
             dependencies: ["SwiftSyntax"]),
     ]

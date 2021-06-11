@@ -1,13 +1,37 @@
-# <!--@START_MENU_TOKEN@-->``Symbol``<!--@END_MENU_TOKEN@-->
-
-<!--@START_MENU_TOKEN@-->Summary<!--@END_MENU_TOKEN@-->
-
-## Overview
-
-<!--@START_MENU_TOKEN@-->Text<!--@END_MENU_TOKEN@-->
+# ``Relay/RecordProxy``
 
 ## Topics
 
-### <!--@START_MENU_TOKEN@-->Group<!--@END_MENU_TOKEN@-->
+### Reading record metadata
 
-- <!--@START_MENU_TOKEN@-->``Symbol``<!--@END_MENU_TOKEN@-->
+- ``dataID``
+- ``typeName``
+
+### Accessing fields from a record
+
+- ``subscript(_:)``
+- ``subscript(_:args:)``
+
+### Accessing linked records
+
+- ``getLinkedRecord(_:)``
+- ``getLinkedRecord(_:args:)``
+- ``setLinkedRecord(_:record:)``
+- ``setLinkedRecord(_:args:record:)``
+- ``getOrCreateLinkedRecord(_:typeName:)``
+- ``getOrCreateLinkedRecord(_:typeName:args:)``
+
+### Accessing lists of linked records
+
+- ``getLinkedRecords(_:)``
+- ``getLinkedRecords(_:args:)``
+- ``setLinkedRecords(_:records:)``
+- ``setLinkedRecords(_:args:records:)``
+
+### Copying between records
+
+- ``copyFields(from:)``
+
+### Invalidation
+
+- ``invalidateRecord()``

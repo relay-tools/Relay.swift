@@ -4,6 +4,9 @@ import os
 
 private let logger = Logger(subsystem: "io.github.mjm.Relay", category: "store")
 
+/// A container for cached query data.
+///
+/// Each Relay ``Environment`` has a store that contains records representing the data that has been fetched from the server using queries.
 public class Store {
     var recordSource: RecordSource
     var optimisticSource: RecordSource?
@@ -21,6 +24,13 @@ public class Store {
         writeEpochLock.sync { _currentWriteEpoch }
     }
 
+    /// Create a new store.
+    ///
+    /// You can create a new store by providing a record source. Usually the default empty record source is fine, but you could pass in a pre-populated one if you were loading records from an on-disk cache, for instance. You'll usually create a store as part of creating your app's ``Environment``.
+    ///
+    /// - Parameters:
+    ///   - source: The initial records that the store is populated with. By default, the store starts with an empty record source.
+    ///   - gcScheduler: The queue to use when performing garbage collection. By default, Relay creates a new serial queue for garbage collection of records.
     public init(
         source: RecordSource = DefaultRecordSource(),
         gcScheduler: DispatchQueue = DispatchQueue(label: "relay-garbage-collector")
@@ -31,6 +41,12 @@ public class Store {
         gc = GarbageCollector(store: self, scheduler: gcScheduler)
     }
 
+    /// The source of records currently being used by the store.
+    ///
+    /// The store may be managing one or two record sources depending on the state of your application. Most of the time,
+    /// there is a single record source that is updated as new queries return data. While a mutation is in-flight that is using
+    /// optimistic updates, the store keeps track of a second record source that contains the optimistically updated records.
+    /// This property gets and sets that optimistic record source if it exists, or the normal one otherwise.
     public var source: RecordSource {
         get {
             if let source = optimisticSource {
@@ -180,7 +196,7 @@ public class Store {
     }
 }
 
-protocol StoreSubscription: class {
+protocol StoreSubscription: AnyObject {
     func storeDidSnapshot(source: RecordSource)
     func storeDidRestore()
     func storeUpdatedRecords(_ updatedIDs: Set<DataID>) -> RequestDescriptor?

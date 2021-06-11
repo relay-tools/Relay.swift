@@ -1,6 +1,20 @@
-public protocol RecordProxy: class {
+/// A proxy for a record in the Relay store.
+///
+/// Record proxies are used in updater functions to make changes to the records in the Relay store during mutations or
+/// client-only updates. See <doc:Updaters> to learn more about updater functions.
+public protocol RecordProxy: AnyObject {
+    /// The ID of the record.
+    ///
+    /// All records have a unique ID in the store. If the record has an `id` field, that value will be used as the ID. Otherwise, Relay will choose a client-side ID and use that.
+    ///
+    /// Because Relay uses that `id` field as a store-wide ID, it's important that you don't use the same IDs for two different values of different types. Your IDs must be globally unique, not just unique within a particular type. One way to do this is to include the type name or an abbreviation of it as part of the ID.
     var dataID: DataID { get }
+
+    /// The name of the schema type for the record.
+    ///
+    /// Every record in the store belongs to one of the types defined in your GraphQL schema.
     var typeName: String { get }
+
     subscript(_ name: String, args args: VariableDataConvertible?) -> Any? { get set }
     func getLinkedRecord(_ name: String, args: VariableDataConvertible?) -> RecordProxy?
     func getLinkedRecords(_ name: String, args: VariableDataConvertible?) -> [RecordProxy?]?
@@ -9,7 +23,16 @@ public protocol RecordProxy: class {
     func setLinkedRecord(_ name: String, args: VariableDataConvertible?, record: RecordProxy)
     func setLinkedRecords(_ name: String, args: VariableDataConvertible?, records: [RecordProxy?])
 
+    /// Copy all of the fields from another record into this one.
+    ///
+    /// Copies all of the fields from `record` into `self`. Any fields not present in `record` will be unchanged in `self`. Note that this copies all fields, including linked records.
+    ///
+    /// - Parameter record: The record to copy fields from.
     func copyFields(from record: RecordProxy)
+
+    /// Mark the record as having invalid data that needs to be refreshed.
+    ///
+    /// If a record is invalidated, it will still exist in the store, but when a `@Query` is rendered with a ``FetchPolicy/storeOrNetwork`` or ``FetchPolicy/storeAndNetwork`` fetch policy, those records will not be considered valid and will be ignored, requiring a network request to get the latest data. You can use this to ensure your UI doesn't display data that is known to be stale.
     func invalidateRecord()
 }
 

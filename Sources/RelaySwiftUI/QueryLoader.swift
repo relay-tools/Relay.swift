@@ -75,7 +75,14 @@ class QueryLoader<Op: Relay.Operation>: ObservableObject {
         await withCheckedContinuation { (continuation: CheckedContinuation<Void, Never>) in
             doneRefreshing = continuation.resume
             fetchKey = UUID().uuidString
-            reload()
+            isLoaded = false
+
+            if let resource = self.queryResource,
+               let fragmentResource = self.fragmentResource,
+               let fetchPolicy = fetchPolicy
+            {
+                _ = loadIfNeeded(resource: resource, fragmentResource: fragmentResource, fetchPolicy: fetchPolicy)
+            }
         }
     }
 
@@ -125,7 +132,9 @@ class QueryLoader<Op: Relay.Operation>: ObservableObject {
 
             switch result {
             case nil:
-                self.result = nil
+                if self.doneRefreshing == nil {
+                    self.result = nil
+                }
             case .failure(let error):
                 self.result = .failure(error)
                 self.stopRefreshingIfNeeded()
@@ -134,7 +143,9 @@ class QueryLoader<Op: Relay.Operation>: ObservableObject {
                 let fragmentResult: FragmentResource.FragmentResult<Op.Data> =
                     fragmentResource.read(node: queryResult.fragmentNode, ref: queryResult.fragmentRef, identifier: identifier)
 
-                self.result = .success(fragmentResult.snapshot)
+                if case .success(let oldSnapshot) = self.result, oldSnapshot == fragmentResult.snapshot {} else {
+                    self.result = .success(fragmentResult.snapshot)
+                }
                 self.retainCancellable = resource.retain(queryResult)
                 self.subscribeCancellable = fragmentResource.subscribe(fragmentResult)
                     .sink { [weak self] newSnapshot in

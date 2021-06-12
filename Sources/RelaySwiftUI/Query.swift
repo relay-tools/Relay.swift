@@ -39,6 +39,7 @@ public struct Query<O: Relay.Operation>: DynamicProperty {
     }
 
     /// A type providing access to a query's data.
+    @MainActor
     public struct WrappedValue {
         let query: Query<O>
 
@@ -77,6 +78,10 @@ public struct Query<O: Relay.Operation>: DynamicProperty {
                     return .loading
                 }
             }
+        }
+
+        public func refetch() async {
+            await query.loader.refetch()
         }
     }
 

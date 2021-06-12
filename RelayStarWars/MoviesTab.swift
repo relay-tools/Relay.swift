@@ -9,11 +9,11 @@ query MoviesTabQuery {
 
 struct MoviesTab: View {
     @Query<MoviesTabQuery> var movies
-    @State var fetchKey = UUID()
+//    @State var fetchKey = UUID()
     
     var body: some View {
-        Group {
-            switch movies.get(fetchKey: fetchKey) {
+        NavigationView {
+            switch movies.get() {
             case .loading:
                 LoadingView()
             case .failure(let error):
@@ -21,7 +21,7 @@ struct MoviesTab: View {
             case .success(let data):
                 if let data = data {
                     MoviesList(films: data.asFragment()) {
-                        fetchKey = UUID()
+                        await movies.refetch()
                     }
                 }
             }

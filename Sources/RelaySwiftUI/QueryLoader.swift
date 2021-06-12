@@ -2,6 +2,7 @@ import Combine
 import Foundation
 import Relay
 
+@MainActor
 class QueryLoader<Op: Relay.Operation>: ObservableObject {
     @Published var result: Result<Snapshot<Op.Data?>, Error>? {
         willSet {
@@ -19,6 +20,8 @@ class QueryLoader<Op: Relay.Operation>: ObservableObject {
     private var resultCancellable: AnyCancellable?
     private var subscribeCancellable: AnyCancellable?
     private var retainCancellable: AnyCancellable?
+
+    private var doneRefreshing: (() -> Void)?
 
     init() {}
 
@@ -68,6 +71,14 @@ class QueryLoader<Op: Relay.Operation>: ObservableObject {
         }
     }
 
+    func refetch() async {
+        await withCheckedContinuation { (continuation: CheckedContinuation<Void, Never>) in
+            doneRefreshing = continuation.resume
+            fetchKey = UUID().uuidString
+            reload()
+        }
+    }
+
     func loadIfNeeded(
         resource: QueryResource,
         fragmentResource: FragmentResource,
@@ -108,7 +119,7 @@ class QueryLoader<Op: Relay.Operation>: ObservableObject {
         resultCancellable = resource.prepare(
             operation: operation,
             fetchPolicy: fetchPolicy,
-            cacheKeyBuster: fetchKey
+            cacheKeyBuster: self.fetchKey
         ).sink { [weak self] result in
             guard let self = self else { return }
 
@@ -117,6 +128,7 @@ class QueryLoader<Op: Relay.Operation>: ObservableObject {
                 self.result = nil
             case .failure(let error):
                 self.result = .failure(error)
+                self.stopRefreshingIfNeeded()
             case .success(let queryResult):
                 let identifier = queryResult.fragmentNode.identifier(for: queryResult.fragmentRef)
                 let fragmentResult: FragmentResource.FragmentResult<Op.Data> =
@@ -130,10 +142,19 @@ class QueryLoader<Op: Relay.Operation>: ObservableObject {
                             self?.result = .success(newSnapshot)
                         }
                     }
+
+                self.stopRefreshingIfNeeded()
             }
         }
 
         isLoaded = true
         return result
+    }
+
+    private func stopRefreshingIfNeeded() {
+        if let doneRefreshing = doneRefreshing {
+            doneRefreshing()
+            self.doneRefreshing = nil
+        }
     }
 }

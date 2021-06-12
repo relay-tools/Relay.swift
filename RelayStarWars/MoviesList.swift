@@ -22,37 +22,31 @@ fragment MoviesList_films on Root
 
 struct MoviesList: View {
     @PaginationFragment<MoviesList_films> var films
-    let onRefetch: () -> Void
+    let onRefetch: () async -> Void
 
     var body: some View {
-        NavigationView {
-            List {
-                if let films = films {
-                    ForEach(films.allFilms?.compactMap { $0 } ?? []) { node in
-                        MoviesListRow(film: node.asFragment())
-                    }
+        List {
+            if let films = films {
+                ForEach(films.allFilms?.compactMap { $0 } ?? []) { node in
+                    MoviesListRow(film: node.asFragment())
+                }
 
-                    if films.isLoadingNext {
-                        Text("Loading more…")
-                            .foregroundColor(.secondary)
-                    } else if films.hasNext == true {
-                        Button {
-                            films.loadNext(3)
-                        } label: {
-                            Label("Load more…", systemImage: "ellipsis.circle.fill")
-                                .foregroundColor(.accentColor)
-                        }
+                if films.isLoadingNext {
+                    Text("Loading more…")
+                        .foregroundColor(.secondary)
+                } else if films.hasNext == true {
+                    Button {
+                        films.loadNext(3)
+                    } label: {
+                        Label("Load more…", systemImage: "ellipsis.circle.fill")
+                            .foregroundColor(.accentColor)
                     }
                 }
             }
-            .navigationBarTitle("Movies")
-            .toolbar {
-                ToolbarItem(placement: .navigationBarTrailing) {
-                    Button {
-                        onRefetch()
-                    } label: { Image(systemName: "arrow.clockwise") }
-                }
-            }
+        }
+        .navigationBarTitle("Movies")
+        .refreshable {
+            await onRefetch()
         }
     }
 }

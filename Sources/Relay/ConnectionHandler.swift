@@ -73,7 +73,7 @@ public class ConnectionHandler: Handler {
 
         var updated = true
         if let prevEdges = prevEdges, let serverEdges = serverEdges {
-            if let after = args.after {
+            if let after = args.after, after != .null {
                 if let clientPageInfo = clientPageInfo, after == (clientPageInfo[config.endCursor] as? VariableValueConvertible)?.variableValue {
                     var nodeIDs = Set<DataID>()
                     var edges: [RecordProxy?] = []
@@ -84,7 +84,7 @@ public class ConnectionHandler: Handler {
                     NSLog("Relay: Unexpected after cursor \(after), edges must be fetched from the end of the list (\(String(describing: clientPageInfo?[config.endCursor]))")
                     return
                 }
-            } else if let before = args.before {
+            } else if let before = args.before, before != .null {
                 if let clientPageInfo = clientPageInfo, before == (clientPageInfo[config.startCursor] as? VariableValueConvertible)?.variableValue {
                     var nodeIDs = Set<DataID>()
                     var edges: [RecordProxy?] = []

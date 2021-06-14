@@ -29,7 +29,7 @@
         }
       },
       {
-        "package": "SnapshotTesting",
+        "package": "swift-snapshot-testing",
         "repositoryURL": "https://github.com/pointfreeco/swift-snapshot-testing.git",
         "state": {
           "branch": null,
@@ -38,7 +38,7 @@
         }
       },
       {
-        "package": "SwiftSyntax",
+        "package": "swift-syntax",
         "repositoryURL": "https://github.com/apple/swift-syntax.git",
         "state": {
           "branch": null,

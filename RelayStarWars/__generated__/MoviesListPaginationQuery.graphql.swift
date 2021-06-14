@@ -176,8 +176,8 @@ extension RelaySwiftUI.Query.WrappedValue where O == MoviesListPaginationQuery {
 import RelaySwiftUI
 
 extension RelaySwiftUI.RefetchableFragment.Wrapper where F.Operation == MoviesListPaginationQuery {
-    public func refetch(count: Int? = nil, cursor: String? = nil) {
-        self.refetch(.init(count: count, cursor: cursor))
+    public func refetch(count: Int? = nil, cursor: String? = nil) async {
+        await self.refetch(.init(count: count, cursor: cursor))
     }
 }
 #endif

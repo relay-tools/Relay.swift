@@ -24,6 +24,9 @@ struct MoviesList: View {
     @PaginationFragment<MoviesList_films> var films
     let onRefetch: () async -> Void
 
+    @State var showInspector = false
+    @RelayEnvironment var relayEnvironment
+
     var body: some View {
         List {
             if let films = films {
@@ -45,9 +48,25 @@ struct MoviesList: View {
             }
         }
         .navigationBarTitle("Movies")
+        .navigationBarItems(trailing: Group {
+            Button {
+                showInspector = true
+            } label: {
+                Label("Inspector", systemImage: "books.vertical")
+            }
+        })
         .refreshable {
-            await onRefetch()
+            await films?.refetch(.init(count: 3))
         }
+        .sheet(isPresented: $showInspector) {
+            showInspector = false
+        } content: {
+            NavigationView {
+                Inspector()
+            }
+            .relayEnvironment(relayEnvironment)
+        }
+
     }
 }
 

@@ -37,6 +37,25 @@ class ConnectionHandlerTests: XCTestCase {
         assertSnapshot(matching: environment.store.source, as: .recordSource)
     }
 
+    func testUpdateRefetch() throws {
+        try loadInitialPage()
+
+        // first, load more in order to be able to check that we reset to the original records
+        let op = MoviesListPaginationQuery(variables: .init(cursor: "YXJyYXljb25uZWN0aW9uOjI="))
+        let advance = try environment.delayMockedResponse(op, MoviesTab.prequels)
+        advance()
+
+        waitUntilComplete(environment.fetchQuery(op))
+
+        assertSnapshot(matching: environment.store.source, as: .recordSource)
+
+        let op2 = MoviesListPaginationQuery(variables: .init())
+        try environment.mockResponse(op2, MoviesTab.allFilms)
+        waitUntilComplete(environment.fetchQuery(op2))
+
+        assertSnapshot(matching: environment.store.source, as: .recordSource)
+   }
+
     func testCreateEdge() throws {
         try loadInitialPage()
         createStoreProxy()

@@ -72,7 +72,7 @@ class QueryLoader<Op: Relay.Operation>: ObservableObject {
     }
 
     func refetch() async {
-        await withCheckedContinuation { (continuation: CheckedContinuation<Void, Never>) in
+        await withUnsafeContinuation { (continuation: UnsafeContinuation<Void, Never>) in
             doneRefreshing = continuation.resume
             fetchKey = UUID().uuidString
             isLoaded = false

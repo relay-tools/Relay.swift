@@ -23,12 +23,17 @@ public class Store {
 
     public init(
         source: RecordSource = DefaultRecordSource(),
+        gcReleaseBufferSize: Int = 0,
         gcScheduler: DispatchQueue = DispatchQueue(label: "relay-garbage-collector")
     ) {
         recordSource = source
 
         initializeRecordSource()
-        gc = GarbageCollector(store: self, scheduler: gcScheduler)
+        gc = GarbageCollector(
+            store: self,
+            releaseBufferSize: gcReleaseBufferSize,
+            scheduler: gcScheduler
+        )
     }
 
     public var source: RecordSource {

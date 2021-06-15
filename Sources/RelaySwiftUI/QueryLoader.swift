@@ -21,7 +21,7 @@ class QueryLoader<Op: Relay.Operation>: ObservableObject {
     private var subscribeCancellable: AnyCancellable?
     private var retainCancellable: AnyCancellable?
 
-    private var doneRefreshing: (() -> Void)?
+    private var doneRefetching: (() -> Void)?
 
     init() {}
 
@@ -73,7 +73,7 @@ class QueryLoader<Op: Relay.Operation>: ObservableObject {
 
     func refetch() async {
         await withUnsafeContinuation { (continuation: UnsafeContinuation<Void, Never>) in
-            doneRefreshing = continuation.resume
+            doneRefetching = continuation.resume
             fetchKey = UUID().uuidString
             isLoaded = false
 
@@ -132,7 +132,7 @@ class QueryLoader<Op: Relay.Operation>: ObservableObject {
 
             switch result {
             case nil:
-                if self.doneRefreshing == nil {
+                if self.doneRefetching == nil {
                     self.result = nil
                 }
             case .failure(let error):
@@ -163,9 +163,9 @@ class QueryLoader<Op: Relay.Operation>: ObservableObject {
     }
 
     private func stopRefreshingIfNeeded() {
-        if let doneRefreshing = doneRefreshing {
+        if let doneRefreshing = doneRefetching {
             doneRefreshing()
-            self.doneRefreshing = nil
+            self.doneRefetching = nil
         }
     }
 }

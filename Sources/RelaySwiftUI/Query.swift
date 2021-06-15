@@ -80,6 +80,21 @@ public struct Query<O: Relay.Operation>: DynamicProperty {
             }
         }
 
+        /// Refetch the query's data from the server.
+        ///
+        /// This is an alternative to using the `fetchKey` parameter in ``get(_:fetchKey:)``. It allows imperatively
+        /// requesting that updated data be fetched. It's an async method that returns when the new data has been fetched
+        /// or has failed to fetch successfully. You can use ``refetch()`` to add pull-to-refresh to a list using the
+        /// `refreshable` view modifier.
+        ///
+        /// ```swift
+        /// List(todos) { todo in
+        ///     ToDoRow(todo: todo)
+        /// }
+        /// .refreshable {
+        ///     query.refetch()
+        /// }
+        /// ```
         public func refetch() async {
             await query.loader.refetch()
         }

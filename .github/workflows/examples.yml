@@ -2,23 +2,23 @@ name: Examples
 
 on:
   push:
-    branches: [ main ]
+    branches: [main, next]
     paths:
-    - 'RelayPokedex/**'
-    - 'RelayStarWars/**'
-    - 'RelayTodo/**'
-    - 'Sources/Relay/**'
-    - 'Sources/RelaySwiftUI/**'
-    - 'Package.*'
+      - "RelayPokedex/**"
+      - "RelayStarWars/**"
+      - "RelayTodo/**"
+      - "Sources/Relay/**"
+      - "Sources/RelaySwiftUI/**"
+      - "Package.*"
   pull_request:
-    branches: [ main ]
+    branches: [main, next]
     paths:
-    - 'RelayPokedex/**'
-    - 'RelayStarWars/**'
-    - 'RelayTodo/**'
-    - 'Sources/Relay/**'
-    - 'Sources/RelaySwiftUI/**'
-    - 'Package.*'
+      - "RelayPokedex/**"
+      - "RelayStarWars/**"
+      - "RelayTodo/**"
+      - "Sources/Relay/**"
+      - "Sources/RelaySwiftUI/**"
+      - "Package.*"
 
 jobs:
   build:
@@ -30,12 +30,11 @@ jobs:
           - RelayStarWars
           - RelayPokedex
         xcode:
-          - "12.2"
-          - "12.3"
-    runs-on: macos-latest
+          - "13.0"
+    runs-on: macos-11
     env:
       DEVELOPER_DIR: /Applications/Xcode_${{ matrix.xcode }}.app/Contents/Developer
     steps:
-    - uses: actions/checkout@v2
-    - name: Build
-      run: set -o pipefail && xcodebuild -scheme ${{ matrix.scheme }} -destination 'name=iPhone 11' | xcpretty
+      - uses: actions/checkout@v2
+      - name: Build
+        run: set -o pipefail && xcodebuild -scheme ${{ matrix.scheme }} -destination 'name=iPhone 11' | xcpretty

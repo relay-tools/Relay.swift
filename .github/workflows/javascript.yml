@@ -2,29 +2,29 @@ name: JavaScript
 
 on:
   push:
-    branches: [ main ]
+    branches: [main, next]
     paths:
-    - 'relay-compiler-language-swift/**'
+      - "relay-compiler-language-swift/**"
   pull_request:
-    branches: [ main ]
+    branches: [main, next]
     paths:
-    - 'relay-compiler-language-swift/**'
+      - "relay-compiler-language-swift/**"
 
 jobs:
   compiler:
     name: Run compiler plugin tests
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v2
-    - uses: actions/cache@v2
-      with:
-        path: ~/.npm
-        key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
-        restore-keys: |
-          ${{ runner.os }}-node-
-    - name: Install node modules
-      run: npm ci
-      working-directory: relay-compiler-language-swift
-    - name: Run tests
-      run: npm test
-      working-directory: relay-compiler-language-swift
+      - uses: actions/checkout@v2
+      - uses: actions/cache@v2
+        with:
+          path: ~/.npm
+          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-node-
+      - name: Install node modules
+        run: npm ci
+        working-directory: relay-compiler-language-swift
+      - name: Run tests
+        run: npm test
+        working-directory: relay-compiler-language-swift

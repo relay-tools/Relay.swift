@@ -302,6 +302,7 @@ const builtins: Record<string, BuiltinRenderFunction<any>> = {
       parameters = [],
       returns,
       isStatic = false,
+      isAsync = false,
       access,
       children,
     }: {
@@ -309,6 +310,7 @@ const builtins: Record<string, BuiltinRenderFunction<any>> = {
       parameters: SwiftNode[];
       returns?: string;
       isStatic?: boolean;
+      isAsync?: boolean;
       access?: AccessLevel;
       children: SwiftNode[];
     },
@@ -323,6 +325,10 @@ const builtins: Record<string, BuiltinRenderFunction<any>> = {
       _renderSwift(renderer, parameters[i], { ...context, inline: true });
     }
     renderer.append(`)`);
+
+    if (isAsync) {
+      renderer.append(` async`);
+    }
 
     if (returns) {
       renderer.append(` -> ${returns}`);
@@ -505,6 +511,12 @@ const builtins: Record<string, BuiltinRenderFunction<any>> = {
     context
   ) {
     renderer.appendLine(`@available(${versions.join(', ')}, *)`);
+    _renderSwift(renderer, children, context);
+  },
+
+  await(renderer, { children }: { children: SwiftNode[] }, context) {
+    renderer.appendLine(`await `);
+    renderer.continueLine();
     _renderSwift(renderer, children, context);
   },
 

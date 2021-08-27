@@ -30,20 +30,20 @@ public struct RefetchableFragment<F: Relay.RefetchFragment>: DynamicProperty {
             return nil
         }
 
-        return Wrapper(data: data, refetching: loader)
+        return Wrapper(data: data, fragment: self)
     }
 
     @dynamicMemberLookup
     public struct Wrapper: Refetching {
         public let data: F.Data
-        let refetching: RefetchFragmentLoader<F>
+        let fragment: RefetchableFragment<F>
 
         public subscript<Subject>(dynamicMember keyPath: KeyPath<F.Data, Subject>) -> Subject {
             return data[keyPath: keyPath]
         }
 
-        public func refetch(_ variables: F.Operation.Variables? = nil) {
-            refetching.refetch(variables)
+        public func refetch(_ variables: F.Operation.Variables? = nil) async {
+            await fragment.loader.refetch(variables, from: fragment.fragmentResource!, queryResource: fragment.queryResource!, key: fragment.key!)
         }
     }
 }

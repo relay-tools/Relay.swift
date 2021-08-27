@@ -39,6 +39,7 @@ public struct Query<O: Relay.Operation>: DynamicProperty {
     }
 
     /// A type providing access to a query's data.
+    @MainActor
     public struct WrappedValue {
         let query: Query<O>
 
@@ -77,6 +78,25 @@ public struct Query<O: Relay.Operation>: DynamicProperty {
                     return .loading
                 }
             }
+        }
+
+        /// Refetch the query's data from the server.
+        ///
+        /// This is an alternative to using the `fetchKey` parameter in ``get(_:fetchKey:)``. It allows imperatively
+        /// requesting that updated data be fetched. It's an async method that returns when the new data has been fetched
+        /// or has failed to fetch successfully. You can use ``refetch()`` to add pull-to-refresh to a list using the
+        /// `refreshable` view modifier.
+        ///
+        /// ```swift
+        /// List(todos) { todo in
+        ///     ToDoRow(todo: todo)
+        /// }
+        /// .refreshable {
+        ///     await query.refetch()
+        /// }
+        /// ```
+        public func refetch() async {
+            await query.loader.refetch()
         }
     }
 

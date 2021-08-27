@@ -22,38 +22,58 @@ fragment MoviesList_films on Root
 
 struct MoviesList: View {
     @PaginationFragment<MoviesList_films> var films
-    let onRefetch: () -> Void
+    let onRefetch: () async -> Void
+
+    @State var useQueryRefetch = false
+    @State var showInspector = false
+    @RelayEnvironment var relayEnvironment
 
     var body: some View {
-        NavigationView {
-            List {
-                if let films = films {
-                    ForEach(films.allFilms?.compactMap { $0 } ?? []) { node in
-                        MoviesListRow(film: node.asFragment())
-                    }
+        List {
+            Toggle("Use query refresh", isOn: $useQueryRefetch)
 
-                    if films.isLoadingNext {
-                        Text("Loading more…")
-                            .foregroundColor(.secondary)
-                    } else if films.hasNext == true {
-                        Button {
-                            films.loadNext(3)
-                        } label: {
-                            Label("Load more…", systemImage: "ellipsis.circle.fill")
-                                .foregroundColor(.accentColor)
-                        }
-                    }
+            if let films = films {
+                ForEach(films.allFilms?.compactMap { $0 } ?? []) { node in
+                    MoviesListRow(film: node.asFragment())
                 }
-            }
-            .navigationBarTitle("Movies")
-            .toolbar {
-                ToolbarItem(placement: .navigationBarTrailing) {
+
+                if films.isLoadingNext {
+                    Text("Loading more…")
+                        .foregroundColor(.secondary)
+                } else if films.hasNext == true {
                     Button {
-                        onRefetch()
-                    } label: { Image(systemName: "arrow.clockwise") }
+                        films.loadNext(3)
+                    } label: {
+                        Label("Load more…", systemImage: "ellipsis.circle.fill")
+                            .foregroundColor(.accentColor)
+                    }
                 }
             }
         }
+        .navigationBarTitle("Movies")
+        .navigationBarItems(trailing: Group {
+            Button {
+                showInspector = true
+            } label: {
+                Label("Inspector", systemImage: "books.vertical")
+            }
+        })
+        .refreshable {
+            if useQueryRefetch {
+                await onRefetch()
+            } else {
+                await films?.refetch(.init(count: 3))
+            }
+        }
+        .sheet(isPresented: $showInspector) {
+            showInspector = false
+        } content: {
+            NavigationView {
+                Inspector()
+            }
+            .relayEnvironment(relayEnvironment)
+        }
+
     }
 }
 

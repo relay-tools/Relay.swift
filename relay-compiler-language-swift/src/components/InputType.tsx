@@ -127,22 +127,25 @@ const RefetchConvenienceExtension = ({ node }: { node: InputStructNode }) => {
                 defaultValue={field.typeName.endsWith('?') ? 'nil' : undefined}
               />
             ))}
+            isAsync
           >
-            <call
-              receiver="self"
-              name="refetch"
-              parameters={[
-                <param>
-                  <call
-                    receiver=""
-                    name="init"
-                    parameters={node.fields.map(field => (
-                      <param label={field.fieldName}>{field.fieldName}</param>
-                    ))}
-                  />
-                </param>,
-              ]}
-            />
+            <await>
+              <call
+                receiver="self"
+                name="refetch"
+                parameters={[
+                  <param>
+                    <call
+                      receiver=""
+                      name="init"
+                      parameters={node.fields.map(field => (
+                        <param label={field.fieldName}>{field.fieldName}</param>
+                      ))}
+                    />
+                  </param>,
+                ]}
+              />
+            </await>
           </function>
         </extension>
       </DeclarationGroup>

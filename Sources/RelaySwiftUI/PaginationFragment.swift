@@ -30,20 +30,20 @@ public struct PaginationFragment<F: Relay.PaginationFragment>: DynamicProperty {
             return nil
         }
 
-        return Wrapper(data: data, paging: loader.paging)
+        return Wrapper(data: data, fragment: self)
     }
 
     @dynamicMemberLookup
     public struct Wrapper {
         public let data: F.Data
-        let paging: Pager<F>
+        let fragment: PaginationFragment<F>
 
         public subscript<Subject>(dynamicMember keyPath: KeyPath<F.Data, Subject>) -> Subject {
             return data[keyPath: keyPath]
         }
 
-        public func refetch(_ variables: F.Operation.Variables? = nil) {
-            paging.refetch(variables)
+        public func refetch(_ variables: F.Operation.Variables? = nil) async {
+            await paging.refetch(variables, from: fragment.fragmentResource!, queryResource: fragment.queryResource!, key: fragment.key!)
         }
 
         public func loadNext(_ count: Int) {
@@ -58,5 +58,7 @@ public struct PaginationFragment<F: Relay.PaginationFragment>: DynamicProperty {
         public var hasPrevious: Bool { paging.hasPrevious }
         public var isLoadingNext: Bool { paging.isLoadingNext }
         public var isLoadingPrevious: Bool { paging.isLoadingPrevious }
+
+        private var paging: Pager<F> { fragment.loader.paging }
     }
 }

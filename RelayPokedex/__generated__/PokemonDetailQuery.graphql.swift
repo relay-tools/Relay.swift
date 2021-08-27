@@ -171,8 +171,8 @@ extension RelaySwiftUI.Query.WrappedValue where O == PokemonDetailQuery {
 import RelaySwiftUI
 
 extension RelaySwiftUI.RefetchableFragment.Wrapper where F.Operation == PokemonDetailQuery {
-    public func refetch(id: String? = nil) {
-        self.refetch(.init(id: id))
+    public func refetch(id: String? = nil) async {
+        await self.refetch(.init(id: id))
     }
 }
 #endif

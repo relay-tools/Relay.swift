@@ -2,6 +2,7 @@ import Combine
 import Foundation
 import Relay
 
+@MainActor
 class QueryLoader<Op: Relay.Operation>: ObservableObject {
     @Published var result: Result<Snapshot<Op.Data?>, Error>? {
         willSet {
@@ -19,6 +20,8 @@ class QueryLoader<Op: Relay.Operation>: ObservableObject {
     private var resultCancellable: AnyCancellable?
     private var subscribeCancellable: AnyCancellable?
     private var retainCancellable: AnyCancellable?
+
+    private var doneRefetching: (() -> Void)?
 
     init() {}
 
@@ -68,6 +71,21 @@ class QueryLoader<Op: Relay.Operation>: ObservableObject {
         }
     }
 
+    func refetch() async {
+        await withUnsafeContinuation { (continuation: UnsafeContinuation<Void, Never>) in
+            doneRefetching = continuation.resume
+            fetchKey = UUID().uuidString
+            isLoaded = false
+
+            if let resource = self.queryResource,
+               let fragmentResource = self.fragmentResource,
+               let fetchPolicy = fetchPolicy
+            {
+                _ = loadIfNeeded(resource: resource, fragmentResource: fragmentResource, fetchPolicy: fetchPolicy)
+            }
+        }
+    }
+
     func loadIfNeeded(
         resource: QueryResource,
         fragmentResource: FragmentResource,
@@ -108,21 +126,26 @@ class QueryLoader<Op: Relay.Operation>: ObservableObject {
         resultCancellable = resource.prepare(
             operation: operation,
             fetchPolicy: fetchPolicy,
-            cacheKeyBuster: fetchKey
+            cacheKeyBuster: self.fetchKey
         ).sink { [weak self] result in
             guard let self = self else { return }
 
             switch result {
             case nil:
-                self.result = nil
+                if self.doneRefetching == nil {
+                    self.result = nil
+                }
             case .failure(let error):
                 self.result = .failure(error)
+                self.stopRefreshingIfNeeded()
             case .success(let queryResult):
                 let identifier = queryResult.fragmentNode.identifier(for: queryResult.fragmentRef)
                 let fragmentResult: FragmentResource.FragmentResult<Op.Data> =
                     fragmentResource.read(node: queryResult.fragmentNode, ref: queryResult.fragmentRef, identifier: identifier)
 
-                self.result = .success(fragmentResult.snapshot)
+                if case .success(let oldSnapshot) = self.result, oldSnapshot == fragmentResult.snapshot {} else {
+                    self.result = .success(fragmentResult.snapshot)
+                }
                 self.retainCancellable = resource.retain(queryResult)
                 self.subscribeCancellable = fragmentResource.subscribe(fragmentResult)
                     .sink { [weak self] newSnapshot in
@@ -130,10 +153,19 @@ class QueryLoader<Op: Relay.Operation>: ObservableObject {
                             self?.result = .success(newSnapshot)
                         }
                     }
+
+                self.stopRefreshingIfNeeded()
             }
         }
 
         isLoaded = true
         return result
+    }
+
+    private func stopRefreshingIfNeeded() {
+        if let doneRefreshing = doneRefetching {
+            doneRefreshing()
+            self.doneRefetching = nil
+        }
     }
 }

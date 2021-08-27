@@ -33,12 +33,17 @@ public class Store {
     ///   - gcScheduler: The queue to use when performing garbage collection. By default, Relay creates a new serial queue for garbage collection of records.
     public init(
         source: RecordSource = DefaultRecordSource(),
+        gcReleaseBufferSize: Int = 0,
         gcScheduler: DispatchQueue = DispatchQueue(label: "relay-garbage-collector")
     ) {
         recordSource = source
 
         initializeRecordSource()
-        gc = GarbageCollector(store: self, scheduler: gcScheduler)
+        gc = GarbageCollector(
+            store: self,
+            releaseBufferSize: gcReleaseBufferSize,
+            scheduler: gcScheduler
+        )
     }
 
     /// The source of records currently being used by the store.

@@ -127,8 +127,8 @@ extension RelaySwiftUI.Query.WrappedValue where O == MovieInfoSectionRefetchQuer
 import RelaySwiftUI
 
 extension RelaySwiftUI.RefetchableFragment.Wrapper where F.Operation == MovieInfoSectionRefetchQuery {
-    public func refetch(id: String) {
-        self.refetch(.init(id: id))
+    public func refetch(id: String) async {
+        await self.refetch(.init(id: id))
     }
 }
 #endif

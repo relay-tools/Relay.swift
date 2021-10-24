@@ -164,8 +164,8 @@ extension RelaySwiftUI.Query.WrappedValue where O == AddTodoAppendEdgeMutation {
 import RelaySwiftUI
 
 extension RelaySwiftUI.RefetchableFragment.Wrapper where F.Operation == AddTodoAppendEdgeMutation {
-    public func refetch(input: AddTodoInput, connections: [String]) {
-        self.refetch(.init(input: input, connections: connections))
+    public func refetch(input: AddTodoInput, connections: [String]) async {
+        await self.refetch(.init(input: input, connections: connections))
     }
 }
 #endif

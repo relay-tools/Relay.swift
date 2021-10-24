@@ -211,8 +211,8 @@ extension RelaySwiftUI.Query.WrappedValue where O == MovieDetailNodeQuery {
 import RelaySwiftUI
 
 extension RelaySwiftUI.RefetchableFragment.Wrapper where F.Operation == MovieDetailNodeQuery {
-    public func refetch(id: String) {
-        self.refetch(.init(id: id))
+    public func refetch(id: String) async {
+        await self.refetch(.init(id: id))
     }
 }
 #endif

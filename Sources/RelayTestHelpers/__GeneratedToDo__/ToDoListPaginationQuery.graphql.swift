@@ -213,8 +213,8 @@ extension RelaySwiftUI.Query.WrappedValue where O == ToDoListPaginationQuery {
 import RelaySwiftUI
 
 extension RelaySwiftUI.RefetchableFragment.Wrapper where F.Operation == ToDoListPaginationQuery {
-    public func refetch(count: Int? = nil, cursor: String? = nil, id: String) {
-        self.refetch(.init(count: count, cursor: cursor, id: id))
+    public func refetch(count: Int? = nil, cursor: String? = nil, id: String) async {
+        await self.refetch(.init(count: count, cursor: cursor, id: id))
     }
 }
 #endif

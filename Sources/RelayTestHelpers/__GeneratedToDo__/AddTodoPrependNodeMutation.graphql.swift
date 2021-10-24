@@ -158,8 +158,8 @@ extension RelaySwiftUI.Query.WrappedValue where O == AddTodoPrependNodeMutation 
 import RelaySwiftUI
 
 extension RelaySwiftUI.RefetchableFragment.Wrapper where F.Operation == AddTodoPrependNodeMutation {
-    public func refetch(input: AddTodoInput, connections: [String]) {
-        self.refetch(.init(input: input, connections: connections))
+    public func refetch(input: AddTodoInput, connections: [String]) async {
+        await self.refetch(.init(input: input, connections: connections))
     }
 }
 #endif

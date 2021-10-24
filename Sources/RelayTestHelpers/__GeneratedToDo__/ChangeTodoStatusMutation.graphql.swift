@@ -122,8 +122,8 @@ extension RelaySwiftUI.Query.WrappedValue where O == ChangeTodoStatusMutation {
 import RelaySwiftUI
 
 extension RelaySwiftUI.RefetchableFragment.Wrapper where F.Operation == ChangeTodoStatusMutation {
-    public func refetch(input: ChangeTodoStatusInput) {
-        self.refetch(.init(input: input))
+    public func refetch(input: ChangeTodoStatusInput) async {
+        await self.refetch(.init(input: input))
     }
 }
 #endif

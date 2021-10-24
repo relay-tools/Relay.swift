@@ -47,6 +47,7 @@ class PaginationFragmentLoader<Fragment: Relay.PaginationFragment>: ObservableOb
         Pager(loader: self)
     }
 
+    @available(iOS 15.0, macOS 12.0, watchOS 7.0, tvOS 15.0, *)
     func refetch(_ variables: Fragment.Operation.Variables?, from resource: FragmentResource, queryResource: QueryResource, key: Fragment.Key) async {
         await fragmentLoader.refetch(variables, from: resource, queryResource: queryResource, key: key)
     }
@@ -200,6 +201,7 @@ struct Pager<Fragment: Relay.PaginationFragment> {
         self.loader = loader
     }
 
+    @available(iOS 15.0, macOS 12.0, watchOS 7.0, tvOS 15.0, *)
     func refetch(_ variables: Fragment.Operation.Variables?, from resource: FragmentResource, queryResource: QueryResource, key: Fragment.Key) async {
         await loader.refetch(variables, from: resource, queryResource: queryResource, key: key)
     }

@@ -42,6 +42,7 @@ public struct PaginationFragment<F: Relay.PaginationFragment>: DynamicProperty {
             return data[keyPath: keyPath]
         }
 
+        @available(iOS 15.0, macOS 12.0, watchOS 7.0, tvOS 15.0, *)
         public func refetch(_ variables: F.Operation.Variables? = nil) async {
             await paging.refetch(variables, from: fragment.fragmentResource!, queryResource: fragment.queryResource!, key: fragment.key!)
         }

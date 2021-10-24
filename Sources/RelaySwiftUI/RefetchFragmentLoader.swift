@@ -84,6 +84,7 @@ class RefetchFragmentLoader<Fragment: Relay.RefetchFragment>: ObservableObject {
         fragmentLoader.selector
     }
 
+    @available(iOS 15.0, macOS 12.0, watchOS 7.0, tvOS 15.0, *)
     func refetch(_ variables: RefetchVariables?, from resource: FragmentResource, queryResource: QueryResource, key: Fragment.Key) async {
         guard var variables = variables?.variableData ?? selector?.owner.variables else {
             preconditionFailure("Attempting to refetch before the fragment has even been loaded")

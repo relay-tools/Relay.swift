@@ -2,7 +2,6 @@ import Combine
 import Foundation
 import Relay
 
-@MainActor
 class QueryLoader<Op: Relay.Operation>: ObservableObject {
     @Published var result: Result<Snapshot<Op.Data?>, Error>? {
         willSet {
@@ -71,6 +70,7 @@ class QueryLoader<Op: Relay.Operation>: ObservableObject {
         }
     }
 
+    @available(iOS 15.0, macOS 12.0, watchOS 7.0, tvOS 15.0, *)
     func refetch() async {
         await withUnsafeContinuation { (continuation: UnsafeContinuation<Void, Never>) in
             doneRefetching = continuation.resume

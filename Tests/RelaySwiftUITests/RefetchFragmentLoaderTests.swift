@@ -88,7 +88,7 @@ class RefetchFragmentLoaderTests: XCTestCase {
         expect(snapshots).to(beEmpty())
     }
 
-    func testRefetchesDataWhenAsked() throws {
+    func testRefetchesDataWhenAsked() async throws {
         let loader = RefetchFragmentLoader<MovieInfoSection_film>()
         let selector = try load(MovieDetail.newHope)
         let key = getMovieKey(selector)
@@ -104,7 +104,7 @@ class RefetchFragmentLoaderTests: XCTestCase {
         expect(refetchKeys).to(beEmpty())
 
         let advance = try environment.delayMockedResponse(MovieInfoSectionRefetchQuery(id: "ZmlsbXM6MQ=="), MovieInfoSection.refetchEvenNewerHope)
-        loader.refetch(nil)
+        await loader.refetch(nil, from: resource, queryResource: queryResource, key: key)
 
         expect(refetchKeys).toEventually(haveCount(1))
         loader.load(from: resource, queryResource: queryResource, key: key)
@@ -128,7 +128,7 @@ class RefetchFragmentLoaderTests: XCTestCase {
         expect(snapshots).to(haveCount(2))
     }
 
-    func testRefetchesDataWithNewVariables() throws {
+    func testRefetchesDataWithNewVariables() async throws {
         let loader = RefetchFragmentLoader<MovieInfoSection_film>()
         let selector = try load(MovieDetail.newHope)
         let key = getMovieKey(selector)
@@ -145,7 +145,7 @@ class RefetchFragmentLoaderTests: XCTestCase {
 
         // refetch with a different ID
         let advance = try environment.delayMockedResponse(MovieInfoSectionRefetchQuery(id: "ZmlsbXM6Mg=="), MovieInfoSection.refetchEmpire)
-        loader.refetch(.init(id: "ZmlsbXM6Mg=="))
+        await loader.refetch(.init(id: "ZmlsbXM6Mg=="), from: resource, queryResource: queryResource, key: key)
 
         expect(refetchKeys).toEventually(haveCount(1))
         loader.load(from: resource, queryResource: queryResource, key: key)
@@ -166,7 +166,7 @@ class RefetchFragmentLoaderTests: XCTestCase {
         expect(snapshots).to(haveCount(1))
     }
 
-    func testRetainsDataFromRefetchQuery() throws {
+    func testRetainsDataFromRefetchQuery() async throws {
         let loader = RefetchFragmentLoader<MovieInfoSection_film>()
         let selector = try load(MovieDetail.newHope)
         let key = getMovieKey(selector)
@@ -179,7 +179,7 @@ class RefetchFragmentLoaderTests: XCTestCase {
 
         // refetch with a different ID
         let advance = try environment.delayMockedResponse(MovieInfoSectionRefetchQuery(id: "ZmlsbXM6Mg=="), MovieInfoSection.refetchEmpire)
-        loader.refetch(.init(id: "ZmlsbXM6Mg=="))
+        await loader.refetch(.init(id: "ZmlsbXM6Mg=="), from: resource, queryResource: queryResource, key: key)
 
         expect(refetchKeys).toEventually(haveCount(1))
         loader.load(from: resource, queryResource: queryResource, key: key)

@@ -6,11 +6,11 @@ import PackageDescription
 let package = Package(
     name: "Relay.swift",
     platforms: [
-        .macOS("12.0"),
-        .macCatalyst("15.0"),
-        .iOS("15.0"),
-        .tvOS("15.0"),
-        .watchOS("8.0"),
+        .macOS("11.0"),
+        .macCatalyst("14.0"),
+        .iOS("14.0"),
+        .tvOS("14.0"),
+        .watchOS("7.0"),
     ],
     products: [
         .library(

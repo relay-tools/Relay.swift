@@ -42,7 +42,6 @@ public struct RefetchableFragment<F: Relay.RefetchFragment>: DynamicProperty {
             return data[keyPath: keyPath]
         }
 
-        @available(iOS 15.0, macOS 12.0, watchOS 7.0, tvOS 15.0, *)
         public func refetch(_ variables: F.Operation.Variables? = nil) async {
             await fragment.loader.refetch(variables, from: fragment.fragmentResource!, queryResource: fragment.queryResource!, key: fragment.key!)
         }

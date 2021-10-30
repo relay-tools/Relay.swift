@@ -70,7 +70,6 @@ class QueryLoader<Op: Relay.Operation>: ObservableObject {
         }
     }
 
-    @available(iOS 15.0, macOS 12.0, watchOS 7.0, tvOS 15.0, *)
     func refetch() async {
         await withUnsafeContinuation { (continuation: UnsafeContinuation<Void, Never>) in
             doneRefetching = continuation.resume

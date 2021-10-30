@@ -24,6 +24,7 @@
 		C91598862473897400E7FE03 /* ChangeTodoStatusMutation.graphql.swift in Sources */ = {isa = PBXBuildFile; fileRef = C91598852473897400E7FE03 /* ChangeTodoStatusMutation.graphql.swift */; };
 		C9333EB824A8FB9000377F35 /* ToDoItemPreviewQuery.graphql.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9333EB724A8FB9000377F35 /* ToDoItemPreviewQuery.graphql.swift */; };
 		C9333EBA24A8FBE400377F35 /* ToDoItemPreview.json in Resources */ = {isa = PBXBuildFile; fileRef = C9333EB924A8FBE400377F35 /* ToDoItemPreview.json */; };
+		C9569E01272DA8AE00CAB28A /* Refreshable.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9569E00272DA8AE00CAB28A /* Refreshable.swift */; };
 		C9D63CFC24C7E4750053FD34 /* CurrentUserToDoList.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9D63CFB24C7E4750053FD34 /* CurrentUserToDoList.swift */; };
 		C9E18B74245F68A100213352 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9E18B73245F68A100213352 /* AppDelegate.swift */; };
 		C9E18B76245F68A100213352 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9E18B75245F68A100213352 /* SceneDelegate.swift */; };
@@ -109,6 +110,7 @@
 		C91598852473897400E7FE03 /* ChangeTodoStatusMutation.graphql.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ChangeTodoStatusMutation.graphql.swift; sourceTree = "<group>"; };
 		C9333EB724A8FB9000377F35 /* ToDoItemPreviewQuery.graphql.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ToDoItemPreviewQuery.graphql.swift; sourceTree = "<group>"; };
 		C9333EB924A8FBE400377F35 /* ToDoItemPreview.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = ToDoItemPreview.json; sourceTree = "<group>"; };
+		C9569E00272DA8AE00CAB28A /* Refreshable.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Refreshable.swift; sourceTree = "<group>"; };
 		C9D63CFB24C7E4750053FD34 /* CurrentUserToDoList.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CurrentUserToDoList.swift; sourceTree = "<group>"; };
 		C9E18B71245F68A100213352 /* RelayPokedex.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = RelayPokedex.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		C9E18B73245F68A100213352 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -314,6 +316,7 @@
 				C9E18C91246653A300213352 /* MoviesTab.swift */,
 				C9E18C842466497E00213352 /* MoviesList.swift */,
 				C9E18C8B24664DA600213352 /* MoviesListRow.swift */,
+				C9569E00272DA8AE00CAB28A /* Refreshable.swift */,
 				C9E18C6A2466474F00213352 /* Assets.xcassets */,
 				C9E18C6F2466474F00213352 /* LaunchScreen.storyboard */,
 				C9E18C722466474F00213352 /* Info.plist */,
@@ -547,6 +550,7 @@
 				C9E18C9E2467341200213352 /* MoviesList_films.graphql.swift in Sources */,
 				C9E18C9624665DA100213352 /* MoviesTabQuery.graphql.swift in Sources */,
 				C9E18C692466474D00213352 /* ContentView.swift in Sources */,
+				C9569E01272DA8AE00CAB28A /* Refreshable.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -797,7 +801,7 @@
 				DEVELOPMENT_TEAM = PE8BN56Z28;
 				ENABLE_PREVIEWS = YES;
 				INFOPLIST_FILE = RelayStarWars/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 14.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -818,7 +822,7 @@
 				DEVELOPMENT_TEAM = PE8BN56Z28;
 				ENABLE_PREVIEWS = YES;
 				INFOPLIST_FILE = RelayStarWars/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 14.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",

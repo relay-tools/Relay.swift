@@ -51,14 +51,14 @@ struct MoviesList: View {
             }
         }
         .navigationBarTitle("Movies")
-        .navigationBarItems(trailing: Group {
-            Button {
-                showInspector = true
-            } label: {
-                Label("Inspector", systemImage: "books.vertical")
-            }
-        })
-        .refreshable {
+//        .navigationBarItems(trailing: Group {
+//            Button {
+//                showInspector = true
+//            } label: {
+//                Label("Inspector", systemImage: "books.vertical")
+//            }
+//        })
+        .compatibleRefreshable {
             if useQueryRefetch {
                 await onRefetch()
             } else {
@@ -73,7 +73,6 @@ struct MoviesList: View {
             }
             .relayEnvironment(relayEnvironment)
         }
-
     }
 }
 
